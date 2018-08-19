@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
+    <service>payment-processor</service>
+    <runtime>java8</runtime>
+    <sessions-enabled>false</sessions-enabled>
+    <threadsafe>true</threadsafe>
+    <!--
+        https://stackoverflow.com/questions/40708265/gae-whats-the-difference-between-min-pending-latency-and-max-pending-latenc
+        App Engine can choose to create an instance at any time between min-pending-latency and max-pending-latency
+    -->
+    <automatic-scaling>
+        <max-idle-instances>automatic</max-idle-instances>
+        <min-pending-latency>1000ms</min-pending-latency>
+        <max-pending-latency>automatic</max-pending-latency>
+    </automatic-scaling>
+    <instance-class>F1</instance-class>
+    <system-properties>
+        <property name="java.util.logging.config.file" value="WEB-INF/classes/logging.properties"/>
+    </system-properties>
+    <env-variables>
+        <env-var name="ENDPOINTS_SERVICE_NAME" value="${endpoints.project.name}"/>
+    </env-variables>
+</appengine-web-app>
