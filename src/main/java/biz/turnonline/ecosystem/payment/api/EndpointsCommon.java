@@ -8,7 +8,7 @@ import javax.inject.Singleton;
 /**
  * The common services to handle REST API endpoints requests.
  *
- * @author <a href="mailto:aurel.medvegy@ctoolkit.org">Aurel Medvegy</a>
+ * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 @Singleton
 class EndpointsCommon

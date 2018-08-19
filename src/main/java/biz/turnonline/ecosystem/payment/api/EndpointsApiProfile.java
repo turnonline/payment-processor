@@ -11,7 +11,7 @@ import com.google.api.server.spi.config.ApiNamespace;
  * applies to the entire API). Thu current implementation of {@link MessageEndpoint} allows
  * authenticated users to call the API with no additional restriction.
  *
- * @author <a href="mailto:aurel.medvegy@ctoolkit.org">Aurel Medvegy</a>
+ * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  * @see <a href="https://cloud.google.com/endpoints/docs/frameworks/java/authenticating-users">Authenticating Users</a>
  * @see <a href="https://cloud.google.com/endpoints/docs/openapi/when-why-api-key">Why and When to Use API Keys</a>
  */

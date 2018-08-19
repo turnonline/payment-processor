@@ -9,7 +9,7 @@ import org.ctoolkit.services.guice.AppEngineEnvironmentContextListener;
 /**
  * The main entry point to configure guice injection.
  *
- * @author <a href="mailto:aurel.medvegy@ctoolkit.org">Aurel Medvegy</a>
+ * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 public class GuiceInjectorListener
         extends AppEngineEnvironmentContextListener

@@ -34,6 +34,7 @@
             <url-pattern>/_ah/push-handlers/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
+            <!--suppress WebProperties -->
             <role-name>admin</role-name>
         </auth-constraint>
     </security-constraint>
@@ -44,6 +45,7 @@
             <url-pattern>/_ah/queue/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
+            <!--suppress WebProperties -->
             <role-name>admin</role-name>
         </auth-constraint>
     </security-constraint>
@@ -54,6 +56,7 @@
             <url-pattern>/cron/*</url-pattern>
         </web-resource-collection>
         <auth-constraint>
+            <!--suppress WebProperties -->
             <role-name>admin</role-name>
         </auth-constraint>
     </security-constraint>

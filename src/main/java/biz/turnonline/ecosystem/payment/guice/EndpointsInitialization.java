@@ -14,7 +14,7 @@ import static org.ctoolkit.services.endpoints.EndpointsMonitorConfig.ENDPOINTS_S
 /**
  * The endpoints service classes configuration.
  *
- * @author <a href="mailto:aurel.medvegy@ctoolkit.org">Aurel Medvegy</a>
+ * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  * @see EndpointsModule
  */
 public class EndpointsInitialization

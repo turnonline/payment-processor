@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  * <li>or {@link com.google.api.server.spi.auth.common.User} coming from Endpoints Framework library </li>
  * </ul>
  *
- * @author <a href="mailto:aurel.medvegy@ctoolkit.org">Aurel Medvegy</a>
+ * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 @Api
 @ApiReference( EndpointsApiProfile.class )

@@ -13,8 +13,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>Payment Processor</name>
-    <description>TurnOnline.biz Ecosystem Payment Processor REST API microservice
-    </description>
+    <description>TurnOnline.biz Ecosystem Payment Processor REST API microservice</description>
     <url>https://payment-processor-dot-turn-online-eu.appspot.com/_ah/api/explorer</url>
 
     <scm>
