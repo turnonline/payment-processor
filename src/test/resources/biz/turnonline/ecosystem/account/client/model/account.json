@@ -1,0 +1,63 @@
+{
+    "email": "my.account@turnonline.biz",
+    "identityId": "456DN78L3364",
+    "contactEmail": "my.contact@turnonline.biz",
+    "locale": "en",
+    "prefix": "Dr.",
+    "firstName": "Joshua",
+    "lastName": "Malbo",
+    "suffix": "PhD.",
+    "personalAddress": {
+        "street": "Stiftstraße 9-17",
+        "city": "Frankfurt am Main",
+        "country": "DE",
+        "postcode": "60313"
+    },
+    "publicContact": {
+        "email": "public@turnonline.biz",
+        "name": "Frederic Public",
+        "phone": "+421 905 007 001",
+        "website": "https://www.turnonline.biz"
+    },
+    "hasPostalAddress": true,
+    "postalAddress": {
+        "prefix": "Dr.",
+        "firstName": "Félix",
+        "lastName": "Bing",
+        "businessName": "My Central business, s.r.o.",
+        "street": "Bajkalská 717/29",
+        "city": "Bratislava",
+        "country": "SK",
+        "postcode": "82105"
+    },
+    "company": true,
+    "business": {
+        "businessName": "My Central business, s.r.o.",
+        "street": "Metodova 6",
+        "city": "Bratislava",
+        "domicile": "SK",
+        "postcode": "82108",
+        "companyId": "35356654",
+        "taxId": "2022356654",
+        "vatPayer": true,
+        "vatId": "SK2022356654"
+    },
+    "invoicing": {
+        "currency": "EUR",
+        "hasBillingAddress": true,
+        "billingAddress": {
+            "businessName": "My Central business, s.r.o.",
+            "street": "Bajkalská 717/29",
+            "city": "Bratislava",
+            "country": "SK",
+            "postcode": "82105"
+        },
+        "billingContact": {
+            "email": "billing.contact@turnonline.biz",
+            "prefix": "Dr.",
+            "firstName": "Carol",
+            "lastName": "Bosch",
+            "phone": "+44 1206 007 001"
+        }
+    }
+}

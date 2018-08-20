@@ -1,0 +1,2383 @@
+<changeset author="medvegy@turnonline.biz" comment="Init BankCode code book.">
+    <entities>
+        <!--SK domicile-->
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Všeobecná úverová banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="0200"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Národná banka Slovenska"/>
+            <property indexed="true" name="code" type="string" value="0720"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Slovenská Sporiteľňa, a.s."/>
+            <property indexed="true" name="code" type="string" value="0900"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="Národná banka Slovenska – prevádzkovateľ platobného systému EURO SIPS"/>
+            <property indexed="true" name="code" type="string" value="1030"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Tatra banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="1100"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="UniCredit Bank Slovakia, a.s."/>
+            <property indexed="true" name="code" type="string" value="1111"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Slovenská záručná a rozvojová banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="3000"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="VOLKSBANK Slovensko, a.s."/>
+            <property indexed="true" name="code" type="string" value="3100"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="OTP Banka Slovensko, a.s."/>
+            <property indexed="true" name="code" type="string" value="5200"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Dexia banka Slovensko a.s."/>
+            <property indexed="true" name="code" type="string" value="5600"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Prvá stavebná sporiteľňa, a.s."/>
+            <property indexed="true" name="code" type="string" value="5900"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Poštová banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="6500"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ING Bank N.V., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="7300"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Československá obchodná banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="7500"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Wüstenrot stavebná sporiteľňa, a.s."/>
+            <property indexed="true" name="code" type="string" value="7930"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="Crédit Agricole Corporate and Investment Bank S.A., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8020"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="COMMERZBANK Aktiengesellschaft, pobočka zahraničnej banky, Bratislava"/>
+            <property indexed="true" name="code" type="string" value="8050"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Komerční banka, a.s., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8100"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Privatbanka, a.s."/>
+            <property indexed="true" name="code" type="string" value="8120"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Citibank Europe plc, pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8130"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="EXIMBANKA SR"/>
+            <property indexed="true" name="code" type="string" value="8160"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ČSOB stavebná sporiteľňa, a.s."/>
+            <property indexed="true" name="code" type="string" value="8170"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Štátna pokladnica"/>
+            <property indexed="true" name="code" type="string" value="8180"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="HSBC Bank plc, pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8300"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="J&amp;T BANKA, a.s., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8320"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Fio banka, a.s., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8330"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="The Royal Bank of Scotland N.V., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8350"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="BRE Bank SA, pobočka zahraničnej banky mBank v Slovenskej republike"/>
+            <property indexed="true" name="code" type="string" value="8360"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Oberbank AG pobočka zahraničnej banky v Slovenskej republike"/>
+            <property indexed="true" name="code" type="string" value="8370"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="AXA Bank Europe, pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8380"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="AKCENTA, spořitelní a uvěrové družstvo, pobočka Košice"/>
+            <property indexed="true" name="code" type="string" value="8390"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Banco Mais S.A. , pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8400"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ZUNO BANK AG, pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8410"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="BKS Bank AG, pobočka zahraničnej banky v SR"/>
+            <property indexed="true" name="code" type="string" value="8420"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Všeobecná úverová banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="0200"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Národná banka Slovenska"/>
+            <property indexed="true" name="code" type="string" value="0720"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Slovenská Sporiteľňa, a.s."/>
+            <property indexed="true" name="code" type="string" value="0900"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="Národná banka Slovenska – prevádzkovateľ platobného systému EURO SIPS"/>
+            <property indexed="true" name="code" type="string" value="1030"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Tatra banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="1100"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="UniCredit Bank Slovakia, a.s."/>
+            <property indexed="true" name="code" type="string" value="1111"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Slovenská záručná a rozvojová banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="3000"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="VOLKSBANK Slovensko, a.s."/>
+            <property indexed="true" name="code" type="string" value="3100"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="OTP Banka Slovensko, a.s."/>
+            <property indexed="true" name="code" type="string" value="5200"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Dexia banka Slovensko a.s."/>
+            <property indexed="true" name="code" type="string" value="5600"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Prvá stavebná sporiteľňa, a.s."/>
+            <property indexed="true" name="code" type="string" value="5900"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Poštová banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="6500"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ING Bank N.V., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="7300"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Československá obchodná banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="7500"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Wüstenrot stavebná sporiteľňa, a.s."/>
+            <property indexed="true" name="code" type="string" value="7930"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="Crédit Agricole Corporate and Investment Bank S.A., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8020"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="COMMERZBANK Aktiengesellschaft, pobočka zahraničnej banky, Bratislava"/>
+            <property indexed="true" name="code" type="string" value="8050"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Komerční banka, a.s., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8100"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Privatbanka, a.s."/>
+            <property indexed="true" name="code" type="string" value="8120"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Citibank Europe plc, pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8130"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="EXIMBANKA SR"/>
+            <property indexed="true" name="code" type="string" value="8160"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ČSOB stavebná sporiteľňa, a.s."/>
+            <property indexed="true" name="code" type="string" value="8170"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Štátna pokladnica"/>
+            <property indexed="true" name="code" type="string" value="8180"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="HSBC Bank plc, pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8300"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="J&amp;T BANKA, a.s., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8320"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Fio banka, a.s., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8330"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="The Royal Bank of Scotland N.V., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8350"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="BRE Bank SA, pobočka zahraničnej banky mBank v Slovenskej republike"/>
+            <property indexed="true" name="code" type="string" value="8360"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Oberbank AG pobočka zahraničnej banky v Slovenskej republike"/>
+            <property indexed="true" name="code" type="string" value="8370"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="AXA Bank Europe, pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8380"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="AKCENTA, spořitelní a uvěrové družstvo, pobočka Košice"/>
+            <property indexed="true" name="code" type="string" value="8390"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Banco Mais S.A. , pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8400"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ZUNO BANK AG, pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8410"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="BKS Bank AG, pobočka zahraničnej banky v SR"/>
+            <property indexed="true" name="code" type="string" value="8420"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <!--CZ domicile-->
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Komerční banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="0100"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Československá obchodní banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="0300"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="GE Money Bank, a.s."/>
+            <property indexed="true" name="code" type="string" value="0600"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Česká národní banka"/>
+            <property indexed="true" name="code" type="string" value="0710"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Česká spořitelna, a.s."/>
+            <property indexed="true" name="code" type="string" value="0800"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Fio banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="2010"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="Bank of Tokyo-Mitsubishi UFJ (Holland) N.V. Prague Branch, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="2020"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="AKCENTA, spořitelní a úvěrní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2030"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="UNIBON – spořitelní a úvěrní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2040"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="WPB Capital, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2050"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Citfin, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2060"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Moravský Peněžní Ústav – spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2070"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Hypoteční banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="2100"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Peněžní dům, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2200"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Banka mezinárodní spolupráce a.s."/>
+            <property indexed="true" name="code" type="string" value="2210"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Artesa, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2220"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="AXA Bank Europe, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="2230"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Poštová banka, a.s., pobočka Česká republika"/>
+            <property indexed="true" name="code" type="string" value="2240"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Záložna CREDITAS, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2250"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ZUNO BANK AG, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="2310"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Citibank Europe plc, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="2600"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="UniCredit Bank Czech Republic a.s."/>
+            <property indexed="true" name="code" type="string" value="2700"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Air Bank a.s."/>
+            <property indexed="true" name="code" type="string" value="3030"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ING Bank N. V."/>
+            <property indexed="true" name="code" type="string" value="3500"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="LBBW Bank CZ a.s."/>
+            <property indexed="true" name="code" type="string" value="4000"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Českomoravská záruční a rozvojová banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="4300"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="Crédit Agricole Corporate and Investment Bank S.A. Prague, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="5000"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="The Royal Bank of Scotland N.V."/>
+            <property indexed="true" name="code" type="string" value="5400"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Raiffeisenbank a.s."/>
+            <property indexed="true" name="code" type="string" value="5500"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="J&amp;T banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="5800"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="PPF banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="6000"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Equa bank a.s."/>
+            <property indexed="true" name="code" type="string" value="6100"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Commerzbank AG"/>
+            <property indexed="true" name="code" type="string" value="6200"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="BRE Bank S.A., organizační složka podniku (mBank)"/>
+            <property indexed="true" name="code" type="string" value="6210"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Fortis Bank SA/NV, pobočka ČR"/>
+            <property indexed="true" name="code" type="string" value="6300"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Všeobecná úverová banka a.s., pobočka Praha"/>
+            <property indexed="true" name="code" type="string" value="6700"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Volksbank CZ, a.s."/>
+            <property indexed="true" name="code" type="string" value="6800"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Deutsche Bank A.G. Filiale Prag"/>
+            <property indexed="true" name="code" type="string" value="7910"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Waldviertler Sparkasse von 1842 AG"/>
+            <property indexed="true" name="code" type="string" value="7940"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Raiffeisen stavební spořitelna a.s."/>
+            <property indexed="true" name="code" type="string" value="7950"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Českomoravská stavební spořitelna, a.s."/>
+            <property indexed="true" name="code" type="string" value="7960"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Wüstenrot - stavební spořitelna a.s."/>
+            <property indexed="true" name="code" type="string" value="7970"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Wüstenrot hypoteční banka a.s."/>
+            <property indexed="true" name="code" type="string" value="7980"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Modrá pyramida stavební spořitelna, a.s."/>
+            <property indexed="true" name="code" type="string" value="7990"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Raiffeisenbank im Stiftland eG pobočka Cheb, odštěpný závod"/>
+            <property indexed="true" name="code" type="string" value="8030"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Oberbank AG pobočka Česká republika"/>
+            <property indexed="true" name="code" type="string" value="8040"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Stavební spořitelna České spořitelny, a.s."/>
+            <property indexed="true" name="code" type="string" value="8060"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Česká exportní banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="8090"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="HSBC Bank plc - pobočka Praha"/>
+            <property indexed="true" name="code" type="string" value="8150"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="PRIVAT BANK AG der Raiffeisenlandesbank Oberösterreich v České republice"/>
+            <property indexed="true" name="code" type="string" value="8200"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Centrální depozitář cenných papírů, a.s."/>
+            <property indexed="true" name="code" type="string" value="9910"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Komerční banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="0100"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Československá obchodní banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="0300"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="GE Money Bank, a.s."/>
+            <property indexed="true" name="code" type="string" value="0600"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Česká národní banka"/>
+            <property indexed="true" name="code" type="string" value="0710"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Česká spořitelna, a.s."/>
+            <property indexed="true" name="code" type="string" value="0800"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Fio banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="2010"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="Bank of Tokyo-Mitsubishi UFJ (Holland) N.V. Prague Branch, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="2020"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="AKCENTA, spořitelní a úvěrní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2030"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="UNIBON – spořitelní a úvěrní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2040"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="WPB Capital, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2050"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Citfin, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2060"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Moravský Peněžní Ústav – spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2070"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Hypoteční banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="2100"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Peněžní dům, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2200"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Banka mezinárodní spolupráce a.s."/>
+            <property indexed="true" name="code" type="string" value="2210"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Artesa, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2220"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="AXA Bank Europe, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="2230"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Poštová banka, a.s., pobočka Česká republika"/>
+            <property indexed="true" name="code" type="string" value="2240"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Záložna CREDITAS, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2250"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ZUNO BANK AG, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="2310"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Citibank Europe plc, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="2600"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="UniCredit Bank Czech Republic a.s."/>
+            <property indexed="true" name="code" type="string" value="2700"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Air Bank a.s."/>
+            <property indexed="true" name="code" type="string" value="3030"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ING Bank N. V."/>
+            <property indexed="true" name="code" type="string" value="3500"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="LBBW Bank CZ a.s."/>
+            <property indexed="true" name="code" type="string" value="4000"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Českomoravská záruční a rozvojová banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="4300"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="Crédit Agricole Corporate and Investment Bank S.A. Prague, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="5000"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="The Royal Bank of Scotland N.V."/>
+            <property indexed="true" name="code" type="string" value="5400"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Raiffeisenbank a.s."/>
+            <property indexed="true" name="code" type="string" value="5500"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="J&amp;T banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="5800"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="PPF banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="6000"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Equa bank a.s."/>
+            <property indexed="true" name="code" type="string" value="6100"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Commerzbank AG"/>
+            <property indexed="true" name="code" type="string" value="6200"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="BRE Bank S.A., organizační složka podniku (mBank)"/>
+            <property indexed="true" name="code" type="string" value="6210"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Fortis Bank SA/NV, pobočka ČR"/>
+            <property indexed="true" name="code" type="string" value="6300"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Všeobecná úverová banka a.s., pobočka Praha"/>
+            <property indexed="true" name="code" type="string" value="6700"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Volksbank CZ, a.s."/>
+            <property indexed="true" name="code" type="string" value="6800"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Deutsche Bank A.G. Filiale Prag"/>
+            <property indexed="true" name="code" type="string" value="7910"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Waldviertler Sparkasse von 1842 AG"/>
+            <property indexed="true" name="code" type="string" value="7940"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Raiffeisen stavební spořitelna a.s."/>
+            <property indexed="true" name="code" type="string" value="7950"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Českomoravská stavební spořitelna, a.s."/>
+            <property indexed="true" name="code" type="string" value="7960"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Wüstenrot - stavební spořitelna a.s."/>
+            <property indexed="true" name="code" type="string" value="7970"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Wüstenrot hypoteční banka a.s."/>
+            <property indexed="true" name="code" type="string" value="7980"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Modrá pyramida stavební spořitelna, a.s."/>
+            <property indexed="true" name="code" type="string" value="7990"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Raiffeisenbank im Stiftland eG pobočka Cheb, odštěpný závod"/>
+            <property indexed="true" name="code" type="string" value="8030"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Oberbank AG pobočka Česká republika"/>
+            <property indexed="true" name="code" type="string" value="8040"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Stavební spořitelna České spořitelny, a.s."/>
+            <property indexed="true" name="code" type="string" value="8060"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Česká exportní banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="8090"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="HSBC Bank plc - pobočka Praha"/>
+            <property indexed="true" name="code" type="string" value="8150"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="PRIVAT BANK AG der Raiffeisenlandesbank Oberösterreich v České republice"/>
+            <property indexed="true" name="code" type="string" value="8200"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Centrální depozitář cenných papírů, a.s."/>
+            <property indexed="true" name="code" type="string" value="9910"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <!--SK domicile-->
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Všeobecná úverová banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="0200"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Národná banka Slovenska"/>
+            <property indexed="true" name="code" type="string" value="0720"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Slovenská Sporiteľňa, a.s."/>
+            <property indexed="true" name="code" type="string" value="0900"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="Národná banka Slovenska – prevádzkovateľ platobného systému EURO SIPS"/>
+            <property indexed="true" name="code" type="string" value="1030"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Tatra banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="1100"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="UniCredit Bank Slovakia, a.s."/>
+            <property indexed="true" name="code" type="string" value="1111"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Slovenská záručná a rozvojová banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="3000"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="VOLKSBANK Slovensko, a.s."/>
+            <property indexed="true" name="code" type="string" value="3100"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="OTP Banka Slovensko, a.s."/>
+            <property indexed="true" name="code" type="string" value="5200"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Dexia banka Slovensko a.s."/>
+            <property indexed="true" name="code" type="string" value="5600"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Prvá stavebná sporiteľňa, a.s."/>
+            <property indexed="true" name="code" type="string" value="5900"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Poštová banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="6500"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ING Bank N.V., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="7300"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Československá obchodná banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="7500"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Wüstenrot stavebná sporiteľňa, a.s."/>
+            <property indexed="true" name="code" type="string" value="7930"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="Crédit Agricole Corporate and Investment Bank S.A., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8020"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="COMMERZBANK Aktiengesellschaft, pobočka zahraničnej banky, Bratislava"/>
+            <property indexed="true" name="code" type="string" value="8050"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Komerční banka, a.s., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8100"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Privatbanka, a.s."/>
+            <property indexed="true" name="code" type="string" value="8120"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Citibank Europe plc, pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8130"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="EXIMBANKA SR"/>
+            <property indexed="true" name="code" type="string" value="8160"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ČSOB stavebná sporiteľňa, a.s."/>
+            <property indexed="true" name="code" type="string" value="8170"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Štátna pokladnica"/>
+            <property indexed="true" name="code" type="string" value="8180"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="HSBC Bank plc, pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8300"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="J&amp;T BANKA, a.s., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8320"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Fio banka, a.s., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8330"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="The Royal Bank of Scotland N.V., pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8350"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="BRE Bank SA, pobočka zahraničnej banky mBank v Slovenskej republike"/>
+            <property indexed="true" name="code" type="string" value="8360"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Oberbank AG pobočka zahraničnej banky v Slovenskej republike"/>
+            <property indexed="true" name="code" type="string" value="8370"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="AXA Bank Europe, pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8380"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="AKCENTA, spořitelní a uvěrové družstvo, pobočka Košice"/>
+            <property indexed="true" name="code" type="string" value="8390"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Banco Mais S.A. , pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8400"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ZUNO BANK AG, pobočka zahraničnej banky"/>
+            <property indexed="true" name="code" type="string" value="8410"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="BKS Bank AG, pobočka zahraničnej banky v SR"/>
+            <property indexed="true" name="code" type="string" value="8420"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <!--CZ domicile-->
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Komerční banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="0100"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Československá obchodní banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="0300"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="GE Money Bank, a.s."/>
+            <property indexed="true" name="code" type="string" value="0600"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Česká národní banka"/>
+            <property indexed="true" name="code" type="string" value="0710"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Česká spořitelna, a.s."/>
+            <property indexed="true" name="code" type="string" value="0800"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Fio banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="2010"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="Bank of Tokyo-Mitsubishi UFJ (Holland) N.V. Prague Branch, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="2020"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="AKCENTA, spořitelní a úvěrní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2030"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="UNIBON – spořitelní a úvěrní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2040"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="WPB Capital, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2050"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Citfin, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2060"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Moravský Peněžní Ústav – spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2070"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Hypoteční banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="2100"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Peněžní dům, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2200"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Banka mezinárodní spolupráce a.s."/>
+            <property indexed="true" name="code" type="string" value="2210"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Artesa, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2220"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="AXA Bank Europe, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="2230"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Poštová banka, a.s., pobočka Česká republika"/>
+            <property indexed="true" name="code" type="string" value="2240"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Záložna CREDITAS, spořitelní družstvo"/>
+            <property indexed="true" name="code" type="string" value="2250"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ZUNO BANK AG, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="2310"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Citibank Europe plc, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="2600"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="UniCredit Bank Czech Republic a.s."/>
+            <property indexed="true" name="code" type="string" value="2700"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Air Bank a.s."/>
+            <property indexed="true" name="code" type="string" value="3030"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="ING Bank N. V."/>
+            <property indexed="true" name="code" type="string" value="3500"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="LBBW Bank CZ a.s."/>
+            <property indexed="true" name="code" type="string" value="4000"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Českomoravská záruční a rozvojová banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="4300"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="Crédit Agricole Corporate and Investment Bank S.A. Prague, organizační složka"/>
+            <property indexed="true" name="code" type="string" value="5000"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="The Royal Bank of Scotland N.V."/>
+            <property indexed="true" name="code" type="string" value="5400"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Raiffeisenbank a.s."/>
+            <property indexed="true" name="code" type="string" value="5500"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="J&amp;T banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="5800"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="PPF banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="6000"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Equa bank a.s."/>
+            <property indexed="true" name="code" type="string" value="6100"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Commerzbank AG"/>
+            <property indexed="true" name="code" type="string" value="6200"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="BRE Bank S.A., organizační složka podniku (mBank)"/>
+            <property indexed="true" name="code" type="string" value="6210"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Fortis Bank SA/NV, pobočka ČR"/>
+            <property indexed="true" name="code" type="string" value="6300"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Všeobecná úverová banka a.s., pobočka Praha"/>
+            <property indexed="true" name="code" type="string" value="6700"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Volksbank CZ, a.s."/>
+            <property indexed="true" name="code" type="string" value="6800"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Deutsche Bank A.G. Filiale Prag"/>
+            <property indexed="true" name="code" type="string" value="7910"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Waldviertler Sparkasse von 1842 AG"/>
+            <property indexed="true" name="code" type="string" value="7940"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Raiffeisen stavební spořitelna a.s."/>
+            <property indexed="true" name="code" type="string" value="7950"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Českomoravská stavební spořitelna, a.s."/>
+            <property indexed="true" name="code" type="string" value="7960"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Wüstenrot - stavební spořitelna a.s."/>
+            <property indexed="true" name="code" type="string" value="7970"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Wüstenrot hypoteční banka a.s."/>
+            <property indexed="true" name="code" type="string" value="7980"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Modrá pyramida stavební spořitelna, a.s."/>
+            <property indexed="true" name="code" type="string" value="7990"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Raiffeisenbank im Stiftland eG pobočka Cheb, odštěpný závod"/>
+            <property indexed="true" name="code" type="string" value="8030"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Oberbank AG pobočka Česká republika"/>
+            <property indexed="true" name="code" type="string" value="8040"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Stavební spořitelna České spořitelny, a.s."/>
+            <property indexed="true" name="code" type="string" value="8060"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Česká exportní banka, a.s."/>
+            <property indexed="true" name="code" type="string" value="8090"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="HSBC Bank plc - pobočka Praha"/>
+            <property indexed="true" name="code" type="string" value="8150"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string"
+                      value="PRIVAT BANK AG der Raiffeisenlandesbank Oberösterreich v České republice"/>
+            <property indexed="true" name="code" type="string" value="8200"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Centrální depozitář cenných papírů, a.s."/>
+            <property indexed="true" name="code" type="string" value="9910"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <!-- Trust Pay, a.s. -->
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Trust Pay, a.s."/>
+            <property indexed="true" name="code" type="string" value="9952"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Trust Pay, a.s."/>
+            <property indexed="true" name="code" type="string" value="9952"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Trust Pay, a.s."/>
+            <property indexed="true" name="code" type="string" value="9952"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Trust Pay, a.s."/>
+            <property indexed="true" name="code" type="string" value="9952"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Trust Pay, a.s."/>
+            <property indexed="true" name="code" type="string" value="9952"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="CB_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Trust Pay, a.s."/>
+            <property indexed="true" name="code" type="string" value="9952"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="domicile" type="string" value="CZ"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+    </entities>
+</changeset>

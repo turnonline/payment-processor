@@ -96,6 +96,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>biz.turnonline.ecosystem</groupId>
+            <artifactId>turnonline-account-steward-client</artifactId>
+            <version>1.0-20180807.044720-7</version>
+        </dependency>
         <!-- Java Servlet API -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -201,6 +206,14 @@
             <groupId>org.ctoolkit.services</groupId>
             <artifactId>ctoolkit-services-endpoints</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.ctoolkit.services</groupId>
+            <artifactId>ctoolkit-services-storage</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ctoolkit.services</groupId>
+            <artifactId>ctoolkit-services-taskqueue</artifactId>
+        </dependency>
         <!--Java bean mapping-->
         <dependency>
             <groupId>ma.glasnost.orika</groupId>
@@ -231,6 +244,12 @@
         </dependency>
         <!-- Unit testing-->
         <dependency>
+            <groupId>org.ctoolkit.agent</groupId>
+            <artifactId>ctoolkit-agent-import</artifactId>
+            <version>1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jmockit</groupId>
             <artifactId>jmockit</artifactId>
             <version>${jmockit.version}</version>
@@ -239,6 +258,10 @@
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.truth</groupId>
+            <artifactId>truth</artifactId>
         </dependency>
     </dependencies>
 
