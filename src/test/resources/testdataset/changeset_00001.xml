@@ -1,0 +1,93 @@
+<changeset author="medvegy@turnonline.biz" comment="BankAccount init test data.">
+    <model>
+        <kindOp op="drop" kind="PP_BankAccount"/>
+    </model>
+    <entities>
+        <entity kind="PP_BankAccount">
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:456DN78L3364"/>
+            <property indexed="true" name="name" type="string" value="Tatrabanka"/>
+            <property name="prefix" type="string" value=""/>
+            <property name="accountNumber" type="string" value="123456789"/>
+            <property name="bankCode" type="string" value="1100"/>
+            <property indexed="true" name="code" type="string" value="BA_1"/>
+            <property name="primary" type="boolean" value="true"/>
+            <property name="paymentGate" type="string" value="TATRAPAY"/>
+            <property name="merchantId" type="string" value="123456789"/>
+            <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
+            <property name="country" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_BankAccount">
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:456DN78L3364"/>
+            <property indexed="true" name="name" type="string" value="CardPay"/>
+            <property name="prefix" type="string" value=""/>
+            <property name="accountNumber" type="string" value="123456789"/>
+            <property name="bankCode" type="string" value="1111"/>
+            <property indexed="true" name="code" type="string" value="BA_2"/>
+            <property name="primary" type="boolean" value="false"/>
+            <property name="paymentGate" type="string" value="CARDPAY"/>
+            <property name="merchantId" type="string" value="123456789"/>
+            <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
+            <property name="country" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_BankAccount">
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:456DN78L3364"/>
+            <property indexed="true" name="name" type="string" value="Sporopoay"/>
+            <property name="prefix" type="string" value=""/>
+            <property name="accountNumber" type="string" value="123456789"/>
+            <property name="bankCode" type="string" value="0900"/>
+            <property indexed="true" name="code" type="string" value="BA_3"/>
+            <property name="primary" type="boolean" value="false"/>
+            <property name="paymentGate" type="string" value="SPOROPAY"/>
+            <property name="merchantId" type="string" value="123456789"/>
+            <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
+            <property name="country" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_BankAccount">
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:456DN78L3364"/>
+            <property indexed="true" name="name" type="string" value="EPlatbyVUB"/>
+            <property name="prefix" type="string" value=""/>
+            <property name="accountNumber" type="string" value="123456789"/>
+            <property name="bankCode" type="string" value="0200"/>
+            <property indexed="true" name="code" type="string" value="BA_4"/>
+            <property name="primary" type="boolean" value="true"/>
+            <property name="paymentGate" type="string" value="EPLATBY_VUB"/>
+            <property name="merchantId" type="string" value="123456789"/>
+            <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
+            <property name="country" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_BankAccount">
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:456DN78L3364"/>
+            <property indexed="true" name="name" type="string" value="Trustpay"/>
+            <property name="prefix" type="string" value=""/>
+            <property name="accountNumber" type="string" value="123456789"/>
+            <property name="bankCode" type="string" value="9952"/>
+            <property indexed="true" name="code" type="string" value="BA_5"/>
+            <property name="primary" type="boolean" value="true"/>
+            <property name="paymentGate" type="string" value="TRUSTPAY"/>
+            <property name="merchantId" type="string" value="2107152003"/>
+            <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
+            <property name="country" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <!--the bank account with different owner-->
+        <entity kind="PP_BankAccount" id="9999">
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:111DN78L2233"/>
+            <property indexed="true" name="name" type="string" value="Primárny účet"/>
+            <property name="prefix" type="string" value=""/>
+            <property name="accountNumber" type="string" value="123456789"/>
+            <property name="bankCode" type="string" value="0900"/>
+            <property name="primary" type="boolean" value="true"/>
+            <property name="country" type="string" value="SK"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+    </entities>
+</changeset>

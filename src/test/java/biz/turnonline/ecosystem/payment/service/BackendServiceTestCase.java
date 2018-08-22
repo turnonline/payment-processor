@@ -56,7 +56,7 @@ public class BackendServiceTestCase
 
     private LocalTaskQueueTestConfig.TaskCountDownLatch latch = new LocalTaskQueueTestConfig.TaskCountDownLatch( 1 );
 
-    private LocalServiceTestHelper helper = new LocalServiceTestHelper( new LocalMemcacheServiceTestConfig(),
+    private LocalServiceTestHelper helper = new LocalServiceTestHelper(
             new LocalMemcacheServiceTestConfig(),
             new LocalModulesServiceTestConfig(),
             new LocalDatastoreServiceTestConfig().setDefaultHighRepJobPolicyUnappliedJobPercentage( 0 ),

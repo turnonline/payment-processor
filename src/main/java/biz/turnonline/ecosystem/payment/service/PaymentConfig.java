@@ -78,6 +78,8 @@ public interface PaymentConfig
     /**
      * Returns the primary bank account for specified owner,
      * or {@code null} if primary bank account does not exist.
+     * <p>
+     * Note: {@link BankAccount#TRUST_PAY_BANK_CODE} is not being considered as a primary bank account at all.
      *
      * @param owner the account as an owner of the bank account
      * @return the primary bank account
@@ -87,6 +89,8 @@ public interface PaymentConfig
     /**
      * Returns the primary bank account for specified owner and country,
      * or {@code null} if primary bank account does not exist.
+     * <p>
+     * Note:  {@link BankAccount#TRUST_PAY_BANK_CODE} is not being considered as a primary bank account at all.
      *
      * @param owner   the account as an owner of the bank account
      * @param country the target country

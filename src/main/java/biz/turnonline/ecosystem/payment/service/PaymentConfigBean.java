@@ -4,11 +4,7 @@ import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.account.client.model.Domicile;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Collections2;
 import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import org.ctoolkit.services.storage.EntityExecutor;
 import org.ctoolkit.services.storage.HasOwner;
@@ -27,11 +23,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
+ * Payment configuration and execution implementation.
+ *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 @Singleton
@@ -64,10 +64,6 @@ class PaymentConfigBean
         checkNotNull( id, errorTemplate, "Bank account ID" );
 
         BankAccount bankAccount = loadBankAccount( id );
-        if ( bankAccount == null )
-        {
-            return null;
-        }
 
         LocalAccount owner = accProvider.getAssociatedLightAccount( account );
         return checkOwner( owner, bankAccount );
@@ -95,6 +91,9 @@ class PaymentConfigBean
             String message = bankAccount.entityKey() + " should be in memory instance only, not persisted object.";
             throw new IllegalArgumentException( message );
         }
+
+        LocalAccount owner = accProvider.getAssociatedLightAccount( account );
+        bankAccount.setOwner( owner );
 
         // generate code
         int codeOrder = 1;
@@ -175,7 +174,7 @@ class PaymentConfigBean
         // mark old primary bank accounts to not primary
         List<BankAccount> bankAccounts = getBankAccounts( account );
 
-        Collection<BankAccount> primary = Collections2.filter( bankAccounts, new BankAccountPrimary() );
+        Collection<BankAccount> primary = bankAccounts.stream().filter( new BankAccountPrimary() ).collect( Collectors.toList() );
 
         ofy().transact( () -> {
             for ( BankAccount primaryBankAccount : primary )
@@ -215,20 +214,20 @@ class PaymentConfigBean
         {
             country = codeBook.getDomicile( account, country );
             // first strict predicates (incl. primary filter)
-            and = Predicates.and( new BankAccountPrimary() );
+            and = new BankAccountPrimary();
         }
         else
         {
-            and = Predicates.and( new BankAccountCountryPredicate( country ), new BankAccountPrimary() );
+            and = new BankAccountCountryPredicate( country ).and( new BankAccountPrimary() );
         }
 
-        filtered = Collections2.filter( list, and );
+        filtered = list.stream().filter( and ).collect( Collectors.toList() );
 
         if ( filtered.isEmpty() )
         {
             // less strict predicates (no primary filter)
             BankAccountCountryPredicate predicate = new BankAccountCountryPredicate( country );
-            bankAccount = Iterables.find( list, predicate, null );
+            bankAccount = list.stream().filter( predicate ).findFirst().orElse( null );
         }
         else
         {
@@ -238,7 +237,7 @@ class PaymentConfigBean
         if ( bankAccount == null && !list.isEmpty() )
         {
             // no match yet, thus return any bank account marked as primary
-            bankAccount = Iterables.find( list, new BankAccountPrimary(), null );
+            bankAccount = list.stream().filter( new BankAccountPrimary() ).findFirst().orElse( null );
         }
 
         return bankAccount;
@@ -322,11 +321,11 @@ class PaymentConfigBean
         }
     }
 
-    private static class BankAccountPrimary
+    static class BankAccountPrimary
             implements Predicate<BankAccount>
     {
         @Override
-        public boolean apply( @Nullable BankAccount input )
+        public boolean test( @Nullable BankAccount input )
         {
             return input != null
                     && input.isPrimary()
@@ -345,7 +344,7 @@ class PaymentConfigBean
         }
 
         @Override
-        public boolean apply( @Nullable BankAccount input )
+        public boolean test( @Nullable BankAccount input )
         {
             return input != null
                     && !BankAccount.TRUST_PAY_BANK_CODE.equals( input.getBankCode() )
