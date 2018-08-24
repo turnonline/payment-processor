@@ -16,7 +16,7 @@ import javax.annotation.Nonnull;
 public class WrongEntityOwner
         extends IllegalArgumentException
 {
-    private static final long serialVersionUID = -6141511703402451669L;
+    private static final long serialVersionUID = -9041146219305052477L;
 
     private LocalAccount owner;
 
@@ -24,7 +24,7 @@ public class WrongEntityOwner
     private HasOwner<LocalAccount> entity;
 
     @VisibleForTesting
-    WrongEntityOwner()
+    public WrongEntityOwner()
     {
     }
 

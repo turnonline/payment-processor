@@ -10,6 +10,7 @@ import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.config.Nullable;
 import com.google.api.server.spi.response.InternalServerErrorException;
+import com.google.api.server.spi.response.NotFoundException;
 import com.google.common.base.MoreObjects;
 import ma.glasnost.orika.MapperFacade;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.bankCodeNotFoundMessage;
 import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.tryAgainLaterMessage;
 
 /**
@@ -82,7 +84,8 @@ public class CodeBookEndpoint
     }
 
     @ApiMethod( name = "bank_code.get", path = "codebook/bank-code/{code}", httpMethod = ApiMethod.HttpMethod.GET )
-    public BankCode getCodebookBankCode( @Nullable @Named( "country" ) String country,
+    public BankCode getCodebookBankCode( @Named( "code" ) String code,
+                                         @Nullable @Named( "country" ) String country,
                                          HttpServletRequest request,
                                          User authUser )
             throws Exception
@@ -90,17 +93,35 @@ public class CodeBookEndpoint
         Account account = common.checkAccount( authUser, request );
         Locale language = common.getAcceptLanguage( request );
         BankCode bankCode;
+        biz.turnonline.ecosystem.payment.service.model.BankCode dbBankCode;
 
         try
         {
-            biz.turnonline.ecosystem.payment.service.model.BankCode dbBankCode;
-            dbBankCode = null;// TODO finish backend impl of the bank_code.get
-
-            bankCode = mapper.map( dbBankCode, BankCode.class );
+            dbBankCode = service.getBankCode( account, code, language, country );
         }
         catch ( Exception e )
         {
             logger.error( "BankCode code-book single record retrieval has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "country", country )
+                    .toString(), e );
+
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+
+        if ( dbBankCode == null )
+        {
+            throw new NotFoundException( bankCodeNotFoundMessage( code ) );
+        }
+
+        try
+        {
+            bankCode = mapper.map( dbBankCode, BankCode.class );
+        }
+        catch ( Exception e )
+        {
+            logger.error( "BankCode code-book mapping has failed: "
                     + MoreObjects.toStringHelper( "Input" )
                     .add( "Account", account.getEmail() )
                     .add( "country", country )

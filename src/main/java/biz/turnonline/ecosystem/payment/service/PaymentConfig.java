@@ -28,10 +28,14 @@ public interface PaymentConfig
     /**
      * Returns the list of all bank accounts that's being owned by specified owner.
      *
-     * @param owner the authenticated account as an owner of the bank accounts
+     * @param owner  the authenticated account as an owner of the bank accounts
+     * @param offset the position of the first account to retrieve
+     * @param limit  the maximum number of accounts to retrieve
      * @return the list of bank accounts
      */
-    List<BankAccount> getBankAccounts( @Nonnull Account owner );
+    List<BankAccount> getBankAccounts( @Nonnull Account owner,
+                                       @Nullable Integer offset,
+                                       @Nullable Integer limit );
 
     /**
      * Inserts the specified bank account for given owner.
@@ -40,6 +44,7 @@ public interface PaymentConfig
      *
      * @param owner       the account as an owner of the newly added bank account
      * @param bankAccount the bank account to be inserted
+     * @throws ApiValidationException if specified bank account is invalid
      */
     void insertBankAccount( @Nonnull Account owner, @Nonnull BankAccount bankAccount );
 

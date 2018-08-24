@@ -40,6 +40,20 @@ public interface CodeBook
                                         @Nullable String domicile );
 
     /**
+     * Returns the specified bank code for given country (defined by domicile).
+     *
+     * @param account  the authenticated account as a source of default locale and domicile if missing
+     * @param code     the numeric bank code assigned to concrete bank to be retrieved
+     * @param locale   the optional language to prefer in results
+     * @param domicile the optional ISO 3166 alpha-2 country code that represents a target domicile
+     * @return the requested bank code
+     */
+    BankCode getBankCode( @Nonnull Account account,
+                          @Nonnull String code,
+                          @Nullable Locale locale,
+                          @Nullable String domicile );
+
+    /**
      * Returns the final domicile with optional preference. Always returns a value.
      * If none of the values has been found a {@link #DEFAULT_DOMICILE} will be returned.
      *

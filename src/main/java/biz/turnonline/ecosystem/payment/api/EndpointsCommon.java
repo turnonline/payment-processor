@@ -46,6 +46,18 @@ class EndpointsCommon
         return "Account with email '" + email + "' has not been found.";
     }
 
+    static String bankCodeNotFoundMessage( String code )
+    {
+        String message = "Bank code with code '%s' has not been found";
+        return String.format( message, code );
+    }
+
+    static String bankAccountNotFoundMessage( Long id )
+    {
+        String message = "Bank account with ID '%d' has not been found";
+        return String.format( message, id );
+    }
+
     /**
      * For unauthorized user throws {@link UnauthorizedException} otherwise does nothing.
      *

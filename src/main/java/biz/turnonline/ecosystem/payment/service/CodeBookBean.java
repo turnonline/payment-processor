@@ -46,7 +46,7 @@ class CodeBookBean
         locale = getLocale( account, locale );
         domicile = getDomicile( account, domicile );
 
-        String key = cacheKey( locale, domicile );
+        String key = cacheKey( locale, domicile, null );
         if ( cache.containsKey( key ) )
         {
             //noinspection unchecked
@@ -75,13 +75,53 @@ class CodeBookBean
         return result;
     }
 
-    private String cacheKey( @Nonnull Locale locale,
-                             @Nonnull String domicile )
+    @Override
+    public BankCode getBankCode( @Nonnull Account account,
+                                 @Nonnull String code,
+                                 @Nullable Locale locale,
+                                 @Nullable String domicile )
     {
-        return CACHE_PREFIX + BankCode.class.getSimpleName() +
-                "-" +
-                locale.getLanguage().toLowerCase() +
-                "-" +
-                domicile;
+        checkNotNull( account );
+        checkNotNull( code );
+
+        locale = getLocale( account, locale );
+        domicile = getDomicile( account, domicile );
+        String key = cacheKey( locale, domicile, code );
+
+        if ( cache.containsKey( key ) )
+        {
+            return ( BankCode ) cache.get( key );
+        }
+
+        String language = locale.getLanguage();
+
+        Query<BankCode> query = ofy().transactionless().load().type( BankCode.class )
+                .filter( "code", code )
+                .filter( "locale", language.toLowerCase() )
+                .filter( "domicile", domicile );
+
+        BankCode bankCode = query.first().now();
+        if ( bankCode != null )
+        {
+            cache.put( key, bankCode );
+        }
+        return bankCode;
+    }
+
+    private String cacheKey( @Nonnull Locale locale,
+                             @Nonnull String domicile,
+                             @Nullable String code )
+    {
+        StringBuilder builder = new StringBuilder( CACHE_PREFIX + BankCode.class.getSimpleName() );
+        if ( code != null )
+        {
+            builder.append( "-" ).append( code );
+        }
+        builder.append( "-" );
+        builder.append( locale.getLanguage().toLowerCase() );
+        builder.append( "-" );
+        builder.append( domicile );
+
+        return builder.toString();
     }
 }

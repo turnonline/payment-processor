@@ -108,4 +108,43 @@ public class CodeBookBeanDbTest
         assertThat( bankCode.getLocale() ).isEqualTo( "sk" );
         assertThat( bankCode.getDomicile() ).isEqualTo( "CZ" );
     }
+
+    @Test
+    public void singleBankCodeRetrieval()
+    {
+        BankCode bankCode = tested.getBankCode( account, "1111", new Locale( "en" ), "SK" );
+        assertThat( bankCode ).isNotNull();
+        assertThat( bankCode.getLocale() ).isEqualTo( "en" );
+        assertThat( bankCode.getDomicile() ).isEqualTo( "SK" );
+
+        // testing caching
+        BankCode cached = tested.getBankCode( account, "1111", new Locale( "en" ), "SK" );
+        assertThat( cached ).isNotNull();
+        assertThat( cached.getLocale() ).isEqualTo( "en" );
+        assertThat( cached.getDomicile() ).isEqualTo( "SK" );
+    }
+
+    @Test
+    public void singleBankCodeRetrieval_WithDefaultLocaleDomicile()
+    {
+        BankCode bankCode = tested.getBankCode( account, "5600", null, null );
+        assertThat( bankCode ).isNotNull();
+        // account locale is 'en'
+        assertThat( bankCode.getLocale() ).isEqualTo( "en" );
+        // account business domicile is 'SK'
+        assertThat( bankCode.getDomicile() ).isEqualTo( "SK" );
+
+        // testing caching
+        BankCode cached = tested.getBankCode( account, "5600", null, null );
+        assertThat( cached ).isNotNull();
+        assertThat( cached.getLocale() ).isEqualTo( "en" );
+        assertThat( cached.getDomicile() ).isEqualTo( "SK" );
+    }
+
+    @Test
+    public void singleBankCodeRetrieval_NotFound()
+    {
+        BankCode bankCode = tested.getBankCode( account, "0987", null, null );
+        assertThat( bankCode ).isNull();
+    }
 }

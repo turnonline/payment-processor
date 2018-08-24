@@ -2,6 +2,10 @@ package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
+import biz.turnonline.ecosystem.payment.service.ApiValidationException;
+import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
+import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -9,6 +13,10 @@ import com.google.api.server.spi.config.ApiReference;
 import com.google.api.server.spi.config.DefaultValue;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.config.Nullable;
+import com.google.api.server.spi.response.BadRequestException;
+import com.google.api.server.spi.response.InternalServerErrorException;
+import com.google.api.server.spi.response.NotFoundException;
+import com.google.common.base.MoreObjects;
 import ma.glasnost.orika.MapperFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +24,9 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+
+import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.bankAccountNotFoundMessage;
+import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.tryAgainLaterMessage;
 
 /**
  * {@link BankAccount} REST API Endpoint.
@@ -32,12 +43,16 @@ public class BankAccountEndpoint
 
     private final MapperFacade mapper;
 
+    private final PaymentConfig config;
+
     @Inject
     BankAccountEndpoint( EndpointsCommon common,
-                         MapperFacade mapper )
+                         MapperFacade mapper,
+                         PaymentConfig config )
     {
         this.common = common;
         this.mapper = mapper;
+        this.config = config;
     }
 
     @ApiMethod( name = "bank_accounts.insert", path = "bank-accounts", httpMethod = ApiMethod.HttpMethod.POST )
@@ -47,7 +62,45 @@ public class BankAccountEndpoint
             throws Exception
     {
         Account account = common.checkAccount( authUser, request );
-        return null;
+
+        BankAccount result;
+        try
+        {
+            biz.turnonline.ecosystem.payment.service.model.BankAccount dbBankAccount;
+            dbBankAccount = mapper.map( bankAccount, biz.turnonline.ecosystem.payment.service.model.BankAccount.class );
+            config.insertBankAccount( account, dbBankAccount );
+
+            result = mapper.map( dbBankAccount, BankAccount.class );
+        }
+        catch ( ApiValidationException e )
+        {
+            logger.warn( "BankAccount validation has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "bankAccount", bankAccount )
+                    .toString(), e );
+            throw new BadRequestException( e.getMessage() );
+        }
+        catch ( IllegalArgumentException e )
+        {
+            logger.error( "BankAccount business flow has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "bankAccount", bankAccount )
+                    .toString(), e );
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+        catch ( Exception e )
+        {
+            logger.error( "BankAccount creation has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "bankAccount", bankAccount )
+                    .toString(), e );
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+
+        return result;
     }
 
     @ApiMethod( name = "bank_accounts.list", path = "bank-accounts", httpMethod = ApiMethod.HttpMethod.GET )
@@ -58,7 +111,27 @@ public class BankAccountEndpoint
             throws Exception
     {
         Account account = common.checkAccount( authUser, request );
-        return null;
+        List<BankAccount> result;
+
+        try
+        {
+            List<biz.turnonline.ecosystem.payment.service.model.BankAccount> bankAccounts;
+            bankAccounts = config.getBankAccounts( account, offset, limit );
+            result = mapper.mapAsList( bankAccounts, BankAccount.class );
+        }
+        catch ( Exception e )
+        {
+            logger.error( "BankAccount list retrieval has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "offset", offset )
+                    .add( "limit", limit )
+                    .toString(), e );
+
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+
+        return result;
     }
 
     @ApiMethod( name = "bank_accounts.get",
@@ -70,7 +143,34 @@ public class BankAccountEndpoint
             throws Exception
     {
         Account account = common.checkAccount( authUser, request );
-        return null;
+        BankAccount result;
+
+        try
+        {
+            biz.turnonline.ecosystem.payment.service.model.BankAccount bankAccount;
+            bankAccount = config.getBankAccount( account, accountId );
+            result = mapper.map( bankAccount, BankAccount.class );
+        }
+        catch ( WrongEntityOwner e )
+        {
+            throw new NotFoundException( bankAccountNotFoundMessage( accountId ) );
+        }
+        catch ( BankAccountNotFound e )
+        {
+            throw new NotFoundException( bankAccountNotFoundMessage( e.getBankAccountId() ) );
+        }
+        catch ( Exception e )
+        {
+            logger.error( "BankAccount retrieval has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "account_id", accountId )
+                    .toString(), e );
+
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+
+        return result;
     }
 
     @ApiMethod( name = "bank_accounts.update",
@@ -83,7 +183,60 @@ public class BankAccountEndpoint
             throws Exception
     {
         Account account = common.checkAccount( authUser, request );
-        return null;
+        BankAccount result;
+
+        try
+        {
+            biz.turnonline.ecosystem.payment.service.model.BankAccount dbBankAccount;
+            dbBankAccount = config.getBankAccount( account, accountId );
+            mapper.map( bankAccount, dbBankAccount );
+
+            config.updateBankAccount( account, dbBankAccount );
+            result = mapper.map( dbBankAccount, BankAccount.class );
+        }
+        catch ( ApiValidationException e )
+        {
+            logger.warn( "BankAccount validation has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "account_id", accountId )
+                    .add( "bankAccount", bankAccount )
+                    .toString(), e );
+
+            throw new BadRequestException( e.getMessage() );
+        }
+        catch ( WrongEntityOwner e )
+        {
+            throw new NotFoundException( bankAccountNotFoundMessage( accountId ) );
+        }
+        catch ( BankAccountNotFound e )
+        {
+            throw new NotFoundException( bankAccountNotFoundMessage( e.getBankAccountId() ) );
+        }
+        catch ( IllegalArgumentException e )
+        {
+            logger.error( "BankAccount business flow has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "account_id", accountId )
+                    .add( "bankAccount", bankAccount )
+                    .toString(), e );
+
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+        catch ( Exception e )
+        {
+            logger.error( "BankAccount update has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "account_id", accountId )
+                    .add( "bankAccount", bankAccount )
+                    .toString(), e );
+
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+
+        return result;
     }
 
     @ApiMethod( name = "bank_accounts.delete",
@@ -93,5 +246,38 @@ public class BankAccountEndpoint
             throws Exception
     {
         Account account = common.checkAccount( authUser, request );
+
+        try
+        {
+            config.deleteBankAccount( account, accountId );
+        }
+        catch ( ApiValidationException e )
+        {
+            logger.warn( "BankAccount validation has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "account_id", accountId )
+                    .toString(), e );
+
+            throw new BadRequestException( e.getMessage() );
+        }
+        catch ( WrongEntityOwner e )
+        {
+            throw new NotFoundException( bankAccountNotFoundMessage( accountId ) );
+        }
+        catch ( BankAccountNotFound e )
+        {
+            throw new NotFoundException( bankAccountNotFoundMessage( e.getBankAccountId() ) );
+        }
+        catch ( Exception e )
+        {
+            logger.error( "BankAccount deletion has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "account_id", accountId )
+                    .toString(), e );
+
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
     }
 }

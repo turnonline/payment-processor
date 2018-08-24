@@ -97,7 +97,7 @@ class PaymentConfigBean
 
         // generate code
         int codeOrder = 1;
-        List<BankAccount> list = getBankAccounts( account );
+        List<BankAccount> list = getBankAccounts( account, null, null );
         list.sort( new BankAccountCodeDescending() );
 
         if ( !list.isEmpty() )
@@ -113,7 +113,9 @@ class PaymentConfigBean
     }
 
     @Override
-    public List<BankAccount> getBankAccounts( @Nonnull Account account )
+    public List<BankAccount> getBankAccounts( @Nonnull Account account,
+                                              @Nullable Integer offset,
+                                              @Nullable Integer limit )
     {
         checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
 
@@ -121,6 +123,15 @@ class PaymentConfigBean
 
         LocalAccount owner = accProvider.getAssociatedLightAccount( account );
         criteria.reference( "owner", owner );
+        if ( offset != null )
+        {
+            if ( limit == null )
+            {
+                limit = 10;
+            }
+            criteria.offset( offset );
+            criteria.limit( limit );
+        }
 
         List<BankAccount> list = datastore.list( criteria );
         logger.info( list.size() + " bank accounts has been found." );
@@ -172,7 +183,7 @@ class PaymentConfigBean
         BankAccount bankAccount = getBankAccount( account, id );
 
         // mark old primary bank accounts to not primary
-        List<BankAccount> bankAccounts = getBankAccounts( account );
+        List<BankAccount> bankAccounts = getBankAccounts( account, null, null );
 
         Collection<BankAccount> primary = bankAccounts.stream().filter( new BankAccountPrimary() ).collect( Collectors.toList() );
 
@@ -203,7 +214,7 @@ class PaymentConfigBean
     {
         checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
 
-        List<BankAccount> list = getBankAccounts( account );
+        List<BankAccount> list = getBankAccounts( account, null, null );
         Collections.sort( list );
 
         Collection<BankAccount> filtered;
@@ -251,7 +262,7 @@ class PaymentConfigBean
 
         Domicile domicile = Domicile.valueOf( codeBook.getDomicile( account, null ) );
 
-        List<BankAccount> list = getBankAccounts( account );
+        List<BankAccount> list = getBankAccounts( account, null, null );
         list.sort( new BankAccountSellerSorting( domicile ) );
         Iterator<BankAccount> iterator = list.iterator();
 
