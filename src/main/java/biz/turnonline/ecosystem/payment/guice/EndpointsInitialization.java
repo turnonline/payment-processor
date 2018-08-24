@@ -1,11 +1,11 @@
 package biz.turnonline.ecosystem.payment.guice;
 
+import biz.turnonline.ecosystem.payment.api.BankAccountEndpoint;
+import biz.turnonline.ecosystem.payment.api.CodeBookCacheControlFilter;
+import biz.turnonline.ecosystem.payment.api.CodeBookEndpoint;
 import com.google.api.server.spi.ServletInitializationParameters;
 import com.google.api.server.spi.guice.EndpointsModule;
 import com.googlecode.objectify.ObjectifyFilter;
-import biz.turnonline.ecosystem.payment.api.MessageEndpoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Singleton;
 
@@ -20,19 +20,20 @@ import static org.ctoolkit.services.endpoints.EndpointsMonitorConfig.ENDPOINTS_S
 public class EndpointsInitialization
         extends EndpointsModule
 {
-    private static final Logger logger = LoggerFactory.getLogger( EndpointsInitialization.class );
-
     @Override
     protected void configureServlets()
     {
         ServletInitializationParameters params = ServletInitializationParameters.builder()
                 // add your endpoint service implementation
-                .addServiceClass( MessageEndpoint.class )
+                .addServiceClass( CodeBookEndpoint.class )
+                .addServiceClass( BankAccountEndpoint.class )
                 .setClientIdWhitelistEnabled( true ).build();
 
         configureEndpoints( ENDPOINTS_SERVLET_PATH, params );
 
         bind( ObjectifyFilter.class ).in( Singleton.class );
+
         filter( "/*" ).through( ObjectifyFilter.class );
+        filter( CodeBookCacheControlFilter.FILTER_PATH ).through( CodeBookCacheControlFilter.class );
     }
 }

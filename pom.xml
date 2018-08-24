@@ -45,7 +45,8 @@
                     <hostname>${endpoints.project.name}</hostname>
                     <serviceClasses>
                         <!--list all your endpoints classes here as cannot be inferred from the web.xml (guice) -->
-                        <serviceClass>biz.turnonline.ecosystem.payment.api.MessageEndpoint</serviceClass>
+                        <serviceClass>biz.turnonline.ecosystem.payment.api.CodeBookEndpoint</serviceClass>
+                        <serviceClass>biz.turnonline.ecosystem.payment.api.BankAccountEndpoint</serviceClass>
                     </serviceClasses>
                 </configuration>
             </plugin>
@@ -266,7 +267,7 @@
     </dependencies>
 
     <properties>
-        <endpoints.project.name>payment-processor-dot-turn-online-eu.appspot.com</endpoints.project.name>
+        <endpoints.project.name>payment.turnon.cloud</endpoints.project.name>
         <appengine.maven.plugin.version>1.3.2</appengine.maven.plugin.version>
         <endpoints.framework.plugin.version>1.0.3</endpoints.framework.plugin.version>
         <maven-war-plugin.version>3.1.0</maven-war-plugin.version>

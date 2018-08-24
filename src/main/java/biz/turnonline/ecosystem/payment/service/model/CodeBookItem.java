@@ -16,7 +16,7 @@ import java.util.Objects;
 public abstract class CodeBookItem
         implements Serializable
 {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 6723123114542730421L;
 
     @Id
     private Long id;
@@ -132,7 +132,7 @@ public abstract class CodeBookItem
      * Convert the given object to string with each line indented by 4 spaces
      * (except the first line).
      */
-    protected String toIndentedString( Object o )
+    String toIndentedString( Object o )
     {
         if ( o == null )
         {

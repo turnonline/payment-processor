@@ -1,0 +1,538 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "TurnOnline.biz Ecosystem: Payment Processor REST API",
+        "version": "1.0",
+        "title": "Payment Processor"
+    },
+    "host": "payment.turnon.cloud",
+    "basePath": "/_ah/api/payment",
+    "schemes": [
+        "https"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/v1/bank-accounts": {
+            "get": {
+                "summary": "Search bank accounts",
+                "operationId": "PaymentSearchBankAccounts",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "The position of the first result to retrieve, numbered from 0.",
+                        "required": false,
+                        "type": "integer",
+                        "default": 0,
+                        "format": "int32"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "The maximum number of results to retrieve.",
+                        "required": false,
+                        "type": "integer",
+                        "default": 10,
+                        "format": "int32"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The list of the filtered bank accounts.",
+                        "schema": {
+                            "$ref": "#/definitions/BankAccountCollection"
+                        }
+                    },
+                    "401": {
+                        "description": "The error when the authentication credential fails.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "500": {
+                        "description": "It's a failure of the server. The client can repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "The service is unavailable or the server has timed out processing of the request. The client may repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create bank account",
+                "operationId": "PaymentInsertBankAccount",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/BankAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Newly created and updated bank account.",
+                        "schema": {
+                            "$ref": "#/definitions/BankAccount"
+                        }
+                    },
+                    "400": {
+                        "description": "The error indicates that client has made a request that server couldn't understand. The client should not repeat the request without modifications.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "The error when the authentication credential fails.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "500": {
+                        "description": "It's a failure of the server. The client can repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "The service is unavailable or the server has timed out processing of the request. The client may repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/bank-accounts/{account_id}": {
+            "get": {
+                "summary": "Get bank account",
+                "operationId": "PaymentGetBankAccount",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "account_id",
+                        "in": "path",
+                        "description": "The identification of the bank account to retrieve.",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The bank account for given ID.",
+                        "schema": {
+                            "$ref": "#/definitions/BankAccount"
+                        }
+                    },
+                    "401": {
+                        "description": "The error when the authentication credential fails.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "The error when client tries to retrieve an order that doesn’t exist.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "500": {
+                        "description": "It's a failure of the server. The client can repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "The service is unavailable or the server has timed out processing of the request. The client may repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "summary": "Update bank account",
+                "operationId": "PaymentUpdateBankAccount",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "account_id",
+                        "in": "path",
+                        "description": "The identification of the bank account to retrieve.",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "required": false,
+                        "schema": {
+                            "$ref": "#/definitions/BankAccount"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The updated bank account.",
+                        "schema": {
+                            "$ref": "#/definitions/BankAccount"
+                        }
+                    },
+                    "400": {
+                        "description": "The error indicates that client has made a request that server couldn't understand. The client should not repeat the request without modifications.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "The error when the authentication credential fails.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "The error when client tries to update an order that doesn’t exist.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "500": {
+                        "description": "It's a failure of the server. The client can repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "The service is unavailable or the server has timed out processing of the request. The client may repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete bank account",
+                "operationId": "PaymentDeleteBankAccount",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "account_id",
+                        "in": "path",
+                        "description": "The identification of the bank account to retrieve.",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The confirmation, the bank account has been deleted."
+                    },
+                    "400": {
+                        "description": "The error indicates the order is not allowed to be deleted as it has already issued invoices or has status FINISHED.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "The error when the authentication credential fails.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "The error when client tries to delete a bank account that doesn’t exist.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "500": {
+                        "description": "It's a failure of the server. The client can repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "The service is unavailable or the server has timed out processing of the request. The client may repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/codebook/bank-code": {
+            "get": {
+                "summary": "List bank codes",
+                "operationId": "PaymentListCodebookBankCodes",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "The country (ISO 3166 alpha-2 country code) to filter the bank codes valid for given country. If requested country is not supported (or not provided at all) will fallback to the country associated with the account.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default language of the associated account.",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The list of bank codes matching filtering criteria.",
+                        "schema": {
+                            "$ref": "#/definitions/BankCodeCollection"
+                        }
+                    },
+                    "401": {
+                        "description": "The error when the authentication credential fails.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "500": {
+                        "description": "It's a failure of the server. The client can repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "The service is unavailable or the server has timed out processing of the request. The client may repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/codebook/bank-code/{code}": {
+            "get": {
+                "summary": "Get description of the bank",
+                "operationId": "PaymentGetCodebookBankCode",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "path",
+                        "description": "The bank code identification to retrieve specific description of the associated bank.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "country",
+                        "in": "query",
+                        "description": "The country (ISO 3166 alpha-2 country code) to select the bank code valid for given country. If requested country is not supported (or not provided at all) will fallback to the country associated with the account.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default account language.",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The requested brief description bank account for concrete country and language.",
+                        "schema": {
+                            "$ref": "#/definitions/BankCode"
+                        }
+                    },
+                    "401": {
+                        "description": "The error when the authentication credential fails.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "The error when client tries to retrieve a bank code that doesn't exist.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "500": {
+                        "description": "It's a failure of the server. The client can repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "The service is unavailable or the server has timed out processing of the request. The client may repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "BankAccount": {
+            "type": "object",
+            "required": [
+                "bank"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "The user defined name of the bank account."
+                },
+                "prefix": {
+                    "type": "string",
+                    "description": "The optional bank account number prefix."
+                },
+                "accountNumber": {
+                    "type": "string",
+                    "description": "The bank account number."
+                },
+                "bank": {
+                    "description": "The bank account bank defined as a codebook.",
+                    "$ref": "#/definitions/BankAccountBank"
+                },
+                "iban": {
+                    "type": "string",
+                    "description": "The international bank account number."
+                },
+                "bic": {
+                    "type": "string",
+                    "description": "The international Bank Identifier Code (BIC/ISO 9362, a normalized code - also known as Business Identifier Code, Bank International Code and SWIFT code)."
+                },
+                "country": {
+                    "type": "string",
+                    "description": "The country of the bank where bank account has been opened."
+                },
+                "primary": {
+                    "type": "boolean",
+                    "description": "Boolean identification, whether this bank account is being marked by the user as a primary account. If yes, this bank account will be used as a default account unless specified another one. There is always only single primary bank account.",
+                    "default": false
+                }
+            },
+            "description": "The bank account resource."
+        },
+        "BankAccountCollection": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "description": "Bank account collection wrapper.",
+                    "items": {
+                        "$ref": "#/definitions/BankAccount"
+                    }
+                }
+            }
+        },
+        "BankCode": {
+            "type": "object",
+            "required": [
+                "code",
+                "domicile",
+                "label",
+                "locale"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The bank code is a numeric code assigned by a central bank to concrete bank."
+                },
+                "label": {
+                    "type": "string",
+                    "description": "The localized name of the bank."
+                },
+                "locale": {
+                    "type": "string",
+                    "description": "The label language. ISO 639 alpha-2 or alpha-3 language code."
+                },
+                "domicile": {
+                    "type": "string",
+                    "description": "The ISO 3166 alpha-2 country code. The country of the bank code that belongs to."
+                }
+            },
+            "description": "The brief description of the bank for concrete bank code."
+        },
+        "BankCodeCollection": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "description": "Bank code collection wrapper.",
+                    "items": {
+                        "$ref": "#/definitions/BankCode"
+                    }
+                }
+            }
+        },
+        "Error": {
+            "type": "object",
+            "required": [
+                "code",
+                "message"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "The HTTP status code."
+                },
+                "message": {
+                    "type": "string",
+                    "description": "The error message."
+                }
+            }
+        },
+        "BankAccountBank": {
+            "type": "object",
+            "required": [
+                "code"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The country specific numeric bank code, taken from the code-book."
+                }
+            }
+        }
+    }
+}
