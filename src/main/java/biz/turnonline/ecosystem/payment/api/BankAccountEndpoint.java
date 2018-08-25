@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.bankAccountNotFoundMessage;
+import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.primaryBankAccountNotFoundMessage;
 import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.tryAgainLaterMessage;
 
 /**
@@ -106,6 +107,8 @@ public class BankAccountEndpoint
     @ApiMethod( name = "bank_accounts.list", path = "bank-accounts", httpMethod = ApiMethod.HttpMethod.GET )
     public List<BankAccount> searchBankAccounts( @DefaultValue( "0" ) @Nullable @Named( "offset" ) Integer offset,
                                                  @DefaultValue( "10" ) @Nullable @Named( "limit" ) Integer limit,
+                                                 @Nullable @Named( "country" ) String country,
+                                                 @DefaultValue( "false" ) @Nullable @Named( "alternative" ) Boolean alternative,
                                                  HttpServletRequest request,
                                                  User authUser )
             throws Exception
@@ -116,7 +119,16 @@ public class BankAccountEndpoint
         try
         {
             List<biz.turnonline.ecosystem.payment.service.model.BankAccount> bankAccounts;
-            bankAccounts = config.getBankAccounts( account, offset, limit );
+            if ( alternative )
+            {
+                biz.turnonline.ecosystem.payment.service.model.BankAccount primary;
+                primary = config.getPrimaryBankAccount( account, country );
+                bankAccounts = config.getAlternativeBankAccounts( account, primary );
+            }
+            else
+            {
+                bankAccounts = config.getBankAccounts( account, offset, limit, null );
+            }
             result = mapper.mapAsList( bankAccounts, BankAccount.class );
         }
         catch ( Exception e )
@@ -126,6 +138,8 @@ public class BankAccountEndpoint
                     .add( "Account", account.getEmail() )
                     .add( "offset", offset )
                     .add( "limit", limit )
+                    .add( "country", country )
+                    .add( "alternative", alternative )
                     .toString(), e );
 
             throw new InternalServerErrorException( tryAgainLaterMessage() );
@@ -279,5 +293,89 @@ public class BankAccountEndpoint
 
             throw new InternalServerErrorException( tryAgainLaterMessage() );
         }
+    }
+
+    @ApiMethod( name = "bank_accounts.primary.get",
+            path = "bank-accounts/primary",
+            httpMethod = ApiMethod.HttpMethod.GET )
+    public BankAccount getPrimaryBankAccount( @Nullable @Named( "country" ) String country,
+                                              HttpServletRequest request,
+                                              User authUser )
+            throws Exception
+    {
+        Account account = common.checkAccount( authUser, request );
+        BankAccount result;
+
+        try
+        {
+            biz.turnonline.ecosystem.payment.service.model.BankAccount primary;
+            primary = config.getPrimaryBankAccount( account, country );
+            result = mapper.map( primary, BankAccount.class );
+        }
+        catch ( BankAccountNotFound e )
+        {
+            throw new NotFoundException( primaryBankAccountNotFoundMessage() );
+        }
+        catch ( Exception e )
+        {
+            logger.error( "Primary bank account retrieval has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "country", country )
+                    .toString(), e );
+
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+
+        return result;
+    }
+
+    @ApiMethod( name = "bank_accounts.primary.update",
+            path = "bank-accounts/{account_id}/primary",
+            httpMethod = ApiMethod.HttpMethod.PUT )
+    public BankAccount markBankAccountAsPrimary( @Named( "account_id" ) Long accountId,
+                                                 HttpServletRequest request,
+                                                 User authUser )
+            throws Exception
+    {
+        Account account = common.checkAccount( authUser, request );
+        BankAccount result;
+
+        try
+        {
+            biz.turnonline.ecosystem.payment.service.model.BankAccount primary;
+            primary = config.markBankAccountAsPrimary( account, accountId );
+            result = mapper.map( primary, BankAccount.class );
+        }
+        catch ( ApiValidationException e )
+        {
+            logger.warn( "Primary bank account validation has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "account_id", accountId )
+                    .toString(), e );
+
+            throw new BadRequestException( e.getMessage() );
+        }
+        catch ( WrongEntityOwner e )
+        {
+            throw new NotFoundException( bankAccountNotFoundMessage( accountId ) );
+        }
+        catch ( BankAccountNotFound e )
+        {
+            throw new NotFoundException( bankAccountNotFoundMessage( e.getBankAccountId() ) );
+        }
+        catch ( Exception e )
+        {
+            logger.error( "Update of the bank account to be marked as primary has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getEmail() )
+                    .add( "account_id", accountId )
+                    .toString(), e );
+
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+
+        return result;
     }
 }

@@ -154,7 +154,7 @@ public class BankAccountEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
-                config.getBankAccounts( account, 5, 15 );
+                config.getBankAccounts( account, 5, 15, null );
 
                 //noinspection unchecked
                 mapper.mapAsList( ( List<biz.turnonline.ecosystem.payment.service.model.BankAccount> ) any,
@@ -163,7 +163,7 @@ public class BankAccountEndpointTest
             }
         };
 
-        List<BankAccount> result = endpoint.searchBankAccounts( 5, 15, request, authUser );
+        List<BankAccount> result = endpoint.searchBankAccounts( 5, 15, null, false, request, authUser );
         assertThat( result ).isNotNull();
         assertThat( result ).hasSize( 1 );
     }
@@ -174,12 +174,12 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
-                config.getBankAccounts( account, anyInt, anyInt );
+                config.getBankAccounts( account, anyInt, anyInt, null );
                 result = new RuntimeException();
             }
         };
 
-        endpoint.searchBankAccounts( 5, 15, request, authUser );
+        endpoint.searchBankAccounts( 5, 15, null, false, request, authUser );
     }
 
     @Test( expectedExceptions = InternalServerErrorException.class )
@@ -195,7 +195,7 @@ public class BankAccountEndpointTest
             }
         };
 
-        endpoint.searchBankAccounts( 0, null, request, authUser );
+        endpoint.searchBankAccounts( 0, null, null, false, request, authUser );
     }
 
     @Test
@@ -468,5 +468,151 @@ public class BankAccountEndpointTest
         };
 
         endpoint.deleteBankAccount( accountId, request, authUser );
+    }
+
+    @Test
+    public void getPrimaryBankAccount() throws Exception
+    {
+        String country = "SK";
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+
+                config.getPrimaryBankAccount( account, country );
+                result = dbBankAccount;
+            }
+        };
+
+        assertThat( endpoint.getPrimaryBankAccount( country, request, authUser ) ).isNotNull();
+    }
+
+    @Test( expectedExceptions = NotFoundException.class )
+    public void getPrimaryBankAccount_NotFound() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                config.getPrimaryBankAccount( account, anyString );
+                result = new BankAccountNotFound( -1L );
+            }
+        };
+
+        endpoint.getPrimaryBankAccount( "SK", request, authUser );
+    }
+
+    @Test( expectedExceptions = InternalServerErrorException.class )
+    public void getPrimaryBankAccount_BackendError() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                config.getPrimaryBankAccount( account, anyString );
+                result = new RuntimeException();
+            }
+        };
+
+        endpoint.getPrimaryBankAccount( null, request, authUser );
+    }
+
+    @Test( expectedExceptions = InternalServerErrorException.class )
+    public void getPrimaryBankAccount_MappingError() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                mapper.map( dbBankAccount, BankAccount.class );
+                result = new RuntimeException();
+            }
+        };
+
+        endpoint.getPrimaryBankAccount( null, request, authUser );
+    }
+
+    @Test
+    public void markBankAccountAsPrimary() throws Exception
+    {
+        long accountId = 560L;
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+
+                config.markBankAccountAsPrimary( account, accountId );
+                result = dbBankAccount;
+            }
+        };
+
+        assertThat( endpoint.markBankAccountAsPrimary( accountId, request, authUser ) ).isNotNull();
+    }
+
+    @Test( expectedExceptions = BadRequestException.class )
+    public void markBankAccountAsPrimary_ValidationFailure() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                config.markBankAccountAsPrimary( account, anyLong );
+                result = new ApiValidationException( "Validation failure" );
+            }
+        };
+
+        endpoint.markBankAccountAsPrimary( 2L, request, authUser );
+    }
+
+    @Test( expectedExceptions = NotFoundException.class )
+    public void markBankAccountAsPrimary_WrongOwner() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                config.markBankAccountAsPrimary( account, anyLong );
+                result = new WrongEntityOwner();
+            }
+        };
+
+        endpoint.markBankAccountAsPrimary( 2L, request, authUser );
+    }
+
+    @Test( expectedExceptions = NotFoundException.class )
+    public void markBankAccountAsPrimary_NotFound() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                config.markBankAccountAsPrimary( account, anyLong );
+                result = new BankAccountNotFound( 2L );
+            }
+        };
+
+        endpoint.markBankAccountAsPrimary( 2L, request, authUser );
+    }
+
+    @Test( expectedExceptions = InternalServerErrorException.class )
+    public void markBankAccountAsPrimary_BackendError() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                config.markBankAccountAsPrimary( account, anyLong );
+                result = new RuntimeException();
+            }
+        };
+
+        endpoint.markBankAccountAsPrimary( 2L, request, authUser );
+    }
+
+    @Test( expectedExceptions = InternalServerErrorException.class )
+    public void markBankAccountAsPrimary_MappingError() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                mapper.map( dbBankAccount, BankAccount.class );
+                result = new RuntimeException();
+            }
+        };
+
+        endpoint.markBankAccountAsPrimary( 2L, request, authUser );
     }
 }

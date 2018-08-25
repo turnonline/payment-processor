@@ -97,7 +97,7 @@ class PaymentConfigBean
 
         // generate code
         int codeOrder = 1;
-        List<BankAccount> list = getBankAccounts( account, null, null );
+        List<BankAccount> list = getBankAccounts( account, null, null, null );
         list.sort( new BankAccountCodeDescending() );
 
         if ( !list.isEmpty() )
@@ -115,7 +115,8 @@ class PaymentConfigBean
     @Override
     public List<BankAccount> getBankAccounts( @Nonnull Account account,
                                               @Nullable Integer offset,
-                                              @Nullable Integer limit )
+                                              @Nullable Integer limit,
+                                              @Nullable String country )
     {
         checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
 
@@ -123,6 +124,11 @@ class PaymentConfigBean
 
         LocalAccount owner = accProvider.getAssociatedLightAccount( account );
         criteria.reference( "owner", owner );
+        if ( country != null )
+        {
+            criteria.equal( "country", country.toUpperCase() );
+        }
+
         if ( offset != null )
         {
             if ( limit == null )
@@ -183,7 +189,7 @@ class PaymentConfigBean
         BankAccount bankAccount = getBankAccount( account, id );
 
         // mark old primary bank accounts to not primary
-        List<BankAccount> bankAccounts = getBankAccounts( account, null, null );
+        List<BankAccount> bankAccounts = getBankAccounts( account, null, null, null );
 
         Collection<BankAccount> primary = bankAccounts.stream().filter( new BankAccountPrimary() ).collect( Collectors.toList() );
 
@@ -203,70 +209,51 @@ class PaymentConfigBean
     }
 
     @Override
-    public BankAccount getPrimaryBankAccount( @Nonnull Account account )
-    {
-        checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
-        return getPrimaryBankAccount( account, null );
-    }
-
-    @Override
     public BankAccount getPrimaryBankAccount( @Nonnull Account account, @Nullable String country )
     {
         checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
 
-        List<BankAccount> list = getBankAccounts( account, null, null );
+        List<BankAccount> list = getBankAccounts( account, null, null, null );
         Collections.sort( list );
 
-        Collection<BankAccount> filtered;
+        country = codeBook.getDomicile( account, country );
+
+        Predicate<BankAccount> and = new BankAccountCountryPredicate( country ).and( new BankAccountPrimary() );
+        Collection<BankAccount> filtered = list.stream().filter( and ).collect( Collectors.toList() );
+
         BankAccount bankAccount;
-
-        Predicate<BankAccount> and;
-        if ( country == null )
-        {
-            country = codeBook.getDomicile( account, country );
-            // first strict predicates (incl. primary filter)
-            and = new BankAccountPrimary();
-        }
-        else
-        {
-            and = new BankAccountCountryPredicate( country ).and( new BankAccountPrimary() );
-        }
-
-        filtered = list.stream().filter( and ).collect( Collectors.toList() );
 
         if ( filtered.isEmpty() )
         {
-            // less strict predicates (no primary filter)
-            BankAccountCountryPredicate predicate = new BankAccountCountryPredicate( country );
-            bankAccount = list.stream().filter( predicate ).findFirst().orElse( null );
+            // no match yet, thus return any bank account marked as primary
+            bankAccount = list.stream().filter( new BankAccountPrimary() ).findFirst().orElse( null );
         }
         else
         {
             bankAccount = filtered.iterator().next();
         }
 
-        if ( bankAccount == null && !list.isEmpty() )
+        if ( bankAccount == null )
         {
-            // no match yet, thus return any bank account marked as primary
-            bankAccount = list.stream().filter( new BankAccountPrimary() ).findFirst().orElse( null );
+            throw new BankAccountNotFound( -1L );
         }
 
         return bankAccount;
     }
 
     @Override
-    public List<BankAccount.Description> getAlternativeBankAccounts( @Nonnull Account account,
-                                                                     @Nullable BankAccount exclude )
+    public List<BankAccount> getAlternativeBankAccounts( @Nonnull Account account,
+                                                         @Nullable BankAccount exclude )
     {
         checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
 
         Domicile domicile = Domicile.valueOf( codeBook.getDomicile( account, null ) );
 
-        List<BankAccount> list = getBankAccounts( account, null, null );
+        List<BankAccount> list = getBankAccounts( account, null, null, null );
         list.sort( new BankAccountSellerSorting( domicile ) );
         Iterator<BankAccount> iterator = list.iterator();
 
-        List<BankAccount.Description> holders = new ArrayList<>();
+        List<BankAccount> filtered = new ArrayList<>();
 
         while ( iterator.hasNext() )
         {
@@ -274,20 +261,15 @@ class PaymentConfigBean
 
             if ( exclude == null || !exclude.equals( next ) )
             {
-                BankAccount.Description description = next.getLocalizedDescription( domicile.getLocale() );
+                String description = next.getLocalizedLabel( domicile.getLocale() );
                 if ( description != null )
                 {
-                    holders.add( description );
+                    filtered.add( next );
                 }
             }
         }
 
-        for ( BankAccount.Description next : holders )
-        {
-            logger.debug( next.toString() );
-        }
-
-        return holders;
+        return filtered;
     }
 
     /**
@@ -338,9 +320,7 @@ class PaymentConfigBean
         @Override
         public boolean test( @Nullable BankAccount input )
         {
-            return input != null
-                    && input.isPrimary()
-                    && !BankAccount.TRUST_PAY_BANK_CODE.equals( input.getBankCode() );
+            return input != null && input.isPrimary();
         }
     }
 
@@ -357,9 +337,7 @@ class PaymentConfigBean
         @Override
         public boolean test( @Nullable BankAccount input )
         {
-            return input != null
-                    && !BankAccount.TRUST_PAY_BANK_CODE.equals( input.getBankCode() )
-                    && input.getCountry().name().equals( countryCode );
+            return input != null && input.getCountry().name().equals( countryCode );
         }
     }
 

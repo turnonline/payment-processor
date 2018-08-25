@@ -41,7 +41,7 @@ public class BankAccount
 
     private static final Logger logger = LoggerFactory.getLogger( BankAccount.class );
 
-    private static final long serialVersionUID = 3672525651272337328L;
+    private static final long serialVersionUID = -6827068154138792835L;
 
     private final CodeBook codeBook;
 
@@ -62,8 +62,9 @@ public class BankAccount
 
     private String iban;
 
-    private String swift;
+    private String bic;
 
+    // TODO change country from Domicile to String to support more, but restrict it to Domicile for now at API level
     private Domicile country;
 
     @Index
@@ -140,11 +141,11 @@ public class BankAccount
     }
 
     /**
-     * Returns the localized bank account description, the bank name (etc.) taken from the bank code code-book.
+     * Returns the localized bank account label, the bank name (etc.) taken from the bank code code-book.
      *
      * @return the bank account description
      */
-    public BankAccount.Description getLocalizedDescription( @Nullable Locale locale )
+    public String getLocalizedLabel( @Nullable Locale locale )
     {
         LocalAccount owner = getOwner();
         if ( owner == null )
@@ -157,25 +158,14 @@ public class BankAccount
 
         Map<String, BankCode> codes = codeBook.getBankCodes( account, locale, domicile );
 
-        BankAccount.Description description = null;
         BankCode bankCode = codes.get( this.getBankCode() );
         if ( bankCode == null )
         {
             logger.warn( "No BankCode has found for " + this );
         }
-        else
-        {
-            if ( !BankAccount.TRUST_PAY_BANK_CODE.equals( bankCode.getCode() ) )
-            {
-                description = new BankAccount.Description( bankCode.getLabel(),
-                        getFormattedBankAccount(),
-                        getIban(),
-                        getSwift() );
-            }
 
-        }
-
-        return description;
+        return ( bankCode == null || BankAccount.TRUST_PAY_BANK_CODE.equals( bankCode.getCode() ) )
+                ? null : bankCode.getLabel();
     }
 
     public String getCode()
@@ -188,6 +178,9 @@ public class BankAccount
         this.code = code;
     }
 
+    /**
+     * The user defined name of the bank account.
+     */
     public String getName()
     {
         return name;
@@ -198,6 +191,9 @@ public class BankAccount
         this.name = name;
     }
 
+    /**
+     * The optional bank account number prefix.
+     */
     public String getPrefix()
     {
         return prefix;
@@ -208,6 +204,9 @@ public class BankAccount
         this.prefix = prefix;
     }
 
+    /**
+     * The bank account number.
+     */
     public String getAccountNumber()
     {
         return accountNumber;
@@ -218,6 +217,9 @@ public class BankAccount
         this.accountNumber = accountNumber;
     }
 
+    /**
+     * The country specific numeric bank code, taken from the code-book.
+     */
     public String getBankCode()
     {
         return bankCode;
@@ -228,6 +230,9 @@ public class BankAccount
         this.bankCode = bankCode;
     }
 
+    /**
+     * The international bank account number.
+     */
     public String getIban()
     {
         return iban;
@@ -238,18 +243,21 @@ public class BankAccount
         this.iban = iban;
     }
 
-    public String getSwift()
+    /**
+     * The international Bank Identifier Code (BIC/ISO 9362, a normalized code - also known as Business Identifier Code, Bank International Code and SWIFT code).
+     */
+    public String getBic()
     {
-        return swift;
+        return bic;
     }
 
-    public void setSwift( String swift )
+    public void setBic( String bic )
     {
-        this.swift = swift;
+        this.bic = bic;
     }
 
     /**
-     * Returns the country code where is the bank account located
+     * Returns the country of the bank where bank account has been opened.
      *
      * @return the country code
      */
@@ -259,7 +267,7 @@ public class BankAccount
     }
 
     /**
-     * Sets the country code where is the bank account located
+     * Sets the country of the bank where bank account has been opened.
      *
      * @param country the country code to be set
      */
@@ -308,6 +316,11 @@ public class BankAccount
         this.notificationEmail = notificationEmail;
     }
 
+    /**
+     * Boolean identification, whether this bank account is being marked by the user as a primary account.
+     * If yes, this bank account will be used as a default account unless specified another one.
+     * There is always only single primary bank account per country.
+     */
     public boolean isPrimary()
     {
         return primary;
@@ -407,7 +420,7 @@ public class BankAccount
                 .add( "accountNumber", accountNumber )
                 .add( "bankCode", bankCode )
                 .add( "iban", iban )
-                .add( "swift", swift )
+                .add( "bic", bic )
                 .add( "country", country )
                 .add( "paymentGate", paymentGate )
                 .add( "merchantId", merchantId )
@@ -469,55 +482,5 @@ public class BankAccount
     public String getKind()
     {
         return "BankAccount";
-    }
-
-    public static class Description
-    {
-        private String bankName;
-
-        private String fullBankAccountNumber;
-
-        private String iban;
-
-        private String swift;
-
-        public Description( String bankName, String fullBankAccountNumber, String iban, String swift )
-        {
-            this.bankName = bankName;
-            this.fullBankAccountNumber = fullBankAccountNumber;
-            this.iban = iban;
-            this.swift = swift;
-        }
-
-        public String getBankName()
-        {
-            return bankName;
-        }
-
-        public String getFullBankAccountNumber()
-        {
-            return fullBankAccountNumber;
-        }
-
-        public String getIban()
-        {
-            return iban;
-        }
-
-        public String getSwift()
-        {
-            return swift;
-        }
-
-        @Override
-        public String toString()
-        {
-            return MoreObjects.toStringHelper( this )
-                    .add( "bankName", bankName )
-                    .add( "fullBankAccountNumber", fullBankAccountNumber )
-                    .add( "iban", iban )
-                    .add( "swift", swift )
-                    .toString();
-        }
     }
 }

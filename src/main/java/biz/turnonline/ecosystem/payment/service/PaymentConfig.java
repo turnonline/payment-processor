@@ -8,6 +8,8 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 /**
+ * Payment configuration and execution.
+ *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 public interface PaymentConfig
@@ -26,16 +28,18 @@ public interface PaymentConfig
     BankAccount getBankAccount( @Nonnull Account owner, @Nonnull Long id );
 
     /**
-     * Returns the list of all bank accounts that's being owned by specified owner.
+     * Returns the list of filtered bank accounts that's being owned by specified owner.
      *
-     * @param owner  the authenticated account as an owner of the bank accounts
-     * @param offset the position of the first account to retrieve
-     * @param limit  the maximum number of accounts to retrieve
-     * @return the list of bank accounts
+     * @param owner   the authenticated account as an owner of the bank accounts
+     * @param offset  the position of the first account to retrieve
+     * @param limit   the maximum number of accounts to retrieve
+     * @param country the country of the bank where bank account has been opened
+     * @return the list of filtered bank accounts
      */
     List<BankAccount> getBankAccounts( @Nonnull Account owner,
                                        @Nullable Integer offset,
-                                       @Nullable Integer limit );
+                                       @Nullable Integer limit,
+                                       @Nullable String country );
 
     /**
      * Inserts the specified bank account for given owner.
@@ -75,31 +79,22 @@ public interface PaymentConfig
      * @param owner the authenticated account as an owner of the requested bank account
      * @param id    the identification of the bank account to be marked as primary
      * @return the bank account that has been marked as primary
-     * @throws WrongEntityOwner    if bank account is found but has a different owner as the authenticated account
-     * @throws BankAccountNotFound if bank account is not found
+     * @throws WrongEntityOwner       if bank account is found but has a different owner as the authenticated account
+     * @throws BankAccountNotFound    if bank account is not found
+     * @throws ApiValidationException if specified bank account can't be marked as primary
      */
     BankAccount markBankAccountAsPrimary( @Nonnull Account owner, @Nonnull Long id );
 
     /**
-     * Returns the primary bank account for specified owner,
-     * or {@code null} if primary bank account does not exist.
-     * <p>
-     * Note: {@link BankAccount#TRUST_PAY_BANK_CODE} is not being considered as a primary bank account at all.
+     * Returns the primary bank account for specified owner and country (either default one or specified).
+     * There might be only max single or none primary bank account per country.
+     * The primary bank account will be first searched with preferred actual country,
+     * then if not found without applied country filter.
      *
-     * @param owner the account as an owner of the bank account
+     * @param owner   the account as an owner of the bank account and source of the default country (business domicile)
+     * @param country the country, for which the primary bank account is being searched for
      * @return the primary bank account
-     */
-    BankAccount getPrimaryBankAccount( @Nonnull Account owner );
-
-    /**
-     * Returns the primary bank account for specified owner and country,
-     * or {@code null} if primary bank account does not exist.
-     * <p>
-     * Note:  {@link BankAccount#TRUST_PAY_BANK_CODE} is not being considered as a primary bank account at all.
-     *
-     * @param owner   the account as an owner of the bank account
-     * @param country the target country
-     * @return the primary bank account
+     * @throws BankAccountNotFound if primary bank account is not found
      */
     BankAccount getPrimaryBankAccount( @Nonnull Account owner, @Nullable String country );
 
@@ -111,6 +106,6 @@ public interface PaymentConfig
      * @return the list of alternative bank accounts
      * @throws WrongEntityOwner if bank account is found but has a different owner as the authenticated account
      */
-    List<BankAccount.Description> getAlternativeBankAccounts( @Nonnull Account owner,
-                                                              @Nullable BankAccount exclude );
+    List<BankAccount> getAlternativeBankAccounts( @Nonnull Account owner,
+                                                  @Nullable BankAccount exclude );
 }

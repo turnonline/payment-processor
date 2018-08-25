@@ -50,14 +50,14 @@ public class PrimaryAlternativeBankAccountTest
     private Account account;
 
     @Test
-    public void getPrimaryBankAccountSellerCzNullState()
+    public void getPrimaryBankAccountSellerCzNullCountry()
     {
         final List<BankAccount> list = getBankAccounts();
 
         new Expectations( tested )
         {
             {
-                tested.getBankAccounts( account, null, null );
+                tested.getBankAccounts( account, null, null, null );
                 result = list;
 
                 codeBook.getDomicile( account, null );
@@ -65,61 +65,37 @@ public class PrimaryAlternativeBankAccountTest
             }
         };
 
-        BankAccount account = tested.getPrimaryBankAccount( this.account, null );
+        BankAccount primary = tested.getPrimaryBankAccount( account, null );
 
-        // primary bank account state is SK
-        assertEquals( Domicile.SK, account.getCountry() );
-        assertEquals( "Primary Bank Account", account.getName() );
-        assertTrue( account.isPrimary() );
-        assertNotEquals( BankAccount.TRUST_PAY_BANK_CODE, account.getBankCode() );
+        // primary bank account country is SK
+        assertEquals( Domicile.CZ, primary.getCountry() );
+        assertTrue( primary.isPrimary() );
     }
 
     @Test
-    public void getPrimaryBankAccount()
+    public void getPrimaryBankAccountSellerSkNullCountry()
     {
         final List<BankAccount> list = getBankAccounts();
 
         new Expectations( tested )
         {
             {
-                tested.getBankAccounts( account, null, null );
+                tested.getBankAccounts( account, null, null, null );
                 result = list;
 
                 codeBook.getDomicile( account, null );
-                result = Domicile.CZ.name();
+                result = Domicile.SK.name();
             }
         };
 
-        BankAccount account = tested.getPrimaryBankAccount( this.account );
+        BankAccount primary = tested.getPrimaryBankAccount( account, null );
 
-        // primary bank account state is SK
-        assertEquals( Domicile.SK, account.getCountry() );
-        assertEquals( "Primary Bank Account", account.getName() );
-        assertTrue( account.isPrimary() );
-        assertNotEquals( BankAccount.TRUST_PAY_BANK_CODE, account.getBankCode() );
-    }
-
-    @Test
-    public void getPrimaryBankAccountSellerSkNullState()
-    {
-        final List<BankAccount> list = getBankAccounts();
-
-        new Expectations( tested )
-        {
-            {
-                tested.getBankAccounts( account, null, null );
-                result = list;
-            }
-        };
-
-        BankAccount account = tested.getPrimaryBankAccount( this.account, null );
-
-        // state is same to the domicile state
-        assertEquals( Domicile.SK, account.getCountry() );
+        // state is same to the domicile country
+        assertEquals( Domicile.SK, primary.getCountry() );
         // there is an account marked as primary
-        assertEquals( "Primary Bank Account", account.getName() );
-        assertTrue( account.isPrimary() );
-        assertNotEquals( BankAccount.TRUST_PAY_BANK_CODE, account.getBankCode() );
+        assertEquals( "Primary Bank Account", primary.getName() );
+        assertTrue( primary.isPrimary() );
+        assertNotEquals( BankAccount.TRUST_PAY_BANK_CODE, primary.getBankCode() );
     }
 
     @Test
@@ -130,19 +106,21 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested )
         {
             {
-                tested.getBankAccounts( account, null, null );
+                tested.getBankAccounts( account, null, null, null );
                 result = list;
+
+                codeBook.getDomicile( account, "SK" );
+                result = Domicile.SK.name();
             }
         };
 
-        BankAccount account = tested.getPrimaryBankAccount( this.account, "SK" );
+        BankAccount primary = tested.getPrimaryBankAccount( account, "SK" );
 
         // asking for SK bank account
-        assertEquals( Domicile.SK, account.getCountry() );
+        assertEquals( Domicile.SK, primary.getCountry() );
         // there is an account marked as primary
-        assertEquals( "Primary Bank Account", account.getName() );
-        assertTrue( account.isPrimary() );
-        assertNotEquals( BankAccount.TRUST_PAY_BANK_CODE, account.getBankCode() );
+        assertEquals( "Primary Bank Account", primary.getName() );
+        assertTrue( primary.isPrimary() );
     }
 
     @Test
@@ -153,17 +131,20 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested )
         {
             {
-                tested.getBankAccounts( account, null, null );
+                tested.getBankAccounts( account, null, null, null );
                 result = list;
+
+                codeBook.getDomicile( account, "CZ" );
+                result = Domicile.CZ.name();
             }
         };
 
-        BankAccount account = tested.getPrimaryBankAccount( this.account, "CZ" );
+        BankAccount primary = tested.getPrimaryBankAccount( account, "CZ" );
 
         // asking for CZ bank account
-        assertEquals( Domicile.CZ, account.getCountry() );
-        assertEquals( "2 Account", account.getName() );
-        assertNotEquals( BankAccount.TRUST_PAY_BANK_CODE, account.getBankCode() );
+        assertEquals( Domicile.CZ, primary.getCountry() );
+        assertEquals( "1 Account", primary.getName() );
+        assertNotEquals( "0100", primary.getBankCode() );
     }
 
     @Test
@@ -174,18 +155,43 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested )
         {
             {
-                tested.getBankAccounts( account, null, null );
+                tested.getBankAccounts( account, null, null, null );
                 result = list;
+
+                codeBook.getDomicile( account, "AQ" );
+                result = "AQ";
             }
         };
 
         // ask for an account for non existing country AQ (Antarktida)
-        BankAccount account = tested.getPrimaryBankAccount( this.account, "AQ" );
+        BankAccount primary = tested.getPrimaryBankAccount( account, "AQ" );
 
         // asking for CZ bank account
-        assertNotNull( account );
-        assertEquals( "Primary Bank Account", account.getName() );
-        assertNotEquals( BankAccount.TRUST_PAY_BANK_CODE, account.getBankCode() );
+        assertNotNull( primary );
+        assertTrue( primary.isPrimary() );
+    }
+
+    @Test( expectedExceptions = BankAccountNotFound.class )
+    public void getPrimaryBankAccount_NotFound()
+    {
+        final List<BankAccount> list = getBankAccounts();
+        for ( BankAccount next : list )
+        {
+            next.setPrimary( false );
+        }
+
+        new Expectations( tested )
+        {
+            {
+                tested.getBankAccounts( account, null, null, null );
+                result = list;
+
+                codeBook.getDomicile( account, anyString );
+                result = Domicile.getDefault().name();
+            }
+        };
+
+        tested.getPrimaryBankAccount( account, "AQ" );
     }
 
     @Test
@@ -194,11 +200,11 @@ public class PrimaryAlternativeBankAccountTest
         final List<BankAccount> list = getBankAccounts();
         expectationsBankAccountsDomicileSk( list );
 
-        List<BankAccount.Description> descriptions = tested.getAlternativeBankAccounts( account, null );
+        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null );
 
         assertEquals( 4, descriptions.size() );
-        assertEquals( getBankAccount1().getFormattedBankAccount(), descriptions.get( 0 ).getFullBankAccountNumber() );
-        assertEquals( getBankAccount3().getFormattedBankAccount(), descriptions.get( 1 ).getFullBankAccountNumber() );
+        assertEquals( getBankAccount1().getFormattedBankAccount(), descriptions.get( 0 ).getFormattedBankAccount() );
+        assertEquals( getBankAccount3().getFormattedBankAccount(), descriptions.get( 1 ).getFormattedBankAccount() );
 
     }
 
@@ -208,11 +214,11 @@ public class PrimaryAlternativeBankAccountTest
         final List<BankAccount> list = getBankAccounts();
         expectationsBankAccountsDomicileCz( list );
 
-        List<BankAccount.Description> descriptions = tested.getAlternativeBankAccounts( account, null );
+        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null );
 
         assertEquals( 4, descriptions.size() );
-        assertEquals( getBankAccount5().getFormattedBankAccount(), descriptions.get( 0 ).getFullBankAccountNumber() );
-        assertEquals( getBankAccount4().getFormattedBankAccount(), descriptions.get( 1 ).getFullBankAccountNumber() );
+        assertEquals( getBankAccount5().getFormattedBankAccount(), descriptions.get( 0 ).getFormattedBankAccount() );
+        assertEquals( getBankAccount4().getFormattedBankAccount(), descriptions.get( 1 ).getFormattedBankAccount() );
 
     }
 
@@ -222,10 +228,10 @@ public class PrimaryAlternativeBankAccountTest
         final List<BankAccount> list = getBankAccounts();
         expectationsBankAccountsDomicileSk( list );
 
-        List<BankAccount.Description> descriptions = tested.getAlternativeBankAccounts( account, getBankAccount1() );
+        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, getBankAccount1() );
 
         assertEquals( 3, descriptions.size() );
-        assertEquals( getBankAccount3().getFormattedBankAccount(), descriptions.get( 0 ).getFullBankAccountNumber() );
+        assertEquals( getBankAccount3().getFormattedBankAccount(), descriptions.get( 0 ).getFormattedBankAccount() );
     }
 
     @Test
@@ -234,10 +240,10 @@ public class PrimaryAlternativeBankAccountTest
         final List<BankAccount> list = getBankAccounts();
         expectationsBankAccountsDomicileCz( list );
 
-        List<BankAccount.Description> descriptions = tested.getAlternativeBankAccounts( account, getBankAccount5() );
+        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, getBankAccount5() );
 
         assertEquals( 3, descriptions.size() );
-        assertEquals( getBankAccount4().getFormattedBankAccount(), descriptions.get( 0 ).getFullBankAccountNumber() );
+        assertEquals( getBankAccount4().getFormattedBankAccount(), descriptions.get( 0 ).getFormattedBankAccount() );
     }
 
     @Test
@@ -248,7 +254,7 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested )
         {
             {
-                tested.getBankAccounts( account, null, null );
+                tested.getBankAccounts( account, null, null, null );
                 result = list;
 
                 codeBook.getDomicile( account, null );
@@ -256,7 +262,7 @@ public class PrimaryAlternativeBankAccountTest
             }
         };
 
-        List<BankAccount.Description> descriptions = tested.getAlternativeBankAccounts( account, null );
+        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null );
 
         assertEquals( 0, descriptions.size() );
     }
@@ -436,7 +442,7 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested )
         {
             {
-                tested.getBankAccounts( account, null, null );
+                tested.getBankAccounts( account, null, null, null );
                 result = list;
 
                 codeBook.getDomicile( account, null );
@@ -453,13 +459,13 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested )
         {
             {
-                tested.getBankAccounts( account, null, null );
+                tested.getBankAccounts( account, null, null, null );
                 result = list;
 
                 codeBook.getDomicile( account, null );
                 result = Domicile.CZ.name();
 
-                codeBook.getBankCodes( account, ( Locale ) any, anyString );
+                codeBook.getBankCodes( ( Account ) any, ( Locale ) any, anyString );
                 result = getCodeBookMap();
             }
         };

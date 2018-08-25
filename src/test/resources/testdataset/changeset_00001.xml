@@ -14,7 +14,7 @@
             <property name="paymentGate" type="string" value="TATRAPAY"/>
             <property name="merchantId" type="string" value="123456789"/>
             <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
-            <property name="country" type="string" value="SK"/>
+            <property name="country" type="string" value="CZ"/>
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
@@ -59,7 +59,7 @@
             <property name="paymentGate" type="string" value="EPLATBY_VUB"/>
             <property name="merchantId" type="string" value="123456789"/>
             <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
-            <property name="country" type="string" value="SK"/>
+            <property name="country" type="string" value="CZ"/>
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 

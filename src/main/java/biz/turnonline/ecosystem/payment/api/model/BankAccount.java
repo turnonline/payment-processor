@@ -12,7 +12,7 @@ import java.util.Objects;
  **/
 
 @ApiModel( description = "The bank account resource." )
-@javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-08-24T04:20:12.761Z" )
+@javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-08-25T07:08:13.381Z" )
 public class BankAccount
 {
 
@@ -27,8 +27,6 @@ public class BankAccount
     private String iban = null;
 
     private String bic = null;
-
-    private String country = null;
 
     private Boolean primary = false;
 
@@ -165,29 +163,7 @@ public class BankAccount
     }
 
     /**
-     * The country of the bank where bank account has been opened.
-     **/
-    public BankAccount country( String country )
-    {
-        this.country = country;
-        return this;
-    }
-
-
-    @ApiModelProperty( value = "The country of the bank where bank account has been opened." )
-    @JsonProperty( "country" )
-    public String getCountry()
-    {
-        return country;
-    }
-
-    public void setCountry( String country )
-    {
-        this.country = country;
-    }
-
-    /**
-     * Boolean identification, whether this bank account is being marked by the user as a primary account. If yes, this bank account will be used as a default account unless specified another one. There is always only single primary bank account.
+     * Boolean identification, whether this bank account is being marked by the user as a primary account. If yes, this bank account will be used as a default account unless specified another one. There might be only max single or none primary bank account per country.
      **/
     public BankAccount primary( Boolean primary )
     {
@@ -196,7 +172,7 @@ public class BankAccount
     }
 
 
-    @ApiModelProperty( value = "Boolean identification, whether this bank account is being marked by the user as a primary account. If yes, this bank account will be used as a default account unless specified another one. There is always only single primary bank account." )
+    @ApiModelProperty( value = "Boolean identification, whether this bank account is being marked by the user as a primary account. If yes, this bank account will be used as a default account unless specified another one. There might be only max single or none primary bank account per country." )
     @JsonProperty( "primary" )
     public Boolean getPrimary()
     {
@@ -227,14 +203,13 @@ public class BankAccount
                 Objects.equals( bank, bankAccount.bank ) &&
                 Objects.equals( iban, bankAccount.iban ) &&
                 Objects.equals( bic, bankAccount.bic ) &&
-                Objects.equals( country, bankAccount.country ) &&
                 Objects.equals( primary, bankAccount.primary );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( name, prefix, accountNumber, bank, iban, bic, country, primary );
+        return Objects.hash( name, prefix, accountNumber, bank, iban, bic, primary );
     }
 
     @Override
@@ -249,7 +224,6 @@ public class BankAccount
         sb.append( "    bank: " ).append( toIndentedString( bank ) ).append( "\n" );
         sb.append( "    iban: " ).append( toIndentedString( iban ) ).append( "\n" );
         sb.append( "    bic: " ).append( toIndentedString( bic ) ).append( "\n" );
-        sb.append( "    country: " ).append( toIndentedString( country ) ).append( "\n" );
         sb.append( "    primary: " ).append( toIndentedString( primary ) ).append( "\n" );
         sb.append( "}" );
         return sb.toString();

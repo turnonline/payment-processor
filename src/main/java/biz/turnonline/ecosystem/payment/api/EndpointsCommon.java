@@ -58,6 +58,17 @@ class EndpointsCommon
         return String.format( message, id );
     }
 
+    static String primaryBankAccountNotFoundMessage( String country )
+    {
+        String message = "Primary bank account for country '%s' has not been found";
+        return String.format( message, country );
+    }
+
+    static String primaryBankAccountNotFoundMessage()
+    {
+        return "Primary bank account has not been found";
+    }
+
     /**
      * For unauthorized user throws {@link UnauthorizedException} otherwise does nothing.
      *
