@@ -1,7 +1,6 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
 import biz.turnonline.ecosystem.account.client.model.Account;
-import biz.turnonline.ecosystem.account.client.model.Domicile;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
 import biz.turnonline.ecosystem.payment.service.SecretKeyConfig;
 import biz.turnonline.ecosystem.payment.service.TwoWayEncryption;
@@ -41,7 +40,7 @@ public class BankAccount
 
     private static final Logger logger = LoggerFactory.getLogger( BankAccount.class );
 
-    private static final long serialVersionUID = -6827068154138792835L;
+    private static final long serialVersionUID = -6428849506665413138L;
 
     private final CodeBook codeBook;
 
@@ -64,8 +63,7 @@ public class BankAccount
 
     private String bic;
 
-    // TODO change country from Domicile to String to support more, but restrict it to Domicile for now at API level
-    private Domicile country;
+    private String country;
 
     @Index
     private PaymentGate paymentGate;
@@ -154,9 +152,7 @@ public class BankAccount
         }
 
         Account account = owner.getAccount();
-        String domicile = country == null ? null : country.name();
-
-        Map<String, BankCode> codes = codeBook.getBankCodes( account, locale, domicile );
+        Map<String, BankCode> codes = codeBook.getBankCodes( account, locale, country );
 
         BankCode bankCode = codes.get( this.getBankCode() );
         if ( bankCode == null )
@@ -261,7 +257,7 @@ public class BankAccount
      *
      * @return the country code
      */
-    public Domicile getCountry()
+    public String getCountry()
     {
         return country;
     }
@@ -271,7 +267,7 @@ public class BankAccount
      *
      * @param country the country code to be set
      */
-    public void setCountry( Domicile country )
+    public void setCountry( String country )
     {
         this.country = country;
     }
@@ -354,6 +350,11 @@ public class BankAccount
             {
                 logger.error( "Error has occurred during bank account secret key encryption", e );
             }
+        }
+
+        if ( this.country != null )
+        {
+            this.country = this.country.toUpperCase();
         }
     }
 

@@ -6,6 +6,7 @@ import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Payment configuration and execution.
@@ -99,13 +100,20 @@ public interface PaymentConfig
     BankAccount getPrimaryBankAccount( @Nonnull Account owner, @Nullable String country );
 
     /**
-     * Returns the list of description of all alternative bank accounts except the primary one.
+     * Returns the list of all alternative bank accounts except the primary one.
      *
      * @param owner   the account as an owner of the bank account
      * @param exclude the primary bank account to exclude from the list
+     * @param offset  the position of the first account to retrieve
+     * @param limit   the maximum number of accounts to retrieve
+     * @param locale  the the preferred locale in the result
+     * @param country the preferred country in the result
      * @return the list of alternative bank accounts
-     * @throws WrongEntityOwner if bank account is found but has a different owner as the authenticated account
      */
     List<BankAccount> getAlternativeBankAccounts( @Nonnull Account owner,
-                                                  @Nullable BankAccount exclude );
+                                                  @Nullable BankAccount exclude,
+                                                  @Nullable Integer offset,
+                                                  @Nullable Integer limit,
+                                                  @Nullable Locale locale,
+                                                  @Nullable String country );
 }

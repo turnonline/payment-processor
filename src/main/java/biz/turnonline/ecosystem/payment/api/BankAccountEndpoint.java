@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Locale;
 
 import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.bankAccountNotFoundMessage;
 import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.primaryBankAccountNotFoundMessage;
@@ -114,6 +115,7 @@ public class BankAccountEndpoint
             throws Exception
     {
         Account account = common.checkAccount( authUser, request );
+        Locale language = common.getAcceptLanguage( request );
         List<BankAccount> result;
 
         try
@@ -123,11 +125,11 @@ public class BankAccountEndpoint
             {
                 biz.turnonline.ecosystem.payment.service.model.BankAccount primary;
                 primary = config.getPrimaryBankAccount( account, country );
-                bankAccounts = config.getAlternativeBankAccounts( account, primary );
+                bankAccounts = config.getAlternativeBankAccounts( account, primary, offset, limit, language, country );
             }
             else
             {
-                bankAccounts = config.getBankAccounts( account, offset, limit, null );
+                bankAccounts = config.getBankAccounts( account, offset, limit, country );
             }
             result = mapper.mapAsList( bankAccounts, BankAccount.class );
         }

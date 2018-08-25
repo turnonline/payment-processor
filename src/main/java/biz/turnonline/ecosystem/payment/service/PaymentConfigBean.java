@@ -1,7 +1,6 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.account.client.model.Account;
-import biz.turnonline.ecosystem.account.client.model.Domicile;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.common.collect.ComparisonChain;
@@ -23,6 +22,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -243,14 +243,19 @@ class PaymentConfigBean
 
     @Override
     public List<BankAccount> getAlternativeBankAccounts( @Nonnull Account account,
-                                                         @Nullable BankAccount exclude )
+                                                         @Nullable BankAccount exclude,
+                                                         @Nullable Integer offset,
+                                                         @Nullable Integer limit,
+                                                         @Nullable Locale locale,
+                                                         @Nullable String country )
     {
         checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
 
-        Domicile domicile = Domicile.valueOf( codeBook.getDomicile( account, null ) );
+        country = codeBook.getDomicile( account, country );
+        locale = codeBook.getLocale( account, locale );
 
-        List<BankAccount> list = getBankAccounts( account, null, null, null );
-        list.sort( new BankAccountSellerSorting( domicile ) );
+        List<BankAccount> list = getBankAccounts( account, offset, limit, null );
+        list.sort( new BankAccountSellerSorting( country ) );
         Iterator<BankAccount> iterator = list.iterator();
 
         List<BankAccount> filtered = new ArrayList<>();
@@ -261,7 +266,7 @@ class PaymentConfigBean
 
             if ( exclude == null || !exclude.equals( next ) )
             {
-                String description = next.getLocalizedLabel( domicile.getLocale() );
+                String description = next.getLocalizedLabel( locale );
                 if ( description != null )
                 {
                     filtered.add( next );
@@ -337,7 +342,7 @@ class PaymentConfigBean
         @Override
         public boolean test( @Nullable BankAccount input )
         {
-            return input != null && input.getCountry().name().equals( countryCode );
+            return input != null && countryCode.equals( input.getCountry() );
         }
     }
 
@@ -346,19 +351,22 @@ class PaymentConfigBean
     {
         private static final long serialVersionUID = 1L;
 
-        private Domicile domicile;
+        private String country;
 
-        BankAccountSellerSorting( Domicile domicile )
+        BankAccountSellerSorting( @Nonnull String country )
         {
-            this.domicile = domicile;
+            this.country = checkNotNull( country );
         }
 
         @Override
         public int compare( BankAccount left, BankAccount right )
         {
+            if ( country.contentEquals( right.getCountry() ) )
+            {
+                return 0;
+            }
             return ComparisonChain.start()
-                    .compare( left.getCountry(), domicile )
-                    .compare( left, right )
+                    .compare( left.getCountry(), right.getCountry() )
                     .result();
         }
     }
