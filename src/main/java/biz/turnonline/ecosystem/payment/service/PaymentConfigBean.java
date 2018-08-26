@@ -211,6 +211,16 @@ class PaymentConfigBean
     @Override
     public BankAccount getPrimaryBankAccount( @Nonnull Account account, @Nullable String country )
     {
+        BankAccount primary = getInternalPrimaryBankAccount( account, country );
+        if ( primary == null )
+        {
+            throw new BankAccountNotFound( -1L );
+        }
+        return primary;
+    }
+
+    BankAccount getInternalPrimaryBankAccount( @Nonnull Account account, @Nullable String country )
+    {
         checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
 
         List<BankAccount> list = getBankAccounts( account, null, null, null );
@@ -233,17 +243,11 @@ class PaymentConfigBean
             bankAccount = filtered.iterator().next();
         }
 
-        if ( bankAccount == null )
-        {
-            throw new BankAccountNotFound( -1L );
-        }
-
         return bankAccount;
     }
 
     @Override
     public List<BankAccount> getAlternativeBankAccounts( @Nonnull Account account,
-                                                         @Nullable BankAccount exclude,
                                                          @Nullable Integer offset,
                                                          @Nullable Integer limit,
                                                          @Nullable Locale locale,
@@ -251,6 +255,7 @@ class PaymentConfigBean
     {
         checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
 
+        BankAccount exclude = getInternalPrimaryBankAccount( account, country );
         country = codeBook.getDomicile( account, country );
         locale = codeBook.getLocale( account, locale );
 

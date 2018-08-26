@@ -200,7 +200,15 @@ public class PrimaryAlternativeBankAccountTest
         final List<BankAccount> list = getBankAccounts();
         expectationsBankAccountsDomicileSk( list );
 
-        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null, null );
+        new Expectations( tested )
+        {
+            {
+                tested.getInternalPrimaryBankAccount( account, anyString );
+                result = null;
+            }
+        };
+
+        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 4, descriptions.size() );
         assertEquals( getBankAccount1().getFormattedBankAccount(), descriptions.get( 0 ).getFormattedBankAccount() );
@@ -214,7 +222,15 @@ public class PrimaryAlternativeBankAccountTest
         final List<BankAccount> list = getBankAccounts();
         expectationsBankAccountsDomicileCz( list );
 
-        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null, null );
+        new Expectations( tested )
+        {
+            {
+                tested.getInternalPrimaryBankAccount( account, anyString );
+                result = null;
+            }
+        };
+
+        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 4, descriptions.size() );
         assertEquals( getBankAccount4().getFormattedBankAccount(), descriptions.get( 0 ).getFormattedBankAccount() );
@@ -228,7 +244,15 @@ public class PrimaryAlternativeBankAccountTest
         final List<BankAccount> list = getBankAccounts();
         expectationsBankAccountsDomicileSk( list );
 
-        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, getBankAccount1(), null, null, null, null );
+        new Expectations( tested )
+        {
+            {
+                tested.getInternalPrimaryBankAccount( account, anyString );
+                result = getBankAccount1();
+            }
+        };
+
+        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 3, descriptions.size() );
         assertEquals( getBankAccount3().getFormattedBankAccount(), descriptions.get( 0 ).getFormattedBankAccount() );
@@ -240,7 +264,15 @@ public class PrimaryAlternativeBankAccountTest
         final List<BankAccount> list = getBankAccounts();
         expectationsBankAccountsDomicileCz( list );
 
-        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, getBankAccount5(), null, null, null, null );
+        new Expectations( tested )
+        {
+            {
+                tested.getInternalPrimaryBankAccount( account, anyString );
+                result = getBankAccount5();
+            }
+        };
+
+        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 3, descriptions.size() );
         assertEquals( getBankAccount4().getFormattedBankAccount(), descriptions.get( 0 ).getFormattedBankAccount() );
@@ -262,7 +294,7 @@ public class PrimaryAlternativeBankAccountTest
             }
         };
 
-        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null, null );
+        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 0, descriptions.size() );
     }

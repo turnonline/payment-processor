@@ -130,9 +130,7 @@ public class BankAccountEndpoint
             List<biz.turnonline.ecosystem.payment.service.model.BankAccount> bankAccounts;
             if ( alternative )
             {
-                biz.turnonline.ecosystem.payment.service.model.BankAccount primary;
-                primary = config.getPrimaryBankAccount( account, country );
-                bankAccounts = config.getAlternativeBankAccounts( account, primary, offset, limit, language, country );
+                bankAccounts = config.getAlternativeBankAccounts( account, offset, limit, language, country );
             }
             else
             {

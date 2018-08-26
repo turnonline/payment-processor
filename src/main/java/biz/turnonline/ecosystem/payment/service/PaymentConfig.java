@@ -103,7 +103,6 @@ public interface PaymentConfig
      * Returns the list of all alternative bank accounts except the primary one.
      *
      * @param owner   the account as an owner of the bank account
-     * @param exclude the primary bank account to exclude from the list
      * @param offset  the position of the first account to retrieve
      * @param limit   the maximum number of accounts to retrieve
      * @param locale  the the preferred locale in the result
@@ -111,7 +110,6 @@ public interface PaymentConfig
      * @return the list of alternative bank accounts
      */
     List<BankAccount> getAlternativeBankAccounts( @Nonnull Account owner,
-                                                  @Nullable BankAccount exclude,
                                                   @Nullable Integer offset,
                                                   @Nullable Integer limit,
                                                   @Nullable Locale locale,
