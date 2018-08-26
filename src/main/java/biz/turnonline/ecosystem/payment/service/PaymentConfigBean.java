@@ -169,7 +169,7 @@ class PaymentConfigBean
         if ( bankAccount.isPrimary() )
         {
             String key = "errors.validation.bankAccount.deletion.primary";
-            throw ApiValidationException.prepare( key, bankAccount.getCode() );
+            throw ApiValidationException.prepare( key, bankAccount.getId() );
         }
         else
         {

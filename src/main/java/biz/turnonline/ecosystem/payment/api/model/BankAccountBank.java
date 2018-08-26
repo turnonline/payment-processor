@@ -6,11 +6,13 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
 
-@javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-08-25T07:08:13.381Z" )
+@javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-08-26T04:47:00.033Z" )
 public class BankAccountBank
 {
 
     private String code = null;
+
+    private String label = null;
 
     private String country = null;
 
@@ -34,6 +36,28 @@ public class BankAccountBank
     public void setCode( String code )
     {
         this.code = code;
+    }
+
+    /**
+     * The localized name of the bank, taken from the code-book and based on either default or specified language.
+     **/
+    public BankAccountBank label( String label )
+    {
+        this.label = label;
+        return this;
+    }
+
+
+    @ApiModelProperty( value = "The localized name of the bank, taken from the code-book and based on either default or specified language." )
+    @JsonProperty( "label" )
+    public String getLabel()
+    {
+        return label;
+    }
+
+    public void setLabel( String label )
+    {
+        this.label = label;
     }
 
     /**
@@ -72,13 +96,14 @@ public class BankAccountBank
         }
         BankAccountBank bankAccountBank = ( BankAccountBank ) o;
         return Objects.equals( code, bankAccountBank.code ) &&
+                Objects.equals( label, bankAccountBank.label ) &&
                 Objects.equals( country, bankAccountBank.country );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( code, country );
+        return Objects.hash( code, label, country );
     }
 
     @Override
@@ -88,6 +113,7 @@ public class BankAccountBank
         sb.append( "class BankAccountBank {\n" );
 
         sb.append( "    code: " ).append( toIndentedString( code ) ).append( "\n" );
+        sb.append( "    label: " ).append( toIndentedString( label ) ).append( "\n" );
         sb.append( "    country: " ).append( toIndentedString( country ) ).append( "\n" );
         sb.append( "}" );
         return sb.toString();

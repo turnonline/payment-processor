@@ -65,22 +65,7 @@ public class BackendServiceTestCase
 
     private Closeable session;
 
-    @BeforeMethod
-    public void setUp( Method m )
-    {
-        helper.setUp();
-        session = ObjectifyService.begin();
-        SystemProperty.environment.set( "Development" );
-    }
-
-    @AfterMethod
-    public void tearDown() throws Exception
-    {
-        session.close();
-        helper.tearDown();
-    }
-
-    protected <T> T getFromFile( String json, Class<T> valueType )
+    public static <T> T getFromFile( String json, Class<T> valueType )
     {
         InputStream stream = valueType.getResourceAsStream( json );
         if ( stream == null )
@@ -104,6 +89,21 @@ public class BackendServiceTestCase
             e.printStackTrace();
         }
         return item;
+    }
+
+    @BeforeMethod
+    public void setUp( Method m )
+    {
+        helper.setUp();
+        session = ObjectifyService.begin();
+        SystemProperty.environment.set( "Development" );
+    }
+
+    @AfterMethod
+    public void tearDown() throws Exception
+    {
+        session.close();
+        helper.tearDown();
     }
 
     protected void awaitAndReset( long milliseconds )

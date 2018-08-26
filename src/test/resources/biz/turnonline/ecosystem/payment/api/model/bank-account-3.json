@@ -1,0 +1,10 @@
+{
+    "name": "My third bank account",
+    "prefix": "520700",
+    "accountNumber": "4200012345",
+    "iban": "SK4083605207004200012345",
+    "bic": "BREXSKBX",
+    "bank": {
+        "code": "8360"
+    }
+}

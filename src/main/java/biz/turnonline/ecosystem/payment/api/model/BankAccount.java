@@ -12,15 +12,19 @@ import java.util.Objects;
  **/
 
 @ApiModel( description = "The bank account resource." )
-@javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-08-25T07:08:13.381Z" )
+@javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-08-26T04:47:00.033Z" )
 public class BankAccount
 {
+
+    private Long id = null;
 
     private String name = null;
 
     private String prefix = null;
 
     private String accountNumber = null;
+
+    private String formatted = null;
 
     private BankAccountBank bank = null;
 
@@ -29,6 +33,28 @@ public class BankAccount
     private String bic = null;
 
     private Boolean primary = false;
+
+    /**
+     * The bank account identification.
+     **/
+    public BankAccount id( Long id )
+    {
+        this.id = id;
+        return this;
+    }
+
+
+    @ApiModelProperty( value = "The bank account identification." )
+    @JsonProperty( "id" )
+    public Long getId()
+    {
+        return id;
+    }
+
+    public void setId( Long id )
+    {
+        this.id = id;
+    }
 
     /**
      * The user defined name of the bank account.
@@ -94,6 +120,28 @@ public class BankAccount
     public void setAccountNumber( String accountNumber )
     {
         this.accountNumber = accountNumber;
+    }
+
+    /**
+     * The formatted full bank account number.
+     **/
+    public BankAccount formatted( String formatted )
+    {
+        this.formatted = formatted;
+        return this;
+    }
+
+
+    @ApiModelProperty( value = "The formatted full bank account number." )
+    @JsonProperty( "formatted" )
+    public String getFormatted()
+    {
+        return formatted;
+    }
+
+    public void setFormatted( String formatted )
+    {
+        this.formatted = formatted;
     }
 
     /**
@@ -197,9 +245,11 @@ public class BankAccount
             return false;
         }
         BankAccount bankAccount = ( BankAccount ) o;
-        return Objects.equals( name, bankAccount.name ) &&
+        return Objects.equals( id, bankAccount.id ) &&
+                Objects.equals( name, bankAccount.name ) &&
                 Objects.equals( prefix, bankAccount.prefix ) &&
                 Objects.equals( accountNumber, bankAccount.accountNumber ) &&
+                Objects.equals( formatted, bankAccount.formatted ) &&
                 Objects.equals( bank, bankAccount.bank ) &&
                 Objects.equals( iban, bankAccount.iban ) &&
                 Objects.equals( bic, bankAccount.bic ) &&
@@ -209,7 +259,7 @@ public class BankAccount
     @Override
     public int hashCode()
     {
-        return Objects.hash( name, prefix, accountNumber, bank, iban, bic, primary );
+        return Objects.hash( id, name, prefix, accountNumber, formatted, bank, iban, bic, primary );
     }
 
     @Override
@@ -218,9 +268,11 @@ public class BankAccount
         StringBuilder sb = new StringBuilder();
         sb.append( "class BankAccount {\n" );
 
+        sb.append( "    id: " ).append( toIndentedString( id ) ).append( "\n" );
         sb.append( "    name: " ).append( toIndentedString( name ) ).append( "\n" );
         sb.append( "    prefix: " ).append( toIndentedString( prefix ) ).append( "\n" );
         sb.append( "    accountNumber: " ).append( toIndentedString( accountNumber ) ).append( "\n" );
+        sb.append( "    formatted: " ).append( toIndentedString( formatted ) ).append( "\n" );
         sb.append( "    bank: " ).append( toIndentedString( bank ) ).append( "\n" );
         sb.append( "    iban: " ).append( toIndentedString( iban ) ).append( "\n" );
         sb.append( "    bic: " ).append( toIndentedString( bic ) ).append( "\n" );

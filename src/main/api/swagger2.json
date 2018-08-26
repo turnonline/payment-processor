@@ -54,9 +54,16 @@
                     {
                         "name": "alternative",
                         "in": "query",
-                        "description": "The filter parameter to return the list of all alternative bank accounts except the primary one for actual country (taken either as a default or explicite one).",
+                        "description": "The applied filter parameter will make return the list of all alternative bank accounts except the primary one. The primary bank account will be first searched with preferred actual country (taken either as a default or explicite one), then if not found without applied country filter.",
                         "required": false,
                         "type": "boolean"
+                    },
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default language of the associated account.",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -142,7 +149,7 @@
         "/v1/bank-accounts/primary": {
             "get": {
                 "summary": "Get primary bank account",
-                "description": "Returns the primary bank account for default country (taken from the owner domicile). The country property of the bank account is used here as a filter parameter. If you need to return primary account for different country, specify the country as a query parameter.",
+                "description": "Returns the primary bank account for default country (taken from the owner domicile). The country property of the bank account is used here as a filter parameter. If you need to return primary account for different country, specify the country as a query parameter.\n\nThe primary bank account will be first searched with preferred actual country (taken either as a default or explicite one), then if not found without applied country filter.",
                 "operationId": "getV1Bank-accountsPrimary",
                 "produces": [
                     "application/json"
@@ -152,6 +159,13 @@
                         "name": "country",
                         "in": "query",
                         "description": "The country for which the primary bank account is being searched for. The ISO 3166 alpha-2 country code. It’s case insensitive.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default language of the associated account.",
                         "required": false,
                         "type": "string"
                     }
@@ -170,7 +184,7 @@
                         }
                     },
                     "404": {
-                        "description": "The error when client tries to retrieve a primary bank account but none of the bank accounts for specified country (default or explicite) is being marked as a primary one.",
+                        "description": "The error when client tries to retrieve a primary bank account but none of the bank accounts is being marked as a primary one.",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -205,6 +219,13 @@
                         "required": true,
                         "type": "integer",
                         "format": "int64"
+                    },
+                    {
+                        "name": "Accept-Language",
+                        "in": "header",
+                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default language of the associated account.",
+                        "required": false,
+                        "type": "string"
                     }
                 ],
                 "responses": {
@@ -550,6 +571,10 @@
                     "type": "string",
                     "description": "The bank account number."
                 },
+                "formatted": {
+                    "type": "string",
+                    "description": "The formatted full bank account number."
+                },
                 "bank": {
                     "description": "The bank account bank defined as a codebook.",
                     "$ref": "#/definitions/BankAccountBank"
@@ -649,6 +674,10 @@
                 "code": {
                     "type": "string",
                     "description": "The country specific numeric bank code, taken from the code-book."
+                },
+                "label": {
+                    "type": "string",
+                    "description": "The localized name of the bank, taken from the code-book and based on either default or specified language."
                 },
                 "country": {
                     "type": "string",

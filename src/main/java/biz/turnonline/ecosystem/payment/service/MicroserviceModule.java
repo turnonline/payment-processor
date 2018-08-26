@@ -9,6 +9,7 @@ import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.CodeBookItem;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccountProviderImpl;
+import biz.turnonline.ecosystem.payment.service.model.PaymentBeanMapperConfig;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -18,6 +19,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.multibindings.Multibinder;
 import net.sf.jsr107cache.Cache;
+import org.ctoolkit.restapi.client.adapter.BeanMapperConfig;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeAppEngineModule;
 import org.ctoolkit.restapi.client.appengine.DefaultOrikaMapperFactoryModule;
 import org.ctoolkit.restapi.client.appengine.JCacheProvider;
@@ -59,6 +61,9 @@ public class MicroserviceModule
 
         Multibinder<EntityRegistrar> registrar = Multibinder.newSetBinder( binder(), EntityRegistrar.class );
         registrar.addBinding().to( Entities.class );
+
+        Multibinder<BeanMapperConfig> multi = Multibinder.newSetBinder( binder(), BeanMapperConfig.class );
+        multi.addBinding().to( PaymentBeanMapperConfig.class );
     }
 
     @Provides

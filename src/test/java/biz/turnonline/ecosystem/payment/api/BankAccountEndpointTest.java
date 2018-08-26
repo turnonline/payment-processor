@@ -3,7 +3,6 @@ package biz.turnonline.ecosystem.payment.api;
 import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.ApiValidationException;
-import biz.turnonline.ecosystem.payment.service.BackendServiceTestCase;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
@@ -12,6 +11,7 @@ import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
@@ -30,7 +30,6 @@ import static com.google.common.truth.Truth.assertThat;
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 public class BankAccountEndpointTest
-        extends BackendServiceTestCase
 {
     @Tested
     private BankAccountEndpoint endpoint;
@@ -94,7 +93,8 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
-                mapper.map( bankAccount, biz.turnonline.ecosystem.payment.service.model.BankAccount.class );
+                mapper.map( bankAccount, biz.turnonline.ecosystem.payment.service.model.BankAccount.class,
+                        ( MappingContext ) any );
                 result = new ApiValidationException( "Validation failure" );
             }
         };
@@ -158,7 +158,7 @@ public class BankAccountEndpointTest
 
                 //noinspection unchecked
                 mapper.mapAsList( ( List<biz.turnonline.ecosystem.payment.service.model.BankAccount> ) any,
-                        BankAccount.class );
+                        BankAccount.class, ( MappingContext ) any );
                 result = bankAccounts;
             }
         };
@@ -190,7 +190,7 @@ public class BankAccountEndpointTest
             {
                 //noinspection unchecked
                 mapper.mapAsList( ( List<biz.turnonline.ecosystem.payment.service.model.BankAccount> ) any,
-                        BankAccount.class );
+                        BankAccount.class, ( MappingContext ) any );
                 result = new RuntimeException();
             }
         };
@@ -349,7 +349,7 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
-                mapper.map( bankAccount, dbBankAccount );
+                mapper.map( bankAccount, dbBankAccount, ( MappingContext ) any );
                 result = new ApiValidationException( "Validation failure" );
             }
         };

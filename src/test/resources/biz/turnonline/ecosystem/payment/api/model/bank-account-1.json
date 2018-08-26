@@ -1,0 +1,10 @@
+{
+    "name": "My first bank account",
+    "accountNumber": "2289198742",
+    "iban": "SK6711000000002289198742",
+    "bic": "TATRSKBX",
+    "primary": false,
+    "bank": {
+        "code": "1100"
+    }
+}

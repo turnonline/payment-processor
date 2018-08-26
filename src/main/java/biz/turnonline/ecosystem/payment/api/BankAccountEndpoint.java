@@ -17,12 +17,15 @@ import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.common.base.MoreObjects;
+import com.google.common.net.HttpHeaders;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -68,10 +71,14 @@ public class BankAccountEndpoint
         BankAccount result;
         try
         {
-            biz.turnonline.ecosystem.payment.service.model.BankAccount dbBankAccount;
-            dbBankAccount = mapper.map( bankAccount, biz.turnonline.ecosystem.payment.service.model.BankAccount.class );
-            config.insertBankAccount( account, dbBankAccount );
+            MappingContext context = new MappingContext( new HashMap<>() );
+            context.setProperty( Account.class, account );
 
+            biz.turnonline.ecosystem.payment.service.model.BankAccount dbBankAccount;
+            dbBankAccount = mapper.map( bankAccount, biz.turnonline.ecosystem.payment.service.model.BankAccount.class,
+                    context );
+
+            config.insertBankAccount( account, dbBankAccount );
             result = mapper.map( dbBankAccount, BankAccount.class );
         }
         catch ( ApiValidationException e )
@@ -131,7 +138,10 @@ public class BankAccountEndpoint
             {
                 bankAccounts = config.getBankAccounts( account, offset, limit, country );
             }
-            result = mapper.mapAsList( bankAccounts, BankAccount.class );
+
+            MappingContext context = new MappingContext( new HashMap<>() );
+            context.setProperty( HttpHeaders.ACCEPT_LANGUAGE, language );
+            result = mapper.mapAsList( bankAccounts, BankAccount.class, context );
         }
         catch ( Exception e )
         {
@@ -205,7 +215,10 @@ public class BankAccountEndpoint
         {
             biz.turnonline.ecosystem.payment.service.model.BankAccount dbBankAccount;
             dbBankAccount = config.getBankAccount( account, accountId );
-            mapper.map( bankAccount, dbBankAccount );
+
+            MappingContext context = new MappingContext( new HashMap<>() );
+            context.setProperty( Account.class, account );
+            mapper.map( bankAccount, dbBankAccount, context );
 
             config.updateBankAccount( account, dbBankAccount );
             result = mapper.map( dbBankAccount, BankAccount.class );

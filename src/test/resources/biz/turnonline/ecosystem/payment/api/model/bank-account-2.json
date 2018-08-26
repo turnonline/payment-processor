@@ -1,0 +1,10 @@
+{
+    "name": "My second bank account",
+    "accountNumber": "2628567890",
+    "iban": "SK0809000000002628567890",
+    "bic": "GIBASKBX",
+    "primary": false,
+    "bank": {
+        "code": "0900"
+    }
+}
