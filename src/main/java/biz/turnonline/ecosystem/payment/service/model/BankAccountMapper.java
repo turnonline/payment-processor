@@ -119,7 +119,7 @@ class BankAccountMapper
 
             if ( !countryValue.isPresent() )
             {
-                backend.setCountry( bankCode.getDomicile() );
+                backend.setCountry( bankCode.getCountry() );
             }
         }
 

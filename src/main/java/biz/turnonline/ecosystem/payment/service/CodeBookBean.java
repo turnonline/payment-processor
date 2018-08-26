@@ -39,14 +39,14 @@ class CodeBookBean
     @Override
     public Map<String, BankCode> getBankCodes( @Nonnull Account account,
                                                @Nullable Locale locale,
-                                               @Nullable String domicile )
+                                               @Nullable String country )
     {
         checkNotNull( account );
 
         locale = getLocale( account, locale );
-        domicile = getDomicile( account, domicile );
+        country = getDomicile( account, country );
 
-        String key = cacheKey( locale, domicile, null );
+        String key = cacheKey( locale, country, null );
         if ( cache.containsKey( key ) )
         {
             //noinspection unchecked
@@ -57,7 +57,7 @@ class CodeBookBean
 
         Query<BankCode> query = ofy().transactionless().load().type( BankCode.class )
                 .filter( "locale", language.toLowerCase() )
-                .filter( "domicile", domicile )
+                .filter( "country", country )
                 .order( "code" );
 
         Map<String, BankCode> result = new TreeMap<>();
@@ -79,14 +79,14 @@ class CodeBookBean
     public BankCode getBankCode( @Nonnull Account account,
                                  @Nonnull String code,
                                  @Nullable Locale locale,
-                                 @Nullable String domicile )
+                                 @Nullable String country )
     {
         checkNotNull( account );
         checkNotNull( code );
 
         locale = getLocale( account, locale );
-        domicile = getDomicile( account, domicile );
-        String key = cacheKey( locale, domicile, code );
+        country = getDomicile( account, country );
+        String key = cacheKey( locale, country, code );
 
         if ( cache.containsKey( key ) )
         {
@@ -98,7 +98,7 @@ class CodeBookBean
         Query<BankCode> query = ofy().transactionless().load().type( BankCode.class )
                 .filter( "code", code )
                 .filter( "locale", language.toLowerCase() )
-                .filter( "domicile", domicile );
+                .filter( "country", country );
 
         BankCode bankCode = query.first().now();
         if ( bankCode != null )

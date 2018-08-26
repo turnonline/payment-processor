@@ -46,7 +46,7 @@ public class CodeBookBeanDbTest
         BankCode bankCode = bankCodes.get( "0200" );
         assertThat( bankCode ).isNotNull();
         assertThat( bankCode.getLocale() ).isEqualTo( "en" );
-        assertThat( bankCode.getDomicile() ).isEqualTo( CodeBook.DEFAULT_DOMICILE );
+        assertThat( bankCode.getCountry() ).isEqualTo( CodeBook.DEFAULT_DOMICILE );
 
         // cached value retrieval
         bankCodes = tested.getBankCodes( account, CodeBook.DEFAULT_LOCALE, CodeBook.DEFAULT_DOMICILE );
@@ -66,7 +66,7 @@ public class CodeBookBeanDbTest
         bankCode = bankCodes.get( "0200" );
         assertThat( bankCode ).isNotNull();
         assertThat( bankCode.getLocale() ).isEqualTo( "cs" );
-        assertThat( bankCode.getDomicile() ).isEqualTo( "SK" );
+        assertThat( bankCode.getCountry() ).isEqualTo( "SK" );
 
         // sk-SK
         bankCodes = tested.getBankCodes( account, new Locale( "sk" ), "SK" );
@@ -76,7 +76,7 @@ public class CodeBookBeanDbTest
         bankCode = bankCodes.get( "0200" );
         assertThat( bankCode ).isNotNull();
         assertThat( bankCode.getLocale() ).isEqualTo( "sk" );
-        assertThat( bankCode.getDomicile() ).isEqualTo( "SK" );
+        assertThat( bankCode.getCountry() ).isEqualTo( "SK" );
 
         // en-CZ
         bankCodes = tested.getBankCodes( account, new Locale( "en" ), "CZ" );
@@ -86,7 +86,7 @@ public class CodeBookBeanDbTest
         bankCode = bankCodes.get( "0100" );
         assertThat( bankCode ).isNotNull();
         assertThat( bankCode.getLocale() ).isEqualTo( "en" );
-        assertThat( bankCode.getDomicile() ).isEqualTo( "CZ" );
+        assertThat( bankCode.getCountry() ).isEqualTo( "CZ" );
 
         // cs-CZ
         bankCodes = tested.getBankCodes( account, new Locale( "cs" ), "CZ" );
@@ -96,7 +96,7 @@ public class CodeBookBeanDbTest
         bankCode = bankCodes.get( "0100" );
         assertThat( bankCode ).isNotNull();
         assertThat( bankCode.getLocale() ).isEqualTo( "cs" );
-        assertThat( bankCode.getDomicile() ).isEqualTo( "CZ" );
+        assertThat( bankCode.getCountry() ).isEqualTo( "CZ" );
 
         // sk-CZ
         bankCodes = tested.getBankCodes( account, new Locale( "sk" ), "CZ" );
@@ -106,7 +106,7 @@ public class CodeBookBeanDbTest
         bankCode = bankCodes.get( "0100" );
         assertThat( bankCode ).isNotNull();
         assertThat( bankCode.getLocale() ).isEqualTo( "sk" );
-        assertThat( bankCode.getDomicile() ).isEqualTo( "CZ" );
+        assertThat( bankCode.getCountry() ).isEqualTo( "CZ" );
     }
 
     @Test
@@ -115,13 +115,13 @@ public class CodeBookBeanDbTest
         BankCode bankCode = tested.getBankCode( account, "1111", new Locale( "en" ), "SK" );
         assertThat( bankCode ).isNotNull();
         assertThat( bankCode.getLocale() ).isEqualTo( "en" );
-        assertThat( bankCode.getDomicile() ).isEqualTo( "SK" );
+        assertThat( bankCode.getCountry() ).isEqualTo( "SK" );
 
         // testing caching
         BankCode cached = tested.getBankCode( account, "1111", new Locale( "en" ), "SK" );
         assertThat( cached ).isNotNull();
         assertThat( cached.getLocale() ).isEqualTo( "en" );
-        assertThat( cached.getDomicile() ).isEqualTo( "SK" );
+        assertThat( cached.getCountry() ).isEqualTo( "SK" );
     }
 
     @Test
@@ -132,13 +132,13 @@ public class CodeBookBeanDbTest
         // account locale is 'en'
         assertThat( bankCode.getLocale() ).isEqualTo( "en" );
         // account business domicile is 'SK'
-        assertThat( bankCode.getDomicile() ).isEqualTo( "SK" );
+        assertThat( bankCode.getCountry() ).isEqualTo( "SK" );
 
         // testing caching
         BankCode cached = tested.getBankCode( account, "5600", null, null );
         assertThat( cached ).isNotNull();
         assertThat( cached.getLocale() ).isEqualTo( "en" );
-        assertThat( cached.getDomicile() ).isEqualTo( "SK" );
+        assertThat( cached.getCountry() ).isEqualTo( "SK" );
     }
 
     @Test

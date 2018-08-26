@@ -28,30 +28,30 @@ public interface CodeBook
 
 
     /**
-     * Returns the all bank codes available for specified country (defined by domicile).
+     * Returns the all bank codes available for specified country (defined by country).
      *
-     * @param account  the authenticated account as a source of default locale and domicile if missing
-     * @param locale   the optional language to prefer in results
-     * @param domicile the optional ISO 3166 alpha-2 country code that represents a target domicile
+     * @param account the authenticated account as a source of default locale and country if missing
+     * @param locale  the optional language to prefer in results
+     * @param country the optional ISO 3166 alpha-2 country code that represents a target country
      * @return the all bank codes for specific country
      */
     Map<String, BankCode> getBankCodes( @Nonnull Account account,
                                         @Nullable Locale locale,
-                                        @Nullable String domicile );
+                                        @Nullable String country );
 
     /**
-     * Returns the specified bank code for given country (defined by domicile).
+     * Returns the specified bank code for given country (defined by country).
      *
-     * @param account  the authenticated account as a source of default locale and domicile if missing
-     * @param code     the numeric bank code assigned to concrete bank to be retrieved
-     * @param locale   the optional language to prefer in results
-     * @param domicile the optional ISO 3166 alpha-2 country code that represents a target domicile
+     * @param account the authenticated account as a source of default locale and country if missing
+     * @param code    the numeric bank code assigned to concrete bank to be retrieved
+     * @param locale  the optional language to prefer in results
+     * @param country the optional ISO 3166 alpha-2 country code that represents a target country
      * @return the requested bank code
      */
     BankCode getBankCode( @Nonnull Account account,
                           @Nonnull String code,
                           @Nullable Locale locale,
-                          @Nullable String domicile );
+                          @Nullable String country );
 
     /**
      * Returns the final domicile with optional preference. Always returns a value.

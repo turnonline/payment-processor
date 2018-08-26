@@ -12,11 +12,11 @@ import java.util.Objects;
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-@Entity( name = "CB_CodeBook" )
+@Entity( name = "PP_CodeBook" )
 public abstract class CodeBookItem
         implements Serializable
 {
-    private static final long serialVersionUID = 6723123114542730421L;
+    private static final long serialVersionUID = -3218357727157019622L;
 
     @Id
     private Long id;
@@ -25,7 +25,7 @@ public abstract class CodeBookItem
     private String code;
 
     @Index
-    private String domicile;
+    private String country;
 
     private String label;
 
@@ -56,14 +56,14 @@ public abstract class CodeBookItem
     /**
      * The ISO 3166 alpha-2 country code. The supported list is limited.
      **/
-    public String getDomicile()
+    public String getCountry()
     {
-        return domicile;
+        return country;
     }
 
-    protected void setDomicile( String domicile )
+    protected void setCountry( String country )
     {
-        this.domicile = domicile;
+        this.country = country;
     }
 
     /**

@@ -63,6 +63,7 @@ public class BankAccount
 
     private String bic;
 
+    @Index
     private String country;
 
     @Index

@@ -1,0 +1,7 @@
+indexes:
+- kind: PP_CodeBook
+  properties:
+  - name: ^i
+  - name: code
+  - name: country
+  - name: locale

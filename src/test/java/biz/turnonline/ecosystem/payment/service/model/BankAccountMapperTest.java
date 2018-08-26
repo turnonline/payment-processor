@@ -57,7 +57,7 @@ public class BankAccountMapperTest
                 bankCode.getCode();
                 result = code;
 
-                bankCode.getDomicile();
+                bankCode.getCountry();
                 result = country;
             }
         };

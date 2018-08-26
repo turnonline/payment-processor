@@ -22,7 +22,7 @@ class BankCodeMapper
         bankCode.setCode( source.getCode() );
         bankCode.setLabel( source.getLabel() );
         bankCode.setLocale( source.getLocale() );
-        bankCode.setCountry( source.getDomicile() );
+        bankCode.setCountry( source.getCountry() );
     }
 
     @Override

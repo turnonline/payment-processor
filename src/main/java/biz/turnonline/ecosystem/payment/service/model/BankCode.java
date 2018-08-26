@@ -24,7 +24,7 @@ public class BankCode
         super.setCode( checkNotNull( code ) );
         super.setLabel( checkNotNull( label ) );
         super.setLocale( checkNotNull( locale ) );
-        super.setDomicile( checkNotNull( domicile ) );
+        super.setCountry( checkNotNull( domicile ) );
     }
 
     @Override
@@ -32,7 +32,7 @@ public class BankCode
     {
         return "class BankCode {\n" +
                 "    code: " + toIndentedString( getCode() ) + "\n" +
-                "    domicile: " + toIndentedString( getDomicile() ) + "\n" +
+                "    country: " + toIndentedString( getCountry() ) + "\n" +
                 "    label: " + toIndentedString( getLabel() ) + "\n" +
                 "    locale: " + toIndentedString( getLocale() ) + "\n" +
                 "    version: " + toIndentedString( getVersion() ) + "\n" +
