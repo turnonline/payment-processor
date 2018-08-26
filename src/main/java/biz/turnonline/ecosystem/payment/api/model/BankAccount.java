@@ -12,7 +12,7 @@ import java.util.Objects;
  **/
 
 @ApiModel( description = "The bank account resource." )
-@javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-08-26T04:47:00.033Z" )
+@javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-08-26T12:15:58.121Z" )
 public class BankAccount
 {
 
@@ -26,13 +26,13 @@ public class BankAccount
 
     private String formatted = null;
 
-    private BankAccountBank bank = null;
-
     private String iban = null;
 
     private String bic = null;
 
     private Boolean primary = false;
+
+    private BankAccountBank bank = null;
 
     /**
      * The bank account identification.
@@ -145,28 +145,6 @@ public class BankAccount
     }
 
     /**
-     * The bank account bank defined as a codebook.
-     **/
-    public BankAccount bank( BankAccountBank bank )
-    {
-        this.bank = bank;
-        return this;
-    }
-
-
-    @ApiModelProperty( required = true, value = "The bank account bank defined as a codebook." )
-    @JsonProperty( "bank" )
-    public BankAccountBank getBank()
-    {
-        return bank;
-    }
-
-    public void setBank( BankAccountBank bank )
-    {
-        this.bank = bank;
-    }
-
-    /**
      * The international bank account number.
      **/
     public BankAccount iban( String iban )
@@ -232,6 +210,28 @@ public class BankAccount
         this.primary = primary;
     }
 
+    /**
+     * The bank defined as a codebook.
+     **/
+    public BankAccount bank( BankAccountBank bank )
+    {
+        this.bank = bank;
+        return this;
+    }
+
+
+    @ApiModelProperty( required = true, value = "The bank defined as a codebook." )
+    @JsonProperty( "bank" )
+    public BankAccountBank getBank()
+    {
+        return bank;
+    }
+
+    public void setBank( BankAccountBank bank )
+    {
+        this.bank = bank;
+    }
+
 
     @Override
     public boolean equals( Object o )
@@ -250,16 +250,16 @@ public class BankAccount
                 Objects.equals( prefix, bankAccount.prefix ) &&
                 Objects.equals( accountNumber, bankAccount.accountNumber ) &&
                 Objects.equals( formatted, bankAccount.formatted ) &&
-                Objects.equals( bank, bankAccount.bank ) &&
                 Objects.equals( iban, bankAccount.iban ) &&
                 Objects.equals( bic, bankAccount.bic ) &&
-                Objects.equals( primary, bankAccount.primary );
+                Objects.equals( primary, bankAccount.primary ) &&
+                Objects.equals( bank, bankAccount.bank );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( id, name, prefix, accountNumber, formatted, bank, iban, bic, primary );
+        return Objects.hash( id, name, prefix, accountNumber, formatted, iban, bic, primary, bank );
     }
 
     @Override
@@ -273,10 +273,10 @@ public class BankAccount
         sb.append( "    prefix: " ).append( toIndentedString( prefix ) ).append( "\n" );
         sb.append( "    accountNumber: " ).append( toIndentedString( accountNumber ) ).append( "\n" );
         sb.append( "    formatted: " ).append( toIndentedString( formatted ) ).append( "\n" );
-        sb.append( "    bank: " ).append( toIndentedString( bank ) ).append( "\n" );
         sb.append( "    iban: " ).append( toIndentedString( iban ) ).append( "\n" );
         sb.append( "    bic: " ).append( toIndentedString( bic ) ).append( "\n" );
         sb.append( "    primary: " ).append( toIndentedString( primary ) ).append( "\n" );
+        sb.append( "    bank: " ).append( toIndentedString( bank ) ).append( "\n" );
         sb.append( "}" );
         return sb.toString();
     }

@@ -12,7 +12,7 @@ import java.util.Objects;
  **/
 
 @ApiModel( description = "The brief description of the bank for concrete bank code." )
-@javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-08-26T04:47:00.033Z" )
+@javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-08-26T12:15:58.121Z" )
 public class BankCode
 {
 

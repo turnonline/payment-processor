@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
 
-@javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-08-26T04:47:00.033Z" )
+@javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-08-26T12:15:58.121Z" )
 public class BankAccountBank
 {
 
@@ -39,7 +39,7 @@ public class BankAccountBank
     }
 
     /**
-     * The localized name of the bank, taken from the code-book and based on either default or specified language.
+     * The localized name of the bank, taken from the code-book and based on either default or specified language.   The value will be managed by the service once Accept-Language header will be provided while bank account getting.
      **/
     public BankAccountBank label( String label )
     {
@@ -48,7 +48,7 @@ public class BankAccountBank
     }
 
 
-    @ApiModelProperty( value = "The localized name of the bank, taken from the code-book and based on either default or specified language." )
+    @ApiModelProperty( value = "The localized name of the bank, taken from the code-book and based on either default or specified language.   The value will be managed by the service once Accept-Language header will be provided while bank account getting." )
     @JsonProperty( "label" )
     public String getLabel()
     {
@@ -61,7 +61,7 @@ public class BankAccountBank
     }
 
     /**
-     * The country of the bank where bank account has been opened. The ISO 3166 alpha-2 country code. It’s case insensitive.  Note: Currently supported only SK and CZ.
+     * The country of the bank where bank account has been opened. The missing value will be taken from the codebook if that combination is being found. The ISO 3166 alpha-2 country code. It’s case insensitive.  Note: Currently supported only SK and CZ.
      **/
     public BankAccountBank country( String country )
     {
@@ -70,7 +70,7 @@ public class BankAccountBank
     }
 
 
-    @ApiModelProperty( value = "The country of the bank where bank account has been opened. The ISO 3166 alpha-2 country code. It’s case insensitive.  Note: Currently supported only SK and CZ." )
+    @ApiModelProperty( value = "The country of the bank where bank account has been opened. The missing value will be taken from the codebook if that combination is being found. The ISO 3166 alpha-2 country code. It’s case insensitive.  Note: Currently supported only SK and CZ." )
     @JsonProperty( "country" )
     public String getCountry()
     {

@@ -559,6 +559,11 @@
                 "bank"
             ],
             "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The bank account identification."
+                },
                 "name": {
                     "type": "string",
                     "description": "The user defined name of the bank account."
@@ -575,10 +580,6 @@
                     "type": "string",
                     "description": "The formatted full bank account number."
                 },
-                "bank": {
-                    "description": "The bank account bank defined as a codebook.",
-                    "$ref": "#/definitions/BankAccountBank"
-                },
                 "iban": {
                     "type": "string",
                     "description": "The international bank account number."
@@ -591,6 +592,10 @@
                     "type": "boolean",
                     "description": "Boolean identification, whether this bank account is being marked by the user as a primary account. If yes, this bank account will be used as a default account unless specified another one. There might be only max single or none primary bank account per country.",
                     "default": false
+                },
+                "bank": {
+                    "description": "The bank defined as a codebook.",
+                    "$ref": "#/definitions/BankAccountBank"
                 }
             },
             "description": "The bank account resource."
@@ -677,11 +682,11 @@
                 },
                 "label": {
                     "type": "string",
-                    "description": "The localized name of the bank, taken from the code-book and based on either default or specified language."
+                    "description": "The localized name of the bank, taken from the code-book and based on either default or specified language. \n\nThe value will be managed by the service once Accept-Language header will be provided while bank account getting."
                 },
                 "country": {
                     "type": "string",
-                    "description": "The country of the bank where bank account has been opened. The ISO 3166 alpha-2 country code. It’s case insensitive.\n\nNote: Currently supported only SK and CZ."
+                    "description": "The country of the bank where bank account has been opened. The missing value will be taken from the codebook if that combination is being found. The ISO 3166 alpha-2 country code. It’s case insensitive.\n\nNote: Currently supported only SK and CZ."
                 }
             }
         }
