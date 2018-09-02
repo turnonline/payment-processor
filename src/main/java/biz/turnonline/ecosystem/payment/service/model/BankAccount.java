@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
 
@@ -62,6 +63,8 @@ public class BankAccount
     private String iban;
 
     private String bic;
+
+    private String currency = null;
 
     @Index
     private String country;
@@ -251,6 +254,26 @@ public class BankAccount
     public void setBic( String bic )
     {
         this.bic = bic;
+    }
+
+    /**
+     * The bank account currency. An alphabetic code based on the ISO 4217.
+     */
+    public String getCurrency()
+    {
+        return currency;
+    }
+
+    /**
+     * Sets the currency alphabetic code based on the ISO 4217.
+     *
+     * @param currency the currency alphabetic code
+     * @throws IllegalArgumentException if <code>currency</code> is not a supported ISO 4217 code
+     */
+    public void setCurrency( String currency )
+    {
+        Currency validCurrency = Currency.getInstance( currency );
+        this.currency = validCurrency.getCurrencyCode();
     }
 
     /**

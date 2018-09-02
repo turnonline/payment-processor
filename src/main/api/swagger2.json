@@ -578,7 +578,7 @@
                 },
                 "formatted": {
                     "type": "string",
-                    "description": "The formatted full bank account number."
+                    "description": "The formatted full bank account number incl. bank code."
                 },
                 "iban": {
                     "type": "string",
@@ -587,6 +587,10 @@
                 "bic": {
                     "type": "string",
                     "description": "The international Bank Identifier Code (BIC/ISO 9362, a normalized code - also known as Business Identifier Code, Bank International Code and SWIFT code)."
+                },
+                "currency": {
+                    "type": "string",
+                    "description": "The bank account currency. An alphabetic code based on the ISO 4217."
                 },
                 "primary": {
                     "type": "boolean",

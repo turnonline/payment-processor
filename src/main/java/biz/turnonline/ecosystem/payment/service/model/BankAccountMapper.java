@@ -53,6 +53,7 @@ class BankAccountMapper
         bankAccount.setAccountNumber( source.getAccountNumber() );
         bankAccount.setIban( source.getIban() );
         bankAccount.setBic( source.getBic() );
+        bankAccount.setCurrency( source.getCurrency() );
         bankAccount.setPrimary( source.isPrimary() );
 
         String formatted = source.getFormattedBankAccount();
@@ -85,7 +86,8 @@ class BankAccountMapper
             String code = bank.getCode();
             if ( code == null )
             {
-                throw ApiValidationException.prepare( "" );
+                String key = "errors.validation.mandatory.property.missing";
+                throw ApiValidationException.prepare( key, "bank.code" );
             }
 
             Account account = ( Account ) context.getProperty( Account.class );
@@ -121,6 +123,16 @@ class BankAccountMapper
             {
                 backend.setCountry( bankCode.getCountry() );
             }
+        }
+
+        try
+        {
+            sValue = Optional.ofNullable( source.getCurrency() );
+            sValue.ifPresent( backend::setCurrency );
+        }
+        catch ( IllegalArgumentException e )
+        {
+            throw ApiValidationException.prepare( "errors.validation.currency", source.getCurrency() );
         }
 
         sValue = Optional.ofNullable( source.getName() );

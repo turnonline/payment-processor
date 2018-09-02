@@ -78,9 +78,37 @@ public class BankAccountMapperTest
         assertThat( backend.getAccountNumber() ).isEqualTo( api.getAccountNumber() );
         assertThat( backend.getIban() ).isEqualTo( api.getIban() );
         assertThat( backend.getBic() ).isEqualTo( api.getBic() );
+        assertThat( backend.getCurrency() ).isEqualTo( api.getCurrency() );
 
         assertThat( backend.getCountry() ).isNotNull();
         assertThat( backend.isPrimary() ).isFalse();
+    }
+
+    @Test( expectedExceptions = ApiValidationException.class )
+    public void mapApiToBackend_CurrencyValidationFailure()
+    {
+        String code = "1100";
+        new Expectations()
+        {
+            {
+                context.getProperty( Account.class );
+                result = account;
+
+                codeBook.getBankCode( account, code, ( Locale ) any, anyString );
+                result = bankCode;
+
+                bankCode.getCode();
+                result = code;
+            }
+        };
+
+        BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
+        api.setCurrency( "EUR_INV" );
+
+        biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
+        backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
+
+        tested.mapBtoA( api, backend, context );
     }
 
     @Test( expectedExceptions = ApiValidationException.class )
@@ -99,6 +127,18 @@ public class BankAccountMapperTest
         };
 
         BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
+
+        biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
+        backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
+
+        tested.mapBtoA( api, backend, context );
+    }
+
+    @Test( expectedExceptions = ApiValidationException.class )
+    public void mapApiToBackend_BankCodeIsMissing()
+    {
+        BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
+        api.getBank().setCode( null );
 
         biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
         backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
@@ -130,6 +170,9 @@ public class BankAccountMapperTest
                 backend.getBic();
                 result = "TATRSKBX";
 
+                backend.getCurrency();
+                result = "EUR";
+
                 backend.getFormattedBankAccount();
                 result = "2289198742/1100";
 
@@ -155,6 +198,7 @@ public class BankAccountMapperTest
         assertThat( api.getAccountNumber() ).isNotNull();
         assertThat( api.getIban() ).isNotNull();
         assertThat( api.getBic() ).isNotNull();
+        assertThat( api.getCurrency() ).isNotNull();
         assertThat( api.getPrimary() ).isTrue();
 
         assertThat( api.getBank().getCode() ).isEqualTo( code );
