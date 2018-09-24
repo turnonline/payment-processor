@@ -91,7 +91,12 @@
                             "$ref": "#/definitions/Error"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "firebase-a9a2a51a": []
+                    }
+                ]
             },
             "post": {
                 "summary": "Create bank account",
@@ -143,7 +148,12 @@
                             "$ref": "#/definitions/Error"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "firebase-a9a2a51a": []
+                    }
+                ]
             }
         },
         "/v1/bank-accounts/primary": {
@@ -201,7 +211,12 @@
                             "$ref": "#/definitions/Error"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "firebase-a9a2a51a": []
+                    }
+                ]
             }
         },
         "/v1/bank-accounts/{account_id}": {
@@ -259,7 +274,12 @@
                             "$ref": "#/definitions/Error"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "firebase-a9a2a51a": []
+                    }
+                ]
             },
             "put": {
                 "summary": "Update bank account",
@@ -325,7 +345,12 @@
                             "$ref": "#/definitions/Error"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "firebase-a9a2a51a": []
+                    }
+                ]
             },
             "delete": {
                 "summary": "Delete bank account",
@@ -377,7 +402,12 @@
                             "$ref": "#/definitions/Error"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "firebase-a9a2a51a": []
+                    }
+                ]
             }
         },
         "/v1/bank-accounts/{account_id}/primary": {
@@ -433,7 +463,12 @@
                             "$ref": "#/definitions/Error"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "firebase-a9a2a51a": []
+                    }
+                ]
             }
         },
         "/v1/codebook/bank-code": {
@@ -484,7 +519,12 @@
                             "$ref": "#/definitions/Error"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "firebase-a9a2a51a": []
+                    }
+                ]
             }
         },
         "/v1/codebook/bank-code/{code}": {
@@ -548,8 +588,23 @@
                             "$ref": "#/definitions/Error"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "firebase-a9a2a51a": []
+                    }
+                ]
             }
+        }
+    },
+    "securityDefinitions": {
+        "firebase-a9a2a51a": {
+            "type": "oauth2",
+            "authorizationUrl": "",
+            "flow": "implicit",
+            "x-google-issuer": "https://securetoken.google.com/turn-online-eu",
+            "x-google-jwks_uri": "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com",
+            "x-google-audiences": "turn-online-eu"
         }
     },
     "definitions": {

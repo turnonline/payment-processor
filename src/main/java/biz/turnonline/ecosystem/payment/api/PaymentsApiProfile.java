@@ -1,9 +1,13 @@
 package biz.turnonline.ecosystem.payment.api;
 
+import com.google.api.server.spi.auth.EspAuthenticator;
 import com.google.api.server.spi.config.Api;
+import com.google.api.server.spi.config.ApiIssuer;
+import com.google.api.server.spi.config.ApiIssuerAudience;
 import com.google.api.server.spi.config.ApiNamespace;
 
 import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.CURRENT_VERSION;
+import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.PROJECT_ID;
 
 /**
  * The endpoint profile, the base class as a configuration of the REST API and generated client.
@@ -18,11 +22,23 @@ import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.CURRENT_VE
         version = CURRENT_VERSION,
         description = "TurnOnline.biz Ecosystem: Payment Processor REST API",
         documentationLink = "https://ecosystem.turnonline.biz/docs",
-        namespace = @ApiNamespace( ownerDomain = "ecosystem.turnonline.biz", ownerName = "Comvai, s.r.o." )
+        namespace = @ApiNamespace( ownerDomain = "ecosystem.turnonline.biz", ownerName = "Comvai, s.r.o." ),
+        authenticators = {EspAuthenticator.class},
+        issuers = {
+                @ApiIssuer(
+                        name = "firebase",
+                        issuer = "https://securetoken.google.com/" + PROJECT_ID,
+                        jwksUri = "https://www.googleapis.com/service_accounts/v1/metadata/x509/securetoken@system.gserviceaccount.com" )
+        },
+        issuerAudiences = {
+                @ApiIssuerAudience( name = "firebase", audiences = PROJECT_ID )
+        }
 )
 class PaymentsApiProfile
 {
     static final String CURRENT_VERSION = "v1";
 
     static final String API_NAME = "payment";
+
+    static final String PROJECT_ID = "turn-online-eu";
 }
