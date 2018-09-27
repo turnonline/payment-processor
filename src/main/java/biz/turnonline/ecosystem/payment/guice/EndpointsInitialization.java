@@ -35,5 +35,8 @@ public class EndpointsInitialization
 
         filter( "/*" ).through( ObjectifyFilter.class );
         filter( CodeBookCacheControlFilter.FILTER_PATH ).through( CodeBookCacheControlFilter.class );
+
+        //https://stackoverflow.com/questions/50339907/using-google-cloud-endpoint-framework-2-0-with-custom-domain
+        //serve( "/*" ).with( GuiceEndpointsServlet.class, params.asMap() );
     }
 }

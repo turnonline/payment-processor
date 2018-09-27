@@ -2,13 +2,13 @@ package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.account.client.model.Account;
 import com.google.api.server.spi.ServiceException;
-import com.google.api.server.spi.auth.GoogleAuth;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.common.net.HttpHeaders;
 import org.ctoolkit.restapi.client.RestFacade;
+import org.ctoolkit.services.endpoints.ServerToServerAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,21 +100,30 @@ class EndpointsCommon
         authorize( authUser );
 
         String authEmail = authUser.getEmail();
-        Account account;
+        Account account = null;
+        boolean notFound = false;
 
         try
         {
-            String jwtToken = GoogleAuth.getAuthToken( request );
-            account = facade.get( Account.class ).identifiedBy( authEmail ).authBy( jwtToken ).bearer().finish();
+            account = facade.get( Account.class )
+                    .identifiedBy( authEmail )
+                    .addHeader( ServerToServerAuthenticator.ON_BEHALF_OF_EMAIL, authEmail )
+                    .addHeader( ServerToServerAuthenticator.ON_BEHALF_OF_USER_ID, authUser.getId() )
+                    .finish();
         }
         catch ( org.ctoolkit.restapi.client.NotFoundException e )
         {
-            throw new NotFoundException( accountNotFoundMessage( authEmail ) );
+            notFound = true;
         }
         catch ( Exception e )
         {
             logger.error( "Account retrieval has failed for " + authEmail, e );
             throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+
+        if ( notFound )
+        {
+            throw new NotFoundException( accountNotFoundMessage( authEmail ) );
         }
 
         return account;

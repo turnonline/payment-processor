@@ -1,0 +1,7 @@
+dispatch:
+#  - url: payment.turnon.cloud/*
+#    service: payment-processor
+#  - url: account.turnon.cloud/*
+#    service: account-steward
+#  - url: billing.turnon.cloud/*
+#    service: product-billing

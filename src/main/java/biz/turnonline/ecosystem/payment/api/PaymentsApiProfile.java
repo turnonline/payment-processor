@@ -1,10 +1,12 @@
 package biz.turnonline.ecosystem.payment.api;
 
 import com.google.api.server.spi.auth.EspAuthenticator;
+import com.google.api.server.spi.auth.GoogleOAuth2Authenticator;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiIssuer;
 import com.google.api.server.spi.config.ApiIssuerAudience;
 import com.google.api.server.spi.config.ApiNamespace;
+import org.ctoolkit.services.endpoints.ServerToServerAuthenticator;
 
 import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.CURRENT_VERSION;
 import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.PROJECT_ID;
@@ -23,7 +25,8 @@ import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.PROJECT_ID
         description = "TurnOnline.biz Ecosystem: Payment Processor REST API",
         documentationLink = "https://ecosystem.turnonline.biz/docs",
         namespace = @ApiNamespace( ownerDomain = "ecosystem.turnonline.biz", ownerName = "Comvai, s.r.o." ),
-        authenticators = {EspAuthenticator.class},
+        // GoogleOAuth2Authenticator is here for now only for development purpose
+        authenticators = {ServerToServerAuthenticator.class, GoogleOAuth2Authenticator.class, EspAuthenticator.class},
         issuers = {
                 @ApiIssuer(
                         name = "firebase",

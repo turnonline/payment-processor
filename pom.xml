@@ -82,14 +82,14 @@
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-microservice-bom</artifactId>
-                <version>1.9.64.2</version>
+                <version>1.9.65-20180927.054522-2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-library-bom</artifactId>
-                <version>8</version>
+                <version>9</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -169,6 +169,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
+            <version>25.1-jre</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
