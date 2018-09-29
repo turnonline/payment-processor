@@ -23,7 +23,7 @@ import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.PROJECT_ID
         title = "TurnOnline.biz Payment Processor",
         version = CURRENT_VERSION,
         description = "TurnOnline.biz Ecosystem: Payment Processor REST API",
-        documentationLink = "https://ecosystem.turnonline.biz/docs",
+        documentationLink = "https://developers.turnonline.biz",
         namespace = @ApiNamespace( ownerDomain = "ecosystem.turnonline.biz", ownerName = "Comvai, s.r.o." ),
         // GoogleOAuth2Authenticator is here for now only for development purpose
         authenticators = {ServerToServerAuthenticator.class, GoogleOAuth2Authenticator.class, EspAuthenticator.class},

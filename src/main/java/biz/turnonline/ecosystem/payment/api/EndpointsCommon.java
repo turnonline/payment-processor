@@ -8,7 +8,6 @@ import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.common.net.HttpHeaders;
 import org.ctoolkit.restapi.client.RestFacade;
-import org.ctoolkit.services.endpoints.ServerToServerAuthenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,8 +106,7 @@ class EndpointsCommon
         {
             account = facade.get( Account.class )
                     .identifiedBy( authEmail )
-                    .addHeader( ServerToServerAuthenticator.ON_BEHALF_OF_EMAIL, authEmail )
-                    .addHeader( ServerToServerAuthenticator.ON_BEHALF_OF_USER_ID, authUser.getId() )
+                    .onBehalf( authEmail, authUser.getId() )
                     .finish();
         }
         catch ( org.ctoolkit.restapi.client.NotFoundException e )

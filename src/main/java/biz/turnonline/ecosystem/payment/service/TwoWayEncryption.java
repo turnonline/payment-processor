@@ -52,7 +52,7 @@ public class TwoWayEncryption
         Cipher c = Cipher.getInstance( AES_ALGORITHM );
         c.init( Cipher.DECRYPT_MODE, key );
 
-        byte[] decValue = c.doFinal( BaseEncoding.base64().decode( CharMatcher.WHITESPACE.removeFrom( inputToDecrypt ) ) );
+        byte[] decValue = c.doFinal( BaseEncoding.base64().decode( CharMatcher.whitespace().removeFrom( inputToDecrypt ) ) );
 
         return new String( decValue );
     }

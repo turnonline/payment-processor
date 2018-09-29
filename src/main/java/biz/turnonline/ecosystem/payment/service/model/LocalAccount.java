@@ -9,7 +9,6 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Ignore;
 import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.RestFacade;
-import org.ctoolkit.services.endpoints.ServerToServerAuthenticator;
 import org.ctoolkit.services.storage.appengine.objectify.EntityStringIdentity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,8 +89,7 @@ public class LocalAccount
         {
             tAccount = facade.get( Account.class )
                     .identifiedBy( getEmail() )
-                    .addHeader( ServerToServerAuthenticator.ON_BEHALF_OF_EMAIL, getEmail() )
-                    .addHeader( ServerToServerAuthenticator.ON_BEHALF_OF_USER_ID, getIdentityId() )
+                    .onBehalf( getEmail(), getIdentityId() )
                     .finish();
         }
         catch ( NotFoundException e )
