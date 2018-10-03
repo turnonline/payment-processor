@@ -82,7 +82,7 @@
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-microservice-bom</artifactId>
-                <version>1.9.65-20180929.031824-3</version>
+                <version>1.9.65-20181002.190800-4</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
