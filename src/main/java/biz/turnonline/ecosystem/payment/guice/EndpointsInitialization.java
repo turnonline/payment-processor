@@ -27,7 +27,7 @@ public class EndpointsInitialization
                 // add your endpoint service implementation
                 .addServiceClass( CodeBookEndpoint.class )
                 .addServiceClass( BankAccountEndpoint.class )
-                .setClientIdWhitelistEnabled( true ).build();
+                .setClientIdWhitelistEnabled( false ).build();
 
         configureEndpoints( ENDPOINTS_SERVLET_PATH, params );
 
