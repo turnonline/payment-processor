@@ -1,7 +1,5 @@
 package biz.turnonline.ecosystem.payment.service;
 
-import biz.turnonline.ecosystem.account.client.AccountStewardAdapterModule;
-import biz.turnonline.ecosystem.account.client.AccountStewardApiModule;
 import biz.turnonline.ecosystem.payment.guice.EntityRegistrar;
 import biz.turnonline.ecosystem.payment.guice.GuicefiedOfyFactory;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
@@ -10,6 +8,8 @@ import biz.turnonline.ecosystem.payment.service.model.CodeBookItem;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccountProviderImpl;
 import biz.turnonline.ecosystem.payment.service.model.PaymentBeanMapperConfig;
+import biz.turnonline.ecosystem.steward.facade.AccountStewardAdapterModule;
+import biz.turnonline.ecosystem.steward.facade.AccountStewardApiModule;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;

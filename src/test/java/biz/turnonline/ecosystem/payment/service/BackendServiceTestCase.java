@@ -91,6 +91,32 @@ public class BackendServiceTestCase
         return item;
     }
 
+    /**
+     * To deserialize from JSON to {@link com.google.api.client.json.GenericJson}.
+     */
+    public static <T> T genericJsonFromFile( String json, Class<T> valueType )
+    {
+        InputStream stream = valueType.getResourceAsStream( json );
+        if ( stream == null )
+        {
+            String msg = json + " file has not been found in resource package " + valueType.getPackage() + ".";
+            throw new IllegalArgumentException( msg );
+        }
+
+        T item = null;
+
+        try
+        {
+            com.google.api.client.json.JsonFactory factory = new com.google.api.client.json.jackson.JacksonFactory();
+            item = factory.fromInputStream( stream, valueType );
+        }
+        catch ( IOException e )
+        {
+            e.printStackTrace();
+        }
+        return item;
+    }
+
     @BeforeMethod
     public void setUp( Method m )
     {

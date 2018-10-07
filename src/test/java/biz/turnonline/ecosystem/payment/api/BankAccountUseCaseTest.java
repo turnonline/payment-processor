@@ -1,9 +1,9 @@
 package biz.turnonline.ecosystem.payment.api;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.BackendServiceTestCase;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.NotFoundException;
@@ -45,7 +45,7 @@ public class BankAccountUseCaseTest
     @BeforeMethod
     public void before()
     {
-        account = getFromFile( "account.json", Account.class );
+        account = genericJsonFromFile( "account.json", Account.class );
 
         // import bank code code-book
         ImportTask task = new ImportTask( "/dataset/changeset_00001.xml" );

@@ -1,9 +1,9 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.api.model.BankAccountBank;
 import biz.turnonline.ecosystem.payment.service.ApiValidationException;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
+import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.common.base.Strings;
 import com.google.common.net.HttpHeaders;
 import ma.glasnost.orika.CustomMapper;

@@ -1,7 +1,7 @@
 package biz.turnonline.ecosystem.payment.service;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
+import biz.turnonline.ecosystem.steward.model.Account;
 import com.googlecode.objectify.cmd.Query;
 import net.sf.jsr107cache.Cache;
 

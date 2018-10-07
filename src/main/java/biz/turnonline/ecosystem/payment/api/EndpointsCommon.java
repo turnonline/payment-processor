@@ -1,6 +1,6 @@
 package biz.turnonline.ecosystem.payment.api;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
+import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.server.spi.ServiceException;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.response.InternalServerErrorException;

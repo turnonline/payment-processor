@@ -1,8 +1,8 @@
 package biz.turnonline.ecosystem.payment.api;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.api.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
+import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
@@ -44,8 +44,7 @@ public class CodeBookEndpointTest
     @Mocked
     private User authUser;
 
-    @Mocked
-    private Account account;
+    private Account account = new Account();
 
     @Mocked
     private biz.turnonline.ecosystem.payment.service.model.BankCode dbBankCode;
@@ -57,6 +56,8 @@ public class CodeBookEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
+
                 common.getAcceptLanguage( request );
 
                 service.getBankCodes( account, ( Locale ) any, "SK" );
@@ -76,6 +77,7 @@ public class CodeBookEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
 
                 //noinspection ConstantConditions
                 service.getBankCodes( ( Account ) any, ( Locale ) any, anyString );
@@ -93,6 +95,7 @@ public class CodeBookEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
 
                 //noinspection unchecked
                 mapper.mapAsList( ( List ) any, BankCode.class );
@@ -111,6 +114,8 @@ public class CodeBookEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
+
                 common.getAcceptLanguage( request );
 
                 common.getAcceptLanguage( request );
@@ -146,6 +151,9 @@ public class CodeBookEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 mapper.map( dbBankCode, BankCode.class );
                 result = new RuntimeException();
             }
@@ -160,6 +168,9 @@ public class CodeBookEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 //noinspection ConstantConditions
                 service.getBankCode( ( Account ) any, anyString, ( Locale ) any, anyString );
                 result = new RuntimeException();

@@ -1,9 +1,9 @@
 package biz.turnonline.ecosystem.payment.service;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
-import biz.turnonline.ecosystem.account.client.model.AccountBusiness;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.CodeBookItem;
+import biz.turnonline.ecosystem.steward.model.Account;
+import biz.turnonline.ecosystem.steward.model.AccountBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

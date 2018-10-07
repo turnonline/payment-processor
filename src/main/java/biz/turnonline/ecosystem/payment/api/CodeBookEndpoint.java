@@ -1,8 +1,8 @@
 package biz.turnonline.ecosystem.payment.api;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.api.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
+import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;

@@ -1,7 +1,7 @@
 package biz.turnonline.ecosystem.payment.service;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
+import biz.turnonline.ecosystem.steward.model.Account;
 import org.ctoolkit.agent.service.impl.ImportTask;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -28,7 +28,7 @@ public class CodeBookBeanDbTest
     @BeforeMethod
     public void before()
     {
-        account = getFromFile( "account.json", Account.class );
+        account = genericJsonFromFile( "account.json", Account.class );
 
         // import bank code code-book
         ImportTask task = new ImportTask( "/dataset/changeset_00001.xml" );

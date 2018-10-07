@@ -1,8 +1,8 @@
 package biz.turnonline.ecosystem.payment.service;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import org.ctoolkit.services.storage.EntityExecutor;

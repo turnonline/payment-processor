@@ -1,8 +1,8 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
-import biz.turnonline.ecosystem.account.client.model.AccountBusiness;
 import biz.turnonline.ecosystem.payment.service.NoRetryException;
+import biz.turnonline.ecosystem.steward.model.Account;
+import biz.turnonline.ecosystem.steward.model.AccountBusiness;
 import com.google.common.base.MoreObjects;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
@@ -34,7 +34,7 @@ public class LocalAccount
 {
     private static final Logger logger = LoggerFactory.getLogger( LocalAccount.class );
 
-    private static final long serialVersionUID = 437608003749056818L;
+    private static final long serialVersionUID = -4403269872493958639L;
 
     @Ignore
     private transient RestFacade facade;

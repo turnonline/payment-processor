@@ -1,10 +1,10 @@
 package biz.turnonline.ecosystem.payment.service;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
-import biz.turnonline.ecosystem.account.client.model.Domicile;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.steward.facade.Domicile;
+import biz.turnonline.ecosystem.steward.model.Account;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
@@ -46,8 +46,7 @@ public class PrimaryAlternativeBankAccountTest
     @Mocked
     private LocalAccount owner;
 
-    @Mocked
-    private Account account;
+    private Account account = new Account();
 
     @Test
     public void getPrimaryBankAccountSellerCzNullCountry()
@@ -205,6 +204,9 @@ public class PrimaryAlternativeBankAccountTest
             {
                 tested.getInternalPrimaryBankAccount( account, anyString );
                 result = null;
+
+                owner.getAccount();
+                result = account;
             }
         };
 
@@ -249,6 +251,9 @@ public class PrimaryAlternativeBankAccountTest
             {
                 tested.getInternalPrimaryBankAccount( account, anyString );
                 result = getBankAccount1();
+
+                owner.getAccount();
+                result = account;
             }
         };
 

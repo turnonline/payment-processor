@@ -1,9 +1,9 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
 import biz.turnonline.ecosystem.payment.service.SecretKeyConfig;
 import biz.turnonline.ecosystem.payment.service.TwoWayEncryption;
+import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 import com.googlecode.objectify.Ref;
@@ -41,7 +41,7 @@ public class BankAccount
 
     private static final Logger logger = LoggerFactory.getLogger( BankAccount.class );
 
-    private static final long serialVersionUID = -6428849506665413138L;
+    private static final long serialVersionUID = -4153441408312149984L;
 
     private final CodeBook codeBook;
 

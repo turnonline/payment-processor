@@ -1,9 +1,9 @@
 package biz.turnonline.ecosystem.payment.service;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.PaymentGate;
+import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.inject.Injector;
 import org.ctoolkit.agent.service.impl.ImportTask;
 import org.testng.annotations.BeforeMethod;
@@ -38,10 +38,10 @@ public class PaymentConfigBeanDbTest
     @BeforeMethod
     public void before()
     {
-        account = getFromFile( "account.json", Account.class );
+        account = genericJsonFromFile( "account.json", Account.class );
         lap.getAssociatedLightAccount( account ).save();
 
-        another = getFromFile( "account.json", Account.class );
+        another = genericJsonFromFile( "account.json", Account.class );
         another.setIdentityId( "111DN78L2233" );
         another.setEmail( "another.account@turnonline.biz" );
         lap.getAssociatedLightAccount( another ).save();

@@ -1,11 +1,11 @@
 package biz.turnonline.ecosystem.payment.api;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.ApiValidationException;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
+import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;

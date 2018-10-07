@@ -1,7 +1,7 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
+import biz.turnonline.ecosystem.steward.model.Account;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

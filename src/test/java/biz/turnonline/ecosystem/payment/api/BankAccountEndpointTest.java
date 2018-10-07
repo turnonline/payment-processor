@@ -1,11 +1,11 @@
 package biz.turnonline.ecosystem.payment.api;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.ApiValidationException;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
+import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.InternalServerErrorException;
@@ -49,8 +49,7 @@ public class BankAccountEndpointTest
     @Mocked
     private User authUser;
 
-    @Mocked
-    private Account account;
+    private Account account = new Account();
 
     @Mocked
     private BankAccount bankAccount;
@@ -65,6 +64,8 @@ public class BankAccountEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
+
                 config.insertBankAccount( account, dbBankAccount );
             }
         };
@@ -79,6 +80,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.insertBankAccount( account, dbBankAccount );
                 result = new ApiValidationException( "Validation failure" );
             }
@@ -93,6 +97,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 mapper.map( bankAccount, biz.turnonline.ecosystem.payment.service.model.BankAccount.class,
                         ( MappingContext ) any );
                 result = new ApiValidationException( "Validation failure" );
@@ -108,6 +115,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.insertBankAccount( account, dbBankAccount );
                 result = new IllegalArgumentException();
             }
@@ -122,6 +132,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.insertBankAccount( account, dbBankAccount );
                 result = new RuntimeException();
             }
@@ -136,6 +149,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 mapper.map( dbBankAccount, BankAccount.class );
                 result = new RuntimeException();
             }
@@ -154,6 +170,8 @@ public class BankAccountEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
+
                 config.getBankAccounts( account, 5, 15, null );
 
                 //noinspection unchecked
@@ -174,6 +192,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.getBankAccounts( account, anyInt, anyInt, null );
                 result = new RuntimeException();
             }
@@ -188,6 +209,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 //noinspection unchecked
                 mapper.mapAsList( ( List<biz.turnonline.ecosystem.payment.service.model.BankAccount> ) any,
                         BankAccount.class, ( MappingContext ) any );
@@ -206,6 +230,7 @@ public class BankAccountEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
 
                 config.getBankAccount( account, accountId );
                 result = dbBankAccount;
@@ -226,6 +251,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.getBankAccount( account, accountId );
                 result = new BankAccountNotFound( accountId );
             }
@@ -241,6 +269,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.getBankAccount( account, accountId );
                 result = new WrongEntityOwner();
             }
@@ -255,6 +286,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.getBankAccount( account, anyLong );
                 result = new RuntimeException();
             }
@@ -271,6 +305,7 @@ public class BankAccountEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
 
                 config.getBankAccount( account, accountId );
                 result = dbBankAccount;
@@ -290,6 +325,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.getBankAccount( account, accountId );
                 result = new BankAccountNotFound( accountId );
             }
@@ -305,6 +343,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.getBankAccount( account, accountId );
                 result = new WrongEntityOwner();
             }
@@ -320,6 +361,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.getBankAccount( account, accountId );
                 result = new RuntimeException();
             }
@@ -334,6 +378,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.updateBankAccount( account, dbBankAccount );
                 result = new RuntimeException();
             }
@@ -349,6 +396,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 mapper.map( bankAccount, dbBankAccount, ( MappingContext ) any );
                 result = new ApiValidationException( "Validation failure" );
             }
@@ -364,6 +414,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 mapper.map( dbBankAccount, BankAccount.class );
                 result = new RuntimeException();
             }
@@ -379,6 +432,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.updateBankAccount( account, dbBankAccount );
                 result = new IllegalArgumentException();
             }
@@ -395,6 +451,8 @@ public class BankAccountEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
+
                 config.deleteBankAccount( account, accountId );
             }
         };
@@ -410,6 +468,7 @@ public class BankAccountEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
 
                 config.deleteBankAccount( account, accountId );
                 result = new BankAccountNotFound( accountId );
@@ -427,6 +486,7 @@ public class BankAccountEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
 
                 config.deleteBankAccount( account, accountId );
                 result = new WrongEntityOwner();
@@ -444,6 +504,7 @@ public class BankAccountEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
 
                 config.deleteBankAccount( account, accountId );
                 result = new RuntimeException();
@@ -461,6 +522,7 @@ public class BankAccountEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
 
                 config.deleteBankAccount( account, accountId );
                 result = new ApiValidationException( "Validation failure" );
@@ -478,6 +540,7 @@ public class BankAccountEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
 
                 config.getPrimaryBankAccount( account, country );
                 result = dbBankAccount;
@@ -493,6 +556,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.getPrimaryBankAccount( account, anyString );
                 result = new BankAccountNotFound( -1L );
             }
@@ -507,6 +573,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.getPrimaryBankAccount( account, anyString );
                 result = new RuntimeException();
             }
@@ -521,6 +590,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 mapper.map( dbBankAccount, BankAccount.class );
                 result = new RuntimeException();
             }
@@ -537,6 +609,7 @@ public class BankAccountEndpointTest
         {
             {
                 common.checkAccount( authUser, request );
+                result = account;
 
                 config.markBankAccountAsPrimary( account, accountId );
                 result = dbBankAccount;
@@ -552,6 +625,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.markBankAccountAsPrimary( account, anyLong );
                 result = new ApiValidationException( "Validation failure" );
             }
@@ -566,6 +642,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.markBankAccountAsPrimary( account, anyLong );
                 result = new WrongEntityOwner();
             }
@@ -580,6 +659,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.markBankAccountAsPrimary( account, anyLong );
                 result = new BankAccountNotFound( 2L );
             }
@@ -594,6 +676,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 config.markBankAccountAsPrimary( account, anyLong );
                 result = new RuntimeException();
             }
@@ -608,6 +693,9 @@ public class BankAccountEndpointTest
         new Expectations()
         {
             {
+                common.checkAccount( authUser, request );
+                result = account;
+
                 mapper.map( dbBankAccount, BankAccount.class );
                 result = new RuntimeException();
             }

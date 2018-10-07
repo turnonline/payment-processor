@@ -1,7 +1,7 @@
 package biz.turnonline.ecosystem.payment.service;
 
-import biz.turnonline.ecosystem.account.client.model.Account;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.steward.model.Account;
 
 import javax.annotation.Nonnull;
 
