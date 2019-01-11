@@ -21,6 +21,7 @@ package biz.turnonline.ecosystem.payment.service;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.appengine.api.urlfetch.URLFetchServicePb;
 import com.google.appengine.api.utils.SystemProperty;
 import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
@@ -107,7 +108,7 @@ public class BackendServiceTestCase
 
         try
         {
-            com.google.api.client.json.JsonFactory factory = new com.google.api.client.json.jackson.JacksonFactory();
+            com.google.api.client.json.JsonFactory factory = new JacksonFactory();
             item = factory.fromInputStream( stream, valueType );
         }
         catch ( IOException e )

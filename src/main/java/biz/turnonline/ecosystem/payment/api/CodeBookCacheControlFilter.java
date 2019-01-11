@@ -17,7 +17,7 @@ import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.CURRENT_VE
 public class CodeBookCacheControlFilter
         extends CacheControlFilter
 {
-    public static final String FILTER_PATH = "/_ah/api/" + API_NAME + "/"
+    public static final String FILTER_PATH = "/api/" + API_NAME + "/"
             + CURRENT_VERSION + "/codebook/*";
 
     @Override

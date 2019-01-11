@@ -6,7 +6,7 @@
         "title": "Payment Processor"
     },
     "host": "payment.turnon.cloud",
-    "basePath": "/_ah/api/payment",
+    "basePath": "/api/payment",
     "schemes": [
         "https"
     ],
