@@ -101,7 +101,7 @@
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-account-steward-client</artifactId>
-            <version>1.0-20181007.115943-9</version>
+            <version>1.0-20190110.201137-12</version>
         </dependency>
         <!-- Java Servlet API -->
         <dependency>
