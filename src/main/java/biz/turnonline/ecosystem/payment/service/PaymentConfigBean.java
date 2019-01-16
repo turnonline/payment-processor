@@ -319,7 +319,7 @@ class PaymentConfigBean
         public int compare( BankAccount left, BankAccount right )
         {
             return ComparisonChain.start()
-                    .compare( right.getCode(), left.getCode(), Ordering.natural().nullsFirst() )
+                    .compare( right.getCode(), left.getCode(), Ordering.natural().nullsLast() )
                     .result();
         }
     }
@@ -371,7 +371,7 @@ class PaymentConfigBean
                 return 0;
             }
             return ComparisonChain.start()
-                    .compare( left.getCountry(), right.getCountry() )
+                    .compare( left.getCountry(), right.getCountry(), Ordering.natural().nullsLast() )
                     .result();
         }
     }

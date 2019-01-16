@@ -6,6 +6,7 @@ import biz.turnonline.ecosystem.payment.service.TwoWayEncryption;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.Ordering;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Ignore;
@@ -460,10 +461,10 @@ public class BankAccount
     public int compareTo( @Nonnull BankAccount bankAccount )
     {
         return ComparisonChain.start()
-                .compare( this.name, bankAccount.getName() )
-                .compare( this.bankCode, bankAccount.getBankCode() )
-                .compare( this.accountNumber, bankAccount.getAccountNumber() )
-                .compare( this.prefix, bankAccount.getPrefix() )
+                .compare( this.name, bankAccount.getName(), Ordering.natural().nullsLast() )
+                .compare( this.bankCode, bankAccount.getBankCode(), Ordering.natural().nullsLast() )
+                .compare( this.accountNumber, bankAccount.getAccountNumber(), Ordering.natural().nullsLast() )
+                .compare( this.prefix, bankAccount.getPrefix(), Ordering.natural().nullsLast() )
                 .result();
     }
 
