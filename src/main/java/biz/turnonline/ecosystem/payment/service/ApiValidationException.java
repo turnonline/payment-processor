@@ -13,6 +13,8 @@ import java.util.ResourceBundle;
 public class ApiValidationException
         extends IllegalArgumentException
 {
+    private static final long serialVersionUID = 4287106409953402387L;
+
     /**
      * Constructs runtime exception with validation message to be thrown to the end user.
      *

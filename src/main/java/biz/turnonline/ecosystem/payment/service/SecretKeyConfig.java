@@ -7,5 +7,10 @@ package biz.turnonline.ecosystem.payment.service;
  */
 public class SecretKeyConfig
 {
-    public static final byte[] TWO_WAY_HASH_SECRET_KEY = new byte[]{};
+    public static final byte[] TWO_WAY_HASH_SECRET_KEY = new byte[]{
+            'b', 'x', '1', 'b', 'u',
+            'l', '1', '3', 'c', '$',
+            'u', 'l', 'x', '1', '*',
+            '2'
+    };
 }
