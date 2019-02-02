@@ -28,6 +28,7 @@
     </issueManagement>
 
     <build>
+        <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
