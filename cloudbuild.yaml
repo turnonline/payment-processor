@@ -1,9 +1,9 @@
 steps:
   - name: gcr.io/cloud-builders/gsutil
-    args: ['cp','-n','gs://${PROJECT_ID}_cloudbuild/*/**-${COMMIT_SHA}.war','.']
+    args: ['cp','-n','gs://${PROJECT_ID}_cloudbuild/*/**-${COMMIT_SHA}.tar.gz','.']
   - name: gcr.io/cloud-builders/gsutil
-    args: ['mv','*-${COMMIT_SHA}.war','build/artifact.war']
+    args: ['mv','*-${COMMIT_SHA}.tar.gz','artifact.tar.gz']
   - name: gcr.io/$PROJECT_ID/tar
-    args: ['xzvf', 'build/artifact.war','-C','build' ]
+    args: ['xzvf', 'artifact.tar.gz']
   - name: gcr.io/cloud-builders/gcloud
-    args: ['app', 'deploy','build']
+    args: ['app', 'deploy','turnonline-payment-processor']
