@@ -42,6 +42,7 @@ public class PaymentConfigBeanDbTest
         lap.getAssociatedLightAccount( account ).save();
 
         another = genericJsonFromFile( "account.json", Account.class );
+        another.setId( 998877L );
         another.setIdentityId( "111DN78L2233" );
         another.setEmail( "another.account@turnonline.biz" );
         lap.getAssociatedLightAccount( another ).save();

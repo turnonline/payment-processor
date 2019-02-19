@@ -28,7 +28,7 @@ public class LocalAccountProviderImpl
         checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
 
         LocalAccount localAccount;
-        localAccount = ofy().load().type( LocalAccount.class ).id( account.getIdentityId() ).now();
+        localAccount = ofy().load().type( LocalAccount.class ).id( account.getId() ).now();
 
         if ( localAccount == null )
         {
@@ -37,11 +37,11 @@ public class LocalAccountProviderImpl
             logger.info( "Local account just has been created: " + localAccount );
         }
 
-        if ( !account.getIdentityId().equals( localAccount.getId() ) )
+        if ( !account.getId().equals( localAccount.getId() ) )
         {
             logger.error( "IdentityId mismatch. Current " + LocalAccount.class.getSimpleName() + " '"
                     + localAccount.getId() + "' does not match to the authenticated account: " + account );
-            throw new IllegalArgumentException( "IdentityId mismatch." );
+            throw new IllegalArgumentException( "Identity mismatch." );
         }
 
         return localAccount;

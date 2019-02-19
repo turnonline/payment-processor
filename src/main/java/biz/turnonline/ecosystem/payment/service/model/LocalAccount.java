@@ -7,9 +7,10 @@ import com.google.common.base.MoreObjects;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Ignore;
+import com.googlecode.objectify.annotation.Index;
 import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.RestFacade;
-import org.ctoolkit.services.storage.appengine.objectify.EntityStringIdentity;
+import org.ctoolkit.services.storage.appengine.objectify.EntityLongIdentity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,11 +31,11 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 @Cache( expirationSeconds = 3600 )
 @Entity( name = "PP_LocalAccount" )
 public class LocalAccount
-        extends EntityStringIdentity
+        extends EntityLongIdentity
 {
     private static final Logger logger = LoggerFactory.getLogger( LocalAccount.class );
 
-    private static final long serialVersionUID = -4403269872493958639L;
+    private static final long serialVersionUID = 7289984143469403021L;
 
     @Ignore
     private transient RestFacade facade;
@@ -42,7 +43,11 @@ public class LocalAccount
     @Ignore
     private transient Account tAccount;
 
+    @Index
     private String email;
+
+    @Index
+    private String identityId;
 
     @Inject
     LocalAccount( RestFacade facade )
@@ -52,24 +57,20 @@ public class LocalAccount
 
     LocalAccount( @Nonnull String identityId, @Nonnull String email, @Nonnull Account account )
     {
-        super.setId( checkNotNull( identityId, "Identity ID is mandatory." ) );
+        super.setId( checkNotNull( account.getId(), "Account ID is mandatory." ) );
         this.email = checkNotNull( email, "Account email is mandatory." );
-        this.tAccount = checkNotNull( account );
+        this.tAccount = account;
+        this.identityId = checkNotNull( identityId );
     }
 
     public String getIdentityId()
     {
-        return super.getId();
+        return identityId;
     }
 
     public String getEmail()
     {
         return email;
-    }
-
-    public void setEmail( String email )
-    {
-        this.email = email;
     }
 
     /**
@@ -147,17 +148,13 @@ public class LocalAccount
     @Override
     public void save()
     {
-        ofy().transact( () -> {
-            ofy().save().entity( LocalAccount.this ).now();
-        } );
+        ofy().transact( () -> ofy().save().entity( LocalAccount.this ).now() );
     }
 
     @Override
     public void delete()
     {
-        ofy().transact( () -> {
-            ofy().delete().entity( LocalAccount.this ).now();
-        } );
+        ofy().transact( () -> ofy().delete().entity( LocalAccount.this ).now() );
 
     }
 

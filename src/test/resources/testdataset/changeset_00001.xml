@@ -4,7 +4,7 @@
     </model>
     <entities>
         <entity kind="PP_BankAccount">
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:456DN78L3364"/>
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Tatrabanka"/>
             <property name="prefix" type="string" value=""/>
             <property name="accountNumber" type="string" value="123456789"/>
@@ -19,7 +19,7 @@
         </entity>
 
         <entity kind="PP_BankAccount">
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:456DN78L3364"/>
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="CardPay"/>
             <property name="prefix" type="string" value=""/>
             <property name="accountNumber" type="string" value="123456789"/>
@@ -34,7 +34,7 @@
         </entity>
 
         <entity kind="PP_BankAccount">
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:456DN78L3364"/>
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Sporopoay"/>
             <property name="prefix" type="string" value=""/>
             <property name="accountNumber" type="string" value="123456789"/>
@@ -49,7 +49,7 @@
         </entity>
 
         <entity kind="PP_BankAccount">
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:456DN78L3364"/>
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="EPlatbyVUB"/>
             <property name="prefix" type="string" value=""/>
             <property name="accountNumber" type="string" value="123456789"/>
@@ -64,7 +64,7 @@
         </entity>
 
         <entity kind="PP_BankAccount">
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:456DN78L3364"/>
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Trustpay"/>
             <property name="prefix" type="string" value=""/>
             <property name="accountNumber" type="string" value="123456789"/>
@@ -80,7 +80,7 @@
 
         <!--the bank account with different owner-->
         <entity kind="PP_BankAccount" id="9999">
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:111DN78L2233"/>
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:998877"/>
             <property indexed="true" name="name" type="string" value="Primárny účet"/>
             <property name="prefix" type="string" value=""/>
             <property name="accountNumber" type="string" value="123456789"/>
