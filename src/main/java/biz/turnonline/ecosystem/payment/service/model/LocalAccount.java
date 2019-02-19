@@ -24,7 +24,6 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * The datastore local account acts as an owner of the entities associated with an account.
  * It represents the TurnOnline.biz account taken from the Account Steward microservice.
- * The 'identityId' property is being treated as an entity ID.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
@@ -171,19 +170,20 @@ public class LocalAccount
         if ( this == o ) return true;
         if ( !( o instanceof LocalAccount ) ) return false;
         LocalAccount that = ( LocalAccount ) o;
-        return Objects.equals( this.getIdentityId(), that.getIdentityId() );
+        return Objects.equals( this.getId(), that.getId() );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( email, this.getIdentityId() );
+        return Objects.hash( getId() );
     }
 
     @Override
     public String toString()
     {
         return MoreObjects.toStringHelper( this )
+                .add( "id", getId() )
                 .add( "identityId", getIdentityId() )
                 .add( "email", email )
                 .toString();
