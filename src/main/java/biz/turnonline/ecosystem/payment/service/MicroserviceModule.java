@@ -9,7 +9,7 @@ import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccountProviderImpl;
 import biz.turnonline.ecosystem.payment.service.model.PaymentBeanMapperConfig;
 import biz.turnonline.ecosystem.steward.facade.AccountStewardAdapterModule;
-import biz.turnonline.ecosystem.steward.facade.AccountStewardApiModule;
+import biz.turnonline.ecosystem.steward.facade.AccountStewardClientModule;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -21,7 +21,7 @@ import com.google.inject.multibindings.Multibinder;
 import net.sf.jsr107cache.Cache;
 import org.ctoolkit.restapi.client.adapter.BeanMapperConfig;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeAppEngineModule;
-import org.ctoolkit.restapi.client.appengine.DefaultOrikaMapperFactoryModule;
+import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeDefaultOrikaModule;
 import org.ctoolkit.restapi.client.appengine.JCacheProvider;
 import org.ctoolkit.services.guice.CtoolkitServicesAppEngineModule;
 import org.ctoolkit.services.storage.CtoolkitServicesStorageModule;
@@ -44,11 +44,11 @@ public class MicroserviceModule
     protected void configure()
     {
         install( new CtoolkitRestFacadeAppEngineModule() );
-        install( new DefaultOrikaMapperFactoryModule() );
+        install( new CtoolkitRestFacadeDefaultOrikaModule() );
         install( new CtoolkitServicesAppEngineModule() );
         install( new CtoolkitServicesStorageModule() );
         install( new CtoolkitServicesTaskModule() );
-        install( new AccountStewardApiModule() );
+        install( new AccountStewardClientModule() );
         install( new AccountStewardAdapterModule() );
 
         bind( PaymentConfig.class ).to( PaymentConfigBean.class );

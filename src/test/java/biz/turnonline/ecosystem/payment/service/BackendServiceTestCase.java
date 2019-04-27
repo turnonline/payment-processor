@@ -30,6 +30,7 @@ import com.google.appengine.tools.development.testing.LocalModulesServiceTestCon
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig;
 import com.googlecode.objectify.ObjectifyService;
+import org.ctoolkit.agent.config.LocalDevAgentModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterMethod;
@@ -49,7 +50,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Guice( modules = {
         MicroserviceModule.class,
-        CodeBookImportTestModule.class}
+        LocalDevAgentModule.class}
 )
 public class BackendServiceTestCase
 {

@@ -1,8 +1,8 @@
 package biz.turnonline.ecosystem.payment.guice;
 
+import biz.turnonline.ecosystem.payment.service.MicroserviceModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import biz.turnonline.ecosystem.payment.service.MicroserviceModule;
 import org.ctoolkit.services.endpoints.EndpointsMonitorConfig;
 import org.ctoolkit.services.guice.AppEngineEnvironmentContextListener;
 

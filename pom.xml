@@ -84,14 +84,14 @@
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-microservice-bom</artifactId>
-                <version>1.9.68</version>
+                <version>1.9.73</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-library-bom</artifactId>
-                <version>9</version>
+                <version>10</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -102,7 +102,7 @@
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-account-steward-client</artifactId>
-            <version>1.0-20190110.201137-12</version>
+            <version>0.12</version>
         </dependency>
         <!-- Java Servlet API -->
         <dependency>
@@ -171,7 +171,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>26.0-jre</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -250,7 +249,7 @@
         <dependency>
             <groupId>org.ctoolkit.agent</groupId>
             <artifactId>ctoolkit-agent-import</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
