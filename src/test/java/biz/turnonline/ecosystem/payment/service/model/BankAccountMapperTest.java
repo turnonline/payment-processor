@@ -1,7 +1,7 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
+import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
-import biz.turnonline.ecosystem.payment.service.ApiValidationException;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
 import biz.turnonline.ecosystem.steward.model.Account;
 import ma.glasnost.orika.MappingContext;
@@ -203,5 +203,44 @@ public class BankAccountMapperTest
         assertThat( api.getBank().getCode() ).isEqualTo( code );
         assertThat( api.getBank().getLabel() ).isNotNull();
         assertThat( api.getBank().getCountry() ).isNotNull();
+    }
+
+    @Test
+    public void mapApiToBackend_DefaultPrimaryBankAccount()
+    {
+        BankAccount source = new BankAccount();
+
+        biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
+        backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
+
+        tested.mapBtoA( source, backend, context );
+        assertThat( backend.isPrimary() ).named( "Default primary bank account" ).isFalse();
+    }
+
+    @Test
+    public void mapApiToBackend_PreservePrimaryBankAccount()
+    {
+        BankAccount source = new BankAccount();
+
+        biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
+        backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
+        backend.setPrimary( true );
+
+        tested.mapBtoA( source, backend, context );
+        assertThat( backend.isPrimary() ).named( "Primary bank account" ).isTrue();
+    }
+
+    @Test
+    public void mapApiToBackend_SetPrimaryBankAccount()
+    {
+        BankAccount source = new BankAccount();
+        source.setPrimary( true );
+
+        biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
+        backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
+        backend.setPrimary( false );
+
+        tested.mapBtoA( source, backend, context );
+        assertThat( backend.isPrimary() ).named( "Primary bank account" ).isTrue();
     }
 }

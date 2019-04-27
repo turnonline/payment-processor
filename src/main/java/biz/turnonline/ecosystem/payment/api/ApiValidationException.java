@@ -1,4 +1,4 @@
-package biz.turnonline.ecosystem.payment.service;
+package biz.turnonline.ecosystem.payment.api;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

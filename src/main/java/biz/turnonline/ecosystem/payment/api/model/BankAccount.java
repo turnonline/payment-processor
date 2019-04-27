@@ -32,7 +32,7 @@ public class BankAccount
 
     private String currency = null;
 
-    private Boolean primary = false;
+    private Boolean primary = null;
 
     private BankAccountBank bank = null;
 

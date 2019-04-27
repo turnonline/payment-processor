@@ -1,5 +1,6 @@
 package biz.turnonline.ecosystem.payment.service;
 
+import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.steward.model.Account;
@@ -59,13 +60,10 @@ class PaymentConfigBean
     @Override
     public BankAccount getBankAccount( @Nonnull Account account, @Nonnull Long id )
     {
-        String errorTemplate = "{0} cannot be null";
-        checkNotNull( account, errorTemplate, Account.class.getSimpleName() );
-        checkNotNull( id, errorTemplate, "Bank account ID" );
+        String template = "{0} cannot be null";
+        BankAccount bankAccount = loadBankAccount( checkNotNull( id, template, "Bank account ID" ) );
 
-        BankAccount bankAccount = loadBankAccount( id );
-
-        LocalAccount owner = accProvider.getAssociatedLightAccount( account );
+        LocalAccount owner = accProvider.getAssociatedLightAccount( checkNotNull( account, template, "Account" ) );
         return checkOwner( owner, bankAccount );
     }
 
@@ -82,17 +80,15 @@ class PaymentConfigBean
     @Override
     public void insertBankAccount( @Nonnull Account account, @Nonnull BankAccount bankAccount )
     {
-        String errorTemplate = "{0} cannot be null";
-        checkNotNull( account, errorTemplate, Account.class.getSimpleName() );
-        checkNotNull( bankAccount, errorTemplate, BankAccount.class.getSimpleName() );
+        String template = "{0} cannot be null";
 
-        if ( bankAccount.getId() != null )
+        if ( checkNotNull( bankAccount, template, BankAccount.class.getSimpleName() ).getId() != null )
         {
             String message = bankAccount.entityKey() + " should be in memory instance only, not persisted object.";
             throw new IllegalArgumentException( message );
         }
 
-        LocalAccount owner = accProvider.getAssociatedLightAccount( account );
+        LocalAccount owner = accProvider.getAssociatedLightAccount( checkNotNull( account, template, "Account" ) );
         bankAccount.setOwner( owner );
 
         // generate code
@@ -118,11 +114,10 @@ class PaymentConfigBean
                                               @Nullable Integer limit,
                                               @Nullable String country )
     {
-        checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
-
         Criteria<BankAccount> criteria = Criteria.of( BankAccount.class );
 
-        LocalAccount owner = accProvider.getAssociatedLightAccount( account );
+        String template = "{0} cannot be null";
+        LocalAccount owner = accProvider.getAssociatedLightAccount( checkNotNull( account, template, "Account" ) );
         criteria.reference( "owner", owner );
         if ( country != null )
         {
@@ -148,24 +143,22 @@ class PaymentConfigBean
     @Override
     public void updateBankAccount( @Nonnull Account account, @Nonnull BankAccount bankAccount )
     {
-        String errorTemplate = "{0} cannot be null";
-        checkNotNull( account, errorTemplate, Account.class.getSimpleName() );
-        checkNotNull( bankAccount, errorTemplate, BankAccount.class.getSimpleName() );
-
-        LocalAccount owner = accProvider.getAssociatedLightAccount( account );
-        BankAccount checkedBankAccount = checkOwner( owner, bankAccount );
+        String template = "{0} cannot be null";
+        LocalAccount owner = accProvider.getAssociatedLightAccount( checkNotNull( account, template, "Account" ) );
+        BankAccount checkedBankAccount = checkOwner( owner, checkNotNull( bankAccount, template, "BankAccount" ) );
         checkedBankAccount.save();
     }
 
     @Override
     public BankAccount deleteBankAccount( @Nonnull Account account, @Nonnull Long id )
     {
-        String errorTemplate = "{0} cannot be null";
-        checkNotNull( account, errorTemplate, Account.class.getSimpleName() );
-        checkNotNull( id, errorTemplate, "Bank account ID" );
+        String template = "{0} cannot be null";
 
         // TODO remove payment gate from account config; old: config.removePaymentGateway( bankAccount.getPaymentGate() );
-        BankAccount bankAccount = getBankAccount( account, id );
+        BankAccount bankAccount = getBankAccount(
+                checkNotNull( account, template, "Account" ),
+                checkNotNull( id, template, "Bank account ID" ) );
+
         if ( bankAccount.isPrimary() )
         {
             String key = "errors.validation.bankAccount.deletion.primary";
@@ -182,11 +175,10 @@ class PaymentConfigBean
     @Override
     public BankAccount markBankAccountAsPrimary( @Nonnull Account account, @Nonnull Long id )
     {
-        String errorTemplate = "{0} cannot be null";
-        checkNotNull( account, errorTemplate, Account.class.getSimpleName() );
-        checkNotNull( id, errorTemplate, "Bank account ID" );
-
-        BankAccount bankAccount = getBankAccount( account, id );
+        String template = "{0} cannot be null";
+        BankAccount bankAccount = getBankAccount(
+                checkNotNull( account, template, "Account" ),
+                checkNotNull( id, template, "Bank account ID" ) );
 
         // mark old primary bank accounts to not primary
         List<BankAccount> bankAccounts = getBankAccounts( account, null, null, null );
@@ -221,9 +213,8 @@ class PaymentConfigBean
 
     BankAccount getInternalPrimaryBankAccount( @Nonnull Account account, @Nullable String country )
     {
-        checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
-
-        List<BankAccount> list = getBankAccounts( account, null, null, null );
+        String template = "{0} cannot be null";
+        List<BankAccount> list = getBankAccounts( checkNotNull( account, template, "Account" ), null, null, null );
         Collections.sort( list );
 
         country = codeBook.getDomicile( account, country );
@@ -253,9 +244,8 @@ class PaymentConfigBean
                                                          @Nullable Locale locale,
                                                          @Nullable String country )
     {
-        checkNotNull( account, "{0} cannot be null", Account.class.getSimpleName() );
-
-        BankAccount exclude = getInternalPrimaryBankAccount( account, country );
+        String template = "{0} cannot be null";
+        BankAccount exclude = getInternalPrimaryBankAccount( checkNotNull( account, template, "Account" ), country );
         country = codeBook.getDomicile( account, country );
         locale = codeBook.getLocale( account, locale );
 
@@ -293,9 +283,7 @@ class PaymentConfigBean
      */
     private <T extends HasOwner<LocalAccount>> T checkOwner( @Nonnull LocalAccount account, @Nonnull T entity )
     {
-        checkNotNull( entity );
-
-        LocalAccount owner = entity.getOwner();
+        LocalAccount owner = checkNotNull( entity, "Entity cannot be null" ).getOwner();
         checkNotNull( owner );
 
         if ( !entity.checkOwner( account ) )

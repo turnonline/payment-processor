@@ -1,7 +1,8 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
+import biz.turnonline.ecosystem.payment.api.ApiValidationException;
+import biz.turnonline.ecosystem.payment.api.Defaults;
 import biz.turnonline.ecosystem.payment.api.model.BankAccountBank;
-import biz.turnonline.ecosystem.payment.service.ApiValidationException;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.common.base.Strings;
@@ -150,7 +151,7 @@ class BankAccountMapper
         sValue = Optional.ofNullable( source.getBic() );
         sValue.ifPresent( backend::setBic );
 
-        Optional<Boolean> bValue = Optional.ofNullable( source.getPrimary() );
-        bValue.ifPresent( backend::setPrimary );
+        Defaults<Boolean, Boolean> primary = Defaults.of( source.getPrimary(), backend.isPrimary(), false );
+        primary.ifPresentOrDefault( backend::setPrimary );
     }
 }

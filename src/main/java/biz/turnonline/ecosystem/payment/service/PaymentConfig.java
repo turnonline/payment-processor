@@ -1,5 +1,6 @@
 package biz.turnonline.ecosystem.payment.service;
 
+import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.steward.model.Account;
 
