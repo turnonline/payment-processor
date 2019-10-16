@@ -14,15 +14,22 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.cloud.storage.Storage;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
 import net.sf.jsr107cache.Cache;
+import org.ctoolkit.restapi.client.ApiCredential;
 import org.ctoolkit.restapi.client.adapter.BeanMapperConfig;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeAppEngineModule;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeDefaultOrikaModule;
 import org.ctoolkit.restapi.client.appengine.JCacheProvider;
+import org.ctoolkit.restapi.client.firebase.GoogleApiFirebaseModule;
+import org.ctoolkit.restapi.client.provider.TokenProvider;
+import org.ctoolkit.services.endpoints.AudienceUser;
 import org.ctoolkit.services.guice.CtoolkitServicesAppEngineModule;
 import org.ctoolkit.services.storage.CtoolkitServicesStorageModule;
 import org.ctoolkit.services.storage.DefaultStorageProvider;
@@ -50,6 +57,7 @@ public class MicroserviceModule
         install( new CtoolkitServicesTaskModule() );
         install( new AccountStewardClientModule() );
         install( new AccountStewardAdapterModule() );
+        install( new GoogleApiFirebaseModule() );
 
         bind( PaymentConfig.class ).to( PaymentConfigBean.class );
         bind( CodeBook.class ).to( CodeBookBean.class );
@@ -64,6 +72,21 @@ public class MicroserviceModule
 
         Multibinder<BeanMapperConfig> multi = Multibinder.newSetBinder( binder(), BeanMapperConfig.class );
         multi.addBinding().to( PaymentBeanMapperConfig.class );
+
+        bind( new TypeLiteral<TokenProvider<LocalAccount>>()
+        {
+        } ).to( ClosedServerToServerTokenOfAccount.class );
+
+        bind( new TypeLiteral<TokenProvider<AudienceUser>>()
+        {
+        } ).to( ClosedServerToServerTokenOfUser.class );
+
+        // Firebase configuration
+        String projectId = SystemProperty.applicationId.get();
+        ApiCredential credential = new ApiCredential( "firebase" );
+        credential.setProjectId( projectId );
+        credential.setServiceAccountEmail( projectId + "@appspot.gserviceaccount.com" );
+        Names.bindProperties( binder(), credential );
     }
 
     @Provides

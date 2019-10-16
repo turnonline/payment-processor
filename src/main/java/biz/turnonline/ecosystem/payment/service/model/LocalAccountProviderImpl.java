@@ -32,7 +32,7 @@ public class LocalAccountProviderImpl
 
         if ( localAccount == null )
         {
-            localAccount = new LocalAccount( account.getIdentityId(), account.getEmail(), account );
+            localAccount = new LocalAccount( account );
             localAccount.save();
             logger.info( "Local account just has been created: " + localAccount );
         }

@@ -48,18 +48,24 @@ public class LocalAccount
     @Index
     private String identityId;
 
+    @Index
+    private String audience;
+
     @Inject
     LocalAccount( RestFacade facade )
     {
         this.facade = facade;
     }
 
-    LocalAccount( @Nonnull String identityId, @Nonnull String email, @Nonnull Account account )
+    LocalAccount( @Nonnull Account account )
     {
-        super.setId( checkNotNull( account.getId(), "Account ID is mandatory." ) );
-        this.email = checkNotNull( email, "Account email is mandatory." );
+        checkNotNull( account, "Account is mandatory" );
+
+        super.setId( checkNotNull( account.getId(), "Account ID is mandatory" ) );
+        this.email = checkNotNull( account.getEmail(), "Account email is mandatory" );
+        this.audience = checkNotNull( account.getAudience(), "Account audience is mandatory" );
+        this.identityId = checkNotNull( account.getIdentityId(), "Identity ID is mandatory" );
         this.tAccount = account;
-        this.identityId = checkNotNull( identityId );
     }
 
     public String getIdentityId()
@@ -70,6 +76,16 @@ public class LocalAccount
     public String getEmail()
     {
         return email;
+    }
+
+    /**
+     * The audience unique identification. The user identified by login email address
+     * within one audience is a different user within another audience even with the same login email.
+     * Those users have different Account.IDs.
+     **/
+    public String getAudience()
+    {
+        return audience;
     }
 
     /**
@@ -88,8 +104,8 @@ public class LocalAccount
         try
         {
             tAccount = facade.get( Account.class )
-                    .identifiedBy( getEmail() )
-                    .onBehalf( getEmail(), getIdentityId() )
+                    .identifiedBy( String.valueOf( getId() ) )
+                    .onBehalfOf( this )
                     .finish();
         }
         catch ( NotFoundException e )
@@ -184,7 +200,8 @@ public class LocalAccount
     {
         return MoreObjects.toStringHelper( this )
                 .add( "id", getId() )
-                .add( "identityId", getIdentityId() )
+                .add( "identityId", identityId )
+                .add( "audience", audience )
                 .add( "email", email )
                 .toString();
     }

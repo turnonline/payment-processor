@@ -1,12 +1,12 @@
 package biz.turnonline.ecosystem.payment.api;
 
-import com.google.api.server.spi.auth.EspAuthenticator;
-import com.google.api.server.spi.auth.GoogleOAuth2Authenticator;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiIssuer;
 import com.google.api.server.spi.config.ApiIssuerAudience;
 import com.google.api.server.spi.config.ApiNamespace;
-import org.ctoolkit.services.endpoints.ServerToServerAuthenticator;
+import org.ctoolkit.services.endpoints.ClosedServerToServerAuthenticator;
+import org.ctoolkit.services.endpoints.FirebaseJwtAuthenticator;
+import org.ctoolkit.services.endpoints.ThirdPartyToServerAuthenticator;
 
 import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.CURRENT_VERSION;
 import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.PROJECT_ID;
@@ -22,11 +22,14 @@ import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.PROJECT_ID
         canonicalName = "Payment Processor",
         title = "TurnOnline.biz Payment Processor",
         version = CURRENT_VERSION,
-        description = "TurnOnline.biz Ecosystem: Payment Processor REST API",
+        description = "TurnOnline.biz Ecosystem Payment Processor",
         documentationLink = "https://developers.turnonline.biz/docs/payment.turnon.cloud/1",
-        namespace = @ApiNamespace( ownerDomain = "ecosystem.turnonline.biz", ownerName = "Comvai, s.r.o." ),
-        // GoogleOAuth2Authenticator is here for now only for development purpose
-        authenticators = {ServerToServerAuthenticator.class, GoogleOAuth2Authenticator.class, EspAuthenticator.class},
+        namespace = @ApiNamespace( ownerDomain = "ecosystem.turnonline.biz", ownerName = "TurnOnline.biz, s.r.o." ),
+        authenticators = {
+                ClosedServerToServerAuthenticator.class,
+                FirebaseJwtAuthenticator.class,
+                ThirdPartyToServerAuthenticator.class
+        },
         issuers = {
                 @ApiIssuer(
                         name = "firebase",
