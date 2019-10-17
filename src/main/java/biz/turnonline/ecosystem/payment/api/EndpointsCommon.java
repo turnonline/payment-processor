@@ -109,6 +109,8 @@ class EndpointsCommon
             account = facade.get( Account.class )
                     .identifiedBy( authEmail )
                     .onBehalfOf( audienceUser )
+                    .authBy( audienceUser.getToken() )
+                    .bearer()
                     .finish();
         }
         catch ( org.ctoolkit.restapi.client.NotFoundException e )

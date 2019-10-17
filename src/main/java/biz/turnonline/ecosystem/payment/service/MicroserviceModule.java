@@ -29,7 +29,6 @@ import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeDefaultOrikaModul
 import org.ctoolkit.restapi.client.appengine.JCacheProvider;
 import org.ctoolkit.restapi.client.firebase.GoogleApiFirebaseModule;
 import org.ctoolkit.restapi.client.provider.TokenProvider;
-import org.ctoolkit.services.endpoints.AudienceUser;
 import org.ctoolkit.services.guice.CtoolkitServicesAppEngineModule;
 import org.ctoolkit.services.storage.CtoolkitServicesStorageModule;
 import org.ctoolkit.services.storage.DefaultStorageProvider;
@@ -77,15 +76,9 @@ public class MicroserviceModule
         {
         } ).to( ClosedServerToServerTokenOfAccount.class );
 
-        bind( new TypeLiteral<TokenProvider<AudienceUser>>()
-        {
-        } ).to( ClosedServerToServerTokenOfUser.class );
-
         // Firebase configuration
-        String projectId = SystemProperty.applicationId.get();
         ApiCredential credential = new ApiCredential( "firebase" );
-        credential.setProjectId( projectId );
-        credential.setServiceAccountEmail( projectId + "@appspot.gserviceaccount.com" );
+        credential.setProjectId( SystemProperty.applicationId.get() );
         Names.bindProperties( binder(), credential );
     }
 
