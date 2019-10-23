@@ -1,6 +1,7 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
+import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.steward.model.Account;
 import org.ctoolkit.agent.service.impl.ImportTask;
 import org.testng.annotations.BeforeMethod;
@@ -20,15 +21,19 @@ import static com.google.common.truth.Truth.assertThat;
 public class CodeBookBeanDbTest
         extends BackendServiceTestCase
 {
+    private static final Locale DEFAULT_LOCALE = new Locale( "en" );
+
+    private static final String DEFAULT_DOMICILE = "SK";
+
     @Inject
     private CodeBook tested;
 
-    private Account account;
+    private LocalAccount account;
 
     @BeforeMethod
     public void before()
     {
-        account = genericJsonFromFile( "account.json", Account.class );
+        account = new LocalAccount( genericJsonFromFile( "account.json", Account.class ) );
 
         // import bank code code-book
         ImportTask task = new ImportTask( "/dataset/changeset_00001.xml" );
@@ -39,17 +44,17 @@ public class CodeBookBeanDbTest
     public void getBankCodes()
     {
         // en-SK
-        Map<String, BankCode> bankCodes = tested.getBankCodes( account, CodeBook.DEFAULT_LOCALE, CodeBook.DEFAULT_DOMICILE );
+        Map<String, BankCode> bankCodes = tested.getBankCodes( account, DEFAULT_LOCALE, DEFAULT_DOMICILE );
         assertThat( bankCodes ).isNotNull();
         assertThat( bankCodes ).hasSize( 35 );
 
         BankCode bankCode = bankCodes.get( "0200" );
         assertThat( bankCode ).isNotNull();
         assertThat( bankCode.getLocale() ).isEqualTo( "en" );
-        assertThat( bankCode.getCountry() ).isEqualTo( CodeBook.DEFAULT_DOMICILE );
+        assertThat( bankCode.getCountry() ).isEqualTo( DEFAULT_DOMICILE );
 
         // cached value retrieval
-        bankCodes = tested.getBankCodes( account, CodeBook.DEFAULT_LOCALE, CodeBook.DEFAULT_DOMICILE );
+        bankCodes = tested.getBankCodes( account, DEFAULT_LOCALE, DEFAULT_DOMICILE );
         assertThat( bankCodes ).isNotNull();
         assertThat( bankCodes ).hasSize( 35 );
 

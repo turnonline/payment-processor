@@ -2,7 +2,7 @@ package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.payment.api.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
-import biz.turnonline.ecosystem.steward.model.Account;
+import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -58,7 +58,7 @@ public class CodeBookEndpoint
                                                  User authUser )
             throws Exception
     {
-        Account account = common.checkAccount( authUser, request );
+        LocalAccount account = common.checkAccount( authUser, request );
         Locale language = common.getAcceptLanguage( request );
         List<BankCode> bankCodes;
 
@@ -90,7 +90,7 @@ public class CodeBookEndpoint
                                          User authUser )
             throws Exception
     {
-        Account account = common.checkAccount( authUser, request );
+        LocalAccount account = common.checkAccount( authUser, request );
         Locale language = common.getAcceptLanguage( request );
         BankCode bankCode;
         biz.turnonline.ecosystem.payment.service.model.BankCode dbBankCode;

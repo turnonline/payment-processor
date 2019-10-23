@@ -4,7 +4,6 @@ import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.Defaults;
 import biz.turnonline.ecosystem.payment.api.model.BankAccountBank;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
-import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.common.base.Strings;
 import com.google.common.net.HttpHeaders;
 import ma.glasnost.orika.CustomMapper;
@@ -91,11 +90,11 @@ class BankAccountMapper
                 throw ApiValidationException.prepare( key, "bank.code" );
             }
 
-            Account account = ( Account ) context.getProperty( Account.class );
+            LocalAccount account = ( LocalAccount ) context.getProperty( LocalAccount.class );
             if ( account == null )
             {
                 String message = "Authenticated account is mandatory, expected as a MappingContext property with key: "
-                        + Account.class;
+                        + LocalAccount.class;
                 throw new IllegalArgumentException( message );
             }
 

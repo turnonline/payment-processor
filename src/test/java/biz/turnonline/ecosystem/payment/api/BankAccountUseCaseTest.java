@@ -42,10 +42,14 @@ public class BankAccountUseCaseTest
 
     private Account account;
 
+    private LocalAccount lAccount;
+
     @BeforeMethod
     public void before()
     {
         account = genericJsonFromFile( "account.json", Account.class );
+        lAccount = new LocalAccount( account );
+        lAccount.save();
 
         // import bank code code-book
         ImportTask task = new ImportTask( "/dataset/changeset_00001.xml" );
@@ -166,9 +170,9 @@ public class BankAccountUseCaseTest
         new MockUp<EndpointsCommon>()
         {
             @Mock
-            public Account checkAccount( User authUser, HttpServletRequest request )
+            public LocalAccount checkAccount( User authUser, HttpServletRequest request )
             {
-                return account;
+                return lAccount;
             }
         };
     }

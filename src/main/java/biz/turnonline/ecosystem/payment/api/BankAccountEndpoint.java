@@ -4,7 +4,7 @@ import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
-import biz.turnonline.ecosystem.steward.model.Account;
+import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -65,13 +65,13 @@ public class BankAccountEndpoint
                                           User authUser )
             throws Exception
     {
-        Account account = common.checkAccount( authUser, request );
+        LocalAccount account = common.checkAccount( authUser, request );
 
         BankAccount result;
         try
         {
             MappingContext context = new MappingContext( new HashMap<>() );
-            context.setProperty( Account.class, account );
+            context.setProperty( LocalAccount.class, account );
 
             biz.turnonline.ecosystem.payment.service.model.BankAccount dbBankAccount;
             dbBankAccount = mapper.map( bankAccount, biz.turnonline.ecosystem.payment.service.model.BankAccount.class,
@@ -120,7 +120,7 @@ public class BankAccountEndpoint
                                                  User authUser )
             throws Exception
     {
-        Account account = common.checkAccount( authUser, request );
+        LocalAccount account = common.checkAccount( authUser, request );
         Locale language = common.getAcceptLanguage( request );
         List<BankAccount> result;
 
@@ -165,7 +165,7 @@ public class BankAccountEndpoint
                                        User authUser )
             throws Exception
     {
-        Account account = common.checkAccount( authUser, request );
+        LocalAccount account = common.checkAccount( authUser, request );
         BankAccount result;
 
         try
@@ -205,7 +205,7 @@ public class BankAccountEndpoint
                                           User authUser )
             throws Exception
     {
-        Account account = common.checkAccount( authUser, request );
+        LocalAccount account = common.checkAccount( authUser, request );
         BankAccount result;
 
         try
@@ -214,7 +214,7 @@ public class BankAccountEndpoint
             dbBankAccount = config.getBankAccount( account, accountId );
 
             MappingContext context = new MappingContext( new HashMap<>() );
-            context.setProperty( Account.class, account );
+            context.setProperty( LocalAccount.class, account );
             mapper.map( bankAccount, dbBankAccount, context );
 
             config.updateBankAccount( account, dbBankAccount );
@@ -271,7 +271,7 @@ public class BankAccountEndpoint
     public void deleteBankAccount( @Named( "account_id" ) Long accountId, HttpServletRequest request, User authUser )
             throws Exception
     {
-        Account account = common.checkAccount( authUser, request );
+        LocalAccount account = common.checkAccount( authUser, request );
 
         try
         {
@@ -315,7 +315,7 @@ public class BankAccountEndpoint
                                               User authUser )
             throws Exception
     {
-        Account account = common.checkAccount( authUser, request );
+        LocalAccount account = common.checkAccount( authUser, request );
         BankAccount result;
 
         try
@@ -350,7 +350,7 @@ public class BankAccountEndpoint
                                                  User authUser )
             throws Exception
     {
-        Account account = common.checkAccount( authUser, request );
+        LocalAccount account = common.checkAccount( authUser, request );
         BankAccount result;
 
         try

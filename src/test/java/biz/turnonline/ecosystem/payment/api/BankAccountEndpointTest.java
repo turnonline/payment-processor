@@ -4,6 +4,7 @@ import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
+import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.response.BadRequestException;
@@ -15,6 +16,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
 import mockit.Tested;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,13 +50,23 @@ public class BankAccountEndpointTest
     @Mocked
     private User authUser;
 
-    private Account account = new Account();
+    private LocalAccount account;
 
     @Mocked
     private BankAccount bankAccount;
 
     @Mocked
     private biz.turnonline.ecosystem.payment.service.model.BankAccount dbBankAccount;
+
+    @BeforeMethod
+    public void before()
+    {
+        account = new LocalAccount( new Account()
+                .setId( 1735L )
+                .setEmail( "my.account@turnonline.biz" )
+                .setIdentityId( "64HGtr6ks" )
+                .setAudience( "turn-online" ) );
+    }
 
     @Test
     public void insertBankAccount() throws Exception

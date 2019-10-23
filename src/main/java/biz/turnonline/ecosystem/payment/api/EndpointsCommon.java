@@ -1,5 +1,7 @@
 package biz.turnonline.ecosystem.payment.api;
 
+import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
+import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.server.spi.ServiceException;
 import com.google.api.server.spi.auth.common.User;
@@ -7,7 +9,6 @@ import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.common.net.HttpHeaders;
-import org.ctoolkit.restapi.client.RestFacade;
 import org.ctoolkit.services.endpoints.AudienceUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +29,12 @@ class EndpointsCommon
 {
     private static final Logger logger = LoggerFactory.getLogger( EndpointsCommon.class );
 
-    private final RestFacade facade;
+    private final LocalAccountProvider lap;
 
     @Inject
-    EndpointsCommon( RestFacade facade )
+    EndpointsCommon( LocalAccountProvider lap )
     {
-        this.facade = facade;
+        this.lap = lap;
     }
 
     static String tryAgainLaterMessage()
@@ -94,24 +95,24 @@ class EndpointsCommon
      * @throws NotFoundException            if the auth email represents an unknown account
      * @throws InternalServerErrorException if execution has failed
      */
-    Account checkAccount( User authUser, HttpServletRequest request )
+    LocalAccount checkAccount( User authUser, HttpServletRequest request )
             throws ServiceException
     {
         authorize( authUser );
 
         AudienceUser audienceUser = ( AudienceUser ) authUser;
         String authEmail = audienceUser.getEmail();
-        Account account = null;
+        LocalAccount account = null;
         boolean notFound = false;
 
         try
         {
-            account = facade.get( Account.class )
-                    .identifiedBy( authEmail )
-                    .onBehalfOf( audienceUser )
-                    .authBy( audienceUser.getToken() )
-                    .bearer()
-                    .finish();
+            account = lap.initGet( new LocalAccountProvider.Builder()
+                    .email( audienceUser.getEmail() )
+                    .identityId( audienceUser.getId() )
+                    .audience( audienceUser.getAudience() ) );
+
+            request.setAttribute( Account.class.getName(), account );
         }
         catch ( org.ctoolkit.restapi.client.NotFoundException e )
         {
@@ -119,7 +120,7 @@ class EndpointsCommon
         }
         catch ( Exception e )
         {
-            logger.error( "Account retrieval has failed for " + authEmail, e );
+            logger.error( "Account retrieval has failed for " + audienceUser, e );
             throw new InternalServerErrorException( tryAgainLaterMessage() );
         }
 

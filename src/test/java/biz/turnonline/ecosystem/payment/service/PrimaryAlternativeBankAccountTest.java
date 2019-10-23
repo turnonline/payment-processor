@@ -10,6 +10,7 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.Tested;
 import org.ctoolkit.services.storage.EntityExecutor;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class PrimaryAlternativeBankAccountTest
     @Tested
     private PaymentConfigBean tested;
 
-    @Injectable
+    @Mocked
     private CodeBook codeBook;
 
     @Injectable
@@ -43,23 +44,30 @@ public class PrimaryAlternativeBankAccountTest
     @Injectable
     private LocalAccountProvider accProvider;
 
-    @Mocked
-    private LocalAccount owner;
+    private LocalAccount account;
 
-    private Account account = new Account();
+    @BeforeMethod
+    public void before()
+    {
+        account = new LocalAccount( new Account()
+                .setId( 1735L )
+                .setEmail( "my.account@turnonline.biz" )
+                .setIdentityId( "64HGtr6ks" )
+                .setAudience( "turn-online" ) );
+    }
 
     @Test
     public void getPrimaryBankAccountSellerCzNullCountry()
     {
-        final List<BankAccount> list = getBankAccounts();
+        List<BankAccount> list = getBankAccounts();
 
-        new Expectations( tested )
+        new Expectations( tested, account )
         {
             {
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
 
-                codeBook.getDomicile( account, null );
+                account.getDomicile( null );
                 result = Domicile.CZ.name();
             }
         };
@@ -76,13 +84,13 @@ public class PrimaryAlternativeBankAccountTest
     {
         final List<BankAccount> list = getBankAccounts();
 
-        new Expectations( tested )
+        new Expectations( tested, account )
         {
             {
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
 
-                codeBook.getDomicile( account, null );
+                account.getDomicile( null );
                 result = Domicile.SK.name();
             }
         };
@@ -107,9 +115,6 @@ public class PrimaryAlternativeBankAccountTest
             {
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
-
-                codeBook.getDomicile( account, "SK" );
-                result = Domicile.SK.name();
             }
         };
 
@@ -132,9 +137,6 @@ public class PrimaryAlternativeBankAccountTest
             {
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
-
-                codeBook.getDomicile( account, "CZ" );
-                result = Domicile.CZ.name();
             }
         };
 
@@ -156,9 +158,6 @@ public class PrimaryAlternativeBankAccountTest
             {
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
-
-                codeBook.getDomicile( account, "AQ" );
-                result = "AQ";
             }
         };
 
@@ -179,13 +178,13 @@ public class PrimaryAlternativeBankAccountTest
             next.setPrimary( false );
         }
 
-        new Expectations( tested )
+        new Expectations( tested, account )
         {
             {
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
 
-                codeBook.getDomicile( account, anyString );
+                account.getDomicile( anyString );
                 result = Domicile.getDefault().name();
             }
         };
@@ -204,9 +203,6 @@ public class PrimaryAlternativeBankAccountTest
             {
                 tested.getInternalPrimaryBankAccount( account, anyString );
                 result = null;
-
-                owner.getAccount();
-                result = account;
             }
         };
 
@@ -251,9 +247,6 @@ public class PrimaryAlternativeBankAccountTest
             {
                 tested.getInternalPrimaryBankAccount( account, anyString );
                 result = getBankAccount1();
-
-                owner.getAccount();
-                result = account;
             }
         };
 
@@ -288,13 +281,13 @@ public class PrimaryAlternativeBankAccountTest
     {
         final List<BankAccount> list = getBankAccounts();
 
-        new Expectations( tested )
+        new Expectations( tested, account )
         {
             {
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
 
-                codeBook.getDomicile( account, null );
+                account.getDomicile( null );
                 result = Domicile.CZ.name();
             }
         };
@@ -325,7 +318,7 @@ public class PrimaryAlternativeBankAccountTest
             @Override
             public LocalAccount getOwner()
             {
-                return owner;
+                return account;
             }
         };
 
@@ -347,7 +340,7 @@ public class PrimaryAlternativeBankAccountTest
             @Override
             public LocalAccount getOwner()
             {
-                return owner;
+                return account;
             }
         };
 
@@ -369,7 +362,7 @@ public class PrimaryAlternativeBankAccountTest
             @Override
             public LocalAccount getOwner()
             {
-                return owner;
+                return account;
             }
         };
 
@@ -391,7 +384,7 @@ public class PrimaryAlternativeBankAccountTest
             @Override
             public LocalAccount getOwner()
             {
-                return owner;
+                return account;
             }
         };
 
@@ -413,7 +406,7 @@ public class PrimaryAlternativeBankAccountTest
             @Override
             public LocalAccount getOwner()
             {
-                return owner;
+                return account;
             }
         };
 
@@ -435,7 +428,7 @@ public class PrimaryAlternativeBankAccountTest
             @Override
             public LocalAccount getOwner()
             {
-                return owner;
+                return account;
             }
         };
 
@@ -476,13 +469,13 @@ public class PrimaryAlternativeBankAccountTest
 
     private void expectationsBankAccountsDomicileSk( List<BankAccount> list )
     {
-        new Expectations( tested )
+        new Expectations( tested, account )
         {
             {
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
 
-                codeBook.getDomicile( account, null );
+                account.getDomicile( null );
                 result = Domicile.SK.name();
 
                 codeBook.getBankCodes( account, ( Locale ) any, anyString );
@@ -493,17 +486,17 @@ public class PrimaryAlternativeBankAccountTest
 
     private void expectationsBankAccountsDomicileCz( List<BankAccount> list )
     {
-        new Expectations( tested )
+        new Expectations( tested, account )
         {
             {
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
 
-                codeBook.getDomicile( account, null );
+                account.getDomicile( null );
                 result = Domicile.CZ.name();
 
                 //noinspection ConstantConditions
-                codeBook.getBankCodes( ( Account ) any, ( Locale ) any, anyString );
+                codeBook.getBankCodes( ( LocalAccount ) any, ( Locale ) any, anyString );
                 result = getCodeBookMap();
             }
         };

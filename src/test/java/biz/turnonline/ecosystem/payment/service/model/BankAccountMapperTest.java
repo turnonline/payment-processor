@@ -3,7 +3,7 @@ package biz.turnonline.ecosystem.payment.service.model;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
-import biz.turnonline.ecosystem.steward.model.Account;
+import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import ma.glasnost.orika.MappingContext;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -33,7 +33,10 @@ public class BankAccountMapperTest
     @Mocked
     private MappingContext context;
 
-    private Account account = new Account();
+    private LocalAccount account = new LocalAccount( new LocalAccountProvider.Builder()
+            .email( "my.account@turnonline.biz" )
+            .identityId( "64HGtr6ks" )
+            .audience( "turn-online" ) );
 
     @Mocked
     private BankCode bankCode;
@@ -47,7 +50,7 @@ public class BankAccountMapperTest
         new Expectations()
         {
             {
-                context.getProperty( Account.class );
+                context.getProperty( LocalAccount.class );
                 result = account;
 
                 codeBook.getBankCode( account, code, ( Locale ) any, anyString );
@@ -90,7 +93,7 @@ public class BankAccountMapperTest
         new Expectations()
         {
             {
-                context.getProperty( Account.class );
+                context.getProperty( LocalAccount.class );
                 result = account;
 
                 codeBook.getBankCode( account, code, ( Locale ) any, anyString );
@@ -117,7 +120,7 @@ public class BankAccountMapperTest
         new Expectations()
         {
             {
-                context.getProperty( Account.class );
+                context.getProperty( LocalAccount.class );
                 result = account;
 
                 codeBook.getBankCode( account, code, ( Locale ) any, anyString );

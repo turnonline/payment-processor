@@ -1,9 +1,11 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
+import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.NoRetryException;
 import biz.turnonline.ecosystem.steward.model.Account;
 import biz.turnonline.ecosystem.steward.model.AccountBusiness;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import com.googlecode.objectify.annotation.Cache;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Ignore;
@@ -15,7 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.util.Locale;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -32,9 +36,13 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class LocalAccount
         extends EntityLongIdentity
 {
-    private static final Logger logger = LoggerFactory.getLogger( LocalAccount.class );
+    private static final long serialVersionUID = 6766053569523752265L;
 
-    private static final long serialVersionUID = 7289984143469403021L;
+    private static final Logger LOGGER = LoggerFactory.getLogger( LocalAccount.class );
+
+    private static final Locale DEFAULT_LOCALE = new Locale( "en" );
+
+    private static final String DEFAULT_DOMICILE = "SK";
 
     @Ignore
     private transient RestFacade facade;
@@ -51,21 +59,40 @@ public class LocalAccount
     @Index
     private String audience;
 
+    private String domicile;
+
+    private String locale;
+
     @Inject
     LocalAccount( RestFacade facade )
     {
         this.facade = facade;
     }
 
-    LocalAccount( @Nonnull Account account )
+    LocalAccount( @Nonnull LocalAccountProvider.Builder builder )
+    {
+        checkNotNull( builder, "Builder can't be null" );
+        this.email = checkNotNull( builder.email, "Account email is mandatory" );
+        this.audience = checkNotNull( builder.audience, "Account audience is mandatory" );
+        this.identityId = checkNotNull( builder.identityId, "Account Identity ID is mandatory" );
+    }
+
+    public LocalAccount( @Nonnull Account account )
     {
         checkNotNull( account, "Account is mandatory" );
 
         super.setId( checkNotNull( account.getId(), "Account ID is mandatory" ) );
         this.email = checkNotNull( account.getEmail(), "Account email is mandatory" );
         this.audience = checkNotNull( account.getAudience(), "Account audience is mandatory" );
-        this.identityId = checkNotNull( account.getIdentityId(), "Identity ID is mandatory" );
+        this.identityId = checkNotNull( account.getIdentityId(), "Account Identity ID is mandatory" );
         this.tAccount = account;
+        this.locale = account.getLocale();
+
+        AccountBusiness business = account.getBusiness();
+        if ( business != null )
+        {
+            this.domicile = business.getDomicile();
+        }
     }
 
     public String getIdentityId()
@@ -110,7 +137,7 @@ public class LocalAccount
         }
         catch ( NotFoundException e )
         {
-            logger.warn( "The remote account with email: '" + getEmail() + "' not found." );
+            LOGGER.warn( "The remote account with email: '" + getEmail() + "' not found." );
             tAccount = null;
         }
         return tAccount;
@@ -160,6 +187,85 @@ public class LocalAccount
         return business;
     }
 
+    /**
+     * Returns the final locale based preferable on {@link Account#getLocale()}. Always returns a value.
+     * If none of the values has been found a {@link #DEFAULT_LOCALE} will be returned.
+     *
+     * @return the final locale, ISO 639 alpha-2 or alpha-3 language code
+     */
+    public Locale getLocale()
+    {
+        return getLocale( null );
+    }
+
+    /**
+     * Sets the preferred account language. ISO 639 alpha-2 or alpha-3 language code.
+     *
+     * @param locale the language to be set
+     */
+    public void setLocale( String locale )
+    {
+        this.locale = locale;
+    }
+
+    /**
+     * Returns the final locale based preferable on {@link Account#getLocale()} with specified preference.
+     * Always returns a value. If none of the values has been found a {@link #DEFAULT_LOCALE} will be returned.
+     *
+     * @param locale the optional however preferred language
+     * @return the final locale
+     */
+    public Locale getLocale( @Nullable Locale locale )
+    {
+        if ( locale == null )
+        {
+            if ( Strings.isNullOrEmpty( this.locale ) )
+            {
+                locale = DEFAULT_LOCALE;
+                LOGGER.warn( "Using service default locale: " + locale );
+            }
+            else
+            {
+                locale = new Locale( this.locale );
+            }
+        }
+        return locale;
+    }
+
+    /**
+     * Returns the account domicile with optional preference. Always returns a value.
+     * If none domicile value found a {@link #DEFAULT_DOMICILE} will be returned.
+     *
+     * @param domicile the optional (preferred) ISO 3166 alpha-2 country code that represents a target domicile
+     * @return the final domicile
+     */
+    public String getDomicile( @Nullable String domicile )
+    {
+        if ( domicile == null )
+        {
+            if ( Strings.isNullOrEmpty( this.domicile ) )
+            {
+                domicile = DEFAULT_DOMICILE;
+                LOGGER.warn( "Using service default locale: " + domicile );
+            }
+            else
+            {
+                domicile = this.domicile;
+            }
+        }
+        return domicile.toUpperCase();
+    }
+
+    /**
+     * Sets the ISO 3166 alpha-2 country code that represents account domicile.
+     *
+     * @param domicile the domicile to be set
+     */
+    void setDomicile( String domicile )
+    {
+        this.domicile = domicile;
+    }
+
     @Override
     public void save()
     {
@@ -170,7 +276,6 @@ public class LocalAccount
     public void delete()
     {
         ofy().transact( () -> ofy().delete().entity( LocalAccount.this ).now() );
-
     }
 
     @Override

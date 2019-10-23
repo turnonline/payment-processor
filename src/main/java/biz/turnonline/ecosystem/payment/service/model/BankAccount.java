@@ -3,7 +3,6 @@ package biz.turnonline.ecosystem.payment.service.model;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
 import biz.turnonline.ecosystem.payment.service.SecretKeyConfig;
 import biz.turnonline.ecosystem.payment.service.TwoWayEncryption;
-import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
@@ -156,8 +155,7 @@ public class BankAccount
             throw new IllegalArgumentException();
         }
 
-        Account account = owner.getAccount();
-        Map<String, BankCode> codes = codeBook.getBankCodes( account, locale, country );
+        Map<String, BankCode> codes = codeBook.getBankCodes( owner, locale, country );
 
         BankCode bankCode = codes.get( this.getBankCode() );
         if ( bankCode == null )

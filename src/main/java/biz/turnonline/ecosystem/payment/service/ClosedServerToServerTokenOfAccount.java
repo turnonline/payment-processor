@@ -59,7 +59,7 @@ public class ClosedServerToServerTokenOfAccount
             {
                 LOGGER.info( "Token creation took more than 100 ms ("
                         + stopped
-                        + ") on behalf of (Identity ID): "
+                        + ") on behalf of (Account ID): "
                         + user.getId() );
             }
             else

@@ -2,6 +2,7 @@ package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.payment.api.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
+import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.response.InternalServerErrorException;
@@ -11,6 +12,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
 import mockit.Tested;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,10 +46,20 @@ public class CodeBookEndpointTest
     @Mocked
     private User authUser;
 
-    private Account account = new Account();
+    private LocalAccount account;
 
     @Mocked
     private biz.turnonline.ecosystem.payment.service.model.BankCode dbBankCode;
+
+    @BeforeMethod
+    public void before()
+    {
+        account = new LocalAccount( new Account()
+                .setId( 1735L )
+                .setEmail( "my.account@turnonline.biz" )
+                .setIdentityId( "64HGtr6ks" )
+                .setAudience( "turn-online" ) );
+    }
 
     @Test
     public void listCodebookBankCodes() throws Exception
@@ -80,7 +92,7 @@ public class CodeBookEndpointTest
                 result = account;
 
                 //noinspection ConstantConditions
-                service.getBankCodes( ( Account ) any, ( Locale ) any, anyString );
+                service.getBankCodes( ( LocalAccount ) any, ( Locale ) any, anyString );
                 result = new RuntimeException();
             }
         };
@@ -137,7 +149,7 @@ public class CodeBookEndpointTest
         {
             {
                 //noinspection ConstantConditions
-                service.getBankCode( ( Account ) any, anyString, ( Locale ) any, anyString );
+                service.getBankCode( ( LocalAccount ) any, anyString, ( Locale ) any, anyString );
                 result = null;
             }
         };
@@ -172,7 +184,7 @@ public class CodeBookEndpointTest
                 result = account;
 
                 //noinspection ConstantConditions
-                service.getBankCode( ( Account ) any, anyString, ( Locale ) any, anyString );
+                service.getBankCode( ( LocalAccount ) any, anyString, ( Locale ) any, anyString );
                 result = new RuntimeException();
             }
         };

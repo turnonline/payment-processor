@@ -2,7 +2,7 @@ package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
-import biz.turnonline.ecosystem.steward.model.Account;
+import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,7 +27,7 @@ public interface PaymentConfig
      * @throws WrongEntityOwner    if bank account is found but has a different owner as the authenticated account
      * @throws BankAccountNotFound if bank account is not found
      */
-    BankAccount getBankAccount( @Nonnull Account owner, @Nonnull Long id );
+    BankAccount getBankAccount( @Nonnull LocalAccount owner, @Nonnull Long id );
 
     /**
      * Returns the list of filtered bank accounts that's being owned by specified owner.
@@ -38,7 +38,7 @@ public interface PaymentConfig
      * @param country the country of the bank where bank account has been opened
      * @return the list of filtered bank accounts
      */
-    List<BankAccount> getBankAccounts( @Nonnull Account owner,
+    List<BankAccount> getBankAccounts( @Nonnull LocalAccount owner,
                                        @Nullable Integer offset,
                                        @Nullable Integer limit,
                                        @Nullable String country );
@@ -52,7 +52,7 @@ public interface PaymentConfig
      * @param bankAccount the bank account to be inserted
      * @throws ApiValidationException if specified bank account is invalid
      */
-    void insertBankAccount( @Nonnull Account owner, @Nonnull BankAccount bankAccount );
+    void insertBankAccount( @Nonnull LocalAccount owner, @Nonnull BankAccount bankAccount );
 
     /**
      * Updates the bank account with specified incoming changes.
@@ -61,7 +61,7 @@ public interface PaymentConfig
      * @param bankAccount the bank account with incoming changes
      * @throws WrongEntityOwner if bank account is found but has a different owner as the authenticated account
      */
-    void updateBankAccount( @Nonnull Account owner, @Nonnull BankAccount bankAccount );
+    void updateBankAccount( @Nonnull LocalAccount owner, @Nonnull BankAccount bankAccount );
 
     /**
      * Deletes the bank account specified by given ID. Only non primary bank account is being allowed to be deleted.
@@ -73,7 +73,7 @@ public interface PaymentConfig
      * @throws BankAccountNotFound    if bank account is not found
      * @throws ApiValidationException if specified bank account is being marked as primary
      */
-    BankAccount deleteBankAccount( @Nonnull Account owner, @Nonnull Long id );
+    BankAccount deleteBankAccount( @Nonnull LocalAccount owner, @Nonnull Long id );
 
     /**
      * Marks the specified bank account as primary and rest will be de-marked.
@@ -85,7 +85,7 @@ public interface PaymentConfig
      * @throws BankAccountNotFound    if bank account is not found
      * @throws ApiValidationException if specified bank account can't be marked as primary
      */
-    BankAccount markBankAccountAsPrimary( @Nonnull Account owner, @Nonnull Long id );
+    BankAccount markBankAccountAsPrimary( @Nonnull LocalAccount owner, @Nonnull Long id );
 
     /**
      * Returns the primary bank account for specified owner and country (either default one or specified).
@@ -98,7 +98,7 @@ public interface PaymentConfig
      * @return the primary bank account
      * @throws BankAccountNotFound if primary bank account is not found
      */
-    BankAccount getPrimaryBankAccount( @Nonnull Account owner, @Nullable String country );
+    BankAccount getPrimaryBankAccount( @Nonnull LocalAccount owner, @Nullable String country );
 
     /**
      * Returns the list of all alternative bank accounts except the primary one.
@@ -110,7 +110,7 @@ public interface PaymentConfig
      * @param country the preferred country in the result
      * @return the list of alternative bank accounts
      */
-    List<BankAccount> getAlternativeBankAccounts( @Nonnull Account owner,
+    List<BankAccount> getAlternativeBankAccounts( @Nonnull LocalAccount owner,
                                                   @Nullable Integer offset,
                                                   @Nullable Integer limit,
                                                   @Nullable Locale locale,

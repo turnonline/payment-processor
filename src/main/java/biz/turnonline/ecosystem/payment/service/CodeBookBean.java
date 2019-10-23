@@ -1,7 +1,7 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
-import biz.turnonline.ecosystem.steward.model.Account;
+import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.googlecode.objectify.cmd.Query;
 import net.sf.jsr107cache.Cache;
 
@@ -37,14 +37,14 @@ class CodeBookBean
     }
 
     @Override
-    public Map<String, BankCode> getBankCodes( @Nonnull Account account,
+    public Map<String, BankCode> getBankCodes( @Nonnull LocalAccount account,
                                                @Nullable Locale locale,
                                                @Nullable String country )
     {
         checkNotNull( account );
 
-        locale = getLocale( account, locale );
-        country = getDomicile( account, country );
+        locale = account.getLocale( locale );
+        country = account.getDomicile( country );
 
         String key = cacheKey( locale, country, null );
         if ( cache.containsKey( key ) )
@@ -76,7 +76,7 @@ class CodeBookBean
     }
 
     @Override
-    public BankCode getBankCode( @Nonnull Account account,
+    public BankCode getBankCode( @Nonnull LocalAccount account,
                                  @Nonnull String code,
                                  @Nullable Locale locale,
                                  @Nullable String country )
@@ -84,8 +84,8 @@ class CodeBookBean
         checkNotNull( account );
         checkNotNull( code );
 
-        locale = getLocale( account, locale );
-        country = getDomicile( account, country );
+        locale = account.getLocale( locale );
+        country = account.getDomicile( country );
         String key = cacheKey( locale, country, code );
 
         if ( cache.containsKey( key ) )
