@@ -418,7 +418,6 @@ public class BankAccount
             return false;
         if ( prefix != null ? !prefix.equals( that.prefix ) : that.prefix != null )
             return false;
-        //noinspection RedundantIfStatement
         return !( bankCode != null ? !bankCode.equals( that.bankCode ) : that.bankCode != null );
 
     }

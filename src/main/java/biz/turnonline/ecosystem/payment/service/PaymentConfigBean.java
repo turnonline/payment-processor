@@ -208,7 +208,7 @@ class PaymentConfigBean
         List<BankAccount> list = getBankAccounts( checkNotNull( account, template, "LocalAccount" ), null, null, null );
         Collections.sort( list );
 
-        country = account.getDomicile( country );
+        country = country == null ? account.getDomicile().name() : country;
 
         Predicate<BankAccount> and = new BankAccountCountryPredicate( country ).and( new BankAccountPrimary() );
         Collection<BankAccount> filtered = list.stream().filter( and ).collect( Collectors.toList() );
@@ -237,7 +237,7 @@ class PaymentConfigBean
     {
         String template = "{0} cannot be null";
         BankAccount exclude = getInternalPrimaryBankAccount( checkNotNull( account, template, "LocalAccount" ), country );
-        country = account.getDomicile( country );
+        country = country == null ? account.getDomicile().name() : country;
         locale = account.getLocale( locale );
 
         List<BankAccount> list = getBankAccounts( account, offset, limit, null );

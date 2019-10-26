@@ -67,8 +67,8 @@ public class PrimaryAlternativeBankAccountTest
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
 
-                account.getDomicile( null );
-                result = Domicile.CZ.name();
+                account.getDomicile();
+                result = Domicile.CZ;
             }
         };
 
@@ -90,8 +90,8 @@ public class PrimaryAlternativeBankAccountTest
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
 
-                account.getDomicile( null );
-                result = Domicile.SK.name();
+                account.getDomicile();
+                result = Domicile.SK;
             }
         };
 
@@ -183,9 +183,6 @@ public class PrimaryAlternativeBankAccountTest
             {
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
-
-                account.getDomicile( anyString );
-                result = Domicile.getDefault().name();
             }
         };
 
@@ -287,8 +284,8 @@ public class PrimaryAlternativeBankAccountTest
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
 
-                account.getDomicile( null );
-                result = Domicile.CZ.name();
+                account.getDomicile();
+                result = Domicile.CZ;
             }
         };
 
@@ -475,8 +472,8 @@ public class PrimaryAlternativeBankAccountTest
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
 
-                account.getDomicile( null );
-                result = Domicile.SK.name();
+                account.getDomicile();
+                result = Domicile.SK;
 
                 codeBook.getBankCodes( account, ( Locale ) any, anyString );
                 result = getCodeBookMap();
@@ -492,8 +489,8 @@ public class PrimaryAlternativeBankAccountTest
                 tested.getBankAccounts( account, null, null, null );
                 result = list;
 
-                account.getDomicile( null );
-                result = Domicile.CZ.name();
+                account.getDomicile();
+                result = Domicile.CZ;
 
                 //noinspection ConstantConditions
                 codeBook.getBankCodes( ( LocalAccount ) any, ( Locale ) any, anyString );

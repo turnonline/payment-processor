@@ -44,7 +44,7 @@ class CodeBookBean
         checkNotNull( account );
 
         locale = account.getLocale( locale );
-        country = account.getDomicile( country );
+        country = country == null ? account.getDomicile().name() : country;
 
         String key = cacheKey( locale, country, null );
         if ( cache.containsKey( key ) )
@@ -85,7 +85,7 @@ class CodeBookBean
         checkNotNull( code );
 
         locale = account.getLocale( locale );
-        country = account.getDomicile( country );
+        country = country == null ? account.getDomicile().name() : country;
         String key = cacheKey( locale, country, code );
 
         if ( cache.containsKey( key ) )
