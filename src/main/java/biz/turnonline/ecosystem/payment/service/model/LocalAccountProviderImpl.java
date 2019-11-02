@@ -37,11 +37,11 @@ public class LocalAccountProviderImpl
     public LocalAccount initGet( @Nonnull Builder builder )
     {
         checkNotNull( builder, "Builder can't be null" );
-        checkNotNull( builder.email, "Account email can't be null" );
-        checkNotNull( builder.identityId, "Account Identity ID is mandatory" );
-        checkNotNull( builder.audience, "Account audience can't be null" );
+        checkNotNull( builder.getEmail(), "Account email can't be null" );
+        checkNotNull( builder.getIdentityId(), "Account Identity ID is mandatory" );
+        checkNotNull( builder.getAudience(), "Account audience can't be null" );
 
-        LocalAccount localAccount = get( builder.email, builder.audience );
+        LocalAccount localAccount = get( builder.getEmail(), builder.getAudience() );
 
         if ( localAccount == null )
         {
@@ -49,7 +49,7 @@ public class LocalAccountProviderImpl
             LocalAccount temp = new LocalAccount( builder );
 
             Account remote = facade.get( Account.class )
-                    .identifiedBy( builder.email )
+                    .identifiedBy( builder.getIdentityId() )
                     .onBehalfOf( temp )
                     .finish();
 
@@ -59,7 +59,7 @@ public class LocalAccountProviderImpl
             logger.info( "Local account just has been created (" + stopwatch + "): " + localAccount );
         }
 
-        if ( !builder.identityId.equals( localAccount.getIdentityId() ) )
+        if ( !builder.getIdentityId().equals( localAccount.getIdentityId() ) )
         {
             logger.error( "IdentityId mismatch. Current " + LocalAccount.class.getSimpleName() + " '"
                     + localAccount.getIdentityId() + "' does not match to the authenticated account: " + builder );

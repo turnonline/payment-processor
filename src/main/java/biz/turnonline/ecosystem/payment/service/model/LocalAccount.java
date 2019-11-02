@@ -70,12 +70,18 @@ public class LocalAccount
         this.facade = facade;
     }
 
+    /**
+     * Constructs local account. If no Account ID set then can't be saved.
+     *
+     * @param builder mandatory properties are: email, identityId, audience
+     */
     LocalAccount( @Nonnull LocalAccountProvider.Builder builder )
     {
         checkNotNull( builder, "Builder can't be null" );
-        this.email = checkNotNull( builder.email, "Account email is mandatory" );
-        this.audience = checkNotNull( builder.audience, "Account audience is mandatory" );
-        this.identityId = checkNotNull( builder.identityId, "Account Identity ID is mandatory" );
+        this.email = checkNotNull( builder.getEmail(), "Account email is mandatory" );
+        this.audience = checkNotNull( builder.getAudience(), "Account audience is mandatory" );
+        this.identityId = checkNotNull( builder.getIdentityId(), "Account Identity ID is mandatory" );
+        super.setId( builder.getAccountId() );
     }
 
     public LocalAccount( @Nonnull Account account )
@@ -96,14 +102,38 @@ public class LocalAccount
         }
     }
 
+    /**
+     * The email account unique identification within third-party login provider.
+     *
+     * @return the unique identification of the email account
+     */
     public String getIdentityId()
     {
         return identityId;
     }
 
+    /**
+     * The login email address of the account.
+     *
+     * @return the account login email
+     */
     public String getEmail()
     {
         return email;
+    }
+
+    /**
+     * Sets the login email address of the account.
+     * <p>
+     * In some (probably rare) cases an user might change its login email under the umbrella
+     * of the same login provider. In this case the identity Id remains same,
+     * while email has been changed.
+     *
+     * @param email the email to be set, not null
+     */
+    void setEmail( @Nonnull String email )
+    {
+        this.email = checkNotNull( email, "Login email can't be null" );
     }
 
     /**
@@ -283,7 +313,12 @@ public class LocalAccount
     @Override
     public void save()
     {
-        ofy().transact( () -> ofy().save().entity( LocalAccount.this ).now() );
+        if ( getId() == null )
+        {
+            String msg = "The Account ID is being expected to be set in advance from remote Account.";
+            throw new IllegalArgumentException( msg );
+        }
+        ofy().transact( () -> ofy().save().entity( this ).now() );
     }
 
     @Override

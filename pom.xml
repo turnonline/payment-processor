@@ -203,6 +203,10 @@
         </dependency>
         <dependency>
             <groupId>org.ctoolkit.restapi</groupId>
+            <artifactId>ctoolkit-client-pubsub</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.ctoolkit.restapi</groupId>
             <artifactId>ctoolkit-client-firebase</artifactId>
             <exclusions>
                 <exclusion>

@@ -38,11 +38,54 @@ public interface LocalAccountProvider
 
     class Builder
     {
-        public String identityId;
+        private Long accountId;
 
-        public String email;
+        private String identityId;
 
-        public String audience;
+        private String email;
+
+        private String audience;
+
+        /**
+         * Returns the account unique identification within TurnOnline.biz Ecosystem.
+         */
+        public Long getAccountId()
+        {
+            return accountId;
+        }
+
+        /**
+         * Returns the user account unique identification within login provider system.
+         */
+        public String getIdentityId()
+        {
+            return identityId;
+        }
+
+        /**
+         * Returns the login email address of the account.
+         */
+        public String getEmail()
+        {
+            return email;
+        }
+
+        /**
+         * Returns the account unique audience.
+         */
+        public String getAudience()
+        {
+            return audience;
+        }
+
+        /**
+         * Sets the account unique identification within TurnOnline.biz Ecosystem.
+         */
+        public Builder accountId( @Nonnull Long accountId )
+        {
+            this.accountId = accountId;
+            return this;
+        }
 
         /**
          * Sets the user account unique identification within login provider system.
@@ -75,7 +118,8 @@ public interface LocalAccountProvider
         public String toString()
         {
             MoreObjects.ToStringHelper string = MoreObjects.toStringHelper( "Builder" );
-            string.add( "email", email )
+            string.add( "Account ID", accountId )
+                    .add( "email", email )
                     .add( "identityId", identityId )
                     .add( "audience", audience );
 
