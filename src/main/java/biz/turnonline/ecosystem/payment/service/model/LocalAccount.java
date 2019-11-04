@@ -248,19 +248,7 @@ public class LocalAccount
      */
     public Locale getLocale( @Nullable Locale locale )
     {
-        if ( locale == null )
-        {
-            if ( Strings.isNullOrEmpty( this.locale ) )
-            {
-                locale = DEFAULT_LOCALE;
-                LOGGER.warn( "Using service default locale: " + locale );
-            }
-            else
-            {
-                locale = new Locale( this.locale );
-            }
-        }
-        return locale;
+        return locale != null ? locale : convertJavaLocale( this.locale, DEFAULT_LOCALE );
     }
 
     /**

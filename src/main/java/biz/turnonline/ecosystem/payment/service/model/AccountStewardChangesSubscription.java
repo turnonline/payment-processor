@@ -36,7 +36,7 @@ import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ENCODED_UNIQUE_KE
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 @Singleton
-class AccountStewardChangesSubscription
+public class AccountStewardChangesSubscription
         implements PubsubMessageListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( AccountStewardChangesSubscription.class );

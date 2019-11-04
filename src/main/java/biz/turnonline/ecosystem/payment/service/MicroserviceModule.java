@@ -57,6 +57,7 @@ public class MicroserviceModule
         install( new AccountStewardClientModule() );
         install( new AccountStewardAdapterModule() );
         install( new GoogleApiFirebaseModule() );
+        install( new SubscriptionsModule() );
 
         bind( PaymentConfig.class ).to( PaymentConfigBean.class );
         bind( CodeBook.class ).to( CodeBookBean.class );
