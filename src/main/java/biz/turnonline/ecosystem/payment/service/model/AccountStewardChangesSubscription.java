@@ -4,6 +4,7 @@ import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
+import org.apache.commons.lang3.LocaleUtils;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.ctoolkit.restapi.client.pubsub.PubsubMessageListener;
 import org.slf4j.Logger;
@@ -130,7 +131,7 @@ public class AccountStewardChangesSubscription
         }
 
         // Current, the most up to date locale, taken from the remote account
-        Locale remoteLocale = account.getLocale() == null ? null : new Locale( account.getLocale() );
+        Locale remoteLocale = account.getLocale() == null ? null : LocaleUtils.toLocale( account.getLocale() );
         if ( remoteLocale != null && !remoteLocale.equals( la.getLocale() ) )
         {
             LOGGER.info( "Account locale has changed from '" + la.getLocale() + "' to '" + remoteLocale + "'" );
