@@ -14,15 +14,12 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.appengine.api.utils.SystemProperty;
 import com.google.cloud.storage.Storage;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
-import com.google.inject.name.Names;
 import net.sf.jsr107cache.Cache;
-import org.ctoolkit.restapi.client.ApiCredential;
 import org.ctoolkit.restapi.client.adapter.BeanMapperConfig;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeAppEngineModule;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeDefaultOrikaModule;
@@ -76,11 +73,6 @@ public class MicroserviceModule
         bind( new TypeLiteral<TokenProvider<LocalAccount>>()
         {
         } ).to( ClosedServerToServerTokenOfAccount.class );
-
-        // Firebase configuration
-        ApiCredential credential = new ApiCredential( "firebase" );
-        credential.setProjectId( SystemProperty.applicationId.get() );
-        Names.bindProperties( binder(), credential );
     }
 
     @Provides
