@@ -11,10 +11,10 @@
             <property name="bankCode" type="string" value="1100"/>
             <property indexed="true" name="code" type="string" value="BA_1"/>
             <property name="primary" type="boolean" value="true"/>
-            <property name="paymentGate" type="string" value="TATRAPAY"/>
-            <property name="merchantId" type="string" value="123456789"/>
+            <property indexed="true" name="paymentGate" type="string" value="TATRAPAY"/>
+            <property indexed="true" name="merchantId" type="string" value="123456789"/>
             <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
-            <property name="country" type="string" value="CZ"/>
+            <property indexed="true" name="country" type="string" value="CZ"/>
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
@@ -26,10 +26,10 @@
             <property name="bankCode" type="string" value="1111"/>
             <property indexed="true" name="code" type="string" value="BA_2"/>
             <property name="primary" type="boolean" value="false"/>
-            <property name="paymentGate" type="string" value="CARDPAY"/>
-            <property name="merchantId" type="string" value="123456789"/>
+            <property indexed="true" name="paymentGate" type="string" value="CARDPAY"/>
+            <property indexed="true" name="merchantId" type="string" value="123456789"/>
             <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
-            <property name="country" type="string" value="SK"/>
+            <property indexed="true" name="country" type="string" value="SK"/>
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
@@ -41,10 +41,10 @@
             <property name="bankCode" type="string" value="0900"/>
             <property indexed="true" name="code" type="string" value="BA_3"/>
             <property name="primary" type="boolean" value="false"/>
-            <property name="paymentGate" type="string" value="SPOROPAY"/>
-            <property name="merchantId" type="string" value="123456789"/>
+            <property indexed="true" name="paymentGate" type="string" value="SPOROPAY"/>
+            <property indexed="true" name="merchantId" type="string" value="123456789"/>
             <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
-            <property name="country" type="string" value="SK"/>
+            <property indexed="true" name="country" type="string" value="SK"/>
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
@@ -56,10 +56,10 @@
             <property name="bankCode" type="string" value="0200"/>
             <property indexed="true" name="code" type="string" value="BA_4"/>
             <property name="primary" type="boolean" value="true"/>
-            <property name="paymentGate" type="string" value="EPLATBY_VUB"/>
-            <property name="merchantId" type="string" value="123456789"/>
+            <property indexed="true" name="paymentGate" type="string" value="EPLATBY_VUB"/>
+            <property indexed="true" name="merchantId" type="string" value="123456789"/>
             <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
-            <property name="country" type="string" value="CZ"/>
+            <property indexed="true" name="country" type="string" value="CZ"/>
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
@@ -71,10 +71,10 @@
             <property name="bankCode" type="string" value="9952"/>
             <property indexed="true" name="code" type="string" value="BA_5"/>
             <property name="primary" type="boolean" value="true"/>
-            <property name="paymentGate" type="string" value="TRUSTPAY"/>
-            <property name="merchantId" type="string" value="2107152003"/>
+            <property indexed="true" name="paymentGate" type="string" value="TRUSTPAY"/>
+            <property indexed="true" name="merchantId" type="string" value="2107152003"/>
             <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
-            <property name="country" type="string" value="SK"/>
+            <property indexed="true" name="country" type="string" value="SK"/>
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
@@ -86,7 +86,7 @@
             <property name="accountNumber" type="string" value="123456789"/>
             <property name="bankCode" type="string" value="0900"/>
             <property name="primary" type="boolean" value="true"/>
-            <property name="country" type="string" value="SK"/>
+            <property indexed="true" name="country" type="string" value="SK"/>
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
     </entities>

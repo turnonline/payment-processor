@@ -13,7 +13,7 @@ import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
 import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.RestFacade;
-import org.ctoolkit.services.storage.appengine.objectify.EntityLongIdentity;
+import org.ctoolkit.services.datastore.objectify.EntityLongIdentity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

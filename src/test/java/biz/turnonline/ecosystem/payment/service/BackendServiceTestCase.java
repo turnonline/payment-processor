@@ -24,24 +24,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.appengine.api.urlfetch.URLFetchServicePb;
 import com.google.appengine.api.utils.SystemProperty;
-import com.google.appengine.tools.development.testing.LocalDatastoreServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalModulesServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig;
+import com.google.cloud.datastore.testing.LocalDatastoreHelper;
 import com.googlecode.objectify.ObjectifyService;
-import org.ctoolkit.agent.config.LocalDevAgentModule;
+import org.ctoolkit.agent.config.LocalAgentUnitTestModule;
+import org.ctoolkit.services.storage.guice.GuicefiedOfyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Guice;
 
+import javax.inject.Inject;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * The common test case for all integration tests requiring App Engine services to be available within unit test.
@@ -50,7 +55,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Guice( modules = {
         MicroserviceModule.class,
-        LocalDevAgentModule.class}
+        LocalStorageModule.class,
+        LocalAgentUnitTestModule.class}
 )
 public class BackendServiceTestCase
 {
@@ -58,14 +64,20 @@ public class BackendServiceTestCase
 
     private LocalTaskQueueTestConfig.TaskCountDownLatch latch = new LocalTaskQueueTestConfig.TaskCountDownLatch( 1 );
 
+    private LocalObjectifyHelper ofyHelper;
+
     private LocalServiceTestHelper helper = new LocalServiceTestHelper(
             new LocalMemcacheServiceTestConfig(),
             new LocalModulesServiceTestConfig(),
-            new LocalDatastoreServiceTestConfig().setDefaultHighRepJobPolicyUnappliedJobPercentage( 0 ),
+            ofyHelper = new LocalObjectifyHelper(),
             new LocalTaskQueueTestConfig().setDisableAutoTaskExecution( false )
                     .setCallbackClass( ObjectifyAwareDeferredTaskCallback.class ) );
 
-    private Closeable session;
+    @Inject
+    private GuicefiedOfyFactory ofyFactory;
+
+    @Inject
+    private LocalDatastoreHelper lDatastoreHelper;
 
     public static <T> T getFromFile( String json, Class<T> valueType )
     {
@@ -120,18 +132,37 @@ public class BackendServiceTestCase
     }
 
     @BeforeMethod
-    public void setUp( Method m )
+    public void beforeMethod()
     {
         helper.setUp();
-        session = ObjectifyService.begin();
-        SystemProperty.environment.set( "Development" );
     }
 
     @AfterMethod
-    public void tearDown() throws Exception
+    public void afterMethod()
     {
-        session.close();
+        latch.reset();
         helper.tearDown();
+    }
+
+    @BeforeSuite
+    public void start() throws IOException, InterruptedException
+    {
+        beforeClass();
+        SystemProperty.environment.set( "Development" );
+
+        ofyHelper.start();
+    }
+
+    @BeforeClass
+    public void beforeClass()
+    {
+        ofyHelper.init( lDatastoreHelper, ofyFactory );
+    }
+
+    @AfterSuite
+    public void stop() throws InterruptedException, TimeoutException, IOException
+    {
+        ofyHelper.stop();
     }
 
     protected void awaitAndReset( long milliseconds )

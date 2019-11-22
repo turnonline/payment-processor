@@ -12,8 +12,8 @@ import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.OnLoad;
 import com.googlecode.objectify.annotation.OnSave;
+import org.ctoolkit.services.datastore.objectify.EntityLongIdentity;
 import org.ctoolkit.services.storage.HasOwner;
-import org.ctoolkit.services.storage.appengine.objectify.EntityLongIdentity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

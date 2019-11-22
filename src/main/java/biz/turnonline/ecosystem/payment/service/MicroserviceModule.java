@@ -1,7 +1,5 @@
 package biz.turnonline.ecosystem.payment.service;
 
-import biz.turnonline.ecosystem.payment.guice.EntityRegistrar;
-import biz.turnonline.ecosystem.payment.guice.GuicefiedOfyFactory;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.CodeBookItem;
@@ -14,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.cloud.storage.Storage;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
@@ -28,7 +25,8 @@ import org.ctoolkit.restapi.client.firebase.GoogleApiFirebaseModule;
 import org.ctoolkit.restapi.client.provider.TokenProvider;
 import org.ctoolkit.services.guice.CtoolkitServicesAppEngineModule;
 import org.ctoolkit.services.storage.CtoolkitServicesStorageModule;
-import org.ctoolkit.services.storage.DefaultStorageProvider;
+import org.ctoolkit.services.storage.guice.EntityRegistrar;
+import org.ctoolkit.services.storage.guice.GuicefiedOfyFactory;
 import org.ctoolkit.services.task.CtoolkitServicesTaskModule;
 
 import javax.inject.Singleton;
@@ -59,10 +57,7 @@ public class MicroserviceModule
         bind( PaymentConfig.class ).to( PaymentConfigBean.class );
         bind( CodeBook.class ).to( CodeBookBean.class );
         bind( LocalAccountProvider.class ).to( LocalAccountProviderImpl.class );
-        bind( GuicefiedOfyFactory.class ).asEagerSingleton();
-
         bind( Cache.class ).toProvider( JCacheProvider.class ).in( Singleton.class );
-        bind( Storage.class ).toProvider( DefaultStorageProvider.class ).in( Singleton.class );
 
         Multibinder<EntityRegistrar> registrar = Multibinder.newSetBinder( binder(), EntityRegistrar.class );
         registrar.addBinding().to( Entities.class );

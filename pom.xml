@@ -84,14 +84,14 @@
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-microservice-bom</artifactId>
-                <version>1.9.76.2</version>
+                <version>1.9.76.3-20191117.112958-3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-library-bom</artifactId>
-                <version>11</version>
+                <version>12-20191121.050219-2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -255,7 +255,7 @@
         <dependency>
             <groupId>org.ctoolkit.agent</groupId>
             <artifactId>ctoolkit-agent-import</artifactId>
-            <version>1.1</version>
+            <version>1.2-20191121.055859-3</version>
             <scope>test</scope>
         </dependency>
         <dependency>

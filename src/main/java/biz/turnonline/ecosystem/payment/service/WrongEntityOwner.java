@@ -2,8 +2,8 @@ package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.common.annotations.VisibleForTesting;
+import org.ctoolkit.services.datastore.objectify.BaseEntityIdentity;
 import org.ctoolkit.services.storage.HasOwner;
-import org.ctoolkit.services.storage.appengine.objectify.BaseEntityIdentity;
 
 import javax.annotation.Nonnull;
 
@@ -20,7 +20,6 @@ public class WrongEntityOwner
 
     private LocalAccount owner;
 
-    @SuppressWarnings( "NonSerializableFieldInSerializableClass" )
     private HasOwner<LocalAccount> entity;
 
     @VisibleForTesting

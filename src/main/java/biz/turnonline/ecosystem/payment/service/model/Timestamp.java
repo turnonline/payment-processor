@@ -13,14 +13,14 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * {@link org.ctoolkit.services.storage.appengine.objectify.Timestamp}
+ * {@link org.ctoolkit.services.datastore.objectify.Timestamp}
  * configured as an objectify entity.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 @Entity( name = "PP_Timestamp" )
 public class Timestamp
-        extends org.ctoolkit.services.storage.appengine.objectify.Timestamp
+        extends org.ctoolkit.services.datastore.objectify.Timestamp
 {
     @Index
     private Key<LocalAccount> owner;

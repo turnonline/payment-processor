@@ -1,6 +1,7 @@
 package biz.turnonline.ecosystem.payment.guice;
 
 import biz.turnonline.ecosystem.payment.service.MicroserviceModule;
+import biz.turnonline.ecosystem.payment.service.StorageModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.ctoolkit.services.endpoints.EndpointsMonitorConfig;
@@ -17,13 +18,16 @@ public class GuiceInjectorListener
     @Override
     protected Injector getDevelopmentInjector()
     {
-        return Guice.createInjector( new MicroserviceModule(), new EndpointsInitialization() );
+        return Guice.createInjector( new MicroserviceModule(),
+                new StorageModule(),
+                new EndpointsInitialization() );
     }
 
     @Override
     protected Injector getProductionInjector()
     {
         return Guice.createInjector( new MicroserviceModule(),
+                new StorageModule(),
                 new EndpointsInitialization(),
                 new EndpointsMonitorConfig() );
     }
