@@ -28,15 +28,12 @@ import com.google.appengine.tools.development.testing.LocalMemcacheServiceTestCo
 import com.google.appengine.tools.development.testing.LocalModulesServiceTestConfig;
 import com.google.appengine.tools.development.testing.LocalServiceTestHelper;
 import com.google.appengine.tools.development.testing.LocalTaskQueueTestConfig;
-import com.google.cloud.datastore.testing.LocalDatastoreHelper;
 import com.googlecode.objectify.ObjectifyService;
 import org.ctoolkit.agent.config.LocalAgentUnitTestModule;
-import org.ctoolkit.services.storage.guice.GuicefiedOfyFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Guice;
@@ -66,18 +63,7 @@ public class BackendServiceTestCase
 
     private LocalObjectifyHelper ofyHelper;
 
-    private LocalServiceTestHelper helper = new LocalServiceTestHelper(
-            new LocalMemcacheServiceTestConfig(),
-            new LocalModulesServiceTestConfig(),
-            ofyHelper = new LocalObjectifyHelper(),
-            new LocalTaskQueueTestConfig().setDisableAutoTaskExecution( false )
-                    .setCallbackClass( ObjectifyAwareDeferredTaskCallback.class ) );
-
-    @Inject
-    private GuicefiedOfyFactory ofyFactory;
-
-    @Inject
-    private LocalDatastoreHelper lDatastoreHelper;
+    private LocalServiceTestHelper helper;
 
     public static <T> T getFromFile( String json, Class<T> valueType )
     {
@@ -131,6 +117,19 @@ public class BackendServiceTestCase
         return item;
     }
 
+    @Inject
+    public void setLocalDatastoreHelper( LocalObjectifyHelper loh )
+    {
+        this.ofyHelper = loh;
+
+        helper = new LocalServiceTestHelper(
+                new LocalMemcacheServiceTestConfig(),
+                new LocalModulesServiceTestConfig(),
+                ofyHelper,
+                new LocalTaskQueueTestConfig().setDisableAutoTaskExecution( false )
+                        .setCallbackClass( ObjectifyAwareDeferredTaskCallback.class ) );
+    }
+
     @BeforeMethod
     public void beforeMethod()
     {
@@ -147,16 +146,8 @@ public class BackendServiceTestCase
     @BeforeSuite
     public void start() throws IOException, InterruptedException
     {
-        beforeClass();
         SystemProperty.environment.set( "Development" );
-
         ofyHelper.start();
-    }
-
-    @BeforeClass
-    public void beforeClass()
-    {
-        ofyHelper.init( lDatastoreHelper, ofyFactory );
     }
 
     @AfterSuite

@@ -15,6 +15,7 @@ import java.util.Locale;
 
 import static biz.turnonline.ecosystem.payment.service.BackendServiceTestCase.getFromFile;
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 /**
  * {@link BankAccountMapper} unit testing.
@@ -217,7 +218,9 @@ public class BankAccountMapperTest
         backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
 
         tested.mapBtoA( source, backend, context );
-        assertThat( backend.isPrimary() ).named( "Default primary bank account" ).isFalse();
+        assertWithMessage( "Default primary bank account" )
+                .that( backend.isPrimary() )
+                .isFalse();
     }
 
     @Test
@@ -230,7 +233,9 @@ public class BankAccountMapperTest
         backend.setPrimary( true );
 
         tested.mapBtoA( source, backend, context );
-        assertThat( backend.isPrimary() ).named( "Primary bank account" ).isTrue();
+        assertWithMessage( "Primary bank account" )
+                .that( backend.isPrimary() )
+                .isTrue();
     }
 
     @Test
@@ -244,6 +249,8 @@ public class BankAccountMapperTest
         backend.setPrimary( false );
 
         tested.mapBtoA( source, backend, context );
-        assertThat( backend.isPrimary() ).named( "Primary bank account" ).isTrue();
+        assertWithMessage( "Primary bank account" )
+                .that( backend.isPrimary() )
+                .isTrue();
     }
 }

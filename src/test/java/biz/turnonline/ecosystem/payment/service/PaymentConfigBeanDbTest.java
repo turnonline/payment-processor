@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 /**
  * {@link PaymentConfigBean} unit testing incl. tests against emulated (local) App Engine datastore.
@@ -226,8 +227,9 @@ public class PaymentConfigBeanDbTest
         bankAccounts = bean.getBankAccounts( lAccount, null, null, null );
         assertThat( bankAccounts ).isNotNull();
         numberOfPrimary = bankAccounts.stream().filter( new PaymentConfigBean.BankAccountPrimary() ).count();
-        String message = "only single record is being marked as a primary bank account";
-        assertThat( numberOfPrimary ).named( message ).isEqualTo( 1 );
+        assertWithMessage( "only single record is being marked as a primary bank account" )
+                .that( numberOfPrimary )
+                .isEqualTo( 1 );
     }
 
     @Test( expectedExceptions = WrongEntityOwner.class )
