@@ -6,6 +6,7 @@ import biz.turnonline.ecosystem.payment.service.model.CodeBookItem;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccountProviderImpl;
 import biz.turnonline.ecosystem.payment.service.model.PaymentBeanMapperConfig;
+import biz.turnonline.ecosystem.payment.service.model.Timestamp;
 import biz.turnonline.ecosystem.steward.facade.AccountStewardAdapterModule;
 import biz.turnonline.ecosystem.steward.facade.AccountStewardClientModule;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -93,6 +94,7 @@ public class MicroserviceModule
             factory.register( BankCode.class );
             factory.register( LocalAccount.class );
             factory.register( BankAccount.class );
+            factory.register( Timestamp.class );
         }
     }
 }
