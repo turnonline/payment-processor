@@ -23,7 +23,7 @@ public class CodeBookCacheControlFilter
     @Override
     public Integer getMaxAge()
     {
-        // valid for 3 days
-        return 259200;
+        // valid for 7 days
+        return 604800;
     }
 }
