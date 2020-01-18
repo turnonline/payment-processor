@@ -4,6 +4,7 @@ import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
+import com.google.common.base.Strings;
 import org.apache.commons.lang3.LocaleUtils;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.ctoolkit.restapi.client.pubsub.PubsubMessageListener;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -42,7 +44,7 @@ public class AccountStewardChangesSubscription
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( AccountStewardChangesSubscription.class );
 
-    private static final long serialVersionUID = -8409940111786126948L;
+    private static final long serialVersionUID = -3406437765037822097L;
 
     private final LocalAccountProvider lap;
 
@@ -120,6 +122,17 @@ public class AccountStewardChangesSubscription
                           @Nonnull Timestamp timestamp )
     {
         boolean updateAccount = false;
+
+        // Current, the most up to date Zone ID, taken from the remote account
+        ZoneId remoteZoneId = Strings.isNullOrEmpty( account.getZoneId() ) ? null : ZoneId.of( account.getZoneId() );
+        ZoneId zoneId = la.getZoneId();
+
+        if ( remoteZoneId != null && !remoteZoneId.equals( zoneId ) )
+        {
+            LOGGER.info( "Zone ID has changed from '" + la.getZoneId() + "' to '" + remoteZoneId + "'" );
+            la.setZoneId( remoteZoneId.getId() );
+            updateAccount = true;
+        }
 
         // Current, the most up to date login email, taken from the remote account
         String remoteLoginEmail = account.getEmail();

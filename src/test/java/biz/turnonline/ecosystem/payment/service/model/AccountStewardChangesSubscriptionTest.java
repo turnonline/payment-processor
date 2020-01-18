@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 
+import static biz.turnonline.ecosystem.payment.service.model.LocalAccount.DEFAULT_ZONE;
 import static com.google.common.truth.Truth.assertThat;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_AUDIENCE;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
@@ -62,6 +63,7 @@ public class AccountStewardChangesSubscriptionTest
 
         localAccount.setLocale( "en" );
         localAccount.setDomicile( "SK" );
+        localAccount.setZoneId( DEFAULT_ZONE );
 
         new Expectations( tested )
         {
@@ -106,6 +108,7 @@ public class AccountStewardChangesSubscriptionTest
                 .email( EMAIL )
                 .identityId( IDENTITY_ID )
                 .audience( AUDIENCE ) );
+        localAccount.setZoneId( DEFAULT_ZONE );
 
         new Expectations( localAccount, tested )
         {
@@ -151,6 +154,7 @@ public class AccountStewardChangesSubscriptionTest
                 .identityId( IDENTITY_ID )
                 .audience( AUDIENCE ) );
         localAccount.setLocale( "de" );
+        localAccount.setZoneId( DEFAULT_ZONE );
 
         new Expectations( localAccount, tested )
         {

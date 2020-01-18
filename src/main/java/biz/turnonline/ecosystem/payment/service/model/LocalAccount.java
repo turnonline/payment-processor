@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -37,7 +38,9 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class LocalAccount
         extends EntityLongIdentity
 {
-    private static final long serialVersionUID = 6766053569523752265L;
+    static final String DEFAULT_ZONE = "Europe/Paris";
+
+    private static final long serialVersionUID = -2815259691876951647L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger( LocalAccount.class );
 
@@ -61,6 +64,8 @@ public class LocalAccount
     private String audience;
 
     private String domicile;
+
+    private String zone;
 
     private String locale;
 
@@ -93,12 +98,27 @@ public class LocalAccount
         this.audience = checkNotNull( account.getAudience(), "Account audience is mandatory" );
         this.identityId = checkNotNull( account.getIdentityId(), "Account Identity ID is mandatory" );
         this.tAccount = account;
+        init( account );
+    }
+
+    private void init( @Nonnull Account account )
+    {
         this.locale = account.getLocale();
 
         AccountBusiness business = account.getBusiness();
         if ( business != null )
         {
             this.domicile = business.getDomicile();
+        }
+
+        String zoneId = account.getZoneId();
+        if ( Strings.isNullOrEmpty( zoneId ) )
+        {
+            this.zone = DEFAULT_ZONE;
+        }
+        else
+        {
+            this.zone = zoneId;
         }
     }
 
@@ -219,6 +239,27 @@ public class LocalAccount
     }
 
     /**
+     * Returns the account time-zone ID, such as Europe/Paris. Used to identify the rules
+     * how to render date time properties of the resources associated with this account.
+     *
+     * @return the time-zone ID
+     */
+    public ZoneId getZoneId()
+    {
+        return ZoneId.of( checkNotNull( zone, "LocalAccount.zone property can't be null" ) );
+    }
+
+    /**
+     * Sets the time-zone ID.
+     *
+     * @param zone the time-zone ID to be set, not null
+     */
+    void setZoneId( @Nonnull String zone )
+    {
+        this.zone = checkNotNull( zone, "Zone ID can't be null" );
+    }
+
+    /**
      * Returns the account locale. Always returns a value.
      * If none of the values has been found a {@link #DEFAULT_LOCALE} will be returned.
      *
@@ -234,7 +275,7 @@ public class LocalAccount
      *
      * @param locale the language to be set
      */
-    public void setLocale( String locale )
+    void setLocale( String locale )
     {
         this.locale = locale;
     }
@@ -342,9 +383,12 @@ public class LocalAccount
     {
         return MoreObjects.toStringHelper( this )
                 .add( "id", getId() )
+                .add( "email", email )
                 .add( "identityId", identityId )
                 .add( "audience", audience )
-                .add( "email", email )
+                .add( "domicile", domicile )
+                .add( "zone", zone )
+                .add( "locale", locale )
                 .toString();
     }
 }

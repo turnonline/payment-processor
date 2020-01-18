@@ -84,7 +84,7 @@
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-microservice-bom</artifactId>
-                <version>1.9.76.3</version>
+                <version>1.9.77</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -102,7 +102,12 @@
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-account-steward-client</artifactId>
-            <version>0.19</version>
+            <version>0.20</version>
+        </dependency>
+        <dependency>
+            <groupId>biz.turnonline.ecosystem</groupId>
+            <artifactId>turnonline-product-billing-client</artifactId>
+            <version>0.22-20200113.182126-2</version>
         </dependency>
         <!-- Java Servlet API -->
         <dependency>
