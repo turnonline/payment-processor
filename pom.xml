@@ -109,6 +109,11 @@
             <artifactId>turnonline-product-billing-client</artifactId>
             <version>0.22-20200113.182126-2</version>
         </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
+        </dependency>
         <!-- Java Servlet API -->
         <dependency>
             <groupId>javax.servlet</groupId>

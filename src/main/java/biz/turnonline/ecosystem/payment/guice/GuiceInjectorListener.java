@@ -1,6 +1,7 @@
 package biz.turnonline.ecosystem.payment.guice;
 
 import biz.turnonline.ecosystem.payment.service.MicroserviceModule;
+import biz.turnonline.ecosystem.payment.service.MicroserviceServletModule;
 import biz.turnonline.ecosystem.payment.service.StorageModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -19,6 +20,7 @@ public class GuiceInjectorListener
     protected Injector getDevelopmentInjector()
     {
         return Guice.createInjector( new MicroserviceModule(),
+                new MicroserviceServletModule(),
                 new StorageModule(),
                 new EndpointsInitialization() );
     }
@@ -27,6 +29,7 @@ public class GuiceInjectorListener
     protected Injector getProductionInjector()
     {
         return Guice.createInjector( new MicroserviceModule(),
+                new MicroserviceServletModule(),
                 new StorageModule(),
                 new EndpointsInitialization(),
                 new EndpointsMonitorConfig() );
