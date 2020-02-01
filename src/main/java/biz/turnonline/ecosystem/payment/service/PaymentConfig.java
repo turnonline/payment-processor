@@ -1,5 +1,6 @@
 package biz.turnonline.ecosystem.payment.service;
 
+import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
@@ -76,11 +77,11 @@ public interface PaymentConfig
     BankAccount deleteBankAccount( @Nonnull LocalAccount owner, @Nonnull Long id );
 
     /**
-     * Marks the specified bank account as primary and rest will be de-marked.
+     * Marks the specified bank account as primary credit bank account and rest will be de-marked.
      *
      * @param owner the authenticated account as an owner of the requested bank account
-     * @param id    the identification of the bank account to be marked as primary
-     * @return the bank account that has been marked as primary
+     * @param id    the identification of the bank account to be marked as primary credit account
+     * @return the credit bank account that has been marked as primary
      * @throws WrongEntityOwner       if bank account is found but has a different owner as the authenticated account
      * @throws BankAccountNotFound    if bank account is not found
      * @throws ApiValidationException if specified bank account can't be marked as primary
@@ -88,17 +89,28 @@ public interface PaymentConfig
     BankAccount markBankAccountAsPrimary( @Nonnull LocalAccount owner, @Nonnull Long id );
 
     /**
-     * Returns the primary bank account for specified owner and country (either default one or specified).
-     * There might be only max single or none primary bank account per country.
-     * The primary bank account will be first searched with preferred actual country,
+     * Returns the credit bank account to be listed as the target account for a payment on an issued invoice.
+     * There might be only max single or none primary credit bank account per country.
+     * The primary credit bank account will be first searched with preferred actual country,
      * then if not found without applied country filter.
      *
      * @param owner   the account as an owner of the bank account and source of the default country (business domicile)
-     * @param country the country, for which the primary bank account is being searched for
-     * @return the primary bank account
-     * @throws BankAccountNotFound if primary bank account is not found
+     * @param country the optional country (either default one {@code null} or specified),
+     *                for which the primary credit bank account is being searched for
+     * @return the primary credit bank account
+     * @throws BankAccountNotFound if primary credit bank account is not found
      */
     BankAccount getPrimaryBankAccount( @Nonnull LocalAccount owner, @Nullable String country );
+
+    /**
+     * Returns the bank account to be used for company debit operations.
+     * The invoice payment instruction can affect which bank account to use in order to optimize the transfer cost.
+     *
+     * @param debtor  the debtor account as an owner of the bank account
+     * @param payment the payment instruction for the debtor, taken from the incoming invoice
+     * @return the debtor bank account or {@code null} if none specified
+     */
+    BankAccount getDebtorBankAccount( @Nonnull LocalAccount debtor, @Nonnull InvoicePayment payment );
 
     /**
      * Returns the list of all alternative bank accounts except the primary one.
@@ -115,4 +127,23 @@ public interface PaymentConfig
                                                   @Nullable Integer limit,
                                                   @Nullable Locale locale,
                                                   @Nullable String country );
+
+    /**
+     * Creates the beneficiary bank account associated with specified debtor.
+     *
+     * @param debtor the debtor account as an identification to whom to associate given beneficiary
+     * @param iban   the iban (can be formatted)
+     * @param bic    International Bank Identifier Code (BIC/ISO 9362, also known as  SWIFT code)
+     * @return the beneficiary bank account or {@code null} if not found
+     */
+    BankAccount insertBeneficiary( @Nonnull LocalAccount debtor, @Nonnull String iban, @Nullable String bic );
+
+    /**
+     * Returns the beneficiary bank account for specified IBAN.
+     *
+     * @param debtor the debtor account as an identification for recognized beneficiaries
+     * @param iban   the iban (can be formatted)
+     * @return the beneficiary bank account or {@code null} if not found
+     */
+    BankAccount getBeneficiary( @Nonnull LocalAccount debtor, @Nonnull String iban );
 }

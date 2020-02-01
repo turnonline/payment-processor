@@ -79,7 +79,7 @@ public class BankAccountMapperTest
         assertThat( backend.getBankCode() ).isEqualTo( code );
         assertThat( backend.getName() ).isEqualTo( api.getName() );
         assertThat( backend.getAccountNumber() ).isEqualTo( api.getAccountNumber() );
-        assertThat( backend.getIban() ).isEqualTo( api.getIban() );
+        assertThat( backend.getIbanString() ).isEqualTo( api.getIban() );
         assertThat( backend.getBic() ).isEqualTo( api.getBic() );
         assertThat( backend.getCurrency() ).isEqualTo( api.getCurrency() );
 
@@ -167,7 +167,7 @@ public class BankAccountMapperTest
                 backend.getAccountNumber();
                 result = "2289198742";
 
-                backend.getIban();
+                backend.getIbanString();
                 result = "SK6711000000002289198742";
 
                 backend.getBic();

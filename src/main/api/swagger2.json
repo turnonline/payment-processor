@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "TurnOnline.biz Ecosystem: Payment Processor REST API",
+        "description": "TurnOnline.biz Ecosystem: Payment Processor",
         "version": "1.0",
         "title": "Payment Processor"
     },
@@ -158,8 +158,8 @@
         },
         "/v1/bank-accounts/primary": {
             "get": {
-                "summary": "Get primary bank account",
-                "description": "Returns the primary bank account for default country (taken from the owner domicile). The country property of the bank account is used here as a filter parameter. If you need to return primary account for different country, specify the country as a query parameter.\n\nThe primary bank account will be first searched with preferred actual country (taken either as a default or explicite one), then if not found without applied country filter.",
+                "summary": "Get credit bank account",
+                "description": "Returns the credit bank account to be listed as the target account for a payment on an issued invoice. The country property of the bank account is used here as a filter parameter. If you need to return credit account for different country, specify the country as a query parameter.\n\nThe credit bank account will be first searched with preferred actual country (taken either as a default or explicit one), then if not found without applied country filter.",
                 "operationId": "getV1Bank-accountsPrimary",
                 "produces": [
                     "application/json"
@@ -168,7 +168,7 @@
                     {
                         "name": "country",
                         "in": "query",
-                        "description": "The country for which the primary bank account is being searched for. The ISO 3166 alpha-2 country code. It’s case insensitive.",
+                        "description": "The country for which the credit bank account is being searched for. The ISO 3166 alpha-2 country code. It’s case insensitive.",
                         "required": false,
                         "type": "string"
                     },
@@ -182,7 +182,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "The primary bank account.",
+                        "description": "The credit bank account.",
                         "schema": {
                             "$ref": "#/definitions/BankAccount"
                         }
@@ -194,7 +194,7 @@
                         }
                     },
                     "404": {
-                        "description": "The error when client tries to retrieve a primary bank account but none of the bank accounts is being marked as a primary one.",
+                        "description": "The error when client tries to retrieve a credit bank account but none of the bank accounts is being marked as a credit one.",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -412,8 +412,8 @@
         },
         "/v1/bank-accounts/{account_id}/primary": {
             "put": {
-                "summary": "Mark bank account as a primary",
-                "description": "Mark the corresponding bank account as a primary one. This bank account becomes the primary one for country that bank account belongs to. If there are more bank accounts specified for different countries, the user must mark it primary explicitly with the bank account that belongs to target country.",
+                "summary": "Mark bank account as a primary credit account",
+                "description": "Mark the corresponding bank account as a primary credit account. This bank account becomes the primary credit account for country that bank account belongs to. If there are more bank accounts specified for different countries, the user must mark it primary explicitly with the bank account that belongs to target country.",
                 "operationId": "putV1Bank-accountsAccount_idPrimary",
                 "produces": [
                     "application/json"
@@ -428,13 +428,13 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "The primary bank account that has been marked as a primary one.",
+                        "description": "The bank account that has been marked as a primary credit account.",
                         "schema": {
                             "$ref": "#/definitions/BankAccount"
                         }
                     },
                     "400": {
-                        "description": "The error indicates that client has tried to mark bank account as a primary one but this bank account can't be. The client should not repeat the request without modifications.",
+                        "description": "The error indicates that client has tried to mark bank account as a credit one but this bank account can't be. The client should not repeat the request without modifications.",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -446,7 +446,7 @@
                         }
                     },
                     "404": {
-                        "description": "The error when client tries to mark specified bank account as a primary that doesn’t exist.",
+                        "description": "The error when client tries to mark specified bank account as a primary credit account that doesn’t exist.",
                         "schema": {
                             "$ref": "#/definitions/Error"
                         }
@@ -649,7 +649,7 @@
                 },
                 "primary": {
                     "type": "boolean",
-                    "description": "Boolean identification, whether this bank account is being marked by the user as a primary account. If yes, this bank account will be used as a default account unless specified another one. There might be only max single or none primary bank account per country.",
+                    "description": "Boolean identification, whether this bank account is being marked by the user as a primary credit account. If yes, this bank account will be used as a default credit account unless specified another one. There might be only max single or none primary credit bank account per country.",
                     "default": false
                 },
                 "bank": {
