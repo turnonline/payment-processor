@@ -1,7 +1,7 @@
 {
     "name": "My second bank account",
-    "accountNumber": "2628567890",
-    "iban": "SK0809000000002628567890",
+    "accountNumber": "0012345671",
+    "iban": "SK89 7500 0000 0000 1234 5671",
     "bic": "GIBASKBX",
     "primary": false,
     "bank": {

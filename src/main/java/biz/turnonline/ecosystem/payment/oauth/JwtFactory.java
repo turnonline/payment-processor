@@ -16,7 +16,9 @@ import java.util.HashMap;
 /**
  * JWT token signer.
  * <p>
- * <strong>openssl commands to generate RSA (RS256) private key (pkcs8) and public X.509 certificate</strong>
+ * <strong>Revolut</strong>
+ * <p>
+ * <strong>Commands to generate RSA (RS256) private key (pkcs8) and public X.509 certificate</strong>
  * </p>
  * <pre>
  *   openssl req -x509 -nodes -newkey rsa:2048 -keyout rsa_private.pem -out rsa_public_cert.pem -days 1825

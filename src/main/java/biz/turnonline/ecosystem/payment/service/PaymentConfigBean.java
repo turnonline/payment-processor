@@ -1,10 +1,12 @@
 package biz.turnonline.ecosystem.payment.service;
 
+import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
+import ma.glasnost.orika.MapperFacade;
 import org.ctoolkit.services.storage.EntityExecutor;
 import org.ctoolkit.services.storage.HasOwner;
 import org.ctoolkit.services.storage.criteria.Criteria;
@@ -38,14 +40,17 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 class PaymentConfigBean
         implements PaymentConfig
 {
-    private static final Logger logger = LoggerFactory.getLogger( PaymentConfigBean.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( PaymentConfigBean.class );
 
     private final EntityExecutor datastore;
 
+    private final MapperFacade mapper;
+
     @Inject
-    PaymentConfigBean( EntityExecutor datastore )
+    PaymentConfigBean( EntityExecutor datastore, MapperFacade mapper )
     {
         this.datastore = datastore;
+        this.mapper = mapper;
     }
 
     @Override
@@ -55,17 +60,16 @@ class PaymentConfigBean
         checkNotNull( account, template, "LocalAccount" );
 
         BankAccount bankAccount = loadBankAccount( checkNotNull( id, template, "Bank account ID" ) );
+        if ( bankAccount == null )
+        {
+            throw new BankAccountNotFound( id );
+        }
         return checkOwner( account, bankAccount );
     }
 
     private BankAccount loadBankAccount( @Nonnull Long id )
     {
-        BankAccount bankAccount = ofy().load().type( BankAccount.class ).id( id ).now();
-        if ( bankAccount == null )
-        {
-            throw new BankAccountNotFound( id );
-        }
-        return bankAccount;
+        return ofy().load().type( BankAccount.class ).id( id ).now();
     }
 
     @Override
@@ -125,7 +129,7 @@ class PaymentConfigBean
         }
 
         List<BankAccount> list = datastore.list( criteria );
-        logger.info( list.size() + " bank accounts has been found." );
+        LOGGER.info( list.size() + " bank accounts has been found." );
 
         return list;
     }
@@ -202,6 +206,12 @@ class PaymentConfigBean
         return primary;
     }
 
+    @Override
+    public BankAccount getDebtorBankAccount( @Nonnull LocalAccount debtor, @Nonnull InvoicePayment payment )
+    {
+        return getInternalPrimaryBankAccount( debtor, null );
+    }
+
     BankAccount getInternalPrimaryBankAccount( @Nonnull LocalAccount account, @Nullable String country )
     {
         String template = "{0} cannot be null";
@@ -263,6 +273,18 @@ class PaymentConfigBean
         return filtered;
     }
 
+    @Override
+    public BankAccount insertBeneficiary( @Nonnull LocalAccount debtor, @Nonnull String iban, @Nullable String bic )
+    {
+        return null;
+    }
+
+    @Override
+    public BankAccount getBeneficiary( @Nonnull LocalAccount debtor, @Nonnull String iban )
+    {
+        return null;
+    }
+
     /**
      * Checks whether entity has the same owner as the authenticated account.
      * If yes, the input entity instance will be returned, otherwise exception will be thrown.
@@ -280,7 +302,7 @@ class PaymentConfigBean
         if ( !entity.checkOwner( account ) )
         {
             WrongEntityOwner wrongOwnerException = new WrongEntityOwner( account, entity );
-            logger.warn( wrongOwnerException.getMessage() );
+            LOGGER.warn( wrongOwnerException.getMessage() );
             throw wrongOwnerException;
         }
         return entity;

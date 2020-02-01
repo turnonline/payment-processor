@@ -91,7 +91,7 @@
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-library-bom</artifactId>
-                <version>12</version>
+                <version>13-20200123.052512-1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -110,9 +110,19 @@
             <version>0.22-20200113.182126-2</version>
         </dependency>
         <dependency>
+            <groupId>biz.turnonline.ecosystem</groupId>
+            <artifactId>turnonline-revolut-business-client</artifactId>
+            <version>1.0-20200129.055117-1</version>
+        </dependency>
+        <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
+        </dependency>
+        <dependency>
+            <groupId>nl.garvelink.oss</groupId>
+            <artifactId>iban</artifactId>
+            <version>1.6.1</version>
         </dependency>
         <!-- Java Servlet API -->
         <dependency>

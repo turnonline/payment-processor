@@ -18,6 +18,8 @@ class PurchaseOrderProcessorTask
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( PurchaseOrderProcessorTask.class );
 
+    private static final long serialVersionUID = 2155479255175862359L;
+
     PurchaseOrderProcessorTask( @Nonnull Key<LocalAccount> accountKey, @Nonnull String json, boolean delete )
     {
         super( accountKey, json, delete );

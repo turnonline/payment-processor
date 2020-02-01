@@ -30,6 +30,7 @@ import org.ctoolkit.services.storage.CtoolkitServicesStorageModule;
 import org.ctoolkit.services.storage.guice.EntityRegistrar;
 import org.ctoolkit.services.storage.guice.GuicefiedOfyFactory;
 import org.ctoolkit.services.task.CtoolkitServicesTaskModule;
+import org.ctoolkit.services.task.Task;
 
 import javax.inject.Singleton;
 
@@ -70,6 +71,9 @@ public class MicroserviceModule
         bind( new TypeLiteral<TokenProvider<LocalAccount>>()
         {
         } ).to( ClosedServerToServerTokenOfAccount.class );
+
+        // single declaration to request static injection for all Task related injection
+        requestStaticInjection( Task.class );
     }
 
     @Provides

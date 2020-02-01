@@ -51,7 +51,7 @@ class BankAccountMapper
         bankAccount.setName( source.getName() );
         bankAccount.setPrefix( source.getPrefix() );
         bankAccount.setAccountNumber( source.getAccountNumber() );
-        bankAccount.setIban( source.getIban() );
+        bankAccount.setIban( source.getIbanString() );
         bankAccount.setBic( source.getBic() );
         bankAccount.setCurrency( source.getCurrency() );
         bankAccount.setPrimary( source.isPrimary() );

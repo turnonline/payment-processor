@@ -5,6 +5,7 @@ import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.steward.facade.Domicile;
 import biz.turnonline.ecosystem.steward.model.Account;
+import ma.glasnost.orika.MapperFacade;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
@@ -40,6 +41,9 @@ public class PrimaryAlternativeBankAccountTest
 
     @Injectable
     private EntityExecutor datastore;
+
+    @Injectable
+    private MapperFacade mapper;
 
     @Injectable
     private LocalAccountProvider accProvider;

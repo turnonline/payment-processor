@@ -4,14 +4,19 @@ import biz.turnonline.ecosystem.payment.service.CodeBook;
 import biz.turnonline.ecosystem.payment.service.SecretKeyConfig;
 import biz.turnonline.ecosystem.payment.service.TwoWayEncryption;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Ignore;
+import com.googlecode.objectify.annotation.IgnoreSave;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.OnLoad;
 import com.googlecode.objectify.annotation.OnSave;
+import com.googlecode.objectify.condition.IfNull;
+import nl.garvelink.iban.IBAN;
+import nl.garvelink.iban.Modulo97;
 import org.ctoolkit.services.datastore.objectify.EntityLongIdentity;
 import org.ctoolkit.services.storage.HasOwner;
 import org.slf4j.Logger;
@@ -60,11 +65,12 @@ public class BankAccount
 
     private String bankCode;
 
+    @Index
     private String iban;
 
     private String bic;
 
-    private String currency = null;
+    private String currency;
 
     @Index
     private String country;
@@ -82,6 +88,9 @@ public class BankAccount
     private boolean primary;
 
     private boolean gateEnabled;
+
+    @IgnoreSave( IfNull.class )
+    private Map<String, String> extIds;
 
     @Ignore
     private String tSecretKey;
@@ -167,6 +176,37 @@ public class BankAccount
                 ? null : bankCode.getLabel();
     }
 
+    /**
+     * Returns the external identification of the debtor's bank account for synchronized via API, if any.
+     *
+     * @return the external ID or {@code null} if not synchronized yet
+     */
+    public String getExternalId()
+    {
+        if ( extIds == null || Strings.isNullOrEmpty( bankCode ) )
+        {
+            return null;
+        }
+
+        return extIds.get( bankCode );
+    }
+
+    /**
+     * Returns the external identification of the bank account for specified bank synchronized via API, if any.
+     *
+     * @param code the bank code, taken from the code-book
+     * @return the external ID or {@code null} if not synchronized yet
+     */
+    public String getExternalId( @Nullable String code )
+    {
+        if ( extIds == null || Strings.isNullOrEmpty( code ) )
+        {
+            return null;
+        }
+
+        return extIds.get( code );
+    }
+
     public String getCode()
     {
         return code;
@@ -230,20 +270,42 @@ public class BankAccount
     }
 
     /**
-     * The international bank account number.
+     * Returns the international bank account number as formatted string.
      */
-    public String getIban()
+    public String getIbanString()
     {
-        return iban;
-    }
-
-    public void setIban( String iban )
-    {
-        this.iban = iban;
+        IBAN iban = getIBAN();
+        return iban == null ? null : iban.toString();
     }
 
     /**
-     * The international Bank Identifier Code (BIC/ISO 9362, a normalized code - also known as Business Identifier Code, Bank International Code and SWIFT code).
+     * The international bank account number.
+     */
+    public IBAN getIBAN()
+    {
+        return Strings.isNullOrEmpty( iban ) ? null : IBAN.valueOf( iban );
+    }
+
+    /**
+     * Validates the given IBAN and sets the value if pass.
+     *
+     * @param iban the IBAN to be set
+     * @throws IllegalArgumentException if IBAN validation fails
+     */
+    public void setIban( @Nonnull String iban )
+    {
+        if ( !Modulo97.verifyCheckDigits( iban ) )
+        {
+            throw new IllegalArgumentException( "Invalid IBAN: " + iban );
+        }
+
+        // IBAN stored as a compact string to be easily searchable
+        this.iban = IBAN.valueOf( iban ).toPlainString();
+    }
+
+    /**
+     * The international Bank Identifier Code (BIC/ISO 9362),
+     * a normalized code - also known as Business Identifier Code, Bank International Code and SWIFT code.
      */
     public String getBic()
     {
@@ -360,6 +422,34 @@ public class BankAccount
         this.gateEnabled = gateEnabled;
     }
 
+    /**
+     * Returns the boolean indication whether this bank account represents a Revolut bank account.
+     *
+     * @return true if this bank account is Revolut account
+     */
+    public boolean isRevolut()
+    {
+        return "REVO".equalsIgnoreCase( bankCode );
+    }
+
+    /**
+     * Returns the boolean indication whether this bank account is valid to be debited via API
+     * for specified bank identified by bank code.
+     * <p>
+     * To be ready it must have a non null value for following properties:
+     * <ul>
+     *     <li>{@link #getCurrency()}</li>
+     *     <li>{@link #getIBAN()}</li>
+     *     <li>{@link #getExternalId()}</li>
+     * </ul>
+     *
+     * @return true if the bank account is ready
+     */
+    public boolean isDebtorReadyFor()
+    {
+        return true;
+    }
+
     @OnSave
     void onSave()
     {
@@ -451,6 +541,7 @@ public class BankAccount
                 .add( "notificationEmail", notificationEmail )
                 .add( "primary", primary )
                 .add( "gateEnabled", gateEnabled )
+                .add( "externalIds", extIds )
                 .toString();
     }
 
@@ -492,13 +583,6 @@ public class BankAccount
     {
         checkNotNull( owner );
         this.owner = Ref.create( owner );
-    }
-
-    @Override
-    public boolean checkOwner( @Nonnull LocalAccount checked )
-    {
-        checkNotNull( checked );
-        return owner != null && owner.get() != null && checked.equals( owner.get() );
     }
 
     @Override
