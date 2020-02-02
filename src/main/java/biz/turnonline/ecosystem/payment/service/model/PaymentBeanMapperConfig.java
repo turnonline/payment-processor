@@ -39,6 +39,6 @@ public class PaymentBeanMapperConfig
         factory.registerMapper( bankCodeMapper );
         factory.registerMapper( bankAccountMapper );
 
-        factory.registerObjectFactory( bankAccountFactory, TypeFactory.valueOf( BankAccount.class ) );
+        factory.registerObjectFactory( bankAccountFactory, TypeFactory.valueOf( CompanyBankAccount.class ) );
     }
 }

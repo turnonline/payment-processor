@@ -1,21 +1,18 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
 import biz.turnonline.ecosystem.payment.service.CodeBook;
-import biz.turnonline.ecosystem.payment.service.SecretKeyConfig;
-import biz.turnonline.ecosystem.payment.service.TwoWayEncryption;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.IgnoreSave;
 import com.googlecode.objectify.annotation.Index;
-import com.googlecode.objectify.annotation.OnLoad;
 import com.googlecode.objectify.annotation.OnSave;
 import com.googlecode.objectify.condition.IfNull;
 import nl.garvelink.iban.IBAN;
+import nl.garvelink.iban.IBANFields;
 import nl.garvelink.iban.Modulo97;
 import org.ctoolkit.services.datastore.objectify.EntityLongIdentity;
 import org.ctoolkit.services.storage.HasOwner;
@@ -24,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.inject.Inject;
 import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
@@ -34,12 +30,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
- * The bank account datastore entity.
+ * Common class for all bank account entity types.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 @Entity( name = "PP_BankAccount" )
-public class BankAccount
+public abstract class BankAccount
         extends EntityLongIdentity
         implements Comparable<BankAccount>, HasOwner<LocalAccount>
 {
@@ -47,15 +43,12 @@ public class BankAccount
 
     private static final Logger logger = LoggerFactory.getLogger( BankAccount.class );
 
-    private static final long serialVersionUID = -4153441408312149984L;
+    private static final long serialVersionUID = -2411130776363925216L;
 
     private final CodeBook codeBook;
 
     @Index
     private Ref<LocalAccount> owner;
-
-    @Index
-    private String code;
 
     @Index
     private String name;
@@ -74,27 +67,9 @@ public class BankAccount
     @Index
     private String country;
 
-    @Index
-    private PaymentGate paymentGate;
-
-    @Index
-    private String merchantId;
-
-    private String secretKey;
-
-    private String notificationEmail;
-
-    private boolean primary;
-
-    private boolean gateEnabled;
-
     @IgnoreSave( IfNull.class )
     private Map<String, String> extIds;
 
-    @Ignore
-    private String tSecretKey;
-
-    @Inject
     public BankAccount( CodeBook codeBook )
     {
         this.codeBook = codeBook;
@@ -156,16 +131,6 @@ public class BankAccount
         return extIds.get( code );
     }
 
-    public String getCode()
-    {
-        return code;
-    }
-
-    public void setCode( String code )
-    {
-        this.code = code;
-    }
-
     /**
      * The user defined name of the bank account.
      */
@@ -225,18 +190,24 @@ public class BankAccount
     /**
      * Validates the given IBAN and sets the value if pass.
      *
-     * @param iban the IBAN to be set
+     * @param input the IBAN to be set
      * @throws IllegalArgumentException if IBAN validation fails
      */
-    public void setIban( @Nonnull String iban )
+    public void setIban( @Nonnull String input )
     {
-        if ( !Modulo97.verifyCheckDigits( iban ) )
+        if ( !Modulo97.verifyCheckDigits( input ) )
         {
-            throw new IllegalArgumentException( "Invalid IBAN: " + iban );
+            throw new IllegalArgumentException( "Invalid IBAN: " + input );
         }
 
+        IBAN valueOfIBAN = IBAN.valueOf( input );
+
+        country = valueOfIBAN.getCountryCode();
+        bankCode = IBANFields.getBankIdentifier( valueOfIBAN ).orElse( null );
+        branch = IBANFields.getBranchIdentifier( valueOfIBAN ).orElse( null );
+
         // IBAN stored as a compact string to be easily searchable
-        this.iban = IBAN.valueOf( iban ).toPlainString();
+        iban = valueOfIBAN.toPlainString();
     }
 
     /**
@@ -293,71 +264,6 @@ public class BankAccount
         this.country = country;
     }
 
-    public PaymentGate getPaymentGate()
-    {
-        return paymentGate;
-    }
-
-    public void setPaymentGate( PaymentGate paymentGate )
-    {
-        this.paymentGate = paymentGate;
-    }
-
-    public String getMerchantId()
-    {
-        return merchantId;
-    }
-
-    public void setMerchantId( String merchantId )
-    {
-        this.merchantId = merchantId;
-    }
-
-    public String getSecretKey()
-    {
-        return tSecretKey;
-    }
-
-    public void setSecretKey( String secretKey )
-    {
-        this.tSecretKey = secretKey;
-    }
-
-    public String getNotificationEmail()
-    {
-        return notificationEmail;
-    }
-
-    public void setNotificationEmail( String notificationEmail )
-    {
-        this.notificationEmail = notificationEmail;
-    }
-
-    /**
-     * Boolean identification, whether this bank account is being marked by the user as a primary account.
-     * If yes, this bank account will be used as a default account unless specified another one.
-     * There is always only single primary bank account per country.
-     */
-    public boolean isPrimary()
-    {
-        return primary;
-    }
-
-    public void setPrimary( boolean primary )
-    {
-        this.primary = primary;
-    }
-
-    public boolean isGateEnabled()
-    {
-        return gateEnabled;
-    }
-
-    public void setGateEnabled( boolean gateEnabled )
-    {
-        this.gateEnabled = gateEnabled;
-    }
-
     /**
      * Returns the boolean indication whether this bank account represents a Revolut bank account.
      *
@@ -368,59 +274,12 @@ public class BankAccount
         return "REVO".equalsIgnoreCase( bankCode );
     }
 
-    /**
-     * Returns the boolean indication whether this bank account is valid to be debited via API
-     * for specified bank identified by bank code.
-     * <p>
-     * To be ready it must have a non null value for following properties:
-     * <ul>
-     *     <li>{@link #getCurrency()}</li>
-     *     <li>{@link #getIBAN()}</li>
-     *     <li>{@link #getExternalId()}</li>
-     * </ul>
-     *
-     * @return true if the bank account is ready
-     */
-    public boolean isDebtorReadyFor()
-    {
-        return true;
-    }
-
     @OnSave
     void onSave()
     {
-        if ( this.tSecretKey != null )
-        {
-            try
-            {
-                this.secretKey = TwoWayEncryption.encrypt( this.tSecretKey, SecretKeyConfig.TWO_WAY_HASH_SECRET_KEY );
-            }
-            catch ( Exception e )
-            {
-                logger.error( "Error has occurred during bank account secret key encryption", e );
-            }
-        }
-
         if ( this.country != null )
         {
             this.country = this.country.toUpperCase();
-        }
-    }
-
-    @OnLoad
-    private void onLoad()
-    {
-        // Decrypt secret key on bank account on load.
-        if ( this.secretKey != null )
-        {
-            try
-            {
-                this.tSecretKey = TwoWayEncryption.decrypt( this.secretKey, SecretKeyConfig.TWO_WAY_HASH_SECRET_KEY );
-            }
-            catch ( Exception e )
-            {
-                logger.error( "Error has occurred during bank account secret key decryption", e );
-            }
         }
     }
 
@@ -437,21 +296,20 @@ public class BankAccount
         if ( this == o ) return true;
         if ( !( o instanceof BankAccount ) ) return false;
         BankAccount that = ( BankAccount ) o;
-        return primary == that.primary &&
-                iban.equals( that.iban ) &&
+        return Objects.equals( owner, that.owner ) &&
+                Objects.equals( iban, that.iban ) &&
                 Objects.equals( currency, that.currency );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( iban, currency, primary );
+        return Objects.hash( owner, iban, currency );
     }
 
     @Override
     public String toString()
     {
-        String sKey = secretKey == null ? "null" : "not null, length: " + secretKey.length();
         return MoreObjects.toStringHelper( getKind() )
                 .add( "owner", owner )
                 .add( "name", name )
@@ -460,12 +318,6 @@ public class BankAccount
                 .add( "iban", iban )
                 .add( "bic", bic )
                 .add( "country", country )
-                .add( "paymentGate", paymentGate )
-                .add( "merchantId", merchantId )
-                .add( "secretKey", sKey )
-                .add( "notificationEmail", notificationEmail )
-                .add( "primary", primary )
-                .add( "gateEnabled", gateEnabled )
                 .add( "externalIds", extIds )
                 .toString();
     }
@@ -483,17 +335,13 @@ public class BankAccount
     @Override
     public void save()
     {
-        ofy().transact( () -> {
-            ofy().save().entity( BankAccount.this ).now();
-        } );
+        ofy().transact( () -> ofy().defer().save().entity( this ) );
     }
 
     @Override
     public void delete()
     {
-        ofy().transact( () -> {
-            ofy().delete().entity( BankAccount.this ).now();
-        } );
+        ofy().transact( () -> ofy().defer().delete().entity( this ) );
     }
 
     @Override
@@ -507,11 +355,5 @@ public class BankAccount
     {
         checkNotNull( owner );
         this.owner = Ref.create( owner );
-    }
-
-    @Override
-    public String getKind()
-    {
-        return "BankAccount";
     }
 }

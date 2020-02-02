@@ -2,7 +2,9 @@ package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
+import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CodeBookItem;
+import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccountProviderImpl;
 import biz.turnonline.ecosystem.payment.service.model.PaymentBeanMapperConfig;
@@ -99,6 +101,8 @@ public class MicroserviceModule
             factory.register( BankCode.class );
             factory.register( LocalAccount.class );
             factory.register( BankAccount.class );
+            factory.register( CompanyBankAccount.class );
+            factory.register( BeneficiaryBankAccount.class );
             factory.register( Timestamp.class );
         }
     }

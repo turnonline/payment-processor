@@ -4,6 +4,7 @@ import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
+import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.server.spi.auth.common.User;
@@ -56,7 +57,7 @@ public class BankAccountEndpointTest
     private BankAccount bankAccount;
 
     @Mocked
-    private biz.turnonline.ecosystem.payment.service.model.BankAccount dbBankAccount;
+    private CompanyBankAccount dbBankAccount;
 
     @BeforeMethod
     public void before()
@@ -111,7 +112,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                mapper.map( bankAccount, biz.turnonline.ecosystem.payment.service.model.BankAccount.class,
+                mapper.map( bankAccount, CompanyBankAccount.class,
                         ( MappingContext ) any );
                 result = new ApiValidationException( "Validation failure" );
             }
@@ -186,7 +187,7 @@ public class BankAccountEndpointTest
                 config.getBankAccounts( account, 5, 15, null );
 
                 //noinspection unchecked
-                mapper.mapAsList( ( List<biz.turnonline.ecosystem.payment.service.model.BankAccount> ) any,
+                mapper.mapAsList( ( List<CompanyBankAccount> ) any,
                         BankAccount.class, ( MappingContext ) any );
                 result = bankAccounts;
             }
@@ -224,7 +225,7 @@ public class BankAccountEndpointTest
                 result = account;
 
                 //noinspection unchecked
-                mapper.mapAsList( ( List<biz.turnonline.ecosystem.payment.service.model.BankAccount> ) any,
+                mapper.mapAsList( ( List<CompanyBankAccount> ) any,
                         BankAccount.class, ( MappingContext ) any );
                 result = new RuntimeException();
             }

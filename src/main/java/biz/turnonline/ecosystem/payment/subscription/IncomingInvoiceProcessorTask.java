@@ -3,7 +3,8 @@ package biz.turnonline.ecosystem.payment.subscription;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
-import biz.turnonline.ecosystem.payment.service.model.BankAccount;
+import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftRequest;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftResponse;
@@ -60,7 +61,7 @@ class IncomingInvoiceProcessorTask
         }
 
         // debtor bank account details
-        BankAccount debtorBank = config.getDebtorBankAccount( debtor, payment );
+        CompanyBankAccount debtorBank = config.getDebtorBankAccount( debtor, payment );
         if ( debtorBank == null )
         {
             LOGGER.warn( "Debtor " + debtor + " has no bank account defined at all." );
@@ -69,7 +70,7 @@ class IncomingInvoiceProcessorTask
 
         // debtor bank will be the bank to make a payment
         String debtorBankCode = debtorBank.getBankCode();
-        if ( !debtorBank.isDebtorReadyFor() )
+        if ( !debtorBank.isDebtorReady() )
         {
             LOGGER.warn( "Debtor's bank account " + debtorBank + " is not ready yet to be debited." );
             return;
@@ -89,7 +90,7 @@ class IncomingInvoiceProcessorTask
             return;
         }
 
-        BankAccount beneficiary = config.getBeneficiary( debtor, creditorIban );
+        BeneficiaryBankAccount beneficiary = config.getBeneficiary( debtor, creditorIban );
         if ( beneficiary == null )
         {
             LOGGER.warn( "Incoming invoice identified by '"
@@ -126,7 +127,7 @@ class IncomingInvoiceProcessorTask
     }
 
     private void schedulePaymentDraftByRevolut( @Nonnull LocalAccount debtor,
-                                                @Nonnull BankAccount debtorBank,
+                                                @Nonnull CompanyBankAccount debtorBank,
                                                 @Nonnull String beneficiaryId,
                                                 @Nonnull InvoicePayment payment )
     {

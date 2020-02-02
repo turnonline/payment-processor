@@ -8,13 +8,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
- * {@link BankAccount} factory responsible to create a new instance to be used by Orika.
+ * {@link CompanyBankAccount} factory responsible to create a new instance to be used by Orika.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 @Singleton
 class BankAccountFactory
-        implements ObjectFactory<BankAccount>
+        implements ObjectFactory<CompanyBankAccount>
 {
     private final CodeBook codeBook;
 
@@ -25,8 +25,8 @@ class BankAccountFactory
     }
 
     @Override
-    public BankAccount create( Object source, MappingContext mappingContext )
+    public CompanyBankAccount create( Object source, MappingContext mappingContext )
     {
-        return new BankAccount( codeBook );
+        return new CompanyBankAccount( codeBook );
     }
 }

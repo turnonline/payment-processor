@@ -4,6 +4,8 @@
     </model>
     <entities>
         <entity kind="PP_BankAccount">
+            <property indexed="false" name="^d" type="string" value="Company"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Tatrabanka"/>
             <property name="branch" type="string" value=""/>
@@ -19,6 +21,8 @@
         </entity>
 
         <entity kind="PP_BankAccount">
+            <property indexed="false" name="^d" type="string" value="Company"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="CardPay"/>
             <property name="branch" type="string" value=""/>
@@ -34,6 +38,8 @@
         </entity>
 
         <entity kind="PP_BankAccount">
+            <property indexed="false" name="^d" type="string" value="Company"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Sporopoay"/>
             <property name="branch" type="string" value=""/>
@@ -49,6 +55,8 @@
         </entity>
 
         <entity kind="PP_BankAccount">
+            <property indexed="false" name="^d" type="string" value="Company"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="EPlatbyVUB"/>
             <property name="branch" type="string" value=""/>
@@ -64,6 +72,8 @@
         </entity>
 
         <entity kind="PP_BankAccount">
+            <property indexed="false" name="^d" type="string" value="Company"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Trustpay"/>
             <property name="branch" type="string" value=""/>
@@ -80,6 +90,8 @@
 
         <!--the bank account with different owner-->
         <entity kind="PP_BankAccount" id="9999">
+            <property indexed="false" name="^d" type="string" value="Company"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:998877"/>
             <property indexed="true" name="name" type="string" value="Primárny účet"/>
             <property name="branch" type="string" value=""/>

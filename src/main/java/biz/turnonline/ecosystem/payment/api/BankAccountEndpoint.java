@@ -4,6 +4,7 @@ import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
+import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
@@ -73,8 +74,8 @@ public class BankAccountEndpoint
             MappingContext context = new MappingContext( new HashMap<>() );
             context.setProperty( LocalAccount.class, account );
 
-            biz.turnonline.ecosystem.payment.service.model.BankAccount dbBankAccount;
-            dbBankAccount = mapper.map( bankAccount, biz.turnonline.ecosystem.payment.service.model.BankAccount.class,
+            CompanyBankAccount dbBankAccount;
+            dbBankAccount = mapper.map( bankAccount, CompanyBankAccount.class,
                     context );
 
             config.insertBankAccount( account, dbBankAccount );
@@ -126,7 +127,7 @@ public class BankAccountEndpoint
 
         try
         {
-            List<biz.turnonline.ecosystem.payment.service.model.BankAccount> bankAccounts;
+            List<CompanyBankAccount> bankAccounts;
             if ( alternative )
             {
                 bankAccounts = config.getAlternativeBankAccounts( account, offset, limit, language, country );
@@ -170,7 +171,7 @@ public class BankAccountEndpoint
 
         try
         {
-            biz.turnonline.ecosystem.payment.service.model.BankAccount bankAccount;
+            CompanyBankAccount bankAccount;
             bankAccount = config.getBankAccount( account, accountId );
             result = mapper.map( bankAccount, BankAccount.class );
         }
@@ -210,7 +211,7 @@ public class BankAccountEndpoint
 
         try
         {
-            biz.turnonline.ecosystem.payment.service.model.BankAccount dbBankAccount;
+            CompanyBankAccount dbBankAccount;
             dbBankAccount = config.getBankAccount( account, accountId );
 
             MappingContext context = new MappingContext( new HashMap<>() );
@@ -320,7 +321,7 @@ public class BankAccountEndpoint
 
         try
         {
-            biz.turnonline.ecosystem.payment.service.model.BankAccount primary;
+            CompanyBankAccount primary;
             primary = config.getPrimaryBankAccount( account, country );
             result = mapper.map( primary, BankAccount.class );
         }
@@ -355,7 +356,7 @@ public class BankAccountEndpoint
 
         try
         {
-            biz.turnonline.ecosystem.payment.service.model.BankAccount primary;
+            CompanyBankAccount primary;
             primary = config.markBankAccountAsPrimary( account, accountId );
             result = mapper.map( primary, BankAccount.class );
         }

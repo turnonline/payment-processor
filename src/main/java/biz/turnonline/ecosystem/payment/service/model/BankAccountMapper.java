@@ -14,7 +14,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 /**
- * Mapper: {@link BankAccount} back and forth {@link biz.turnonline.ecosystem.payment.api.model.BankAccount}.
+ * Mapper: {@link CompanyBankAccount} back and forth {@link biz.turnonline.ecosystem.payment.api.model.BankAccount}.
  * It supports patch semantics for direction from API to Backend, however
  * following properties are being ignored as they are managed solely by the backend service.
  * <ul>
@@ -31,7 +31,7 @@ import java.util.Optional;
  */
 @Singleton
 class BankAccountMapper
-        extends CustomMapper<BankAccount, biz.turnonline.ecosystem.payment.api.model.BankAccount>
+        extends CustomMapper<CompanyBankAccount, biz.turnonline.ecosystem.payment.api.model.BankAccount>
 {
     private final CodeBook codeBook;
 
@@ -42,7 +42,7 @@ class BankAccountMapper
     }
 
     @Override
-    public void mapAtoB( BankAccount source,
+    public void mapAtoB( CompanyBankAccount source,
                          biz.turnonline.ecosystem.payment.api.model.BankAccount bankAccount,
                          MappingContext context )
     {
@@ -70,7 +70,7 @@ class BankAccountMapper
 
     @Override
     public void mapBtoA( biz.turnonline.ecosystem.payment.api.model.BankAccount source,
-                         BankAccount backend,
+                         CompanyBankAccount backend,
                          MappingContext context )
     {
         Optional<String> sValue;

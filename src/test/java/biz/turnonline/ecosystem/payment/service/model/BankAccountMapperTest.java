@@ -69,8 +69,8 @@ public class BankAccountMapperTest
         // country will be populated by the value taken from the code-book
         assertThat( api.getBank().getCountry() ).isNull();
 
-        biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
-        backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
 
         tested.mapBtoA( api, backend, context );
 
@@ -107,8 +107,8 @@ public class BankAccountMapperTest
         BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
         api.setCurrency( "EUR_INV" );
 
-        biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
-        backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
 
         tested.mapBtoA( api, backend, context );
     }
@@ -130,8 +130,8 @@ public class BankAccountMapperTest
 
         BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
 
-        biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
-        backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
 
         tested.mapBtoA( api, backend, context );
     }
@@ -142,14 +142,14 @@ public class BankAccountMapperTest
         BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
         api.getBank().setCode( null );
 
-        biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
-        backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
 
         tested.mapBtoA( api, backend, context );
     }
 
     @Test
-    public void mapBackendToApi( @Mocked biz.turnonline.ecosystem.payment.service.model.BankAccount backend )
+    public void mapBackendToApi( @Mocked CompanyBankAccount backend )
     {
         long id = 1123L;
         String code = "1100";
@@ -206,8 +206,8 @@ public class BankAccountMapperTest
     {
         BankAccount source = new BankAccount();
 
-        biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
-        backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
 
         tested.mapBtoA( source, backend, context );
         assertWithMessage( "Default primary bank account" )
@@ -220,8 +220,8 @@ public class BankAccountMapperTest
     {
         BankAccount source = new BankAccount();
 
-        biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
-        backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
         backend.setPrimary( true );
 
         tested.mapBtoA( source, backend, context );
@@ -236,8 +236,8 @@ public class BankAccountMapperTest
         BankAccount source = new BankAccount();
         source.setPrimary( true );
 
-        biz.turnonline.ecosystem.payment.service.model.BankAccount backend;
-        backend = new biz.turnonline.ecosystem.payment.service.model.BankAccount( codeBook );
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
         backend.setPrimary( false );
 
         tested.mapBtoA( source, backend, context );

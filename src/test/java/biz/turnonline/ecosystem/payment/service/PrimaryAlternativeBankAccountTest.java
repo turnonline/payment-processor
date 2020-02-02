@@ -2,13 +2,12 @@ package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
+import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.steward.facade.Domicile;
 import biz.turnonline.ecosystem.steward.model.Account;
-import ma.glasnost.orika.MapperFacade;
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mocked;
 import mockit.Tested;
 import org.ctoolkit.services.storage.EntityExecutor;
 import org.testng.annotations.BeforeMethod;
@@ -36,17 +35,11 @@ public class PrimaryAlternativeBankAccountTest
     @Tested
     private PaymentConfigBean tested;
 
-    @Mocked
+    @Injectable
     private CodeBook codeBook;
 
     @Injectable
     private EntityExecutor datastore;
-
-    @Injectable
-    private MapperFacade mapper;
-
-    @Injectable
-    private LocalAccountProvider accProvider;
 
     private LocalAccount account;
 
@@ -63,7 +56,7 @@ public class PrimaryAlternativeBankAccountTest
     @Test
     public void getPrimaryBankAccountSellerCzNullCountry()
     {
-        List<BankAccount> list = getBankAccounts();
+        List<CompanyBankAccount> list = getBankAccounts();
 
         new Expectations( tested, account )
         {
@@ -76,7 +69,7 @@ public class PrimaryAlternativeBankAccountTest
             }
         };
 
-        BankAccount primary = tested.getPrimaryBankAccount( account, null );
+        CompanyBankAccount primary = tested.getPrimaryBankAccount( account, null );
 
         // primary bank account country is SK
         assertEquals( Domicile.CZ.name(), primary.getCountry() );
@@ -86,7 +79,7 @@ public class PrimaryAlternativeBankAccountTest
     @Test
     public void getPrimaryBankAccountSellerSkNullCountry()
     {
-        final List<BankAccount> list = getBankAccounts();
+        final List<CompanyBankAccount> list = getBankAccounts();
 
         new Expectations( tested, account )
         {
@@ -99,7 +92,7 @@ public class PrimaryAlternativeBankAccountTest
             }
         };
 
-        BankAccount primary = tested.getPrimaryBankAccount( account, null );
+        CompanyBankAccount primary = tested.getPrimaryBankAccount( account, null );
 
         // state is same to the domicile country
         assertEquals( Domicile.SK.name(), primary.getCountry() );
@@ -112,7 +105,7 @@ public class PrimaryAlternativeBankAccountTest
     @Test
     public void getPrimaryBankAccountForSk()
     {
-        final List<BankAccount> list = getBankAccounts();
+        final List<CompanyBankAccount> list = getBankAccounts();
 
         new Expectations( tested )
         {
@@ -122,7 +115,7 @@ public class PrimaryAlternativeBankAccountTest
             }
         };
 
-        BankAccount primary = tested.getPrimaryBankAccount( account, "SK" );
+        CompanyBankAccount primary = tested.getPrimaryBankAccount( account, "SK" );
 
         // asking for SK bank account
         assertEquals( Domicile.SK.name(), primary.getCountry() );
@@ -134,7 +127,7 @@ public class PrimaryAlternativeBankAccountTest
     @Test
     public void getPrimaryBankAccountForCz()
     {
-        final List<BankAccount> list = getBankAccounts();
+        final List<CompanyBankAccount> list = getBankAccounts();
 
         new Expectations( tested )
         {
@@ -144,7 +137,7 @@ public class PrimaryAlternativeBankAccountTest
             }
         };
 
-        BankAccount primary = tested.getPrimaryBankAccount( account, "CZ" );
+        CompanyBankAccount primary = tested.getPrimaryBankAccount( account, "CZ" );
 
         // asking for CZ bank account
         assertEquals( Domicile.CZ.name(), primary.getCountry() );
@@ -155,7 +148,7 @@ public class PrimaryAlternativeBankAccountTest
     @Test
     public void getPrimaryBankAccountNoCountryMatch()
     {
-        final List<BankAccount> list = getBankAccounts();
+        final List<CompanyBankAccount> list = getBankAccounts();
 
         new Expectations( tested )
         {
@@ -166,7 +159,7 @@ public class PrimaryAlternativeBankAccountTest
         };
 
         // ask for an account for non existing country AQ (Antarktida)
-        BankAccount primary = tested.getPrimaryBankAccount( account, "AQ" );
+        CompanyBankAccount primary = tested.getPrimaryBankAccount( account, "AQ" );
 
         // asking for CZ bank account
         assertNotNull( primary );
@@ -176,8 +169,8 @@ public class PrimaryAlternativeBankAccountTest
     @Test( expectedExceptions = BankAccountNotFound.class )
     public void getPrimaryBankAccount_NotFound()
     {
-        final List<BankAccount> list = getBankAccounts();
-        for ( BankAccount next : list )
+        final List<CompanyBankAccount> list = getBankAccounts();
+        for ( CompanyBankAccount next : list )
         {
             next.setPrimary( false );
         }
@@ -196,7 +189,7 @@ public class PrimaryAlternativeBankAccountTest
     @Test
     public void getAlternativeBankAccountsSellerSkNoExclude()
     {
-        final List<BankAccount> list = getBankAccounts();
+        final List<CompanyBankAccount> list = getBankAccounts();
         expectationsBankAccountsDomicileSk( list );
 
         new Expectations( tested )
@@ -207,7 +200,7 @@ public class PrimaryAlternativeBankAccountTest
             }
         };
 
-        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
+        List<CompanyBankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 4, descriptions.size() );
         assertEquals( getBankAccount1().getIbanString(), descriptions.get( 0 ).getIbanString() );
@@ -218,7 +211,7 @@ public class PrimaryAlternativeBankAccountTest
     @Test
     public void getAlternativeBankAccountsSellerCzNoExclude()
     {
-        final List<BankAccount> list = getBankAccounts();
+        final List<CompanyBankAccount> list = getBankAccounts();
         expectationsBankAccountsDomicileCz( list );
 
         new Expectations( tested )
@@ -229,7 +222,7 @@ public class PrimaryAlternativeBankAccountTest
             }
         };
 
-        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
+        List<CompanyBankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 4, descriptions.size() );
         assertEquals( getBankAccount4().getIbanString(), descriptions.get( 0 ).getIbanString() );
@@ -240,7 +233,7 @@ public class PrimaryAlternativeBankAccountTest
     @Test
     public void getAlternativeBankAccountsSellerSkExclude()
     {
-        final List<BankAccount> list = getBankAccounts();
+        final List<CompanyBankAccount> list = getBankAccounts();
         expectationsBankAccountsDomicileSk( list );
 
         new Expectations( tested )
@@ -251,7 +244,7 @@ public class PrimaryAlternativeBankAccountTest
             }
         };
 
-        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
+        List<CompanyBankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 3, descriptions.size() );
         assertEquals( getBankAccount3().getIbanString(), descriptions.get( 0 ).getIbanString() );
@@ -260,7 +253,7 @@ public class PrimaryAlternativeBankAccountTest
     @Test
     public void getAlternativeBankAccountsSellerCzExclude()
     {
-        final List<BankAccount> list = getBankAccounts();
+        final List<CompanyBankAccount> list = getBankAccounts();
         expectationsBankAccountsDomicileCz( list );
 
         new Expectations( tested )
@@ -271,7 +264,7 @@ public class PrimaryAlternativeBankAccountTest
             }
         };
 
-        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
+        List<CompanyBankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 3, descriptions.size() );
         assertEquals( getBankAccount4().getIbanString(), descriptions.get( 0 ).getIbanString() );
@@ -280,7 +273,7 @@ public class PrimaryAlternativeBankAccountTest
     @Test
     public void getAlternativeBankAccountsNoBankCode()
     {
-        final List<BankAccount> list = getBankAccounts();
+        final List<CompanyBankAccount> list = getBankAccounts();
 
         new Expectations( tested, account )
         {
@@ -293,14 +286,14 @@ public class PrimaryAlternativeBankAccountTest
             }
         };
 
-        List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
+        List<CompanyBankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 0, descriptions.size() );
     }
 
-    private List<BankAccount> getBankAccounts()
+    private List<CompanyBankAccount> getBankAccounts()
     {
-        List<BankAccount> list = new ArrayList<>();
+        List<CompanyBankAccount> list = new ArrayList<>();
 
         list.add( getBankAccount1() );
         list.add( getBankAccount2() );
@@ -312,9 +305,9 @@ public class PrimaryAlternativeBankAccountTest
         return list;
     }
 
-    private BankAccount getBankAccount1()
+    private CompanyBankAccount getBankAccount1()
     {
-        BankAccount bankAccount = new BankAccount( codeBook )
+        CompanyBankAccount bankAccount = new CompanyBankAccount( codeBook )
         {
             @Override
             public LocalAccount getOwner()
@@ -333,9 +326,9 @@ public class PrimaryAlternativeBankAccountTest
         return bankAccount;
     }
 
-    private BankAccount getBankAccount2()
+    private CompanyBankAccount getBankAccount2()
     {
-        BankAccount bankAccount = new BankAccount( codeBook )
+        CompanyBankAccount bankAccount = new CompanyBankAccount( codeBook )
         {
             @Override
             public LocalAccount getOwner()
@@ -354,9 +347,9 @@ public class PrimaryAlternativeBankAccountTest
         return bankAccount;
     }
 
-    private BankAccount getBankAccount3()
+    private CompanyBankAccount getBankAccount3()
     {
-        BankAccount bankAccount = new BankAccount( codeBook )
+        CompanyBankAccount bankAccount = new CompanyBankAccount( codeBook )
         {
             @Override
             public LocalAccount getOwner()
@@ -375,9 +368,9 @@ public class PrimaryAlternativeBankAccountTest
         return bankAccount;
     }
 
-    private BankAccount getBankAccount4()
+    private CompanyBankAccount getBankAccount4()
     {
-        BankAccount bankAccount = new BankAccount( codeBook )
+        CompanyBankAccount bankAccount = new CompanyBankAccount( codeBook )
         {
             @Override
             public LocalAccount getOwner()
@@ -396,9 +389,9 @@ public class PrimaryAlternativeBankAccountTest
         return bankAccount;
     }
 
-    private BankAccount getBankAccount5()
+    private CompanyBankAccount getBankAccount5()
     {
-        BankAccount bankAccount = new BankAccount( codeBook )
+        CompanyBankAccount bankAccount = new CompanyBankAccount( codeBook )
         {
             @Override
             public LocalAccount getOwner()
@@ -417,9 +410,9 @@ public class PrimaryAlternativeBankAccountTest
         return bankAccount;
     }
 
-    private BankAccount getBankAccount6()
+    private CompanyBankAccount getBankAccount6()
     {
-        BankAccount bankAccount = new BankAccount( codeBook )
+        CompanyBankAccount bankAccount = new CompanyBankAccount( codeBook )
         {
             @Override
             public LocalAccount getOwner()
@@ -462,7 +455,7 @@ public class PrimaryAlternativeBankAccountTest
         return codeBook;
     }
 
-    private void expectationsBankAccountsDomicileSk( List<BankAccount> list )
+    private void expectationsBankAccountsDomicileSk( List<CompanyBankAccount> list )
     {
         new Expectations( tested, account )
         {
@@ -479,7 +472,7 @@ public class PrimaryAlternativeBankAccountTest
         };
     }
 
-    private void expectationsBankAccountsDomicileCz( List<BankAccount> list )
+    private void expectationsBankAccountsDomicileCz( List<CompanyBankAccount> list )
     {
         new Expectations( tested, account )
         {

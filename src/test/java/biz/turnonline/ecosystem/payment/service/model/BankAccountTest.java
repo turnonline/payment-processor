@@ -8,14 +8,14 @@ import org.testng.annotations.Test;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 /**
- * {@link BankAccount} unit testing.
+ * {@link CompanyBankAccount} unit testing.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 public class BankAccountTest
 {
     @Tested
-    private BankAccount tested;
+    private CompanyBankAccount tested;
 
     @Injectable
     private CodeBook codeBook;

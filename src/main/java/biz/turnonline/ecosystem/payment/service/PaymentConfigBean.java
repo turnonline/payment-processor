@@ -2,11 +2,12 @@ package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
-import biz.turnonline.ecosystem.payment.service.model.BankAccount;
+import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
-import ma.glasnost.orika.MapperFacade;
+import nl.garvelink.iban.IBAN;
 import org.ctoolkit.services.storage.EntityExecutor;
 import org.ctoolkit.services.storage.HasOwner;
 import org.ctoolkit.services.storage.criteria.Criteria;
@@ -44,22 +45,22 @@ class PaymentConfigBean
 
     private final EntityExecutor datastore;
 
-    private final MapperFacade mapper;
+    private final CodeBook codeBook;
 
     @Inject
-    PaymentConfigBean( EntityExecutor datastore, MapperFacade mapper )
+    PaymentConfigBean( EntityExecutor datastore, CodeBook codeBook )
     {
         this.datastore = datastore;
-        this.mapper = mapper;
+        this.codeBook = codeBook;
     }
 
     @Override
-    public BankAccount getBankAccount( @Nonnull LocalAccount account, @Nonnull Long id )
+    public CompanyBankAccount getBankAccount( @Nonnull LocalAccount account, @Nonnull Long id )
     {
         String template = "{0} cannot be null";
         checkNotNull( account, template, "LocalAccount" );
 
-        BankAccount bankAccount = loadBankAccount( checkNotNull( id, template, "Bank account ID" ) );
+        CompanyBankAccount bankAccount = loadBankAccount( checkNotNull( id, template, "Bank account ID" ) );
         if ( bankAccount == null )
         {
             throw new BankAccountNotFound( id );
@@ -67,18 +68,18 @@ class PaymentConfigBean
         return checkOwner( account, bankAccount );
     }
 
-    private BankAccount loadBankAccount( @Nonnull Long id )
+    private CompanyBankAccount loadBankAccount( @Nonnull Long id )
     {
-        return ofy().load().type( BankAccount.class ).id( id ).now();
+        return ofy().load().type( CompanyBankAccount.class ).id( id ).now();
     }
 
     @Override
-    public void insertBankAccount( @Nonnull LocalAccount account, @Nonnull BankAccount bankAccount )
+    public void insertBankAccount( @Nonnull LocalAccount account, @Nonnull CompanyBankAccount bankAccount )
     {
         String template = "{0} cannot be null";
         checkNotNull( account, template, "LocalAccount" );
 
-        if ( checkNotNull( bankAccount, template, BankAccount.class.getSimpleName() ).getId() != null )
+        if ( checkNotNull( bankAccount, template, CompanyBankAccount.class.getSimpleName() ).getId() != null )
         {
             String message = bankAccount.entityKey() + " should be in memory instance only, not persisted object.";
             throw new IllegalArgumentException( message );
@@ -88,7 +89,7 @@ class PaymentConfigBean
 
         // generate code
         int codeOrder = 1;
-        List<BankAccount> list = getBankAccounts( account, null, null, null );
+        List<CompanyBankAccount> list = getBankAccounts( account, null, null, null );
         list.sort( new BankAccountCodeDescending() );
 
         if ( !list.isEmpty() )
@@ -104,13 +105,13 @@ class PaymentConfigBean
     }
 
     @Override
-    public List<BankAccount> getBankAccounts( @Nonnull LocalAccount account,
-                                              @Nullable Integer offset,
-                                              @Nullable Integer limit,
-                                              @Nullable String country )
+    public List<CompanyBankAccount> getBankAccounts( @Nonnull LocalAccount account,
+                                                     @Nullable Integer offset,
+                                                     @Nullable Integer limit,
+                                                     @Nullable String country )
     {
         checkNotNull( account, "LocalAccount cannot be null" );
-        Criteria<BankAccount> criteria = Criteria.of( BankAccount.class );
+        Criteria<CompanyBankAccount> criteria = Criteria.of( CompanyBankAccount.class );
 
         criteria.reference( "owner", account );
         if ( country != null )
@@ -128,29 +129,29 @@ class PaymentConfigBean
             criteria.limit( limit );
         }
 
-        List<BankAccount> list = datastore.list( criteria );
+        List<CompanyBankAccount> list = datastore.list( criteria );
         LOGGER.info( list.size() + " bank accounts has been found." );
 
         return list;
     }
 
     @Override
-    public void updateBankAccount( @Nonnull LocalAccount account, @Nonnull BankAccount bankAccount )
+    public void updateBankAccount( @Nonnull LocalAccount account, @Nonnull CompanyBankAccount bankAccount )
     {
         String template = "{0} cannot be null";
         checkNotNull( account, template, "LocalAccount" );
 
-        BankAccount checkedBankAccount = checkOwner( account, checkNotNull( bankAccount, template, "BankAccount" ) );
+        CompanyBankAccount checkedBankAccount = checkOwner( account, checkNotNull( bankAccount, template, "BankAccount" ) );
         checkedBankAccount.save();
     }
 
     @Override
-    public BankAccount deleteBankAccount( @Nonnull LocalAccount account, @Nonnull Long id )
+    public CompanyBankAccount deleteBankAccount( @Nonnull LocalAccount account, @Nonnull Long id )
     {
         String template = "{0} cannot be null";
 
         // TODO remove payment gate from account config; old: config.removePaymentGateway( bankAccount.getPaymentGate() );
-        BankAccount bankAccount = getBankAccount(
+        CompanyBankAccount bankAccount = getBankAccount(
                 checkNotNull( account, template, "LocalAccount" ),
                 checkNotNull( id, template, "Bank account ID" ) );
 
@@ -168,20 +169,20 @@ class PaymentConfigBean
     }
 
     @Override
-    public BankAccount markBankAccountAsPrimary( @Nonnull LocalAccount account, @Nonnull Long id )
+    public CompanyBankAccount markBankAccountAsPrimary( @Nonnull LocalAccount account, @Nonnull Long id )
     {
         String template = "{0} cannot be null";
-        BankAccount bankAccount = getBankAccount(
+        CompanyBankAccount bankAccount = getBankAccount(
                 checkNotNull( account, template, "LocalAccount" ),
                 checkNotNull( id, template, "Bank account ID" ) );
 
         // mark old primary bank accounts to not primary
-        List<BankAccount> bankAccounts = getBankAccounts( account, null, null, null );
+        List<CompanyBankAccount> bankAccounts = getBankAccounts( account, null, null, null );
 
-        Collection<BankAccount> primary = bankAccounts.stream().filter( new BankAccountPrimary() ).collect( Collectors.toList() );
+        Collection<CompanyBankAccount> primary = bankAccounts.stream().filter( new BankAccountPrimary() ).collect( Collectors.toList() );
 
         ofy().transact( () -> {
-            for ( BankAccount primaryBankAccount : primary )
+            for ( CompanyBankAccount primaryBankAccount : primary )
             {
                 primaryBankAccount.setPrimary( false );
                 primaryBankAccount.save();
@@ -196,9 +197,9 @@ class PaymentConfigBean
     }
 
     @Override
-    public BankAccount getPrimaryBankAccount( @Nonnull LocalAccount account, @Nullable String country )
+    public CompanyBankAccount getPrimaryBankAccount( @Nonnull LocalAccount account, @Nullable String country )
     {
-        BankAccount primary = getInternalPrimaryBankAccount( account, country );
+        CompanyBankAccount primary = getInternalPrimaryBankAccount( account, country );
         if ( primary == null )
         {
             throw new BankAccountNotFound( -1L );
@@ -207,23 +208,23 @@ class PaymentConfigBean
     }
 
     @Override
-    public BankAccount getDebtorBankAccount( @Nonnull LocalAccount debtor, @Nonnull InvoicePayment payment )
+    public CompanyBankAccount getDebtorBankAccount( @Nonnull LocalAccount debtor, @Nonnull InvoicePayment payment )
     {
         return getInternalPrimaryBankAccount( debtor, null );
     }
 
-    BankAccount getInternalPrimaryBankAccount( @Nonnull LocalAccount account, @Nullable String country )
+    CompanyBankAccount getInternalPrimaryBankAccount( @Nonnull LocalAccount account, @Nullable String country )
     {
         String template = "{0} cannot be null";
-        List<BankAccount> list = getBankAccounts( checkNotNull( account, template, "LocalAccount" ), null, null, null );
+        List<CompanyBankAccount> list = getBankAccounts( checkNotNull( account, template, "LocalAccount" ), null, null, null );
         Collections.sort( list );
 
         country = country == null ? account.getDomicile().name() : country;
 
-        Predicate<BankAccount> and = new BankAccountCountryPredicate( country ).and( new BankAccountPrimary() );
-        Collection<BankAccount> filtered = list.stream().filter( and ).collect( Collectors.toList() );
+        Predicate<CompanyBankAccount> and = new BankAccountCountryPredicate( country ).and( new BankAccountPrimary() );
+        Collection<CompanyBankAccount> filtered = list.stream().filter( and ).collect( Collectors.toList() );
 
-        BankAccount bankAccount;
+        CompanyBankAccount bankAccount;
 
         if ( filtered.isEmpty() )
         {
@@ -239,26 +240,26 @@ class PaymentConfigBean
     }
 
     @Override
-    public List<BankAccount> getAlternativeBankAccounts( @Nonnull LocalAccount account,
-                                                         @Nullable Integer offset,
-                                                         @Nullable Integer limit,
-                                                         @Nullable Locale locale,
-                                                         @Nullable String country )
+    public List<CompanyBankAccount> getAlternativeBankAccounts( @Nonnull LocalAccount account,
+                                                                @Nullable Integer offset,
+                                                                @Nullable Integer limit,
+                                                                @Nullable Locale locale,
+                                                                @Nullable String country )
     {
         String template = "{0} cannot be null";
-        BankAccount exclude = getInternalPrimaryBankAccount( checkNotNull( account, template, "LocalAccount" ), country );
+        CompanyBankAccount exclude = getInternalPrimaryBankAccount( checkNotNull( account, template, "LocalAccount" ), country );
         country = country == null ? account.getDomicile().name() : country;
         locale = account.getLocale( locale );
 
-        List<BankAccount> list = getBankAccounts( account, offset, limit, null );
+        List<CompanyBankAccount> list = getBankAccounts( account, offset, limit, null );
         list.sort( new BankAccountSellerSorting( country ) );
-        Iterator<BankAccount> iterator = list.iterator();
+        Iterator<CompanyBankAccount> iterator = list.iterator();
 
-        List<BankAccount> filtered = new ArrayList<>();
+        List<CompanyBankAccount> filtered = new ArrayList<>();
 
         while ( iterator.hasNext() )
         {
-            BankAccount next = iterator.next();
+            CompanyBankAccount next = iterator.next();
 
             if ( exclude == null || !exclude.equals( next ) )
             {
@@ -274,15 +275,44 @@ class PaymentConfigBean
     }
 
     @Override
-    public BankAccount insertBeneficiary( @Nonnull LocalAccount debtor, @Nonnull String iban, @Nullable String bic )
+    public BeneficiaryBankAccount insertBeneficiary( @Nonnull LocalAccount debtor,
+                                                     @Nonnull String iban,
+                                                     @Nullable String bic )
     {
-        return null;
+        BeneficiaryBankAccount beneficiary = new BeneficiaryBankAccount( codeBook );
+        beneficiary.setOwner( debtor );
+        beneficiary.setIban( iban );
+        beneficiary.setBic( bic );
+        beneficiary.save();
+
+        return beneficiary;
     }
 
     @Override
-    public BankAccount getBeneficiary( @Nonnull LocalAccount debtor, @Nonnull String iban )
+    public BeneficiaryBankAccount getBeneficiary( @Nonnull LocalAccount debtor, @Nonnull String iban )
     {
-        return null;
+        Criteria<BeneficiaryBankAccount> criteria = beneficiaryQuery( debtor, iban );
+        return datastore.first( criteria );
+    }
+
+    @Override
+    public boolean isBeneficiary( @Nonnull LocalAccount debtor, @Nonnull String iban )
+    {
+        Criteria<BeneficiaryBankAccount> criteria = beneficiaryQuery( debtor, iban );
+        return datastore.count( criteria ) > 0;
+    }
+
+    private Criteria<BeneficiaryBankAccount> beneficiaryQuery( @Nonnull LocalAccount debtor, @Nonnull String iban )
+    {
+        checkNotNull( debtor, "LocalAccount can't be null" );
+        checkNotNull( iban, "IBAN can't be null" );
+
+        Criteria<BeneficiaryBankAccount> criteria = Criteria.of( BeneficiaryBankAccount.class );
+        // make IBAN compact, without formatting
+        criteria.equal( "iban", IBAN.valueOf( iban ).toPlainString() );
+        criteria.reference( "owner", debtor );
+
+        return criteria;
     }
 
     /**
@@ -312,12 +342,12 @@ class PaymentConfigBean
      * Descending sorting of the bank accounts based on its code property.
      */
     private static class BankAccountCodeDescending
-            implements Comparator<BankAccount>, Serializable
+            implements Comparator<CompanyBankAccount>, Serializable
     {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public int compare( BankAccount left, BankAccount right )
+        public int compare( CompanyBankAccount left, CompanyBankAccount right )
         {
             return ComparisonChain.start()
                     .compare( right.getCode(), left.getCode(), Ordering.natural().nullsLast() )
@@ -326,17 +356,17 @@ class PaymentConfigBean
     }
 
     static class BankAccountPrimary
-            implements Predicate<BankAccount>
+            implements Predicate<CompanyBankAccount>
     {
         @Override
-        public boolean test( @Nullable BankAccount input )
+        public boolean test( @Nullable CompanyBankAccount input )
         {
             return input != null && input.isPrimary();
         }
     }
 
     private static class BankAccountCountryPredicate
-            implements Predicate<BankAccount>
+            implements Predicate<CompanyBankAccount>
     {
         private String countryCode;
 
@@ -346,14 +376,14 @@ class PaymentConfigBean
         }
 
         @Override
-        public boolean test( @Nullable BankAccount input )
+        public boolean test( @Nullable CompanyBankAccount input )
         {
             return input != null && countryCode.equals( input.getCountry() );
         }
     }
 
     private static class BankAccountSellerSorting
-            implements Comparator<BankAccount>, Serializable
+            implements Comparator<CompanyBankAccount>, Serializable
     {
         private static final long serialVersionUID = 1L;
 
@@ -365,7 +395,7 @@ class PaymentConfigBean
         }
 
         @Override
-        public int compare( BankAccount left, BankAccount right )
+        public int compare( CompanyBankAccount left, CompanyBankAccount right )
         {
             if ( country.contentEquals( right.getCountry() ) )
             {
