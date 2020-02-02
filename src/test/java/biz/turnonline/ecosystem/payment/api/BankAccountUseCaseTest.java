@@ -88,7 +88,6 @@ public class BankAccountUseCaseTest
         assertThat( thirdBankAccount.getBank().getLabel() ).isNotNull();
         assertThat( thirdBankAccount.getBank().getCode() ).isEqualTo( "8360" );
         assertThat( thirdBankAccount.getBank().getCountry() ).isEqualTo( "SK" );
-        assertThat( thirdBankAccount.getFormatted() ).isEqualTo( "520700-4200012345/8360" );
         assertThat( thirdBankAccount.getPrimary() ).isFalse();
 
         apiBankAccount = getFromFile( "bank-account-2.json", BankAccount.class );

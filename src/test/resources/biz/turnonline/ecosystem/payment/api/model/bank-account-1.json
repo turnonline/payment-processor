@@ -1,7 +1,6 @@
 {
     "name": "My first bank account",
-    "accountNumber": "12345671",
-    "iban": "SK89 7500 0000 0000 1234 5671",
+    "iban": "SK27 1100 1936 9544 2009 5443",
     "bic": "TATRSKBX",
     "currency": "EUR",
     "primary": false,

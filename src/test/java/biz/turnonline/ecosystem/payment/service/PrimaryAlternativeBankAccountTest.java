@@ -210,8 +210,8 @@ public class PrimaryAlternativeBankAccountTest
         List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 4, descriptions.size() );
-        assertEquals( getBankAccount1().getFormattedBankAccount(), descriptions.get( 0 ).getFormattedBankAccount() );
-        assertEquals( getBankAccount3().getFormattedBankAccount(), descriptions.get( 1 ).getFormattedBankAccount() );
+        assertEquals( getBankAccount1().getIbanString(), descriptions.get( 0 ).getIbanString() );
+        assertEquals( getBankAccount3().getIbanString(), descriptions.get( 1 ).getIbanString() );
 
     }
 
@@ -232,8 +232,8 @@ public class PrimaryAlternativeBankAccountTest
         List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 4, descriptions.size() );
-        assertEquals( getBankAccount4().getFormattedBankAccount(), descriptions.get( 0 ).getFormattedBankAccount() );
-        assertEquals( getBankAccount5().getFormattedBankAccount(), descriptions.get( 1 ).getFormattedBankAccount() );
+        assertEquals( getBankAccount4().getIbanString(), descriptions.get( 0 ).getIbanString() );
+        assertEquals( getBankAccount5().getIbanString(), descriptions.get( 1 ).getIbanString() );
 
     }
 
@@ -254,7 +254,7 @@ public class PrimaryAlternativeBankAccountTest
         List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 3, descriptions.size() );
-        assertEquals( getBankAccount3().getFormattedBankAccount(), descriptions.get( 0 ).getFormattedBankAccount() );
+        assertEquals( getBankAccount3().getIbanString(), descriptions.get( 0 ).getIbanString() );
     }
 
     @Test
@@ -274,7 +274,7 @@ public class PrimaryAlternativeBankAccountTest
         List<BankAccount> descriptions = tested.getAlternativeBankAccounts( account, null, null, null, null );
 
         assertEquals( 3, descriptions.size() );
-        assertEquals( getBankAccount4().getFormattedBankAccount(), descriptions.get( 0 ).getFormattedBankAccount() );
+        assertEquals( getBankAccount4().getIbanString(), descriptions.get( 0 ).getIbanString() );
     }
 
     @Test
@@ -324,8 +324,7 @@ public class PrimaryAlternativeBankAccountTest
         };
 
         bankAccount.setName( "B Account" );
-        bankAccount.setAccountNumber( "2629874222" );
-        bankAccount.setBankCode( "1100" );
+        bankAccount.setIban( "SK6311003786278998869772" );
         bankAccount.setMerchantId( "1515" );
         bankAccount.setNotificationEmail( "seller.b@gmail.com" );
         bankAccount.setCountry( Domicile.SK.name() );
@@ -346,8 +345,7 @@ public class PrimaryAlternativeBankAccountTest
         };
 
         bankAccount.setName( "A Account" );
-        bankAccount.setAccountNumber( "2629874111" );
-        bankAccount.setBankCode( BankAccount.TRUST_PAY_BANK_CODE );
+        bankAccount.setIban( "SK4799529907645940188477" );
         bankAccount.setMerchantId( "3215" );
         bankAccount.setNotificationEmail( "seller.a@gmail.com" );
         bankAccount.setCountry( Domicile.SK.name() );
@@ -368,8 +366,7 @@ public class PrimaryAlternativeBankAccountTest
         };
 
         bankAccount.setName( "Primary Bank Account" );
-        bankAccount.setAccountNumber( "2629874444" );
-        bankAccount.setBankCode( "0200" );
+        bankAccount.setIban( "SK4702005866284676590760" );
         bankAccount.setMerchantId( "2205" );
         bankAccount.setNotificationEmail( "seller.d@gmail.com" );
         bankAccount.setCountry( Domicile.SK.name() );
@@ -390,8 +387,7 @@ public class PrimaryAlternativeBankAccountTest
         };
 
         bankAccount.setName( "C Account" );
-        bankAccount.setAccountNumber( "2629874333" );
-        bankAccount.setBankCode( "0800" );
+        bankAccount.setIban( "SK6108004743795632498503" );
         bankAccount.setMerchantId( "1122" );
         bankAccount.setNotificationEmail( "seller.c@gmail.com" );
         bankAccount.setCountry( Domicile.CZ.name() );
@@ -412,8 +408,7 @@ public class PrimaryAlternativeBankAccountTest
         };
 
         bankAccount.setName( "2 Account" );
-        bankAccount.setAccountNumber( "2629874000" );
-        bankAccount.setBankCode( "0100" );
+        bankAccount.setIban( "SK7201008812386074021228" );
         bankAccount.setMerchantId( "2020" );
         bankAccount.setNotificationEmail( "seller.1@gmail.com" );
         bankAccount.setCountry( Domicile.CZ.name() );
@@ -434,8 +429,7 @@ public class PrimaryAlternativeBankAccountTest
         };
 
         bankAccount.setName( "1 Account" );
-        bankAccount.setAccountNumber( "2629874555" );
-        bankAccount.setBankCode( BankAccount.TRUST_PAY_BANK_CODE );
+        bankAccount.setIban( "SK5799525711661487522498" );
         bankAccount.setMerchantId( "3722" );
         bankAccount.setNotificationEmail( "seller.e@gmail.com" );
         bankAccount.setCountry( Domicile.CZ.name() );

@@ -62,8 +62,6 @@ public class BankAccount
 
     private String branch;
 
-    private String accountNumber;
-
     private String bankCode;
 
     @Index
@@ -100,56 +98,6 @@ public class BankAccount
     public BankAccount( CodeBook codeBook )
     {
         this.codeBook = codeBook;
-    }
-
-    /**
-     * <p>Format bank account specified in bank account fields.</p>
-     * <i>Formatted results:</i>
-     * <table border="1">
-     * <tr>
-     * <th>Prefix</th><th>Bank account number</th><th>Bank code</th><th>Result</th>
-     * </tr>
-     * <tr>
-     * <td>''</td><td>''</td><td>''</td><td>''</td>
-     * </tr>
-     * <tr>
-     * <td>''</td><td>''</td><td>1111</td><td>''</td>
-     * </tr>
-     * <tr>
-     * <td>''</td><td>123456</td><td>1111</td><td>123456/1111</td>
-     * </tr>
-     * <tr>
-     * <td>000001</td><td>123456</td><td>1111</td><td>000001-123456/1111</td>
-     * </tr>
-     * </table>
-     *
-     * @return formatted bank account
-     */
-    public String getFormattedBankAccount()
-    {
-        StringBuilder sb = new StringBuilder();
-        if ( this.getAccountNumber() == null )
-        {
-            return sb.toString();
-        }
-
-        String prefix = this.getBranch();
-        String bankAccountNumber = this.getAccountNumber();
-        String bankCode = this.getBankCode();
-
-        if ( prefix != null && !prefix.trim().isEmpty() )
-        {
-            sb.append( prefix ).append( "-" );
-        }
-
-        sb.append( bankAccountNumber );
-
-        if ( bankCode != null && !bankCode.trim().isEmpty() )
-        {
-            sb.append( "/" ).append( bankCode );
-        }
-
-        return sb.toString();
     }
 
     /**
@@ -242,19 +190,6 @@ public class BankAccount
     public void setBranch( String branch )
     {
         this.branch = branch;
-    }
-
-    /**
-     * The bank account number.
-     */
-    public String getAccountNumber()
-    {
-        return accountNumber;
-    }
-
-    public void setAccountNumber( String accountNumber )
-    {
-        this.accountNumber = accountNumber;
     }
 
     /**
@@ -521,7 +456,6 @@ public class BankAccount
                 .add( "owner", owner )
                 .add( "name", name )
                 .add( "branch", branch )
-                .add( "accountNumber", accountNumber )
                 .add( "bankCode", bankCode )
                 .add( "iban", iban )
                 .add( "bic", bic )
@@ -542,7 +476,6 @@ public class BankAccount
         return ComparisonChain.start()
                 .compare( this.name, bankAccount.getName(), Ordering.natural().nullsLast() )
                 .compare( this.bankCode, bankAccount.getBankCode(), Ordering.natural().nullsLast() )
-                .compare( this.accountNumber, bankAccount.getAccountNumber(), Ordering.natural().nullsLast() )
                 .compare( this.branch, bankAccount.getBranch(), Ordering.natural().nullsLast() )
                 .result();
     }

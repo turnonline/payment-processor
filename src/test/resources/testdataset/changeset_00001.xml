@@ -6,8 +6,8 @@
         <entity kind="PP_BankAccount">
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Tatrabanka"/>
-            <property name="prefix" type="string" value=""/>
-            <property name="accountNumber" type="string" value="123456789"/>
+            <property name="branch" type="string" value=""/>
+            <property name="iban" type="string" value="SK2711001936954420095443"/>
             <property name="bankCode" type="string" value="1100"/>
             <property indexed="true" name="code" type="string" value="BA_1"/>
             <property name="primary" type="boolean" value="true"/>
@@ -21,8 +21,8 @@
         <entity kind="PP_BankAccount">
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="CardPay"/>
-            <property name="prefix" type="string" value=""/>
-            <property name="accountNumber" type="string" value="123456789"/>
+            <property name="branch" type="string" value=""/>
+            <property name="iban" type="string" value="SK0311115709007995167365"/>
             <property name="bankCode" type="string" value="1111"/>
             <property indexed="true" name="code" type="string" value="BA_2"/>
             <property name="primary" type="boolean" value="false"/>
@@ -36,8 +36,8 @@
         <entity kind="PP_BankAccount">
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Sporopoay"/>
-            <property name="prefix" type="string" value=""/>
-            <property name="accountNumber" type="string" value="123456789"/>
+            <property name="branch" type="string" value=""/>
+            <property name="iban" type="string" value="SK6609008529134886539010"/>
             <property name="bankCode" type="string" value="0900"/>
             <property indexed="true" name="code" type="string" value="BA_3"/>
             <property name="primary" type="boolean" value="false"/>
@@ -51,8 +51,8 @@
         <entity kind="PP_BankAccount">
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="EPlatbyVUB"/>
-            <property name="prefix" type="string" value=""/>
-            <property name="accountNumber" type="string" value="123456789"/>
+            <property name="branch" type="string" value=""/>
+            <property name="iban" type="string" value="SK3702005771190028932408"/>
             <property name="bankCode" type="string" value="0200"/>
             <property indexed="true" name="code" type="string" value="BA_4"/>
             <property name="primary" type="boolean" value="true"/>
@@ -66,8 +66,8 @@
         <entity kind="PP_BankAccount">
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Trustpay"/>
-            <property name="prefix" type="string" value=""/>
-            <property name="accountNumber" type="string" value="123456789"/>
+            <property name="branch" type="string" value=""/>
+            <property name="iban" type="string" value="SK1999529985863410603550"/>
             <property name="bankCode" type="string" value="9952"/>
             <property indexed="true" name="code" type="string" value="BA_5"/>
             <property name="primary" type="boolean" value="true"/>
@@ -82,8 +82,8 @@
         <entity kind="PP_BankAccount" id="9999">
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:998877"/>
             <property indexed="true" name="name" type="string" value="Primárny účet"/>
-            <property name="prefix" type="string" value=""/>
-            <property name="accountNumber" type="string" value="123456789"/>
+            <property name="branch" type="string" value=""/>
+            <property name="iban" type="string" value="SK0509009774621357177405"/>
             <property name="bankCode" type="string" value="0900"/>
             <property name="primary" type="boolean" value="true"/>
             <property indexed="true" name="country" type="string" value="SK"/>

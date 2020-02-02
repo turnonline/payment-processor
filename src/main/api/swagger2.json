@@ -627,14 +627,6 @@
                     "type": "string",
                     "description": "The bank branch identification."
                 },
-                "accountNumber": {
-                    "type": "string",
-                    "description": "The bank account number."
-                },
-                "formatted": {
-                    "type": "string",
-                    "description": "The formatted bank account number and bank code."
-                },
                 "iban": {
                     "type": "string",
                     "description": "The international bank account number."

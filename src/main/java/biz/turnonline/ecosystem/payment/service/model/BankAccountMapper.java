@@ -4,7 +4,6 @@ import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.Defaults;
 import biz.turnonline.ecosystem.payment.api.model.BankAccountBank;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
-import com.google.common.base.Strings;
 import com.google.common.net.HttpHeaders;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MappingContext;
@@ -50,14 +49,10 @@ class BankAccountMapper
         bankAccount.setId( source.getId() );
         bankAccount.setName( source.getName() );
         bankAccount.setBranch( source.getBranch() );
-        bankAccount.setAccountNumber( source.getAccountNumber() );
         bankAccount.setIban( source.getIbanString() );
         bankAccount.setBic( source.getBic() );
         bankAccount.setCurrency( source.getCurrency() );
         bankAccount.setPrimary( source.isPrimary() );
-
-        String formatted = source.getFormattedBankAccount();
-        bankAccount.setFormatted( Strings.isNullOrEmpty( formatted ) ? null : formatted );
 
         String bankCode = source.getBankCode();
         if ( bankCode != null )
@@ -140,9 +135,6 @@ class BankAccountMapper
 
         sValue = Optional.ofNullable( source.getBranch() );
         sValue.ifPresent( backend::setBranch );
-
-        sValue = Optional.ofNullable( source.getAccountNumber() );
-        sValue.ifPresent( backend::setAccountNumber );
 
         sValue = Optional.ofNullable( source.getIban() );
         sValue.ifPresent( backend::setIban );

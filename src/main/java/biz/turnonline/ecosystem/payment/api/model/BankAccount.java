@@ -21,10 +21,6 @@ public class BankAccount
 
     private String branch = null;
 
-    private String accountNumber = null;
-
-    private String formatted = null;
-
     private String iban = null;
 
     private String bic = null;
@@ -99,50 +95,6 @@ public class BankAccount
     public void setBranch( String branch )
     {
         this.branch = branch;
-    }
-
-    /**
-     * The bank account number.
-     **/
-    public BankAccount accountNumber( String accountNumber )
-    {
-        this.accountNumber = accountNumber;
-        return this;
-    }
-
-
-    @ApiModelProperty( value = "The bank account number." )
-    @JsonProperty( "accountNumber" )
-    public String getAccountNumber()
-    {
-        return accountNumber;
-    }
-
-    public void setAccountNumber( String accountNumber )
-    {
-        this.accountNumber = accountNumber;
-    }
-
-    /**
-     * The formatted bank account number and bank code.
-     **/
-    public BankAccount formatted( String formatted )
-    {
-        this.formatted = formatted;
-        return this;
-    }
-
-
-    @ApiModelProperty( value = "The formatted full bank account number incl. bank code." )
-    @JsonProperty( "formatted" )
-    public String getFormatted()
-    {
-        return formatted;
-    }
-
-    public void setFormatted( String formatted )
-    {
-        this.formatted = formatted;
     }
 
     /**
@@ -271,8 +223,6 @@ public class BankAccount
         return Objects.equals( id, bankAccount.id ) &&
                 Objects.equals( name, bankAccount.name ) &&
                 Objects.equals( branch, bankAccount.branch ) &&
-                Objects.equals( accountNumber, bankAccount.accountNumber ) &&
-                Objects.equals( formatted, bankAccount.formatted ) &&
                 Objects.equals( iban, bankAccount.iban ) &&
                 Objects.equals( bic, bankAccount.bic ) &&
                 Objects.equals( currency, bankAccount.currency ) &&
@@ -283,7 +233,7 @@ public class BankAccount
     @Override
     public int hashCode()
     {
-        return Objects.hash( id, name, branch, accountNumber, formatted, iban, bic, currency, primary, bank );
+        return Objects.hash( id, name, branch, iban, bic, currency, primary, bank );
     }
 
     @Override
@@ -295,8 +245,6 @@ public class BankAccount
         sb.append( "    id: " ).append( toIndentedString( id ) ).append( "\n" );
         sb.append( "    name: " ).append( toIndentedString( name ) ).append( "\n" );
         sb.append( "    branch: " ).append( toIndentedString( branch ) ).append( "\n" );
-        sb.append( "    accountNumber: " ).append( toIndentedString( accountNumber ) ).append( "\n" );
-        sb.append( "    formatted: " ).append( toIndentedString( formatted ) ).append( "\n" );
         sb.append( "    iban: " ).append( toIndentedString( iban ) ).append( "\n" );
         sb.append( "    bic: " ).append( toIndentedString( bic ) ).append( "\n" );
         sb.append( "    currency: " ).append( toIndentedString( currency ) ).append( "\n" );

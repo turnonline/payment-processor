@@ -59,7 +59,7 @@ public class PaymentConfigBeanDbTest
         BankAccount bankAccount = bean.getBankAccount( lAnother, 9999L );
         assertThat( bankAccount ).isNotNull();
         assertThat( bankAccount.getBankCode() ).isEqualTo( "0900" );
-        assertThat( bankAccount.getAccountNumber() ).isEqualTo( "123456789" );
+        assertThat( bankAccount.getIBAN().toPlainString() ).isEqualTo( "SK0509009774621357177405" );
     }
 
     @Test( expectedExceptions = WrongEntityOwner.class )
@@ -84,8 +84,7 @@ public class PaymentConfigBeanDbTest
         assertThat( bankAccounts ).hasSize( originSize );
 
         BankAccount bankAccount = injector.getInstance( BankAccount.class );
-        bankAccount.setAccountNumber( "2614567890" );
-        bankAccount.setBankCode( "0200" );
+        bankAccount.setIban( "SK3702005771190028932408" );
         bankAccount.setPrimary( false );
         bankAccount.setPaymentGate( PaymentGate.EPLATBY_VUB );
 

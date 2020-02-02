@@ -78,7 +78,6 @@ public class BankAccountMapperTest
 
         assertThat( backend.getBankCode() ).isEqualTo( code );
         assertThat( backend.getName() ).isEqualTo( api.getName() );
-        assertThat( backend.getAccountNumber() ).isEqualTo( api.getAccountNumber() );
         assertThat( backend.getIbanString() ).isEqualTo( api.getIban() );
         assertThat( backend.getBic() ).isEqualTo( api.getBic() );
         assertThat( backend.getCurrency() ).isEqualTo( api.getCurrency() );
@@ -164,9 +163,6 @@ public class BankAccountMapperTest
                 backend.getName();
                 result = "My first bank account";
 
-                backend.getAccountNumber();
-                result = "2289198742";
-
                 backend.getIbanString();
                 result = "SK6711000000002289198742";
 
@@ -175,9 +171,6 @@ public class BankAccountMapperTest
 
                 backend.getCurrency();
                 result = "EUR";
-
-                backend.getFormattedBankAccount();
-                result = "2289198742/1100";
 
                 backend.isPrimary();
                 result = true;
@@ -198,7 +191,6 @@ public class BankAccountMapperTest
 
         assertThat( api.getId() ).isEqualTo( id );
         assertThat( api.getName() ).isNotNull();
-        assertThat( api.getAccountNumber() ).isNotNull();
         assertThat( api.getIban() ).isNotNull();
         assertThat( api.getBic() ).isNotNull();
         assertThat( api.getCurrency() ).isNotNull();
