@@ -49,7 +49,7 @@ class BankAccountMapper
     {
         bankAccount.setId( source.getId() );
         bankAccount.setName( source.getName() );
-        bankAccount.setPrefix( source.getPrefix() );
+        bankAccount.setBranch( source.getBranch() );
         bankAccount.setAccountNumber( source.getAccountNumber() );
         bankAccount.setIban( source.getIbanString() );
         bankAccount.setBic( source.getBic() );
@@ -138,8 +138,8 @@ class BankAccountMapper
         sValue = Optional.ofNullable( source.getName() );
         sValue.ifPresent( backend::setName );
 
-        sValue = Optional.ofNullable( source.getPrefix() );
-        sValue.ifPresent( backend::setPrefix );
+        sValue = Optional.ofNullable( source.getBranch() );
+        sValue.ifPresent( backend::setBranch );
 
         sValue = Optional.ofNullable( source.getAccountNumber() );
         sValue.ifPresent( backend::setAccountNumber );

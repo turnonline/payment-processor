@@ -617,15 +617,15 @@
                 "id": {
                     "type": "integer",
                     "format": "int64",
-                    "description": "The bank account identification."
+                    "description": "The unique bank account identification."
                 },
                 "name": {
                     "type": "string",
                     "description": "The user defined name of the bank account."
                 },
-                "prefix": {
+                "branch": {
                     "type": "string",
-                    "description": "The optional bank account number prefix."
+                    "description": "The bank branch identification."
                 },
                 "accountNumber": {
                     "type": "string",
@@ -633,7 +633,7 @@
                 },
                 "formatted": {
                     "type": "string",
-                    "description": "The formatted full bank account number incl. bank code."
+                    "description": "The formatted bank account number and bank code."
                 },
                 "iban": {
                     "type": "string",

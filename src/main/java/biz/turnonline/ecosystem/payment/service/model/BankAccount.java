@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import java.util.Currency;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -59,7 +60,7 @@ public class BankAccount
     @Index
     private String name;
 
-    private String prefix;
+    private String branch;
 
     private String accountNumber;
 
@@ -132,7 +133,7 @@ public class BankAccount
             return sb.toString();
         }
 
-        String prefix = this.getPrefix();
+        String prefix = this.getBranch();
         String bankAccountNumber = this.getAccountNumber();
         String bankCode = this.getBankCode();
 
@@ -231,16 +232,16 @@ public class BankAccount
     }
 
     /**
-     * The optional bank account number prefix.
+     * The bank branch identification.
      */
-    public String getPrefix()
+    public String getBranch()
     {
-        return prefix;
+        return branch;
     }
 
-    public void setPrefix( String prefix )
+    public void setBranch( String branch )
     {
-        this.prefix = prefix;
+        this.branch = branch;
     }
 
     /**
@@ -500,26 +501,16 @@ public class BankAccount
     {
         if ( this == o ) return true;
         if ( !( o instanceof BankAccount ) ) return false;
-
         BankAccount that = ( BankAccount ) o;
-
-        if ( super.getId() != null ? !super.getId().equals( that.getId() ) : that.getId() != null ) return false;
-        if ( accountNumber != null ? !accountNumber.equals( that.accountNumber ) : that.accountNumber != null )
-            return false;
-        if ( prefix != null ? !prefix.equals( that.prefix ) : that.prefix != null )
-            return false;
-        return !( bankCode != null ? !bankCode.equals( that.bankCode ) : that.bankCode != null );
-
+        return primary == that.primary &&
+                iban.equals( that.iban ) &&
+                Objects.equals( currency, that.currency );
     }
 
     @Override
     public int hashCode()
     {
-        int result = super.getId() != null ? super.getId().hashCode() : 0;
-        result = 31 * result + ( prefix != null ? prefix.hashCode() : 0 );
-        result = 31 * result + ( accountNumber != null ? accountNumber.hashCode() : 0 );
-        result = 31 * result + ( bankCode != null ? bankCode.hashCode() : 0 );
-        return result;
+        return Objects.hash( iban, currency, primary );
     }
 
     @Override
@@ -529,7 +520,7 @@ public class BankAccount
         return MoreObjects.toStringHelper( getKind() )
                 .add( "owner", owner )
                 .add( "name", name )
-                .add( "prefix", prefix )
+                .add( "branch", branch )
                 .add( "accountNumber", accountNumber )
                 .add( "bankCode", bankCode )
                 .add( "iban", iban )
@@ -552,7 +543,7 @@ public class BankAccount
                 .compare( this.name, bankAccount.getName(), Ordering.natural().nullsLast() )
                 .compare( this.bankCode, bankAccount.getBankCode(), Ordering.natural().nullsLast() )
                 .compare( this.accountNumber, bankAccount.getAccountNumber(), Ordering.natural().nullsLast() )
-                .compare( this.prefix, bankAccount.getPrefix(), Ordering.natural().nullsLast() )
+                .compare( this.branch, bankAccount.getBranch(), Ordering.natural().nullsLast() )
                 .result();
     }
 

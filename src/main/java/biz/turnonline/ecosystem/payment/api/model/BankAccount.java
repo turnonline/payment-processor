@@ -15,12 +15,11 @@ import java.util.Objects;
 @javax.annotation.Generated( value = "class io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2018-09-02T07:18:01.570Z" )
 public class BankAccount
 {
-
     private Long id = null;
 
     private String name = null;
 
-    private String prefix = null;
+    private String branch = null;
 
     private String accountNumber = null;
 
@@ -37,7 +36,7 @@ public class BankAccount
     private BankAccountBank bank = null;
 
     /**
-     * The bank account identification.
+     * The unique bank account identification.
      **/
     public BankAccount id( Long id )
     {
@@ -81,25 +80,25 @@ public class BankAccount
     }
 
     /**
-     * The optional bank account number prefix.
+     * The bank branch identification.
      **/
-    public BankAccount prefix( String prefix )
+    public BankAccount branch( String branch )
     {
-        this.prefix = prefix;
+        this.branch = branch;
         return this;
     }
 
 
-    @ApiModelProperty( value = "The optional bank account number prefix." )
-    @JsonProperty( "prefix" )
-    public String getPrefix()
+    @ApiModelProperty( value = "The optional bank account number branch." )
+    @JsonProperty( "branch" )
+    public String getBranch()
     {
-        return prefix;
+        return branch;
     }
 
-    public void setPrefix( String prefix )
+    public void setBranch( String branch )
     {
-        this.prefix = prefix;
+        this.branch = branch;
     }
 
     /**
@@ -125,7 +124,7 @@ public class BankAccount
     }
 
     /**
-     * The formatted full bank account number incl. bank code.
+     * The formatted bank account number and bank code.
      **/
     public BankAccount formatted( String formatted )
     {
@@ -271,7 +270,7 @@ public class BankAccount
         BankAccount bankAccount = ( BankAccount ) o;
         return Objects.equals( id, bankAccount.id ) &&
                 Objects.equals( name, bankAccount.name ) &&
-                Objects.equals( prefix, bankAccount.prefix ) &&
+                Objects.equals( branch, bankAccount.branch ) &&
                 Objects.equals( accountNumber, bankAccount.accountNumber ) &&
                 Objects.equals( formatted, bankAccount.formatted ) &&
                 Objects.equals( iban, bankAccount.iban ) &&
@@ -284,7 +283,7 @@ public class BankAccount
     @Override
     public int hashCode()
     {
-        return Objects.hash( id, name, prefix, accountNumber, formatted, iban, bic, currency, primary, bank );
+        return Objects.hash( id, name, branch, accountNumber, formatted, iban, bic, currency, primary, bank );
     }
 
     @Override
@@ -295,7 +294,7 @@ public class BankAccount
 
         sb.append( "    id: " ).append( toIndentedString( id ) ).append( "\n" );
         sb.append( "    name: " ).append( toIndentedString( name ) ).append( "\n" );
-        sb.append( "    prefix: " ).append( toIndentedString( prefix ) ).append( "\n" );
+        sb.append( "    branch: " ).append( toIndentedString( branch ) ).append( "\n" );
         sb.append( "    accountNumber: " ).append( toIndentedString( accountNumber ) ).append( "\n" );
         sb.append( "    formatted: " ).append( toIndentedString( formatted ) ).append( "\n" );
         sb.append( "    iban: " ).append( toIndentedString( iban ) ).append( "\n" );
