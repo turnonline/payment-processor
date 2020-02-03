@@ -132,33 +132,33 @@ public interface PaymentConfig
     /**
      * Creates the beneficiary bank account associated with specified debtor.
      *
-     * @param debtor the debtor account as an identification to whom to associate given beneficiary
-     * @param iban   the iban (can be formatted)
-     * @param bic    International Bank Identifier Code (BIC/ISO 9362, also known as  SWIFT code)
+     * @param owner the account as an identification to whom to associate given beneficiary
+     * @param iban  the iban (can be formatted)
+     * @param bic   International Bank Identifier Code (BIC/ISO 9362, also known as  SWIFT code)
      * @return the beneficiary bank account or {@code null} if not found, IBAN is malformed or otherwise fails validation
-     * @throws IllegalArgumentException if the IBAN is null, malformed or otherwise fails validation.
+     * @throws IllegalArgumentException if the IBAN is malformed or otherwise fails validation.
      */
-    BeneficiaryBankAccount insertBeneficiary( @Nonnull LocalAccount debtor,
+    BeneficiaryBankAccount insertBeneficiary( @Nonnull LocalAccount owner,
                                               @Nonnull String iban,
                                               @Nullable String bic );
 
     /**
      * Returns the beneficiary bank account for specified IBAN.
      *
-     * @param debtor the debtor account as an identification for recognized beneficiaries
-     * @param iban   the iban (can be formatted)
+     * @param owner the account as an identification for recognized beneficiaries
+     * @param iban  the iban (can be formatted)
      * @return the beneficiary bank account or {@code null} if not found
-     * @throws IllegalArgumentException if the IBAN is null, malformed or otherwise fails validation.
+     * @throws IllegalArgumentException if the IBAN is malformed or otherwise fails validation.
      */
-    BeneficiaryBankAccount getBeneficiary( @Nonnull LocalAccount debtor, @Nonnull String iban );
+    BeneficiaryBankAccount getBeneficiary( @Nonnull LocalAccount owner, @Nonnull String iban );
 
     /**
      * Checks whether the beneficiary bank account for specified IBAN already exists.
      *
-     * @param debtor the debtor account as an identification for recognized beneficiaries
-     * @param iban   the iban (can be formatted)
+     * @param owner the account as an identification for recognized beneficiaries
+     * @param iban  the iban (can be formatted)
      * @return true if bank account record already exist
-     * @throws IllegalArgumentException if the IBAN is null, malformed or otherwise fails validation.
+     * @throws IllegalArgumentException if the IBAN is malformed or otherwise fails validation.
      */
-    boolean isBeneficiary( @Nonnull LocalAccount debtor, @Nonnull String iban );
+    boolean isBeneficiary( @Nonnull LocalAccount owner, @Nonnull String iban );
 }

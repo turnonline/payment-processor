@@ -11,6 +11,8 @@ import nl.garvelink.iban.IBAN;
 import org.ctoolkit.services.storage.EntityExecutor;
 import org.ctoolkit.services.storage.HasOwner;
 import org.ctoolkit.services.storage.criteria.Criteria;
+import org.iban4j.BicFormatException;
+import org.iban4j.BicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -275,12 +277,24 @@ class PaymentConfigBean
     }
 
     @Override
-    public BeneficiaryBankAccount insertBeneficiary( @Nonnull LocalAccount debtor,
+    public BeneficiaryBankAccount insertBeneficiary( @Nonnull LocalAccount owner,
                                                      @Nonnull String iban,
                                                      @Nullable String bic )
     {
+        if ( bic != null )
+        {
+            try
+            {
+                BicUtil.validate( bic );
+            }
+            catch ( BicFormatException e )
+            {
+                throw new IllegalArgumentException( "'" + bic + "' " + e.getMessage() );
+            }
+        }
+
         BeneficiaryBankAccount beneficiary = new BeneficiaryBankAccount( codeBook );
-        beneficiary.setOwner( debtor );
+        beneficiary.setOwner( owner );
         beneficiary.setIban( iban );
         beneficiary.setBic( bic );
         beneficiary.save();
@@ -289,28 +303,28 @@ class PaymentConfigBean
     }
 
     @Override
-    public BeneficiaryBankAccount getBeneficiary( @Nonnull LocalAccount debtor, @Nonnull String iban )
+    public BeneficiaryBankAccount getBeneficiary( @Nonnull LocalAccount owner, @Nonnull String iban )
     {
-        Criteria<BeneficiaryBankAccount> criteria = beneficiaryQuery( debtor, iban );
+        Criteria<BeneficiaryBankAccount> criteria = beneficiaryQuery( owner, iban );
         return datastore.first( criteria );
     }
 
     @Override
-    public boolean isBeneficiary( @Nonnull LocalAccount debtor, @Nonnull String iban )
+    public boolean isBeneficiary( @Nonnull LocalAccount owner, @Nonnull String iban )
     {
-        Criteria<BeneficiaryBankAccount> criteria = beneficiaryQuery( debtor, iban );
+        Criteria<BeneficiaryBankAccount> criteria = beneficiaryQuery( owner, iban );
         return datastore.count( criteria ) > 0;
     }
 
-    private Criteria<BeneficiaryBankAccount> beneficiaryQuery( @Nonnull LocalAccount debtor, @Nonnull String iban )
+    private Criteria<BeneficiaryBankAccount> beneficiaryQuery( @Nonnull LocalAccount owner, @Nonnull String iban )
     {
-        checkNotNull( debtor, "LocalAccount can't be null" );
+        checkNotNull( owner, "LocalAccount can't be null" );
         checkNotNull( iban, "IBAN can't be null" );
 
         Criteria<BeneficiaryBankAccount> criteria = Criteria.of( BeneficiaryBankAccount.class );
         // make IBAN compact, without formatting
         criteria.equal( "iban", IBAN.valueOf( iban ).toPlainString() );
-        criteria.reference( "owner", debtor );
+        criteria.reference( "owner", owner );
 
         return criteria;
     }

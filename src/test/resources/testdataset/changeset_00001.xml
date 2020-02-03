@@ -9,7 +9,7 @@
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Tatrabanka"/>
             <property name="branch" type="string" value=""/>
-            <property name="iban" type="string" value="SK2711001936954420095443"/>
+            <property indexed="true" name="iban" type="string" value="SK2711001936954420095443"/>
             <property name="bankCode" type="string" value="1100"/>
             <property indexed="true" name="code" type="string" value="BA_1"/>
             <property name="primary" type="boolean" value="true"/>
@@ -26,7 +26,7 @@
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="CardPay"/>
             <property name="branch" type="string" value=""/>
-            <property name="iban" type="string" value="SK0311115709007995167365"/>
+            <property indexed="true" name="iban" type="string" value="SK0311115709007995167365"/>
             <property name="bankCode" type="string" value="1111"/>
             <property indexed="true" name="code" type="string" value="BA_2"/>
             <property name="primary" type="boolean" value="false"/>
@@ -43,7 +43,7 @@
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Sporopoay"/>
             <property name="branch" type="string" value=""/>
-            <property name="iban" type="string" value="SK6609008529134886539010"/>
+            <property indexed="true" name="iban" type="string" value="SK6609008529134886539010"/>
             <property name="bankCode" type="string" value="0900"/>
             <property indexed="true" name="code" type="string" value="BA_3"/>
             <property name="primary" type="boolean" value="false"/>
@@ -60,7 +60,7 @@
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="EPlatbyVUB"/>
             <property name="branch" type="string" value=""/>
-            <property name="iban" type="string" value="SK3702005771190028932408"/>
+            <property indexed="true" name="iban" type="string" value="SK3702005771190028932408"/>
             <property name="bankCode" type="string" value="0200"/>
             <property indexed="true" name="code" type="string" value="BA_4"/>
             <property name="primary" type="boolean" value="true"/>
@@ -77,7 +77,7 @@
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Trustpay"/>
             <property name="branch" type="string" value=""/>
-            <property name="iban" type="string" value="SK1999529985863410603550"/>
+            <property indexed="true" name="iban" type="string" value="SK1999529985863410603550"/>
             <property name="bankCode" type="string" value="9952"/>
             <property indexed="true" name="code" type="string" value="BA_5"/>
             <property name="primary" type="boolean" value="true"/>
@@ -88,6 +88,19 @@
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
+        <entity kind="PP_BankAccount">
+            <property indexed="false" name="^d" type="string" value="Beneficiary"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Beneficiary"/>
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
+            <property indexed="true" name="name" type="string" value="Revolut Personal Bank Account"/>
+            <property name="branch" type="string" value="009969"/>
+            <property indexed="true" name="iban" type="string" value="GB05REVO37687428278420"/>
+            <property name="bankCode" type="string" value="REVO"/>
+            <property name="bic" type="string" value="REVOGB21"/>
+            <property indexed="true" name="country" type="string" value="GB"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
         <!--the bank account with different owner-->
         <entity kind="PP_BankAccount" id="9999">
             <property indexed="false" name="^d" type="string" value="Company"/>
@@ -95,7 +108,7 @@
             <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:998877"/>
             <property indexed="true" name="name" type="string" value="Primárny účet"/>
             <property name="branch" type="string" value=""/>
-            <property name="iban" type="string" value="SK0509009774621357177405"/>
+            <property indexed="true" name="iban" type="string" value="SK0509009774621357177405"/>
             <property name="bankCode" type="string" value="0900"/>
             <property name="primary" type="boolean" value="true"/>
             <property indexed="true" name="country" type="string" value="SK"/>

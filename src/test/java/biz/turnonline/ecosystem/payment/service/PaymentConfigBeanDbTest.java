@@ -1,11 +1,13 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
+import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.PaymentGate;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.inject.Injector;
+import nl.garvelink.iban.IBAN;
 import org.ctoolkit.agent.service.impl.ImportTask;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -24,6 +26,12 @@ import static com.google.common.truth.Truth.assertWithMessage;
 public class PaymentConfigBeanDbTest
         extends BackendServiceTestCase
 {
+    private static final String REVOLUT_IBAN = "GB67REVO38133712681951";
+
+    private static final String REVOLUT_BIC = "REVOGB21";
+
+    private static final String REVOLUT_IBAN_SET = "GB05REVO37687428278420";
+
     @Inject
     private PaymentConfig bean;
 
@@ -245,5 +253,119 @@ public class PaymentConfigBeanDbTest
     public void markBankAccountAsPrimary_NotFound()
     {
         bean.markBankAccountAsPrimary( lAccount, 8888L );
+    }
+
+    @Test
+    public void beneficiaryInsert_ValidAndRecordExist()
+    {
+        // make sure record not exist yet
+        assertWithMessage( "Beneficiary record found for " + REVOLUT_IBAN )
+                .that( bean.isBeneficiary( lAccount, REVOLUT_IBAN ) )
+                .isFalse();
+
+        String formattedIBAN = IBAN.valueOf( REVOLUT_IBAN ).toString();
+        BeneficiaryBankAccount beneficiary = bean.insertBeneficiary( lAccount, formattedIBAN, REVOLUT_BIC );
+
+        assertWithMessage( "Beneficiary country" )
+                .that( beneficiary.getCountry() )
+                .isEqualTo( "GB" );
+
+        assertWithMessage( "Beneficiary bank code" )
+                .that( beneficiary.getBankCode() )
+                .isEqualTo( "REVO" );
+
+        assertWithMessage( "Beneficiary branch" )
+                .that( beneficiary.getBranch() )
+                .isEqualTo( "381337" );
+
+        assertWithMessage( "Beneficiary IBAN" )
+                .that( beneficiary.getIBAN().toPlainString() )
+                .isEqualTo( REVOLUT_IBAN );
+
+        assertWithMessage( "Beneficiary BIC" )
+                .that( beneficiary.getBic() )
+                .isEqualTo( REVOLUT_BIC );
+
+        assertWithMessage( "Beneficiary record found for " + REVOLUT_IBAN )
+                .that( bean.isBeneficiary( lAccount, REVOLUT_IBAN ) )
+                .isTrue();
+    }
+
+    @Test( expectedExceptions = IllegalArgumentException.class )
+    public void beneficiaryInsert_InvalidBIC()
+    {
+        bean.insertBeneficiary( lAccount, REVOLUT_IBAN, "ASPKAT2LXX" );
+    }
+
+
+    @Test( expectedExceptions = IllegalArgumentException.class )
+    public void beneficiaryInsert_InvalidIBAN()
+    {
+        String iban = "GB67REVO38133722681951";
+        bean.insertBeneficiary( lAccount, iban, null );
+    }
+
+    @Test
+    public void beneficiaryIs_FoundInChangeset()
+    {
+        assertWithMessage( "Beneficiary record found for " + REVOLUT_IBAN_SET )
+                .that( bean.isBeneficiary( lAccount, REVOLUT_IBAN_SET ) )
+                .isTrue();
+    }
+
+    @Test
+    public void beneficiaryIs_FoundInChangeset_IBANFormatted()
+    {
+        String formattedIBAN = IBAN.valueOf( REVOLUT_IBAN_SET ).toString();
+        assertWithMessage( "Beneficiary record found for " + formattedIBAN )
+                .that( bean.isBeneficiary( lAccount, formattedIBAN ) )
+                .isTrue();
+    }
+
+    @Test( expectedExceptions = IllegalArgumentException.class )
+    public void beneficiaryIs_InvalidIBAN()
+    {
+        bean.getBeneficiary( lAccount, "GB05REV037687428278420" );
+    }
+
+    @Test
+    public void beneficiaryGet_FoundInChangeset()
+    {
+        BeneficiaryBankAccount beneficiary = bean.getBeneficiary( lAccount, REVOLUT_IBAN_SET );
+
+        assertWithMessage( "Beneficiary country" )
+                .that( beneficiary.getCountry() )
+                .isEqualTo( "GB" );
+
+        assertWithMessage( "Beneficiary bank code" )
+                .that( beneficiary.getBankCode() )
+                .isEqualTo( "REVO" );
+
+        assertWithMessage( "Beneficiary branch" )
+                .that( beneficiary.getBranch() )
+                .isEqualTo( "009969" );
+
+        assertWithMessage( "Beneficiary IBAN" )
+                .that( beneficiary.getIBAN().toPlainString() )
+                .isEqualTo( REVOLUT_IBAN_SET );
+
+        assertWithMessage( "Beneficiary BIC" )
+                .that( beneficiary.getBic() )
+                .isEqualTo( REVOLUT_BIC );
+    }
+
+    @Test
+    public void beneficiaryGet_FoundInChangeset_IBANFormatted()
+    {
+        String formattedIBAN = IBAN.valueOf( REVOLUT_IBAN_SET ).toString();
+        assertWithMessage( "Beneficiary record found for " + formattedIBAN )
+                .that( bean.getBeneficiary( lAccount, formattedIBAN ) )
+                .isNotNull();
+    }
+
+    @Test( expectedExceptions = IllegalArgumentException.class )
+    public void beneficiaryGet_InvalidIBAN()
+    {
+        bean.getBeneficiary( lAccount, "GB67REVO38133722681951" );
     }
 }
