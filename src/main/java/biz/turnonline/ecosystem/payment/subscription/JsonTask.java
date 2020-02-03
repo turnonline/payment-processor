@@ -37,7 +37,7 @@ public abstract class JsonTask<T>
     /**
      * Constructor.
      *
-     * @param accountKey the key of an existing local account
+     * @param accountKey the key of a local account as an owner of the payload
      * @param json       the JSON payload
      * @param delete     {@code true} if message represents a deletion
      */

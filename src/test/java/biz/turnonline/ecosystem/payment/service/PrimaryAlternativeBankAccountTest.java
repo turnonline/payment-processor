@@ -1,6 +1,5 @@
 package biz.turnonline.ecosystem.payment.service;
 
-import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
@@ -99,7 +98,7 @@ public class PrimaryAlternativeBankAccountTest
         // there is an account marked as primary
         assertEquals( "Primary Bank Account", primary.getName() );
         assertTrue( primary.isPrimary() );
-        assertNotEquals( BankAccount.TRUST_PAY_BANK_CODE, primary.getBankCode() );
+        assertNotEquals( PaymentConfig.TRUST_PAY_BANK_CODE, primary.getBankCode() );
     }
 
     @Test
@@ -440,8 +439,8 @@ public class PrimaryAlternativeBankAccountTest
         BankCode bankCode = new BankCode( "1100", "Tatra banka, a.s.", "sk", Domicile.SK.name() );
         codeBook.put( "1100", ( T ) bankCode );
 
-        bankCode = new BankCode( BankAccount.TRUST_PAY_BANK_CODE, "Trust Pay, a.s.", "sk", Domicile.SK.name() );
-        codeBook.put( BankAccount.TRUST_PAY_BANK_CODE, ( T ) bankCode );
+        bankCode = new BankCode( PaymentConfig.TRUST_PAY_BANK_CODE, "Trust Pay, a.s.", "sk", Domicile.SK.name() );
+        codeBook.put( PaymentConfig.TRUST_PAY_BANK_CODE, ( T ) bankCode );
 
         bankCode = new BankCode( "0200", "VUB, a.s.", "sk", Domicile.SK.name() );
         codeBook.put( "0200", ( T ) bankCode );

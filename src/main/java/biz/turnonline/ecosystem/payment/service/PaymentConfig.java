@@ -19,6 +19,8 @@ import java.util.Locale;
 public interface PaymentConfig
 {
     String BANK_ACCOUNT_CODE_FORMAT = "BA_%d";
+    String TRUST_PAY_BANK_CODE = "9952";
+    String REVOLUT_BANK_CODE = "REVO";
 
     /**
      * Returns the bank account for given ID owned by the specified owner.
@@ -131,16 +133,20 @@ public interface PaymentConfig
 
     /**
      * Creates the beneficiary bank account associated with specified debtor.
+     * The method is idempotent. If the call to the method will be repeated with the same input values,
+     * no new record will be created, only the existing one will be returned.
      *
-     * @param owner the account as an identification to whom to associate given beneficiary
-     * @param iban  the iban (can be formatted)
-     * @param bic   International Bank Identifier Code (BIC/ISO 9362, also known as  SWIFT code)
+     * @param owner    the account as an identification to whom to associate given beneficiary
+     * @param iban     the iban (can be formatted)
+     * @param bic      International Bank Identifier Code (BIC/ISO 9362, also known as  SWIFT code)
+     * @param currency the beneficiary bank account currency
      * @return the beneficiary bank account or {@code null} if not found, IBAN is malformed or otherwise fails validation
-     * @throws IllegalArgumentException if the IBAN is malformed or otherwise fails validation.
+     * @throws IllegalArgumentException if the IBAN or BIC is malformed or otherwise fails validation.
      */
     BeneficiaryBankAccount insertBeneficiary( @Nonnull LocalAccount owner,
                                               @Nonnull String iban,
-                                              @Nullable String bic );
+                                              @Nonnull String bic,
+                                              @Nonnull String currency );
 
     /**
      * Returns the beneficiary bank account for specified IBAN.

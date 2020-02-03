@@ -279,25 +279,39 @@ class PaymentConfigBean
     @Override
     public BeneficiaryBankAccount insertBeneficiary( @Nonnull LocalAccount owner,
                                                      @Nonnull String iban,
-                                                     @Nullable String bic )
+                                                     @Nonnull String bic,
+                                                     @Nonnull String currency )
     {
-        if ( bic != null )
+        checkNotNull( currency, "Currency can't be null" );
+
+        try
         {
-            try
-            {
-                BicUtil.validate( bic );
-            }
-            catch ( BicFormatException e )
-            {
-                throw new IllegalArgumentException( "'" + bic + "' " + e.getMessage() );
-            }
+            BicUtil.validate( bic );
+        }
+        catch ( BicFormatException e )
+        {
+            throw new IllegalArgumentException( "'" + bic + "' " + e.getMessage() );
         }
 
-        BeneficiaryBankAccount beneficiary = new BeneficiaryBankAccount( codeBook );
-        beneficiary.setOwner( owner );
-        beneficiary.setIban( iban );
-        beneficiary.setBic( bic );
-        beneficiary.save();
+        BeneficiaryBankAccount beneficiary;
+        if ( isBeneficiary( owner, iban ) )
+        {
+            LOGGER.info( "Beneficiary bank account with IBAN: "
+                    + iban
+                    + " already exist at Owner: "
+                    + owner.getId() );
+
+            beneficiary = getBeneficiary( owner, iban );
+        }
+        else
+        {
+            beneficiary = new BeneficiaryBankAccount( codeBook );
+            beneficiary.setOwner( owner );
+            beneficiary.setIban( iban );
+            beneficiary.setBic( bic );
+            beneficiary.setCurrency( currency );
+            beneficiary.save();
+        }
 
         return beneficiary;
     }

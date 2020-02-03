@@ -1,6 +1,7 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
 import biz.turnonline.ecosystem.payment.service.CodeBook;
+import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
@@ -39,7 +40,6 @@ public abstract class BankAccount
         extends EntityLongIdentity
         implements Comparable<BankAccount>, HasOwner<LocalAccount>
 {
-    public static final String TRUST_PAY_BANK_CODE = "9952";
 
     private static final Logger logger = LoggerFactory.getLogger( BankAccount.class );
 
@@ -96,14 +96,14 @@ public abstract class BankAccount
             logger.warn( "No BankCode has found for " + this );
         }
 
-        return ( bankCode == null || BankAccount.TRUST_PAY_BANK_CODE.equals( bankCode.getCode() ) )
+        return ( bankCode == null || PaymentConfig.TRUST_PAY_BANK_CODE.equals( bankCode.getCode() ) )
                 ? null : bankCode.getLabel();
     }
 
     /**
-     * Returns the external identification of the debtor's bank account for synchronized via API, if any.
+     * Returns the external identification of the debtor's bank account within the same bank.
      *
-     * @return the external ID or {@code null} if not synchronized yet
+     * @return the external ID or {@code null} if not updated yet
      */
     public String getExternalId()
     {
@@ -129,6 +129,20 @@ public abstract class BankAccount
         }
 
         return extIds.get( code );
+    }
+
+    /**
+     * Sets the external identification for the specified bank once synchronized in to bank system.
+     *
+     * @param code       the bank code, taken from the code-book
+     * @param externalId identification of this bank account within the bank represented by the bank code.
+     */
+    public void setExternalId( @Nonnull String code, @Nonnull String externalId )
+    {
+        checkNotNull( code, "Bank code can't be null" );
+        checkNotNull( externalId, "External ID can't be null" );
+
+        extIds.put( code, externalId );
     }
 
     /**
@@ -271,7 +285,7 @@ public abstract class BankAccount
      */
     public boolean isRevolut()
     {
-        return "REVO".equalsIgnoreCase( bankCode );
+        return PaymentConfig.REVOLUT_BANK_CODE.equalsIgnoreCase( bankCode );
     }
 
     @OnSave

@@ -17,6 +17,7 @@ import java.util.List;
 
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
  * {@link PaymentConfigBean} unit testing incl. tests against emulated (local) App Engine datastore.
@@ -263,8 +264,8 @@ public class PaymentConfigBeanDbTest
                 .that( bean.isBeneficiary( lAccount, REVOLUT_IBAN ) )
                 .isFalse();
 
-        String formattedIBAN = IBAN.valueOf( REVOLUT_IBAN ).toString();
-        BeneficiaryBankAccount beneficiary = bean.insertBeneficiary( lAccount, formattedIBAN, REVOLUT_BIC );
+        String formatted = IBAN.valueOf( REVOLUT_IBAN ).toString();
+        BeneficiaryBankAccount beneficiary = bean.insertBeneficiary( lAccount, formatted, REVOLUT_BIC, "EUR" );
 
         assertWithMessage( "Beneficiary country" )
                 .that( beneficiary.getCountry() )
@@ -286,23 +287,43 @@ public class PaymentConfigBeanDbTest
                 .that( beneficiary.getBic() )
                 .isEqualTo( REVOLUT_BIC );
 
+        assertWithMessage( "Beneficiary currency" )
+                .that( beneficiary.getCurrency() )
+                .isEqualTo( "EUR" );
+
         assertWithMessage( "Beneficiary record found for " + REVOLUT_IBAN )
                 .that( bean.isBeneficiary( lAccount, REVOLUT_IBAN ) )
                 .isTrue();
     }
 
+    @Test
+    public void beneficiaryInsert_SaveIgnoredReturnsExisting()
+    {
+        int numberOf = countBeneficiaries( lAccount );
+        BeneficiaryBankAccount beneficiary = bean.insertBeneficiary( lAccount, REVOLUT_IBAN_SET, REVOLUT_BIC, "EUR" );
+
+        assertWithMessage( "Beneficiary" )
+                .that( beneficiary )
+                .isNotNull();
+
+        assertWithMessage( "Number of beneficiary records" )
+                .that( countBeneficiaries( lAccount ) )
+                .isEqualTo( numberOf );
+    }
+
     @Test( expectedExceptions = IllegalArgumentException.class )
     public void beneficiaryInsert_InvalidBIC()
     {
-        bean.insertBeneficiary( lAccount, REVOLUT_IBAN, "ASPKAT2LXX" );
+        bean.insertBeneficiary( lAccount, REVOLUT_IBAN, "ASPKAT2LXX", "EUR" );
     }
 
 
+    @SuppressWarnings( "ConstantConditions" )
     @Test( expectedExceptions = IllegalArgumentException.class )
     public void beneficiaryInsert_InvalidIBAN()
     {
         String iban = "GB67REVO38133722681951";
-        bean.insertBeneficiary( lAccount, iban, null );
+        bean.insertBeneficiary( lAccount, iban, null, "EUR" );
     }
 
     @Test
@@ -367,5 +388,10 @@ public class PaymentConfigBeanDbTest
     public void beneficiaryGet_InvalidIBAN()
     {
         bean.getBeneficiary( lAccount, "GB67REVO38133722681951" );
+    }
+
+    private int countBeneficiaries( LocalAccount owner )
+    {
+        return ofy().load().type( BeneficiaryBankAccount.class ).filter( "owner", owner ).count();
     }
 }
