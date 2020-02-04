@@ -149,12 +149,13 @@ public class BankAccountMapperTest
     }
 
     @Test
-    public void mapBackendToApi( @Mocked CompanyBankAccount backend )
+    public void mapBackendToApi()
     {
         long id = 1123L;
         String code = "1100";
+        CompanyBankAccount backend = new CompanyBankAccount( codeBook );
 
-        new Expectations()
+        new Expectations( backend )
         {
             {
                 backend.getId();
