@@ -29,6 +29,11 @@
     "modificationDate": "2020-01-10T15:34:09.033Z",
     "orderId": "565941286574",
     "payment": {
+        "bankAccount": {
+            "bic": "REVOGB21",
+            "currency": "EUR",
+            "iban": "GB05REVO37687428278420"
+        },
         "totalAmount": 34.8,
         "dueDate": "2020-01-10T22:59:59.000Z",
         "key": "100022020",

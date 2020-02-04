@@ -305,7 +305,7 @@
         <endpoints.framework.plugin.version>2.0.1</endpoints.framework.plugin.version>
         <maven-war-plugin.version>3.1.0</maven-war-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M3</maven-surefire-plugin.version>
-        <jmockit.version>1.41</jmockit.version>
+        <jmockit.version>1.49</jmockit.version>
         <!-- jmockit settings for OpenJDK otherwise throws 'IllegalStateException: To run on OpenJDK 64-Bit Server VM use -javaagent..' -->
         <jmockit.setting>-javaagent:${settings.localRepository}/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar
         </jmockit.setting>

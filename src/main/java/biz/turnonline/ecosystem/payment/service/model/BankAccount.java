@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Currency;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -73,6 +74,7 @@ public abstract class BankAccount
     public BankAccount( CodeBook codeBook )
     {
         this.codeBook = codeBook;
+        this.extIds = new HashMap<>();
     }
 
     /**

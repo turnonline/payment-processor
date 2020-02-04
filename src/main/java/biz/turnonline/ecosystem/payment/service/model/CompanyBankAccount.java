@@ -153,6 +153,7 @@ public class CompanyBankAccount
      */
     public boolean isDebtorReady()
     {
+        // TODO finish isDebtorReady method
         return true;
     }
 

@@ -119,7 +119,7 @@ class RevolutBeneficiarySyncTask
         String externalId = bankAccount.getExternalId( syncBank );
         if ( !Strings.isNullOrEmpty( externalId ) )
         {
-            LOGGER.warn( "Bak account"
+            LOGGER.warn( "Bak account "
                     + bankAccount.getId()
                     + " with IBAN: "
                     + iban
