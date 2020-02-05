@@ -1,8 +1,11 @@
 package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
+import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.billing.model.PurchaseOrder;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
+import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
 import com.google.api.client.util.DateTime;
@@ -13,6 +16,7 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
+import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.pubsub.TopicMessage;
 import org.ctoolkit.services.task.Task;
 import org.ctoolkit.services.task.TaskExecutor;
@@ -22,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_AUDIENCE;
@@ -38,7 +43,7 @@ import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ENTITY_ID;
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-@SuppressWarnings( {"unchecked", "ConstantConditions", "rawtypes"} )
+@SuppressWarnings( {"unchecked", "ConstantConditions", "rawtypes", "ResultOfMethodCallIgnored"} )
 public class ProductBillingChangesSubscriptionTest
 {
     private static final String EMAIL = "debtor.account@turnonline.biz";
@@ -60,8 +65,40 @@ public class ProductBillingChangesSubscriptionTest
     @Injectable
     private LocalAccountProvider lap;
 
+    @Injectable
+    private PaymentConfig config;
+
     @Mocked
     private Timestamp timestamp;
+
+    @Mocked
+    private CompanyBankAccount debtorBank;
+
+    @Test
+    public void onMessage_AccountNotFound() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( false );
+        new Expectations()
+        {
+            {
+                lap.initGet( ( LocalAccountProvider.Builder ) any );
+                result = new NotFoundException( "Local account not found" );
+            }
+        };
+
+        tested.onMessage( message, "billing.changes" );
+
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task ) any );
+                times = 0;
+
+                timestamp.done();
+                times = 0;
+            }
+        };
+    }
 
     @Test
     public void onMessage_ProcessPurchaseOrder() throws Exception
@@ -154,9 +191,19 @@ public class ProductBillingChangesSubscriptionTest
     }
 
     @Test
-    public void onMessage_ProcessIncomingInvoice() throws Exception
+    public void onMessage_ProcessIncomingInvoiceByRevolut() throws Exception
     {
         PubsubMessage message = invoicePubsubMessage( false );
+        new Expectations()
+        {
+            {
+                debtorBank.isDebtorReady();
+                result = true;
+
+                debtorBank.getBankCode();
+                result = REVOLUT_BANK_CODE;
+            }
+        };
 
         tested.onMessage( message, "billing.changes" );
 
@@ -169,12 +216,13 @@ public class ProductBillingChangesSubscriptionTest
 
                 assertWithMessage( "Number of scheduled tasks" )
                         .that( task.countTasks() )
-                        .isEqualTo( 1 );
+                        .isEqualTo( 2 );
 
-                assertThat( task ).isInstanceOf( IncomingInvoiceProcessorTask.class );
+                assertThat( task ).isInstanceOf( RevolutBeneficiarySyncTask.class );
+                assertThat( task.next() ).isInstanceOf( RevolutIncomingInvoiceProcessorTask.class );
 
                 assertWithMessage( "Entity scheduled to be deleted" )
-                        .that( ( ( IncomingInvoiceProcessorTask ) task ).isDelete() ).isFalse();
+                        .that( ( ( RevolutIncomingInvoiceProcessorTask ) task.next() ).isDelete() ).isFalse();
 
                 timestamp.done();
             }
@@ -182,11 +230,121 @@ public class ProductBillingChangesSubscriptionTest
     }
 
     @Test
-    public void onMessage_ProcessIncomingInvoiceDeletion() throws Exception
+    public void onMessage_ProcessIncomingInvoice_PaymentMissing() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( "ii-payment-missing.pubsub.json", false );
+        tested.onMessage( message, "billing.changes" );
+
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task ) any );
+                times = 0;
+
+                timestamp.done();
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void onMessage_ProcessIncomingInvoice_DebtorBankAccountNotFound() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( false );
+        new Expectations()
+        {
+            {
+                config.getDebtorBankAccount( ( LocalAccount ) any, ( InvoicePayment ) any );
+                result = null;
+            }
+        };
+
+        tested.onMessage( message, "billing.changes" );
+
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task ) any );
+                times = 0;
+
+                timestamp.done();
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void onMessage_ProcessIncomingInvoice_DebtorBankAccountIsNotReady() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( false );
+        new Expectations()
+        {
+            {
+                debtorBank.isDebtorReady();
+                result = false;
+            }
+        };
+
+        tested.onMessage( message, "billing.changes" );
+
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task ) any );
+                times = 0;
+
+                timestamp.done();
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void onMessage_ProcessIncomingInvoice_UnsupportedBank() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( false );
+        new Expectations()
+        {
+            {
+                debtorBank.isDebtorReady();
+                result = true;
+
+                debtorBank.getBankCode();
+                result = "1100";
+            }
+        };
+
+        tested.onMessage( message, "billing.changes" );
+
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task ) any );
+                times = 0;
+
+                timestamp.done();
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void onMessage_ProcessIncomingInvoiceDeletionByRevolut() throws Exception
     {
         PubsubMessage message = invoicePubsubMessage( true );
         String publishTime = "2019-03-25T16:00:00.999Z";
         message.setPublishTime( publishTime );
+
+        new Expectations()
+        {
+            {
+                debtorBank.isDebtorReady();
+                result = true;
+
+                debtorBank.getBankCode();
+                result = REVOLUT_BANK_CODE;
+            }
+        };
 
         tested.onMessage( message, "billing.changes" );
 
@@ -202,12 +360,13 @@ public class ProductBillingChangesSubscriptionTest
 
                 assertWithMessage( "Number of scheduled tasks" )
                         .that( task.countTasks() )
-                        .isEqualTo( 1 );
+                        .isEqualTo( 2 );
 
-                assertThat( task ).isInstanceOf( IncomingInvoiceProcessorTask.class );
+                assertThat( task ).isInstanceOf( RevolutBeneficiarySyncTask.class );
+                assertThat( task.next() ).isInstanceOf( RevolutIncomingInvoiceProcessorTask.class );
 
                 assertWithMessage( "Entity scheduled to be deleted" )
-                        .that( ( ( IncomingInvoiceProcessorTask ) task ).isDelete() ).isTrue();
+                        .that( ( ( RevolutIncomingInvoiceProcessorTask ) task.next() ).isDelete() ).isTrue();
 
                 timestamp.done();
             }
@@ -255,7 +414,13 @@ public class ProductBillingChangesSubscriptionTest
     private PubsubMessage invoicePubsubMessage( boolean deletion )
             throws IOException
     {
-        TopicMessage.Builder builder = validPubsubMessage( "incoming-invoice.pubsub.json",
+        return invoicePubsubMessage( "incoming-invoice.pubsub.json", deletion );
+    }
+
+    private PubsubMessage invoicePubsubMessage( String fileName, boolean deletion )
+            throws IOException
+    {
+        TopicMessage.Builder builder = validPubsubMessage( fileName,
                 IncomingInvoice.class,
                 INCOMING_INVOICE_ID,
                 deletion );

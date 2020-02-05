@@ -1,7 +1,6 @@
 package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
-import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
@@ -54,6 +53,9 @@ public class RevolutBeneficiarySyncTaskTest
 
     @Injectable
     private String json = "{}";
+
+    @Injectable
+    private Key<CompanyBankAccount> debtorBankAccountKey;
 
     @Injectable
     private RestFacade facade;
@@ -215,7 +217,7 @@ public class RevolutBeneficiarySyncTaskTest
         CompanyBankAccount cba = new CompanyBankAccount( codeBook );
         cba.setCurrency( debtorCurrency );
 
-        new Expectations( bankAccount, cba )
+        new Expectations( bankAccount, cba, tested )
         {
             {
                 config.insertBeneficiary( account, IBAN, BIC, debtorCurrency );
@@ -224,7 +226,7 @@ public class RevolutBeneficiarySyncTaskTest
                 // ExternalId needs to be saved
                 bankAccount.save();
 
-                config.getDebtorBankAccount( account, ( InvoicePayment ) any );
+                tested.getDebtorBankAccount();
                 result = cba;
             }
         };
@@ -321,6 +323,13 @@ public class RevolutBeneficiarySyncTaskTest
 
         // make sure currency is null
         invoice.getPayment().getBankAccount().setCurrency( null );
+        new Expectations( tested )
+        {
+            {
+                tested.getDebtorBankAccount();
+                result = null;
+            }
+        };
 
         tested.execute( account, invoice );
 

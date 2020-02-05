@@ -21,6 +21,8 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
  * Idempotent asynchronous task to sync beneficiary bank account with Revolut via Business API.
@@ -30,9 +32,11 @@ import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BAN
 class RevolutBeneficiarySyncTask
         extends JsonTask<IncomingInvoice>
 {
-    private static final long serialVersionUID = -1418845299059750629L;
+    private static final long serialVersionUID = 8592780869926520879L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger( RevolutBeneficiarySyncTask.class );
+
+    private final Key<CompanyBankAccount> debtorBankAccountKey;
 
     @Inject
     transient private RestFacade facade;
@@ -43,12 +47,16 @@ class RevolutBeneficiarySyncTask
     /**
      * Constructor.
      *
-     * @param accountKey the key of a local account as an owner of the payload
-     * @param json       the JSON payload
+     * @param accountKey    the key of a local account as an owner of the payload
+     * @param json          the incoming invoice as JSON payload
+     * @param debtorBankKey the debtor bank account key, the bank account to be debited
      */
-    RevolutBeneficiarySyncTask( @Nonnull Key<LocalAccount> accountKey, @Nonnull String json )
+    RevolutBeneficiarySyncTask( @Nonnull Key<LocalAccount> accountKey,
+                                @Nonnull String json,
+                                @Nonnull Key<CompanyBankAccount> debtorBankKey )
     {
         super( accountKey, json, false );
+        this.debtorBankAccountKey = checkNotNull( debtorBankKey, "Debtor bank account key can't be null" );
     }
 
     @Override
@@ -85,8 +93,8 @@ class RevolutBeneficiarySyncTask
         String currency = beneficiary.getCurrency();
         if ( Strings.isNullOrEmpty( currency ) )
         {
-            CompanyBankAccount debtorBankAccount = config.getDebtorBankAccount( owner, payment );
-            if ( debtorBankAccount != null && debtorBankAccount.isDebtorReady() )
+            CompanyBankAccount debtorBankAccount = getDebtorBankAccount();
+            if ( debtorBankAccount != null )
             {
                 currency = debtorBankAccount.getCurrency();
                 LOGGER.info( "Currency is missing at bank account of incoming invoice '"
@@ -119,7 +127,7 @@ class RevolutBeneficiarySyncTask
         String externalId = bankAccount.getExternalId( syncBank );
         if ( !Strings.isNullOrEmpty( externalId ) )
         {
-            LOGGER.warn( "Bak account "
+            LOGGER.warn( "Bank account "
                     + bankAccount.getId()
                     + " with IBAN: "
                     + iban
@@ -158,6 +166,11 @@ class RevolutBeneficiarySyncTask
     private String key( @Nonnull IncomingInvoice invoice )
     {
         return invoice.getOrderId() + "/" + invoice.getId();
+    }
+
+    CompanyBankAccount getDebtorBankAccount()
+    {
+        return ofy().load().key( debtorBankAccountKey ).now();
     }
 
     @Override

@@ -147,6 +147,7 @@ public class CompanyBankAccount
      *     <li>{@link #getCurrency()}</li>
      *     <li>{@link #getIBAN()}</li>
      *     <li>{@link #getExternalId()}</li>
+     *     <li>{@link #getBankCode()} ()}</li>
      * </ul>
      *
      * @return true if the bank account is ready

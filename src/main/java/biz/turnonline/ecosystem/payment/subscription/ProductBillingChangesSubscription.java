@@ -1,15 +1,20 @@
 package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
+import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.billing.model.PurchaseOrder;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
+import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
+import com.googlecode.objectify.Key;
 import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.ctoolkit.restapi.client.pubsub.PubsubMessageListener;
+import org.ctoolkit.services.task.Task;
 import org.ctoolkit.services.task.TaskExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +25,8 @@ import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.List;
 
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.TRUST_PAY_BANK_CODE;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_AUDIENCE;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_ID;
@@ -50,11 +57,16 @@ class ProductBillingChangesSubscription
 
     private final LocalAccountProvider lap;
 
+    private final PaymentConfig config;
+
     @Inject
-    ProductBillingChangesSubscription( TaskExecutor executor, LocalAccountProvider lap )
+    ProductBillingChangesSubscription( TaskExecutor executor,
+                                       LocalAccountProvider lap,
+                                       PaymentConfig config )
     {
         this.executor = executor;
         this.lap = lap;
+        this.config = config;
     }
 
     @Override
@@ -126,9 +138,45 @@ class ProductBillingChangesSubscription
                     return;
                 }
 
-                // incoming invoice has been successfully de-serialized, schedule processing
-                executor.schedule( new IncomingInvoiceProcessorTask( account.entityKey(), data, delete ) );
-                timestamp.done();
+                InvoicePayment payment = invoice.getPayment();
+                CompanyBankAccount debtorBank;
+                if ( invoice.getPayment() != null )
+                {
+                    debtorBank = config.getDebtorBankAccount( account, payment );
+                    if ( debtorBank == null || !debtorBank.isDebtorReady() )
+                    {
+                        LOGGER.warn( "Debtor '" + account.getId() + "' bank account is not ready yet to be debited" );
+                        return;
+                    }
+                }
+                else
+                {
+                    LOGGER.warn( "Incoming invoice identified by '" + uniqueKey + "' is missing payment" );
+                    return;
+                }
+
+                switch ( debtorBank.getBankCode() )
+                {
+                    case REVOLUT_BANK_CODE:
+                    {
+                        // incoming invoice has been successfully de-serialized, schedule processing
+                        Key<LocalAccount> accountKey = account.entityKey();
+                        Key<CompanyBankAccount> debtorBankKey = debtorBank.entityKey();
+
+                        Task<IncomingInvoice> tasks = new RevolutBeneficiarySyncTask( accountKey, data, debtorBankKey );
+                        tasks.addNext( new RevolutIncomingInvoiceProcessorTask( accountKey, data, delete, debtorBankKey ) );
+
+                        executor.schedule( tasks );
+                        timestamp.done();
+                        break;
+                    }
+                    case TRUST_PAY_BANK_CODE:
+                    default:
+                    {
+                        LOGGER.info( "Unsupported bank to be debited via API '" + debtorBank.getBankCode() + "'" );
+                        return;
+                    }
+                }
                 break;
             }
             case "PurchaseOrder":

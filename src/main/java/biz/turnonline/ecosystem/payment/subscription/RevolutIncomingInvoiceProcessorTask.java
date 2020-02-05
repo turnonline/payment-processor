@@ -27,17 +27,29 @@ import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.googlecode.objectify.ObjectifyService.ofy;
+
 /**
- * The asynchronous task to process incoming invoice and setups payment via configured bank (if bank API available).
+ * The asynchronous task to process incoming invoice and setup payment via Revolut Business API.
+ * <p>
+ * <strong>Preconditions:</strong>
+ * <ul>
+ *     <li>Debtor's bank account is ready to be debited {@link CompanyBankAccount#isDebtorReady()}</li>
+ *     <li>{@link InvoicePayment} has all mandatory properties to make a payment</li>
+ *     <li>Beneficiary bank account is already synced with Revolut, see {@link RevolutBeneficiarySyncTask}</li>
+ * </ul>
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-class IncomingInvoiceProcessorTask
+class RevolutIncomingInvoiceProcessorTask
         extends JsonTask<IncomingInvoice>
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger( IncomingInvoiceProcessorTask.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( RevolutIncomingInvoiceProcessorTask.class );
 
-    private static final long serialVersionUID = -7360422665441968044L;
+    private static final long serialVersionUID = -7910527569620909467L;
+
+    private final Key<CompanyBankAccount> debtorBankAccountKey;
 
     @Inject
     transient private RestFacade facade;
@@ -45,9 +57,21 @@ class IncomingInvoiceProcessorTask
     @Inject
     transient private PaymentConfig config;
 
-    IncomingInvoiceProcessorTask( @Nonnull Key<LocalAccount> accountKey, @Nonnull String json, boolean delete )
+    /**
+     * Constructor.
+     *
+     * @param accountKey    the key of a local account as an owner of the payload
+     * @param json          the incoming invoice as JSON payload
+     * @param delete        {@code true} to be incoming invoice processed as deleted
+     * @param debtorBankKey the debtor bank account key, the bank account to be debited
+     */
+    RevolutIncomingInvoiceProcessorTask( @Nonnull Key<LocalAccount> accountKey,
+                                         @Nonnull String json,
+                                         boolean delete,
+                                         @Nonnull Key<CompanyBankAccount> debtorBankKey )
     {
         super( accountKey, json, delete );
+        this.debtorBankAccountKey = checkNotNull( debtorBankKey, "Debtor bank account key can't be null" );
     }
 
     @Override
@@ -61,7 +85,7 @@ class IncomingInvoiceProcessorTask
         }
 
         // debtor bank account details
-        CompanyBankAccount debtorBank = config.getDebtorBankAccount( debtor, payment );
+        CompanyBankAccount debtorBank = getDebtorBankAccount();
         if ( debtorBank == null )
         {
             LOGGER.warn( "Debtor " + debtor + " has no bank account defined at all." );
@@ -115,21 +139,14 @@ class IncomingInvoiceProcessorTask
         }
         else
         {
-            if ( debtorBank.isRevolut() )
-            {
-                schedulePaymentDraftByRevolut( debtor, debtorBank, beneficiaryExtId, payment );
-            }
-            else
-            {
-                LOGGER.warn( "Currently only Revolut is being supported to make a payment via API." );
-            }
+            schedulePaymentDraft( debtor, debtorBank, beneficiaryExtId, payment );
         }
     }
 
-    private void schedulePaymentDraftByRevolut( @Nonnull LocalAccount debtor,
-                                                @Nonnull CompanyBankAccount debtorBank,
-                                                @Nonnull String beneficiaryId,
-                                                @Nonnull InvoicePayment payment )
+    private void schedulePaymentDraft( @Nonnull LocalAccount debtor,
+                                       @Nonnull CompanyBankAccount debtorBank,
+                                       @Nonnull String beneficiaryId,
+                                       @Nonnull InvoicePayment payment )
     {
         String debtorExtId = debtorBank.getExternalId();
         String debtorCurrency = debtorBank.getCurrency();
@@ -190,6 +207,11 @@ class IncomingInvoiceProcessorTask
         MappingContext context = new MappingContext( new HashMap<>() );
         context.setProperty( LocalAccount.class, debtor );
         return context;
+    }
+
+    private CompanyBankAccount getDebtorBankAccount()
+    {
+        return ofy().load().key( debtorBankAccountKey ).now();
     }
 
     @Override

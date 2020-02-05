@@ -280,16 +280,6 @@ public abstract class BankAccount
         this.country = country;
     }
 
-    /**
-     * Returns the boolean indication whether this bank account represents a Revolut bank account.
-     *
-     * @return true if this bank account is Revolut account
-     */
-    public boolean isRevolut()
-    {
-        return PaymentConfig.REVOLUT_BANK_CODE.equalsIgnoreCase( bankCode );
-    }
-
     @OnSave
     void onSave()
     {

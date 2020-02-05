@@ -1,0 +1,32 @@
+{
+    "createdDate": "2020-01-10T15:34:07.019Z",
+    "creditor": {
+        "account": "51385463860",
+        "businessName": "My CtoolkiT business, Ltd ",
+        "city": "Bratislava",
+        "companyId": "35123123",
+        "contact": {
+            "email": "frederic.public@ctoolkit.org",
+            "name": "Frederic Public",
+            "phone": "+421 905 007 001",
+            "website": "https://www.turnonline.biz"
+        },
+        "country": "SK",
+        "latitude": 48.1574429,
+        "legalForm": "ltd",
+        "logoServingUrl": "https://lh3.googleusercontent.com/h_oO9DMTbQrj1AFeiiO9",
+        "longitude": 17.1656705,
+        "postcode": "821 04",
+        "street": "Jašíkova 2",
+        "taxId": "2022125123",
+        "vatId": "SK2022123123",
+        "vatPayer": true
+    },
+    "currency": "EUR",
+    "dateOfIssue": "2020-01-10T15:33:34.469Z",
+    "dateOfTaxable": "2020-01-09T23:00:00.000Z",
+    "id": "571714185671",
+    "modificationDate": "2020-01-10T15:34:09.033Z",
+    "orderId": "565941286574",
+    "type": "TAX_DOCUMENT"
+}
