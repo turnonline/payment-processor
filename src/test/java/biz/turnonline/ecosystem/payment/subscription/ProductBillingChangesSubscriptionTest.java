@@ -248,6 +248,37 @@ public class ProductBillingChangesSubscriptionTest
     }
 
     @Test
+    public void onMessage_ProcessIncomingInvoice_PaymentMethodCASH() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( "ii-cash-payment.pubsub.json", false );
+        new Expectations()
+        {
+            {
+                debtorBank.isDebtorReady();
+                result = true;
+                minTimes = 0;
+
+                debtorBank.getBankCode();
+                result = REVOLUT_BANK_CODE;
+                minTimes = 0;
+            }
+        };
+
+        tested.onMessage( message, "billing.changes" );
+
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task ) any );
+                times = 0;
+
+                timestamp.done();
+                times = 0;
+            }
+        };
+    }
+
+    @Test
     public void onMessage_ProcessIncomingInvoice_DebtorBankAccountNotFound() throws Exception
     {
         PubsubMessage message = invoicePubsubMessage( false );

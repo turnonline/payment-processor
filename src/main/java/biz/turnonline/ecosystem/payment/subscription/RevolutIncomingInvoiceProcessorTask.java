@@ -13,7 +13,6 @@ import biz.turnonline.ecosystem.revolut.business.draft.model.PaymentRequest;
 import com.google.api.client.util.DateTime;
 import com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
-import ma.glasnost.orika.MappingContext;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,14 +23,13 @@ import javax.inject.Inject;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.HashMap;
 import java.util.UUID;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
- * The asynchronous task to process incoming invoice and setup payment via Revolut Business API.
+ * The asynchronous task to process incoming invoice and setup payment (bank transfer) via Revolut Business API.
  * <p>
  * <strong>Preconditions:</strong>
  * <ul>
@@ -93,7 +91,6 @@ class RevolutIncomingInvoiceProcessorTask
         }
 
         // debtor bank will be the bank to make a payment
-        String debtorBankCode = debtorBank.getBankCode();
         if ( !debtorBank.isDebtorReady() )
         {
             LOGGER.warn( "Debtor's bank account " + debtorBank + " is not ready yet to be debited." );
@@ -110,7 +107,7 @@ class RevolutIncomingInvoiceProcessorTask
         {
             LOGGER.warn( "Incoming invoice identified by '"
                     + uniqueKey( invoice )
-                    + "' missing creditor's bank account." );
+                    + "' missing creditor's IBAN (payment.bankAccount.iban)." );
             return;
         }
 
@@ -126,7 +123,9 @@ class RevolutIncomingInvoiceProcessorTask
             return;
         }
 
+        String debtorBankCode = debtorBank.getBankCode();
         String beneficiaryExtId = beneficiary.getExternalId( debtorBankCode );
+
         if ( beneficiaryExtId == null )
         {
             LOGGER.warn( "External beneficiary ID for bank " + debtorBankCode + " is missing " + beneficiary + "." );
@@ -154,7 +153,6 @@ class RevolutIncomingInvoiceProcessorTask
         Double totalAmount = payment.getTotalAmount();
         LocalDate dueDate = scheduleByDueDate( debtor, payment.getDueDate() );
         String key = payment.getKey();
-        String method = payment.getMethod();
         Long vs = payment.getVariableSymbol();
 
         String title = key + ( vs == null ? "" : ", VS: " + vs );
@@ -182,7 +180,14 @@ class RevolutIncomingInvoiceProcessorTask
 
     }
 
-    private LocalDate scheduleByDueDate( @Nonnull LocalAccount debtor, @Nullable DateTime date )
+    /**
+     * Returns due date reduced by two (default value) days.
+     *
+     * @param debtor as a source of ZoneId
+     * @param date   the invoice due date as an input to plan payment
+     * @return the date when to schedule a payment, or {@code null} for immediate payment
+     */
+    LocalDate scheduleByDueDate( @Nonnull LocalAccount debtor, @Nullable DateTime date )
     {
         if ( date == null )
         {
@@ -190,11 +195,31 @@ class RevolutIncomingInvoiceProcessorTask
         }
 
         ZoneId zoneId = debtor.getZoneId();
-        LocalDate now = LocalDate.now( zoneId );
-
-        return Instant.ofEpochMilli( date.getValue() )
+        LocalDate input = Instant.ofEpochMilli( date.getValue() )
                 .atZone( zoneId )
                 .toLocalDate();
+
+        LocalDate dueDate;
+        LocalDate now = LocalDate.now( zoneId );
+
+        if ( now.isBefore( input ) )
+        {
+            LocalDate paymentDate = input.minusDays( 2 );
+            if ( now.isBefore( paymentDate ) )
+            {
+                dueDate = paymentDate;
+            }
+            else
+            {
+                dueDate = null;
+            }
+        }
+        else
+        {
+            dueDate = null;
+        }
+
+        return dueDate;
     }
 
     private String uniqueKey( @Nonnull IncomingInvoice invoice )
@@ -202,14 +227,7 @@ class RevolutIncomingInvoiceProcessorTask
         return invoice.getOrderId() + "/" + invoice.getId();
     }
 
-    private MappingContext context( @Nonnull LocalAccount debtor )
-    {
-        MappingContext context = new MappingContext( new HashMap<>() );
-        context.setProperty( LocalAccount.class, debtor );
-        return context;
-    }
-
-    private CompanyBankAccount getDebtorBankAccount()
+    CompanyBankAccount getDebtorBankAccount()
     {
         return ofy().load().key( debtorBankAccountKey ).now();
     }

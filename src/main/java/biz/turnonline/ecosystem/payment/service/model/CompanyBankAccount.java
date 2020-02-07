@@ -4,6 +4,7 @@ import biz.turnonline.ecosystem.payment.service.CodeBook;
 import biz.turnonline.ecosystem.payment.service.SecretKeyConfig;
 import biz.turnonline.ecosystem.payment.service.TwoWayEncryption;
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
 import com.googlecode.objectify.annotation.OnLoad;
@@ -13,6 +14,7 @@ import nl.garvelink.iban.IBAN;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
@@ -26,7 +28,7 @@ public class CompanyBankAccount
 {
     private static final Logger logger = LoggerFactory.getLogger( CompanyBankAccount.class );
 
-    private static final long serialVersionUID = 7801473449943934731L;
+    private static final long serialVersionUID = -8003937716992437433L;
 
     @Index
     private String code;
@@ -52,6 +54,18 @@ public class CompanyBankAccount
     public CompanyBankAccount( CodeBook codeBook )
     {
         super( codeBook );
+    }
+
+    @Override
+    public String getExternalId()
+    {
+        return super.getExternalId();
+    }
+
+    @Override
+    public void setExternalId( @Nullable String externalId )
+    {
+        super.setExternalId( externalId );
     }
 
     public String getCode()
@@ -144,8 +158,8 @@ public class CompanyBankAccount
      * <p>
      * To be ready it must have a non null value for following properties:
      * <ul>
-     *     <li>{@link #getCurrency()}</li>
      *     <li>{@link #getIBAN()}</li>
+     *     <li>{@link #getCurrency()}</li>
      *     <li>{@link #getExternalId()}</li>
      *     <li>{@link #getBankCode()} ()}</li>
      * </ul>
@@ -154,8 +168,10 @@ public class CompanyBankAccount
      */
     public boolean isDebtorReady()
     {
-        // TODO finish isDebtorReady method
-        return true;
+        return getIBAN() != null
+                && !Strings.isNullOrEmpty( getCurrency() )
+                && !Strings.isNullOrEmpty( getExternalId() )
+                && !Strings.isNullOrEmpty( getBankCode() );
     }
 
     @OnSave

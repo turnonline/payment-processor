@@ -41,10 +41,9 @@ public abstract class BankAccount
         extends EntityLongIdentity
         implements Comparable<BankAccount>, HasOwner<LocalAccount>
 {
-
     private static final Logger logger = LoggerFactory.getLogger( BankAccount.class );
 
-    private static final long serialVersionUID = -2411130776363925216L;
+    private static final long serialVersionUID = 3735811829765087171L;
 
     private final CodeBook codeBook;
 
@@ -107,14 +106,19 @@ public abstract class BankAccount
      *
      * @return the external ID or {@code null} if not updated yet
      */
-    public String getExternalId()
+    protected String getExternalId()
     {
-        if ( extIds == null || Strings.isNullOrEmpty( bankCode ) )
-        {
-            return null;
-        }
+        return getExternalId( bankCode );
+    }
 
-        return extIds.get( bankCode );
+    /**
+     * Sets the external identification of the debtor's bank account within the same bank.
+     *
+     * @param externalId identification of this bank account within the bank represented by the bank code
+     */
+    protected void setExternalId( @Nullable String externalId )
+    {
+        setExternalId( bankCode, externalId );
     }
 
     /**
@@ -123,27 +127,25 @@ public abstract class BankAccount
      * @param code the bank code, taken from the code-book
      * @return the external ID or {@code null} if not synchronized yet
      */
-    public String getExternalId( @Nullable String code )
+    protected String getExternalId( @Nonnull String code )
     {
-        if ( extIds == null || Strings.isNullOrEmpty( code ) )
+        if ( extIds == null )
         {
             return null;
         }
 
-        return extIds.get( code );
+        return extIds.get( checkNotNull( code, "Bank code can't be null" ) );
     }
 
     /**
      * Sets the external identification for the specified bank once synchronized in to bank system.
      *
      * @param code       the bank code, taken from the code-book
-     * @param externalId identification of this bank account within the bank represented by the bank code.
+     * @param externalId identification of this bank account within the bank represented by the bank code
      */
-    public void setExternalId( @Nonnull String code, @Nonnull String externalId )
+    protected void setExternalId( @Nonnull String code, @Nullable String externalId )
     {
         checkNotNull( code, "Bank code can't be null" );
-        checkNotNull( externalId, "External ID can't be null" );
-
         extIds.put( code, externalId );
     }
 
@@ -323,6 +325,7 @@ public abstract class BankAccount
                 .add( "bankCode", bankCode )
                 .add( "iban", iban )
                 .add( "bic", bic )
+                .add( "currency", currency )
                 .add( "country", country )
                 .add( "externalIds", extIds )
                 .toString();

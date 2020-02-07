@@ -10,6 +10,7 @@ import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
+import com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
 import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
@@ -41,6 +42,12 @@ import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ENTITY_ID;
  * <ul>
  * <li>{@link PurchaseOrder}</li>
  * <li>{@link IncomingInvoice}</li>
+ * </ul>
+ * Payment (bank transfer) will be scheduled only if one of the condition is being matched:
+ * <ul>
+ *     <li>{@link InvoicePayment#getMethod()} is BANK_TRANSFER</li>
+ *     <li>{@link InvoicePayment#getMethod()} is {@code null}, meaning not configured at all,
+ *     but rest of the payment properties are valid for bank transfer</li>
  * </ul>
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
@@ -152,6 +159,16 @@ class ProductBillingChangesSubscription
                 else
                 {
                     LOGGER.warn( "Incoming invoice identified by '" + uniqueKey + "' is missing payment" );
+                    return;
+                }
+
+                String method = payment.getMethod();
+                if ( !Strings.isNullOrEmpty( method ) && !"BANK_TRANSFER".equals( method ) )
+                {
+                    LOGGER.warn( "Incoming invoice identified by '"
+                            + uniqueKey
+                            + "' is not eligible to make a payment for payment method: "
+                            + method );
                     return;
                 }
 

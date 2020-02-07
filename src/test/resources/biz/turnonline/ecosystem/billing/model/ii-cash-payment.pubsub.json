@@ -30,16 +30,16 @@
     "orderId": "565941286574",
     "payment": {
         "bankAccount": {
-            "bic": "REVOGB21",
+            "bic": "TATRSKBX",
             "currency": "EUR",
-            "iban": "GB05REVO37687428278420"
+            "iban": "SK2711001936954420095443"
         },
         "totalAmount": 34.8,
-        "dueDate": "2020-02-20T22:59:59.000Z",
+        "dueDate": "2020-01-10T22:59:59.000Z",
         "key": "100022020",
+        "method": "CASH",
         "variableSymbol": "100022020"
     },
-    "pin": "sTBPpPWS7Qjs",
     "pricing": {
         "items": [
             {
@@ -70,6 +70,5 @@
         "totalPriceExclVat": 29.0,
         "totalVatBase": 29.0
     },
-    "servingUrl": "https://lh3.googleusercontent.com/M8PLSfuXWXfu7BxeX4VPK46gjiUi6Lu2F2c41prItwm9sXNCNTZorYkcYn-k_edXHJI2rNUOyi8JLnH_3iSPmxqhLg",
     "type": "TAX_DOCUMENT"
 }
