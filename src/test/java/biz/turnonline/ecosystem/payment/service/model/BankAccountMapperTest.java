@@ -195,7 +195,7 @@ public class BankAccountMapperTest
         assertThat( api.getIban() ).isNotNull();
         assertThat( api.getBic() ).isNotNull();
         assertThat( api.getCurrency() ).isNotNull();
-        assertThat( api.getPrimary() ).isTrue();
+        assertThat( api.isPrimary() ).isTrue();
 
         assertThat( api.getBank().getCode() ).isEqualTo( code );
         assertThat( api.getBank().getLabel() ).isNotNull();

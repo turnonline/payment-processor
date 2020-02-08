@@ -10,18 +10,16 @@
  * Do not edit the class manually.
  */
 
-
 package biz.turnonline.ecosystem.payment.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
- * The brief description of the bank for concrete bank code.
+ * Bank
  */
-public class BankCode
+public class Bank
 {
     @JsonProperty( "code" )
     private String code = null;
@@ -29,23 +27,19 @@ public class BankCode
     @JsonProperty( "label" )
     private String label = null;
 
-    @JsonProperty( "locale" )
-    private String locale = null;
-
     @JsonProperty( "country" )
     private String country = null;
 
-    public BankCode code( String code )
+    public Bank code( String code )
     {
         this.code = code;
         return this;
     }
 
     /**
-     * The bank code is a numeric code assigned by a central bank to concrete bank.
+     * The country specific numeric bank code, taken from the code-book.
      **/
     @JsonProperty( "code" )
-    @NotNull
     public String getCode()
     {
         return code;
@@ -56,17 +50,16 @@ public class BankCode
         this.code = code;
     }
 
-    public BankCode label( String label )
+    public Bank label( String label )
     {
         this.label = label;
         return this;
     }
 
     /**
-     * The localized name of the bank.
+     * The localized name of the bank, taken from the code-book and based on either default or specified language.   The value will be managed by the service once Accept-Language header will be provided while bank account getting.
      **/
     @JsonProperty( "label" )
-    @NotNull
     public String getLabel()
     {
         return label;
@@ -77,38 +70,16 @@ public class BankCode
         this.label = label;
     }
 
-    public BankCode locale( String locale )
-    {
-        this.locale = locale;
-        return this;
-    }
-
-    /**
-     * The label language. ISO 639 alpha-2 or alpha-3 language code.
-     **/
-    @JsonProperty( "locale" )
-    @NotNull
-    public String getLocale()
-    {
-        return locale;
-    }
-
-    public void setLocale( String locale )
-    {
-        this.locale = locale;
-    }
-
-    public BankCode country( String country )
+    public Bank country( String country )
     {
         this.country = country;
         return this;
     }
 
     /**
-     * The ISO 3166 alpha-2 country code. The country of the bank code that belongs to.
+     * The country of the bank where bank account has been opened. The missing value will be taken from the codebook if that combination is being found. The ISO 3166 alpha-2 country code. It’s case insensitive.  Note: Currently supported only SK and CZ.
      **/
     @JsonProperty( "country" )
-    @NotNull
     public String getCountry()
     {
         return country;
@@ -130,26 +101,24 @@ public class BankCode
         {
             return false;
         }
-        BankCode bankCode = ( BankCode ) o;
-        return Objects.equals( this.code, bankCode.code ) &&
-                Objects.equals( this.label, bankCode.label ) &&
-                Objects.equals( this.locale, bankCode.locale ) &&
-                Objects.equals( this.country, bankCode.country );
+        Bank bank = ( Bank ) o;
+        return Objects.equals( this.code, bank.code ) &&
+                Objects.equals( this.label, bank.label ) &&
+                Objects.equals( this.country, bank.country );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( code, label, locale, country );
+        return Objects.hash( code, label, country );
     }
 
     @Override
     public String toString()
     {
-        return "class BankCode {\n" +
+        return "class Bank {\n" +
                 "    code: " + toIndentedString( code ) + "\n" +
                 "    label: " + toIndentedString( label ) + "\n" +
-                "    locale: " + toIndentedString( locale ) + "\n" +
                 "    country: " + toIndentedString( country ) + "\n" +
                 "}";
     }

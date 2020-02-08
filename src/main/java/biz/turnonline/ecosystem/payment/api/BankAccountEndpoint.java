@@ -1,6 +1,7 @@
 package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
+import biz.turnonline.ecosystem.payment.api.model.BankOnboard;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
@@ -116,6 +117,7 @@ public class BankAccountEndpoint
     public List<BankAccount> searchBankAccounts( @DefaultValue( "0" ) @Nullable @Named( "offset" ) Integer offset,
                                                  @DefaultValue( "10" ) @Nullable @Named( "limit" ) Integer limit,
                                                  @Nullable @Named( "country" ) String country,
+                                                 @Nullable @Named( "bank" ) String bankCode,
                                                  @DefaultValue( "false" ) @Nullable @Named( "alternative" ) Boolean alternative,
                                                  HttpServletRequest request,
                                                  User authUser )
@@ -390,5 +392,17 @@ public class BankAccountEndpoint
         }
 
         return result;
+    }
+
+    @ApiMethod( name = "bank_accounts.init",
+            path = "bank-accounts/{bank_code}/init",
+            httpMethod = ApiMethod.HttpMethod.PUT )
+    public void initBankAccounts( @Named( "bank_code" ) String bankCode,
+                                  BankOnboard onboard,
+                                  HttpServletRequest request,
+                                  User authUser )
+            throws Exception
+    {
+
     }
 }

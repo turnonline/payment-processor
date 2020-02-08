@@ -70,7 +70,7 @@ public class BankAccountUseCaseTest
         assertThat( firstBankAccount.getBank().getCode() ).isEqualTo( "1100" );
         assertThat( firstBankAccount.getBank().getCountry() ).isEqualTo( "SK" );
         assertThat( firstBankAccount.getBank().getLabel() ).isEqualTo( "Tatra banka, a.s." );
-        assertThat( firstBankAccount.getPrimary() ).isFalse();
+        assertThat( firstBankAccount.isPrimary() ).isFalse();
 
         apiBankAccount = getFromFile( "bank-account-2.json", BankAccount.class );
         BankAccount secondBankAccount = endpoint.insertBankAccount( apiBankAccount, request, authUser );
@@ -79,7 +79,7 @@ public class BankAccountUseCaseTest
         assertThat( secondBankAccount.getBank().getLabel() ).isNotNull();
         assertThat( secondBankAccount.getBank().getCode() ).isEqualTo( "0900" );
         assertThat( secondBankAccount.getBank().getCountry() ).isEqualTo( "SK" );
-        assertThat( secondBankAccount.getPrimary() ).isFalse();
+        assertThat( secondBankAccount.isPrimary() ).isFalse();
 
         apiBankAccount = getFromFile( "bank-account-3.json", BankAccount.class );
         BankAccount thirdBankAccount = endpoint.insertBankAccount( apiBankAccount, request, authUser );
@@ -88,13 +88,13 @@ public class BankAccountUseCaseTest
         assertThat( thirdBankAccount.getBank().getLabel() ).isNotNull();
         assertThat( thirdBankAccount.getBank().getCode() ).isEqualTo( "8360" );
         assertThat( thirdBankAccount.getBank().getCountry() ).isEqualTo( "SK" );
-        assertThat( thirdBankAccount.getPrimary() ).isFalse();
+        assertThat( thirdBankAccount.isPrimary() ).isFalse();
 
         apiBankAccount = getFromFile( "bank-account-2.json", BankAccount.class );
         BankAccount duplicatedBankAccount = endpoint.insertBankAccount( apiBankAccount, request, authUser );
         assertThat( duplicatedBankAccount ).isNotNull();
         assertThat( duplicatedBankAccount.getBank().getCode() ).isEqualTo( "0900" );
-        assertThat( duplicatedBankAccount.getPrimary() ).isFalse();
+        assertThat( duplicatedBankAccount.isPrimary() ).isFalse();
 
         // getting bank account test
         ofy().clear();
@@ -139,11 +139,11 @@ public class BankAccountUseCaseTest
         bankAccount = endpoint.markBankAccountAsPrimary( firstBankAccount.getId(), request, authUser );
         assertThat( bankAccount ).isNotNull();
         assertThat( bankAccount.getId() ).isEqualTo( firstBankAccount.getId() );
-        assertThat( bankAccount.getPrimary() ).isTrue();
+        assertThat( bankAccount.isPrimary() ).isTrue();
 
         BankAccount primary = endpoint.getPrimaryBankAccount( "SK", request, authUser );
         assertThat( primary ).isNotNull();
-        assertThat( primary.getPrimary() ).isTrue();
+        assertThat( primary.isPrimary() ).isTrue();
         assertThat( primary ).isEqualTo( bankAccount );
 
         try
@@ -157,7 +157,7 @@ public class BankAccountUseCaseTest
 
         // getting alternative bank accounts
         List<BankAccount> alternative = endpoint.searchBankAccounts( null, null, "Sk",
-                true, request, authUser );
+                null, true, request, authUser );
 
         assertThat( alternative ).isNotNull();
         assertThat( alternative ).hasSize( 2 );

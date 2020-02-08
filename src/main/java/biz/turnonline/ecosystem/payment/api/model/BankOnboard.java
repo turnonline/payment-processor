@@ -14,38 +14,35 @@ package biz.turnonline.ecosystem.payment.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
- * Error
+ * BankOnboard
  */
-public class Error
+public class BankOnboard
 {
-    @JsonProperty( "error" )
-    private ErrorBody error = null;
+    @JsonProperty( "clientId" )
+    private String clientId = null;
 
-    public Error error( ErrorBody error )
+    public BankOnboard clientId( String clientId )
     {
-        this.error = error;
+        this.clientId = clientId;
         return this;
     }
 
     /**
-     * Error body wrapper.
+     * Identification of the app within the bank.
      **/
-    @JsonProperty( "error" )
-    @NotNull
-    public ErrorBody getError()
+    @JsonProperty( "clientId" )
+    public String getClientId()
     {
-        return error;
+        return clientId;
     }
 
-    public void setError( ErrorBody error )
+    public void setClientId( String clientId )
     {
-        this.error = error;
+        this.clientId = clientId;
     }
-
 
     @Override
     public boolean equals( Object o )
@@ -58,22 +55,21 @@ public class Error
         {
             return false;
         }
-        Error error = ( Error ) o;
-        return Objects.equals( this.error, error.error );
+        BankOnboard bankOnboard = ( BankOnboard ) o;
+        return Objects.equals( this.clientId, bankOnboard.clientId );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( error );
+        return Objects.hash( clientId );
     }
-
 
     @Override
     public String toString()
     {
-        return "class Error {\n" +
-                "    error: " + toIndentedString( error ) + "\n" +
+        return "class BankOnboard {\n" +
+                "    clientId: " + toIndentedString( clientId ) + "\n" +
                 "}";
     }
 
@@ -90,4 +86,3 @@ public class Error
         return o.toString().replace( "\n", "\n    " );
     }
 }
-

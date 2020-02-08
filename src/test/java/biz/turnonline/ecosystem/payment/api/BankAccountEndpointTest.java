@@ -193,7 +193,7 @@ public class BankAccountEndpointTest
             }
         };
 
-        List<BankAccount> result = endpoint.searchBankAccounts( 5, 15, null, false, request, authUser );
+        List<BankAccount> result = endpoint.searchBankAccounts( 5, 15, null, null, false, request, authUser );
         assertThat( result ).isNotNull();
         assertThat( result ).hasSize( 1 );
     }
@@ -212,7 +212,7 @@ public class BankAccountEndpointTest
             }
         };
 
-        endpoint.searchBankAccounts( 5, 15, null, false, request, authUser );
+        endpoint.searchBankAccounts( 5, 15, null, null, false, request, authUser );
     }
 
     @Test( expectedExceptions = InternalServerErrorException.class )
@@ -231,7 +231,7 @@ public class BankAccountEndpointTest
             }
         };
 
-        endpoint.searchBankAccounts( 0, null, null, false, request, authUser );
+        endpoint.searchBankAccounts( 0, null, null, null, false, request, authUser );
     }
 
     @Test

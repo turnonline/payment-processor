@@ -2,7 +2,7 @@ package biz.turnonline.ecosystem.payment.service.model;
 
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.Defaults;
-import biz.turnonline.ecosystem.payment.api.model.BankAccountBank;
+import biz.turnonline.ecosystem.payment.api.model.Bank;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
 import com.google.common.net.HttpHeaders;
 import ma.glasnost.orika.CustomMapper;
@@ -59,7 +59,7 @@ class BankAccountMapper
         {
             Locale locale = ( Locale ) context.getProperty( HttpHeaders.ACCEPT_LANGUAGE );
 
-            BankAccountBank bank = new BankAccountBank();
+            Bank bank = new Bank();
             bank.setCode( bankCode );
             bank.setLabel( source.getLocalizedLabel( locale ) );
             bank.setCountry( source.getCountry() );
@@ -74,7 +74,7 @@ class BankAccountMapper
                          MappingContext context )
     {
         Optional<String> sValue;
-        BankAccountBank bank = source.getBank();
+        Bank bank = source.getBank();
 
         if ( bank != null )
         {
@@ -142,7 +142,7 @@ class BankAccountMapper
         sValue = Optional.ofNullable( source.getBic() );
         sValue.ifPresent( backend::setBic );
 
-        Defaults<Boolean, Boolean> primary = Defaults.of( source.getPrimary(), backend.isPrimary(), false );
+        Defaults<Boolean, Boolean> primary = Defaults.of( source.isPrimary(), backend.isPrimary(), false );
         primary.ifPresentOrDefault( backend::setPrimary );
     }
 }

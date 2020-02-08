@@ -70,6 +70,13 @@
                         "description": "The applied filter parameter will make return the list of all alternative bank accounts except the primary one. The primary bank account will be first searched with preferred actual country (taken either as a default or explicite one), then if not found without applied country filter."
                     },
                     {
+                        "name": "bank",
+                        "in": "query",
+                        "required": false,
+                        "type": "string",
+                        "description": "The bank code to filter out bank accounts only for this bank."
+                    },
+                    {
                         "name": "Accept-Language",
                         "in": "header",
                         "required": false,
@@ -488,6 +495,81 @@
                 }
             ]
         },
+        "/v1/bank-accounts/{bank_code}/init": {
+            "put": {
+                "tags": [
+                    "Bank Accounts"
+                ],
+                "summary": "Onboard bank accounts",
+                "description": "Onboard all bank accounts in to the service via bank API. Once the task has been successfully finished, the customer's bank accounts will be available via endpoint to search bank accounts.",
+                "operationId": "initBankAccounts",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/BankOnboard"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "The confirmation, the task to onboard specified bank via API has been started."
+                    },
+                    "400": {
+                        "description": "The error indicates that client has tried to onboard a bank that is not supported at that time. The client should not repeat the request without modifications.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "401": {
+                        "description": "The error when the authentication credential fails.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "404": {
+                        "description": "The error when client tries to on-board a bank that is either unknown or does not exit.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "500": {
+                        "description": "It's a failure of the server. The client can repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    },
+                    "503": {
+                        "description": "The service is unavailable or the server has timed out processing of the request. The client may repeat the request without modifications at any later time.",
+                        "schema": {
+                            "$ref": "#/definitions/Error"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "firebase-a9a2a51a": []
+                    }
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "bank_code",
+                    "in": "path",
+                    "required": true,
+                    "type": "string",
+                    "description": "Bank identification, the code taken from the code-book."
+                }
+            ]
+        },
         "/v1/codebook/bank-code": {
             "get": {
                 "tags": [
@@ -617,7 +699,7 @@
                     "in": "path",
                     "required": true,
                     "type": "string",
-                    "description": "The bank code identification to retrieve specific description of the associated bank."
+                    "description": "The bank identification to retrieve specific description of the associated bank."
                 }
             ]
         }
@@ -633,11 +715,28 @@
         }
     },
     "definitions": {
-        "BankAccount": {
+        "Bank": {
             "type": "object",
             "required": [
-                "bank"
+                "code"
             ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The country specific numeric bank code, taken from the code-book."
+                },
+                "label": {
+                    "type": "string",
+                    "description": "The localized name of the bank, taken from the code-book and based on either default or specified language. \n\nThe value will be managed by the service once Accept-Language header will be provided while bank account getting."
+                },
+                "country": {
+                    "type": "string",
+                    "description": "The country of the bank where bank account has been opened. The missing value will be taken from the codebook if that combination is being found. The ISO 3166 alpha-2 country code. It’s case insensitive.\n\nNote: Currently supported only SK and CZ."
+                }
+            }
+        },
+        "BankAccount": {
+            "type": "object",
             "properties": {
                 "id": {
                     "type": "integer",
@@ -670,31 +769,11 @@
                     "default": false
                 },
                 "bank": {
-                    "description": "The bank defined as a codebook.",
-                    "$ref": "#/definitions/BankAccountBank"
+                    "description": "Bank identified by bank code and its brief description.",
+                    "$ref": "#/definitions/Bank"
                 }
             },
             "description": "The bank account resource."
-        },
-        "BankAccountBank": {
-            "type": "object",
-            "required": [
-                "code"
-            ],
-            "properties": {
-                "code": {
-                    "type": "string",
-                    "description": "The country specific numeric bank code, taken from the code-book."
-                },
-                "label": {
-                    "type": "string",
-                    "description": "The localized name of the bank, taken from the code-book and based on either default or specified language. \n\nThe value will be managed by the service once Accept-Language header will be provided while bank account getting."
-                },
-                "country": {
-                    "type": "string",
-                    "description": "The country of the bank where bank account has been opened. The missing value will be taken from the codebook if that combination is being found. The ISO 3166 alpha-2 country code. It’s case insensitive.\n\nNote: Currently supported only SK and CZ."
-                }
-            }
         },
         "BankAccountCollection": {
             "type": "object",
@@ -745,6 +824,15 @@
                     "items": {
                         "$ref": "#/definitions/BankCode"
                     }
+                }
+            }
+        },
+        "BankOnboard": {
+            "type": "object",
+            "properties": {
+                "clientId": {
+                    "type": "string",
+                    "description": "Identification of the app within the bank."
                 }
             }
         },

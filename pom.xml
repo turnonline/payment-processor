@@ -76,6 +76,33 @@
                 </configuration>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>io.swagger</groupId>
+                    <artifactId>swagger-codegen-maven-plugin</artifactId>
+                    <version>2.4.10</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                            <configuration>
+                                <inputSpec>src/main/api/swagger2.json</inputSpec>
+                                <generateApis>false</generateApis>
+                                <generateSupportingFiles>false</generateSupportingFiles>
+                                <modelPackage>biz.turnonline.ecosystem.payment.api.model</modelPackage>
+                                <language>jaxrs</language>
+                                <library>jersey2</library>
+                                <configOptions>
+                                    <dateLibrary>java8</dateLibrary>
+                                </configOptions>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <dependencyManagement>
@@ -310,4 +337,18 @@
         <jmockit.setting>-javaagent:${settings.localRepository}/org/jmockit/jmockit/${jmockit.version}/jmockit-${jmockit.version}.jar
         </jmockit.setting>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>api</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.swagger</groupId>
+                        <artifactId>swagger-codegen-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
