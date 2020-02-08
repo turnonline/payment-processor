@@ -1,12 +1,20 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "TurnOnline.biz Ecosystem: Payment Processor",
+        "description": "TurnOnline.biz Ecosystem Payment Processor",
         "version": "1.0",
         "title": "Payment Processor"
     },
     "host": "payment.turnon.cloud",
     "basePath": "/api/payment",
+    "tags": [
+        {
+            "name": "Bank Accounts"
+        },
+        {
+            "name": "Code-books"
+        }
+    ],
     "schemes": [
         "https"
     ],
@@ -19,8 +27,11 @@
     "paths": {
         "/v1/bank-accounts": {
             "get": {
+                "tags": [
+                    "Bank Accounts"
+                ],
                 "summary": "Search bank accounts",
-                "operationId": "PaymentSearchBankAccounts",
+                "operationId": "searchBankAccounts",
                 "produces": [
                     "application/json"
                 ],
@@ -28,42 +39,42 @@
                     {
                         "name": "offset",
                         "in": "query",
-                        "description": "The position of the first result to retrieve, numbered from 0.",
                         "required": false,
                         "type": "integer",
-                        "default": 0,
-                        "format": "int32"
+                        "format": "int32",
+                        "description": "The position of the first result to retrieve, numbered from 0.",
+                        "default": 0
                     },
                     {
                         "name": "limit",
                         "in": "query",
-                        "description": "The maximum number of results to retrieve.",
                         "required": false,
                         "type": "integer",
-                        "default": 10,
-                        "format": "int32"
+                        "format": "int32",
+                        "description": "The maximum number of results to retrieve.",
+                        "default": 10
                     },
                     {
                         "name": "country",
                         "in": "query",
-                        "description": "The country of the bank where bank account has been opened. The ISO 3166 alpha-2 country code. It’s case insensitive.",
                         "required": false,
                         "type": "string",
+                        "description": "The country of the bank where bank account has been opened. The ISO 3166 alpha-2 country code. It’s case insensitive.",
                         "x-example": "SK"
                     },
                     {
                         "name": "alternative",
                         "in": "query",
-                        "description": "The applied filter parameter will make return the list of all alternative bank accounts except the primary one. The primary bank account will be first searched with preferred actual country (taken either as a default or explicite one), then if not found without applied country filter.",
                         "required": false,
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "The applied filter parameter will make return the list of all alternative bank accounts except the primary one. The primary bank account will be first searched with preferred actual country (taken either as a default or explicite one), then if not found without applied country filter."
                     },
                     {
                         "name": "Accept-Language",
                         "in": "header",
-                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default language of the associated account.",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default language of the associated account."
                     }
                 ],
                 "responses": {
@@ -99,8 +110,11 @@
                 ]
             },
             "post": {
+                "tags": [
+                    "Bank Accounts"
+                ],
                 "summary": "Create bank account",
-                "operationId": "PaymentInsertBankAccount",
+                "operationId": "insertBankAccount",
                 "consumes": [
                     "application/json"
                 ],
@@ -109,9 +123,9 @@
                 ],
                 "parameters": [
                     {
-                        "in": "body",
                         "name": "body",
-                        "required": false,
+                        "in": "body",
+                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/BankAccount"
                         }
@@ -158,9 +172,12 @@
         },
         "/v1/bank-accounts/primary": {
             "get": {
+                "tags": [
+                    "Bank Accounts"
+                ],
                 "summary": "Get credit bank account",
                 "description": "Returns the credit bank account to be listed as the target account for a payment on an issued invoice. The country property of the bank account is used here as a filter parameter. If you need to return credit account for different country, specify the country as a query parameter.\n\nThe credit bank account will be first searched with preferred actual country (taken either as a default or explicit one), then if not found without applied country filter.",
-                "operationId": "getV1Bank-accountsPrimary",
+                "operationId": "getPrimaryBankAccount",
                 "produces": [
                     "application/json"
                 ],
@@ -168,16 +185,16 @@
                     {
                         "name": "country",
                         "in": "query",
-                        "description": "The country for which the credit bank account is being searched for. The ISO 3166 alpha-2 country code. It’s case insensitive.",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "description": "The country for which the credit bank account is being searched for. The ISO 3166 alpha-2 country code. It’s case insensitive."
                     },
                     {
                         "name": "Accept-Language",
                         "in": "header",
-                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default language of the associated account.",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default language of the associated account."
                     }
                 ],
                 "responses": {
@@ -221,26 +238,21 @@
         },
         "/v1/bank-accounts/{account_id}": {
             "get": {
+                "tags": [
+                    "Bank Accounts"
+                ],
                 "summary": "Get bank account",
-                "operationId": "PaymentGetBankAccount",
+                "operationId": "getBankAccount",
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
                     {
-                        "name": "account_id",
-                        "in": "path",
-                        "description": "The identification of the bank account to retrieve.",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
                         "name": "Accept-Language",
                         "in": "header",
-                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default language of the associated account.",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default language of the associated account."
                     }
                 ],
                 "responses": {
@@ -282,8 +294,11 @@
                 ]
             },
             "put": {
+                "tags": [
+                    "Bank Accounts"
+                ],
                 "summary": "Update bank account",
-                "operationId": "PaymentUpdateBankAccount",
+                "operationId": "updateBankAccount",
                 "consumes": [
                     "application/json"
                 ],
@@ -292,17 +307,9 @@
                 ],
                 "parameters": [
                     {
-                        "name": "account_id",
-                        "in": "path",
-                        "description": "The identification of the bank account to retrieve.",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "body",
                         "name": "body",
-                        "required": false,
+                        "in": "body",
+                        "required": true,
                         "schema": {
                             "$ref": "#/definitions/BankAccount"
                         }
@@ -353,21 +360,15 @@
                 ]
             },
             "delete": {
+                "tags": [
+                    "Bank Accounts"
+                ],
                 "summary": "Delete bank account",
-                "operationId": "PaymentDeleteBankAccount",
+                "operationId": "deleteBankAccount",
                 "produces": [
                     "application/json"
                 ],
-                "parameters": [
-                    {
-                        "name": "account_id",
-                        "in": "path",
-                        "description": "The identification of the bank account to retrieve.",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "204": {
                         "description": "The confirmation, the bank account has been deleted."
@@ -408,24 +409,30 @@
                         "firebase-a9a2a51a": []
                     }
                 ]
-            }
+            },
+            "parameters": [
+                {
+                    "name": "account_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The unique identification of the bank account."
+                }
+            ]
         },
         "/v1/bank-accounts/{account_id}/primary": {
             "put": {
+                "tags": [
+                    "Bank Accounts"
+                ],
                 "summary": "Mark bank account as a primary credit account",
                 "description": "Mark the corresponding bank account as a primary credit account. This bank account becomes the primary credit account for country that bank account belongs to. If there are more bank accounts specified for different countries, the user must mark it primary explicitly with the bank account that belongs to target country.",
-                "operationId": "putV1Bank-accountsAccount_idPrimary",
+                "operationId": "markPrimaryBankAccount",
                 "produces": [
                     "application/json"
                 ],
-                "parameters": [
-                    {
-                        "name": "account_id",
-                        "in": "path",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
+                "parameters": [],
                 "responses": {
                     "200": {
                         "description": "The bank account that has been marked as a primary credit account.",
@@ -469,12 +476,25 @@
                         "firebase-a9a2a51a": []
                     }
                 ]
-            }
+            },
+            "parameters": [
+                {
+                    "name": "account_id",
+                    "in": "path",
+                    "required": true,
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The unique identification of the bank account."
+                }
+            ]
         },
         "/v1/codebook/bank-code": {
             "get": {
+                "tags": [
+                    "Code-books"
+                ],
                 "summary": "List bank codes",
-                "operationId": "PaymentListCodebookBankCodes",
+                "operationId": "listBankCodes",
                 "produces": [
                     "application/json"
                 ],
@@ -482,16 +502,16 @@
                     {
                         "name": "country",
                         "in": "query",
-                        "description": "The country (ISO 3166 alpha-2 country code) to filter the bank codes valid for given country. If requested country is not supported (or not provided at all) will fallback to the country associated with the account.",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "description": "The country (ISO 3166 alpha-2 country code) to filter the bank codes valid for given country. If requested country is not supported (or not provided at all) will fallback to the country associated with the account."
                     },
                     {
                         "name": "Accept-Language",
                         "in": "header",
-                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default language of the associated account.",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default language of the associated account."
                     }
                 ],
                 "responses": {
@@ -529,32 +549,28 @@
         },
         "/v1/codebook/bank-code/{code}": {
             "get": {
+                "tags": [
+                    "Code-books"
+                ],
                 "summary": "Get description of the bank",
-                "operationId": "PaymentGetCodebookBankCode",
+                "operationId": "getBankDescription",
                 "produces": [
                     "application/json"
                 ],
                 "parameters": [
                     {
-                        "name": "code",
-                        "in": "path",
-                        "description": "The bank code identification to retrieve specific description of the associated bank.",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
                         "name": "country",
                         "in": "query",
-                        "description": "The country (ISO 3166 alpha-2 country code) to select the bank code valid for given country. If requested country is not supported (or not provided at all) will fallback to the country associated with the account.",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "description": "The country (ISO 3166 alpha-2 country code) to select the bank code valid for given country. If requested country is not supported (or not provided at all) will fallback to the country associated with the account."
                     },
                     {
                         "name": "Accept-Language",
                         "in": "header",
-                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default account language.",
                         "required": false,
-                        "type": "string"
+                        "type": "string",
+                        "description": "The language the client has configured to prefer in results. If requested language is not supported (or not provided at all) will fallback to the default account language."
                     }
                 ],
                 "responses": {
@@ -594,7 +610,16 @@
                         "firebase-a9a2a51a": []
                     }
                 ]
-            }
+            },
+            "parameters": [
+                {
+                    "name": "code",
+                    "in": "path",
+                    "required": true,
+                    "type": "string",
+                    "description": "The bank code identification to retrieve specific description of the associated bank."
+                }
+            ]
         }
     },
     "securityDefinitions": {
@@ -651,6 +676,26 @@
             },
             "description": "The bank account resource."
         },
+        "BankAccountBank": {
+            "type": "object",
+            "required": [
+                "code"
+            ],
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "description": "The country specific numeric bank code, taken from the code-book."
+                },
+                "label": {
+                    "type": "string",
+                    "description": "The localized name of the bank, taken from the code-book and based on either default or specified language. \n\nThe value will be managed by the service once Accept-Language header will be provided while bank account getting."
+                },
+                "country": {
+                    "type": "string",
+                    "description": "The country of the bank where bank account has been opened. The missing value will be taken from the codebook if that combination is being found. The ISO 3166 alpha-2 country code. It’s case insensitive.\n\nNote: Currently supported only SK and CZ."
+                }
+            }
+        },
         "BankAccountCollection": {
             "type": "object",
             "properties": {
@@ -706,7 +751,20 @@
         "Error": {
             "type": "object",
             "required": [
+                "error"
+            ],
+            "properties": {
+                "error": {
+                    "description": "Error body wrapper.",
+                    "$ref": "#/definitions/ErrorBody"
+                }
+            }
+        },
+        "ErrorBody": {
+            "type": "object",
+            "required": [
                 "code",
+                "errors",
                 "message"
             ],
             "properties": {
@@ -715,29 +773,37 @@
                     "format": "int32",
                     "description": "The HTTP status code."
                 },
+                "errors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ErrorReason"
+                    }
+                },
                 "message": {
                     "type": "string",
                     "description": "The error message."
                 }
             }
         },
-        "BankAccountBank": {
+        "ErrorReason": {
             "type": "object",
             "required": [
-                "code"
+                "domain",
+                "message",
+                "reason"
             ],
             "properties": {
-                "code": {
+                "domain": {
                     "type": "string",
-                    "description": "The country specific numeric bank code, taken from the code-book."
+                    "description": "The overall scope of the error message."
                 },
-                "label": {
+                "message": {
                     "type": "string",
-                    "description": "The localized name of the bank, taken from the code-book and based on either default or specified language. \n\nThe value will be managed by the service once Accept-Language header will be provided while bank account getting."
+                    "description": "The detailed error message."
                 },
-                "country": {
+                "reason": {
                     "type": "string",
-                    "description": "The country of the bank where bank account has been opened. The missing value will be taken from the codebook if that combination is being found. The ISO 3166 alpha-2 country code. It’s case insensitive.\n\nNote: Currently supported only SK and CZ."
+                    "description": "The error reason (error key)."
                 }
             }
         }
