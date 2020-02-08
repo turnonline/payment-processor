@@ -97,12 +97,7 @@ public class PaymentConfigBeanDbTest
         bankAccount.setPrimary( false );
         bankAccount.setPaymentGate( PaymentGate.EPLATBY_VUB );
 
-        assertThat( bankAccount.getCode() ).isNull();
-
         bean.insertBankAccount( lAccount, bankAccount );
-
-        String expectedCode = String.format( PaymentConfig.BANK_ACCOUNT_CODE_FORMAT, originSize + 1 );
-        assertThat( bankAccount.getCode() ).isEqualTo( expectedCode );
 
         bankAccounts = bean.getBankAccounts( lAccount, null, null, null );
         assertThat( bankAccounts ).isNotNull();

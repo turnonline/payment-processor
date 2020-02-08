@@ -88,21 +88,6 @@ class PaymentConfigBean
         }
 
         bankAccount.setOwner( account );
-
-        // generate code
-        int codeOrder = 1;
-        List<CompanyBankAccount> list = getBankAccounts( account, null, null, null );
-        list.sort( new BankAccountCodeDescending() );
-
-        if ( !list.isEmpty() )
-        {
-            String code = list.get( 0 ).getCode();
-            if ( code != null )
-            {
-                codeOrder = Integer.parseInt( code.substring( 3 ) ) + 1;
-            }
-        }
-        bankAccount.setCode( String.format( BANK_ACCOUNT_CODE_FORMAT, codeOrder ) );
         bankAccount.save();
     }
 
@@ -364,23 +349,6 @@ class PaymentConfigBean
             throw wrongOwnerException;
         }
         return entity;
-    }
-
-    /**
-     * Descending sorting of the bank accounts based on its code property.
-     */
-    private static class BankAccountCodeDescending
-            implements Comparator<CompanyBankAccount>, Serializable
-    {
-        private static final long serialVersionUID = 1L;
-
-        @Override
-        public int compare( CompanyBankAccount left, CompanyBankAccount right )
-        {
-            return ComparisonChain.start()
-                    .compare( right.getCode(), left.getCode(), Ordering.natural().nullsLast() )
-                    .result();
-        }
     }
 
     static class BankAccountPrimary

@@ -28,10 +28,7 @@ public class CompanyBankAccount
 {
     private static final Logger logger = LoggerFactory.getLogger( CompanyBankAccount.class );
 
-    private static final long serialVersionUID = -8003937716992437433L;
-
-    @Index
-    private String code;
+    private static final long serialVersionUID = 4691115098660673401L;
 
     @Index
     private PaymentGate paymentGate;
@@ -66,16 +63,6 @@ public class CompanyBankAccount
     public void setExternalId( @Nullable String externalId )
     {
         super.setExternalId( externalId );
-    }
-
-    public String getCode()
-    {
-        return code;
-    }
-
-    public void setCode( String code )
-    {
-        this.code = code;
     }
 
     /**
@@ -220,7 +207,6 @@ public class CompanyBankAccount
         String sKey = secretKey == null ? "null" : "not null, length: " + secretKey.length();
         return MoreObjects.toStringHelper( this )
                 .addValue( super.toString() )
-                .add( "code", code )
                 .add( "paymentGate", paymentGate )
                 .add( "merchantId", merchantId )
                 .add( "secretKey", secretKey )
