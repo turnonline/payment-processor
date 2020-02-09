@@ -1,7 +1,9 @@
 package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
+import biz.turnonline.ecosystem.payment.api.model.BankOnboard;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
+import biz.turnonline.ecosystem.payment.service.BankCodeNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
@@ -24,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static com.google.common.truth.Truth.assertThat;
 
 /**
@@ -714,5 +717,72 @@ public class BankAccountEndpointTest
         };
 
         endpoint.markBankAccountAsPrimary( 2L, request, authUser );
+    }
+
+    @Test
+    public void initBankAccounts_Revolut() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+                result = account;
+
+                config.initBankAccounts( account, REVOLUT_BANK_CODE );
+            }
+        };
+
+        endpoint.initBankAccounts( REVOLUT_BANK_CODE, new BankOnboard(), request, authUser );
+    }
+
+    @Test( expectedExceptions = NotFoundException.class )
+    public void initBankAccounts_BankCodeNotFound() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+                result = account;
+
+                config.initBankAccounts( account, anyString );
+                result = new BankCodeNotFound( "blacode" );
+            }
+        };
+
+        endpoint.initBankAccounts( "blacode", new BankOnboard(), request, authUser );
+    }
+
+    @Test( expectedExceptions = BadRequestException.class )
+    public void initBankAccounts_UnsupportedBank() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+                result = account;
+
+                config.initBankAccounts( account, anyString );
+                result = new ApiValidationException( "Onboarding unsupported" );
+            }
+        };
+
+        endpoint.initBankAccounts( "1100", new BankOnboard(), request, authUser );
+    }
+
+    @Test( expectedExceptions = InternalServerErrorException.class )
+    public void initBankAccounts_BackendError() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+                result = account;
+
+                config.initBankAccounts( account, anyString );
+                result = new RuntimeException();
+            }
+        };
+
+        endpoint.initBankAccounts( REVOLUT_BANK_CODE, new BankOnboard(), request, authUser );
     }
 }

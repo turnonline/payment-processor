@@ -3,6 +3,7 @@ package biz.turnonline.ecosystem.payment.api;
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.api.model.BankOnboard;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
+import biz.turnonline.ecosystem.payment.service.BankCodeNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
@@ -31,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.bankAccountNotFoundMessage;
+import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.bankCodeNotFoundMessage;
 import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.primaryBankAccountNotFoundMessage;
 import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.tryAgainLaterMessage;
 
@@ -43,7 +45,7 @@ import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.tryAgainLater
 @ApiReference( PaymentsApiProfile.class )
 public class BankAccountEndpoint
 {
-    private static final Logger logger = LoggerFactory.getLogger( BankAccountEndpoint.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( BankAccountEndpoint.class );
 
     private final EndpointsCommon common;
 
@@ -84,27 +86,27 @@ public class BankAccountEndpoint
         }
         catch ( ApiValidationException e )
         {
-            logger.warn( "BankAccount validation has failed: "
+            LOGGER.warn( "BankAccount validation has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "bankAccount", bankAccount )
                     .toString(), e );
             throw new BadRequestException( e.getMessage() );
         }
         catch ( IllegalArgumentException e )
         {
-            logger.error( "BankAccount business flow has failed: "
+            LOGGER.error( "BankAccount business flow has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "bankAccount", bankAccount )
                     .toString(), e );
             throw new InternalServerErrorException( tryAgainLaterMessage() );
         }
         catch ( Exception e )
         {
-            logger.error( "BankAccount creation has failed: "
+            LOGGER.error( "BankAccount creation has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "bankAccount", bankAccount )
                     .toString(), e );
             throw new InternalServerErrorException( tryAgainLaterMessage() );
@@ -145,9 +147,9 @@ public class BankAccountEndpoint
         }
         catch ( Exception e )
         {
-            logger.error( "BankAccount list retrieval has failed: "
+            LOGGER.error( "BankAccount list retrieval has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "offset", offset )
                     .add( "limit", limit )
                     .add( "country", country )
@@ -187,9 +189,9 @@ public class BankAccountEndpoint
         }
         catch ( Exception e )
         {
-            logger.error( "BankAccount retrieval has failed: "
+            LOGGER.error( "BankAccount retrieval has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "account_id", accountId )
                     .toString(), e );
 
@@ -225,9 +227,9 @@ public class BankAccountEndpoint
         }
         catch ( ApiValidationException e )
         {
-            logger.warn( "BankAccount validation has failed: "
+            LOGGER.warn( "BankAccount validation has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "account_id", accountId )
                     .add( "bankAccount", bankAccount )
                     .toString(), e );
@@ -244,9 +246,9 @@ public class BankAccountEndpoint
         }
         catch ( IllegalArgumentException e )
         {
-            logger.error( "BankAccount business flow has failed: "
+            LOGGER.error( "BankAccount business flow has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "account_id", accountId )
                     .add( "bankAccount", bankAccount )
                     .toString(), e );
@@ -255,9 +257,9 @@ public class BankAccountEndpoint
         }
         catch ( Exception e )
         {
-            logger.error( "BankAccount update has failed: "
+            LOGGER.error( "BankAccount update has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "account_id", accountId )
                     .add( "bankAccount", bankAccount )
                     .toString(), e );
@@ -282,9 +284,9 @@ public class BankAccountEndpoint
         }
         catch ( ApiValidationException e )
         {
-            logger.warn( "BankAccount validation has failed: "
+            LOGGER.warn( "BankAccount validation has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "account_id", accountId )
                     .toString(), e );
 
@@ -300,9 +302,9 @@ public class BankAccountEndpoint
         }
         catch ( Exception e )
         {
-            logger.error( "BankAccount deletion has failed: "
+            LOGGER.error( "BankAccount deletion has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "account_id", accountId )
                     .toString(), e );
 
@@ -333,9 +335,9 @@ public class BankAccountEndpoint
         }
         catch ( Exception e )
         {
-            logger.error( "Primary bank account retrieval has failed: "
+            LOGGER.error( "Primary bank account retrieval has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "country", country )
                     .toString(), e );
 
@@ -364,9 +366,9 @@ public class BankAccountEndpoint
         }
         catch ( ApiValidationException e )
         {
-            logger.warn( "Primary bank account validation has failed: "
+            LOGGER.warn( "Primary bank account validation has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "account_id", accountId )
                     .toString(), e );
 
@@ -382,9 +384,9 @@ public class BankAccountEndpoint
         }
         catch ( Exception e )
         {
-            logger.error( "Update of the bank account to be marked as primary has failed: "
+            LOGGER.error( "Update of the bank account to be marked as primary has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "account_id", accountId )
                     .toString(), e );
 
@@ -404,6 +406,43 @@ public class BankAccountEndpoint
             throws Exception
     {
         LocalAccount account = common.checkAccount( authUser, request );
-        config.initBankAccounts( account, bankCode );
+
+        try
+        {
+            config.initBankAccounts( account, bankCode );
+        }
+        catch ( BankCodeNotFound e )
+        {
+            LOGGER.warn( "Bank code not found: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getId() )
+                    .add( "bank_code", bankCode )
+                    .addValue( onboard )
+                    .toString(), e );
+
+            throw new NotFoundException( bankCodeNotFoundMessage( e.getBankCode() ) );
+        }
+        catch ( ApiValidationException e )
+        {
+            LOGGER.warn( "Bank onboard has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getId() )
+                    .add( "bank_code", bankCode )
+                    .addValue( onboard )
+                    .toString(), e );
+
+            throw new BadRequestException( e.getMessage() );
+        }
+        catch ( Exception e )
+        {
+            LOGGER.error( "Bank onboard has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getId() )
+                    .add( "bank_code", bankCode )
+                    .addValue( onboard )
+                    .toString(), e );
+
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
     }
 }

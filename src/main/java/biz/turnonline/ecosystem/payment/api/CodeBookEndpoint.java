@@ -73,7 +73,7 @@ public class CodeBookEndpoint
         {
             logger.error( "BankCode code-book list retrieval has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "country", country )
                     .toString(), e );
 
@@ -103,7 +103,7 @@ public class CodeBookEndpoint
         {
             logger.error( "BankCode code-book single record retrieval has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "country", country )
                     .toString(), e );
 
@@ -123,7 +123,7 @@ public class CodeBookEndpoint
         {
             logger.error( "BankCode code-book mapping has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getEmail() )
+                    .add( "Account", account.getId() )
                     .add( "country", country )
                     .toString(), e );
 

@@ -72,7 +72,7 @@ class PaymentConfigBean
         BankCode bankCode = codeBook.getBankCode( owner, bank, null, null );
         if ( bankCode == null )
         {
-            throw ApiValidationException.prepare( "errors.validation.bankAccount.bankCode", bank );
+            throw new BankCodeNotFound( bank );
         }
 
         if ( REVOLUT_BANK_CODE.equals( bankCode.getCode() ) )

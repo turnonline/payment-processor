@@ -6,15 +6,22 @@ import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.PaymentGate;
 import biz.turnonline.ecosystem.steward.model.Account;
+import com.google.appengine.api.taskqueue.TaskHandle;
 import com.google.inject.Injector;
+import mockit.Mock;
+import mockit.MockUp;
 import nl.garvelink.iban.IBAN;
 import org.ctoolkit.agent.service.impl.ImportTask;
+import org.ctoolkit.services.task.Task;
+import org.ctoolkit.services.task.TaskExecutor;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -60,6 +67,53 @@ public class PaymentConfigBeanDbTest
         // import test bank accounts
         ImportTask task = new ImportTask( "/testdataset/changeset_00001.xml" );
         task.run();
+
+        // import bank codes
+        task = new ImportTask( "/dataset/changeset_00001.xml" );
+        task.run();
+    }
+
+    @Test
+    public <T extends TaskExecutor> void initBankAccounts_RevolutTaskScheduled()
+    {
+        AtomicReference<Task<?>> scheduledTask = new AtomicReference<>();
+
+        // scheduled tasks mocked
+        new MockUp<T>()
+        {
+            @Mock
+            public TaskHandle schedule( Task<?> task )
+            {
+                scheduledTask.set( task );
+                return null;
+            }
+        };
+
+        bean.initBankAccounts( lAccount, REVOLUT_BANK_CODE );
+
+        assertWithMessage( "Task to initialize bank accounts" )
+                .that( scheduledTask.get() )
+                .isNotNull();
+
+        assertWithMessage( "Task type" )
+                .that( scheduledTask.get() )
+                .isInstanceOf( RevolutDebtorBankAccountsInit.class );
+
+        assertWithMessage( "Task's account entity key" )
+                .that( scheduledTask.get().getEntityKey() )
+                .isEqualTo( lAccount.entityKey() );
+    }
+
+    @Test( expectedExceptions = BankCodeNotFound.class )
+    public void initBankAccounts_BankCodeNotFound()
+    {
+        bean.initBankAccounts( lAccount, "blacode" );
+    }
+
+    @Test( expectedExceptions = ApiValidationException.class )
+    public void initBankAccounts_UnsupportedBank()
+    {
+        bean.initBankAccounts( lAccount, "0900" );
     }
 
     @Test
