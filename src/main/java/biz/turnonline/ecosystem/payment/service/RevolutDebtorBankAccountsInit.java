@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -52,6 +53,20 @@ class RevolutDebtorBankAccountsInit
         super.setEntityKey( checkNotNull( accountKey, "LocalAccount key can't be null" ) );
     }
 
+    private static boolean inclPublicActive( Account account )
+    {
+        if ( ( account.getPublic() == null ? false : account.getPublic() )
+                && account.getState() == Account.StateEnum.ACTIVE )
+        {
+            return true;
+        }
+        else
+        {
+            LOGGER.warn( "Revolut bank account import skipped, not public or inactive " + account );
+            return false;
+        }
+    }
+
     @Override
     protected void execute()
     {
@@ -73,7 +88,9 @@ class RevolutDebtorBankAccountsInit
         CompanyBankAccount bankAccount;
         String currency;
 
-        for ( Account next : accounts )
+        for ( Account next : accounts.stream()
+                .filter( RevolutDebtorBankAccountsInit::inclPublicActive )
+                .collect( Collectors.toList() ) )
         {
             String accountId = next.getId().toString();
             Identifier ofAccount = new Identifier( accountId );
@@ -84,11 +101,9 @@ class RevolutDebtorBankAccountsInit
 
             for ( AccountBankDetailsItem detail : details )
             {
-                // exclude if missing IBAN, not public or inactive
+                // exclude if missing IBAN
                 String iban = detail.getIban();
-                if ( !Strings.isNullOrEmpty( iban )
-                        && ( next.getPublic() == null ? false : next.getPublic() )
-                        && next.getState() == Account.StateEnum.ACTIVE )
+                if ( !Strings.isNullOrEmpty( iban ) )
                 {
                     currency = next.getCurrency();
 

@@ -73,9 +73,9 @@ public class RevolutDebtorBankAccountsInitTest
     public void before()
     {
         accounts = getFromFile( "revo-accounts.json", ListArray.class );
-        details1 = getFromFile( "revo-account-details-1.json", DetailsArray.class );
-        details2 = getFromFile( "revo-account-details-2.json", DetailsArray.class );
-        details3 = getFromFile( "revo-account-details-3.json", DetailsArray.class );
+        details1 = getFromFile( "details-ace7f9ac-4a89-11ea-b77f-2e728ce88120.json", DetailsArray.class );
+        details2 = getFromFile( "details-ace7fdf8-4a89-11ea-b77f-2e728ce88123.json", DetailsArray.class );
+        details3 = getFromFile( "details-ace7ff88-4a89-11ea-b77f-2e728ce88129.json", DetailsArray.class );
 
         new MockUp<Ref<?>>()
         {
