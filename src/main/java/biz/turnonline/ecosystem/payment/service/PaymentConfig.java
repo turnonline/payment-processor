@@ -26,6 +26,7 @@ public interface PaymentConfig
      *
      * @param owner the authenticated account as an owner of the all newly imported bank accounts
      * @param bank  bank identification, the bank to sync bank accounts from
+     * @throws ApiValidationException if specified bank code is either invalid or unsupported
      */
     void initBankAccounts( @Nonnull LocalAccount owner, @Nonnull String bank );
 

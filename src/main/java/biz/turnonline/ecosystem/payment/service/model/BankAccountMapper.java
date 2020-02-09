@@ -99,12 +99,12 @@ class BankAccountMapper
             {
                 if ( country == null )
                 {
-                    String key = "errors.validation.bankAccount.code";
+                    String key = "errors.validation.bankAccount.bankCode";
                     throw ApiValidationException.prepare( key, code );
                 }
                 else
                 {
-                    String key = "errors.validation.bankAccount.code.country";
+                    String key = "errors.validation.bankAccount.bankCode.country";
                     throw ApiValidationException.prepare( key, code, country );
                 }
             }

@@ -72,7 +72,7 @@ class PaymentConfigBean
         BankCode bankCode = codeBook.getBankCode( owner, bank, null, null );
         if ( bankCode == null )
         {
-            throw ApiValidationException.prepare( "errors.validation.bankCode", bank );
+            throw ApiValidationException.prepare( "errors.validation.bankAccount.bankCode", bank );
         }
 
         if ( REVOLUT_BANK_CODE.equals( bankCode.getCode() ) )
@@ -81,7 +81,8 @@ class PaymentConfigBean
         }
         else
         {
-            throw ApiValidationException.prepare( "errors.validation.onboard.bankCode.unsupported", bank );
+            String key = "errors.validation.bankAccount.bankCode.onboard.unsupported";
+            throw ApiValidationException.prepare( key, bank );
         }
     }
 
