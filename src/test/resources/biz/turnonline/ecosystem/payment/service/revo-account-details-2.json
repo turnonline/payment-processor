@@ -1,0 +1,23 @@
+[
+    {
+        "iban": "GB51REVO00996908460355",
+        "bic": "REVOGB21",
+        "beneficiary": "Turn, ltd",
+        "beneficiary_address": {
+            "street_line1": "Karadžičova 8/A",
+            "city": "Bratislava",
+            "country": "SK",
+            "postcode": "821 08"
+        },
+        "bank_country": "GB",
+        "pooled": false,
+        "schemes": [
+            "swift"
+        ],
+        "estimated_time": {
+            "unit": "days",
+            "min": 1,
+            "max": 3
+        }
+    }
+]

@@ -22,6 +22,14 @@ public interface PaymentConfig
     String REVOLUT_BANK_CODE = "REVO";
 
     /**
+     * Onboard all bank accounts in to the service via bank API.
+     *
+     * @param owner the authenticated account as an owner of the all newly imported bank accounts
+     * @param bank  bank identification, the bank to sync bank accounts from
+     */
+    void initBankAccounts( @Nonnull LocalAccount owner, @Nonnull String bank );
+
+    /**
      * Returns the bank account for given ID owned by the specified owner.
      *
      * @param owner the authenticated account as an owner of the requested bank account
@@ -47,13 +55,22 @@ public interface PaymentConfig
                                               @Nullable String country );
 
     /**
+     * Returns the list of bank accounts that belongs to specified bank and owner.
+     *
+     * @param owner the authenticated account as an owner of the bank accounts
+     * @param bank  the bank code to filter out bank accounts only for this bank
+     * @return the list of filtered bank accounts
+     */
+    List<CompanyBankAccount> getBankAccounts( @Nonnull LocalAccount owner, @Nonnull String bank );
+
+    /**
      * Inserts the specified bank account for given owner.
      *
      * @param owner       the account as an owner of the newly added bank account
      * @param bankAccount the bank account to be inserted
      * @throws ApiValidationException if specified bank account is invalid
      */
-    void insertBankAccount( @Nonnull LocalAccount owner, @Nonnull CompanyBankAccount bankAccount );
+    void insert( @Nonnull LocalAccount owner, @Nonnull CompanyBankAccount bankAccount );
 
     /**
      * Updates the bank account with specified incoming changes.
@@ -62,7 +79,7 @@ public interface PaymentConfig
      * @param bankAccount the bank account with incoming changes
      * @throws WrongEntityOwner if bank account is found but has a different owner as the authenticated account
      */
-    void updateBankAccount( @Nonnull LocalAccount owner, @Nonnull CompanyBankAccount bankAccount );
+    void update( @Nonnull LocalAccount owner, @Nonnull CompanyBankAccount bankAccount );
 
     /**
      * Deletes the bank account specified by given ID. Only non primary bank account is being allowed to be deleted.

@@ -1,0 +1,32 @@
+[
+    {
+        "id": "ace7f9ac-4a89-11ea-b77f-2e728ce88120",
+        "name": "Main",
+        "balance": 0,
+        "currency": "EUR",
+        "state": "active",
+        "public": true,
+        "created_at": "2020-01-10T08:00:00.181066Z",
+        "updated_at": "2020-01-10T08:00:00.181066Z"
+    },
+    {
+        "id": "ace7fdf8-4a89-11ea-b77f-2e728ce88123",
+        "name": "Main",
+        "balance": 0,
+        "currency": "USD",
+        "state": "active",
+        "public": true,
+        "created_at": "2020-02-10T08:00:00.181045Z",
+        "updated_at": "2020-02-10T08:00:00.181045Z"
+    },
+    {
+        "id": "ace7ff88-4a89-11ea-b77f-2e728ce88129",
+        "name": "Main",
+        "balance": 0,
+        "currency": "GBP",
+        "state": "active",
+        "public": true,
+        "created_at": "2020-01-10T08:00:00.181069Z",
+        "updated_at": "2020-01-10T08:00:00.181069Z"
+    }
+]

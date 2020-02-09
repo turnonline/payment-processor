@@ -9,6 +9,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
 import org.ctoolkit.services.storage.EntityExecutor;
+import org.ctoolkit.services.task.TaskExecutor;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -39,6 +40,9 @@ public class PrimaryAlternativeBankAccountTest
 
     @Injectable
     private EntityExecutor datastore;
+
+    @Injectable
+    private TaskExecutor executor;
 
     private LocalAccount account;
 

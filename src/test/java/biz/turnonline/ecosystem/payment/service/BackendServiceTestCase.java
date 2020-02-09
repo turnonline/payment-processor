@@ -18,9 +18,9 @@
 
 package biz.turnonline.ecosystem.payment.service;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.appengine.api.urlfetch.URLFetchServicePb;
 import com.google.appengine.api.utils.SystemProperty;
@@ -78,9 +78,9 @@ public class BackendServiceTestCase
 
         try
         {
-            JsonFactory factory = new JsonFactory();
-            factory.enable( JsonParser.Feature.ALLOW_COMMENTS );
-            ObjectMapper mapper = new ObjectMapper( factory );
+            ObjectMapper mapper = new ObjectMapper()
+                    .enable( JsonParser.Feature.ALLOW_COMMENTS )
+                    .registerModule( new JavaTimeModule() );
 
             item = mapper.readValue( stream, valueType );
         }

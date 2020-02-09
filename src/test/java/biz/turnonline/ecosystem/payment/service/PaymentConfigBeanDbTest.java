@@ -97,7 +97,7 @@ public class PaymentConfigBeanDbTest
         bankAccount.setPrimary( false );
         bankAccount.setPaymentGate( PaymentGate.EPLATBY_VUB );
 
-        bean.insertBankAccount( lAccount, bankAccount );
+        bean.insert( lAccount, bankAccount );
 
         bankAccounts = bean.getBankAccounts( lAccount, null, null, null );
         assertThat( bankAccounts ).isNotNull();
@@ -105,7 +105,7 @@ public class PaymentConfigBeanDbTest
     }
 
     @Test
-    public void getBankAccounts()
+    public void getBankAccounts_Paging()
     {
         List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null );
         assertThat( bankAccounts ).isNotNull();
@@ -125,6 +125,33 @@ public class PaymentConfigBeanDbTest
         bankAccounts = bean.getBankAccounts( lAccount, 3, 3, null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 2 );
+    }
+
+    @Test
+    public void getBankAccounts_ByBankCode()
+    {
+        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, "0900" );
+        assertThat( bankAccounts ).isNotNull();
+        assertThat( bankAccounts ).hasSize( 1 );
+        assertThat( bankAccounts.get( 0 ).getOwner() ).isEqualTo( lAccount );
+        assertThat( bankAccounts.get( 0 ).getBankCode() ).isEqualTo( "0900" );
+
+        bankAccounts = bean.getBankAccounts( lAnother, "0900" );
+        assertThat( bankAccounts ).isNotNull();
+        assertThat( bankAccounts ).hasSize( 1 );
+        assertThat( bankAccounts.get( 0 ).getOwner() ).isEqualTo( lAnother );
+        assertThat( bankAccounts.get( 0 ).getBankCode() ).isEqualTo( "0900" );
+
+        // paging test
+        bankAccounts = bean.getBankAccounts( lAccount, "9952" );
+        assertThat( bankAccounts ).isNotNull();
+        assertThat( bankAccounts ).hasSize( 1 );
+        assertThat( bankAccounts.get( 0 ).getBankCode() ).isEqualTo( "9952" );
+
+        bankAccounts = bean.getBankAccounts( lAccount, "0200" );
+        assertThat( bankAccounts ).isNotNull();
+        assertThat( bankAccounts ).hasSize( 1 );
+        assertThat( bankAccounts.get( 0 ).getBankCode() ).isEqualTo( "0200" );
     }
 
     @Test
@@ -148,7 +175,7 @@ public class PaymentConfigBeanDbTest
         CompanyBankAccount bankAccount = bankAccounts.get( 0 );
         bankAccount.setPaymentGate( PaymentGate.TRANSFER );
 
-        bean.updateBankAccount( lAccount, bankAccount );
+        bean.update( lAccount, bankAccount );
     }
 
     @Test( expectedExceptions = WrongEntityOwner.class )
@@ -160,7 +187,7 @@ public class PaymentConfigBeanDbTest
         CompanyBankAccount bankAccount = bankAccounts.get( 0 );
         bankAccount.setPaymentGate( PaymentGate.EPLATBY_VUB );
 
-        bean.updateBankAccount( lAnother, bankAccount );
+        bean.update( lAnother, bankAccount );
     }
 
     @Test

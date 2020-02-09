@@ -55,6 +55,7 @@ public abstract class BankAccount
 
     private String branch;
 
+    @Index
     private String bankCode;
 
     @Index
@@ -288,6 +289,11 @@ public abstract class BankAccount
         if ( this.country != null )
         {
             this.country = this.country.toUpperCase();
+        }
+
+        if ( bankCode != null )
+        {
+            bankCode = bankCode.toUpperCase();
         }
     }
 

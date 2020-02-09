@@ -13,15 +13,12 @@
 package biz.turnonline.ecosystem.payment.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModel;
 
 import java.util.Objects;
 
 /**
  * The bank account resource.
  */
-@ApiModel( description = "The bank account resource." )
-@javax.annotation.Generated( value = "io.swagger.codegen.languages.JavaJerseyServerCodegen", date = "2020-02-08T09:25:51.345+01:00" )
 public class BankAccount
 {
     @JsonProperty( "id" )

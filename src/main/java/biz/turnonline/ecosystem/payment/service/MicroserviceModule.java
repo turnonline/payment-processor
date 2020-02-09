@@ -10,6 +10,8 @@ import biz.turnonline.ecosystem.payment.service.model.LocalAccountProviderImpl;
 import biz.turnonline.ecosystem.payment.service.model.PaymentBeanMapperConfig;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
 import biz.turnonline.ecosystem.payment.subscription.SubscriptionsModule;
+import biz.turnonline.ecosystem.revolut.business.facade.RevolutBusinessAdapterModule;
+import biz.turnonline.ecosystem.revolut.business.facade.RevolutBusinessClientModule;
 import biz.turnonline.ecosystem.steward.facade.AccountStewardAdapterModule;
 import biz.turnonline.ecosystem.steward.facade.AccountStewardClientModule;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -58,6 +60,8 @@ public class MicroserviceModule
         install( new AccountStewardAdapterModule() );
         install( new GoogleApiFirebaseModule() );
         install( new SubscriptionsModule() );
+        install( new RevolutBusinessClientModule() );
+        install( new RevolutBusinessAdapterModule() );
 
         bind( PaymentConfig.class ).to( PaymentConfigBean.class );
         bind( CodeBook.class ).to( CodeBookBean.class );

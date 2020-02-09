@@ -78,7 +78,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.insertBankAccount( account, dbBankAccount );
+                config.insert( account, dbBankAccount );
             }
         };
 
@@ -95,7 +95,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.insertBankAccount( account, dbBankAccount );
+                config.insert( account, dbBankAccount );
                 result = new ApiValidationException( "Validation failure" );
             }
         };
@@ -130,7 +130,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.insertBankAccount( account, dbBankAccount );
+                config.insert( account, dbBankAccount );
                 result = new IllegalArgumentException();
             }
         };
@@ -147,7 +147,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.insertBankAccount( account, dbBankAccount );
+                config.insert( account, dbBankAccount );
                 result = new RuntimeException();
             }
         };
@@ -322,7 +322,7 @@ public class BankAccountEndpointTest
                 config.getBankAccount( account, accountId );
                 result = dbBankAccount;
 
-                config.updateBankAccount( account, dbBankAccount );
+                config.update( account, dbBankAccount );
             }
         };
 
@@ -393,7 +393,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.updateBankAccount( account, dbBankAccount );
+                config.update( account, dbBankAccount );
                 result = new RuntimeException();
             }
         };
@@ -447,7 +447,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.updateBankAccount( account, dbBankAccount );
+                config.update( account, dbBankAccount );
                 result = new IllegalArgumentException();
             }
         };

@@ -79,7 +79,7 @@ public class BankAccountEndpoint
             dbBankAccount = mapper.map( bankAccount, CompanyBankAccount.class,
                     context );
 
-            config.insertBankAccount( account, dbBankAccount );
+            config.insert( account, dbBankAccount );
             result = mapper.map( dbBankAccount, BankAccount.class );
         }
         catch ( ApiValidationException e )
@@ -220,7 +220,7 @@ public class BankAccountEndpoint
             context.setProperty( LocalAccount.class, account );
             mapper.map( bankAccount, dbBankAccount, context );
 
-            config.updateBankAccount( account, dbBankAccount );
+            config.update( account, dbBankAccount );
             result = mapper.map( dbBankAccount, BankAccount.class );
         }
         catch ( ApiValidationException e )
@@ -403,6 +403,7 @@ public class BankAccountEndpoint
                                   User authUser )
             throws Exception
     {
-
+        LocalAccount account = common.checkAccount( authUser, request );
+        config.initBankAccounts( account, bankCode );
     }
 }
