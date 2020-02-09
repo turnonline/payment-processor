@@ -64,7 +64,7 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested, account )
         {
             {
-                tested.getBankAccounts( account, null, null, null );
+                tested.internalGetBankAccounts( account, null, null, null, null );
                 result = list;
 
                 account.getDomicile();
@@ -87,7 +87,7 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested, account )
         {
             {
-                tested.getBankAccounts( account, null, null, null );
+                tested.internalGetBankAccounts( account, null, null, null, null );
                 result = list;
 
                 account.getDomicile();
@@ -113,7 +113,7 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested )
         {
             {
-                tested.getBankAccounts( account, null, null, null );
+                tested.internalGetBankAccounts( account, null, null, null, null );
                 result = list;
             }
         };
@@ -135,7 +135,7 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested )
         {
             {
-                tested.getBankAccounts( account, null, null, null );
+                tested.internalGetBankAccounts( account, null, null, null, null );
                 result = list;
             }
         };
@@ -156,7 +156,7 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested )
         {
             {
-                tested.getBankAccounts( account, null, null, null );
+                tested.internalGetBankAccounts( account, null, null, null, null );
                 result = list;
             }
         };
@@ -181,7 +181,7 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested, account )
         {
             {
-                tested.getBankAccounts( account, null, null, null );
+                tested.internalGetBankAccounts( account, null, null, null, null );
                 result = list;
             }
         };
@@ -281,7 +281,7 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested, account )
         {
             {
-                tested.getBankAccounts( account, null, null, null );
+                tested.internalGetBankAccounts( account, null, null, null, null );
                 result = list;
 
                 account.getDomicile();
@@ -463,7 +463,7 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested, account )
         {
             {
-                tested.getBankAccounts( account, null, null, null );
+                tested.internalGetBankAccounts( account, null, null, null, null );
                 result = list;
 
                 account.getDomicile();
@@ -480,7 +480,7 @@ public class PrimaryAlternativeBankAccountTest
         new Expectations( tested, account )
         {
             {
-                tested.getBankAccounts( account, null, null, null );
+                tested.internalGetBankAccounts( account, null, null, null, null );
                 result = list;
 
                 account.getDomicile();

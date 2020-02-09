@@ -89,7 +89,7 @@ public class PaymentConfigBeanDbTest
             }
         };
 
-        bean.initBankAccounts( lAccount, REVOLUT_BANK_CODE );
+        bean.initBankAccounts( lAccount, REVOLUT_BANK_CODE.toLowerCase() );
 
         assertWithMessage( "Task to initialize bank accounts" )
                 .that( scheduledTask.get() )
@@ -142,7 +142,7 @@ public class PaymentConfigBeanDbTest
     {
         int originSize = 5;
 
-        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null );
+        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null, null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( originSize );
 
@@ -153,7 +153,7 @@ public class PaymentConfigBeanDbTest
 
         bean.insert( lAccount, bankAccount );
 
-        bankAccounts = bean.getBankAccounts( lAccount, null, null, null );
+        bankAccounts = bean.getBankAccounts( lAccount, null, null, null, null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 6 );
     }
@@ -161,22 +161,22 @@ public class PaymentConfigBeanDbTest
     @Test
     public void getBankAccounts_Paging()
     {
-        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null );
+        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null, null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 5 );
 
-        bankAccounts = bean.getBankAccounts( lAnother, 0, 10, null );
+        bankAccounts = bean.getBankAccounts( lAnother, 0, 10, null, null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 1 );
 
         assertThat( bankAccounts.get( 0 ).getOwner() ).isEqualTo( lAnother );
 
         // paging test
-        bankAccounts = bean.getBankAccounts( lAccount, 0, 3, null );
+        bankAccounts = bean.getBankAccounts( lAccount, 0, 3, null, null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 3 );
 
-        bankAccounts = bean.getBankAccounts( lAccount, 3, 3, null );
+        bankAccounts = bean.getBankAccounts( lAccount, 3, 3, null, null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 2 );
     }
@@ -211,11 +211,11 @@ public class PaymentConfigBeanDbTest
     @Test
     public void getBankAccounts_CountryFilter()
     {
-        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, "SK" );
+        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, "SK", null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 3 );
 
-        bankAccounts = bean.getBankAccounts( lAccount, 0, 10, "cz" );
+        bankAccounts = bean.getBankAccounts( lAccount, 0, 10, "cz", null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 2 );
     }
@@ -223,7 +223,7 @@ public class PaymentConfigBeanDbTest
     @Test
     public void updateBankAccount_OwnerOk()
     {
-        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null );
+        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null, null );
         assertThat( bankAccounts ).isNotEmpty();
 
         CompanyBankAccount bankAccount = bankAccounts.get( 0 );
@@ -235,7 +235,7 @@ public class PaymentConfigBeanDbTest
     @Test( expectedExceptions = WrongEntityOwner.class )
     public void updateBankAccount_WrongOwner()
     {
-        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, null, null, null );
+        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, null, null, null, null );
         assertThat( bankAccounts ).isNotEmpty();
 
         CompanyBankAccount bankAccount = bankAccounts.get( 0 );
@@ -247,7 +247,7 @@ public class PaymentConfigBeanDbTest
     @Test
     public void deleteBankAccount()
     {
-        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null );
+        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null, null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 5 );
 
@@ -259,7 +259,7 @@ public class PaymentConfigBeanDbTest
         assertThat( deleted ).isEquivalentAccordingToCompareTo( bankAccount );
 
         // after deletion number of records check
-        bankAccounts = bean.getBankAccounts( lAccount, null, null, null );
+        bankAccounts = bean.getBankAccounts( lAccount, null, null, null, null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 4 );
     }
@@ -267,7 +267,7 @@ public class PaymentConfigBeanDbTest
     @Test( expectedExceptions = WrongEntityOwner.class )
     public void deleteBankAccount_WrongOwner()
     {
-        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null );
+        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null, null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 5 );
 
@@ -291,7 +291,7 @@ public class PaymentConfigBeanDbTest
     @Test
     public void markBankAccountAsPrimary()
     {
-        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null );
+        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null, null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 5 );
 
@@ -308,7 +308,7 @@ public class PaymentConfigBeanDbTest
         assertThat( primary ).isEquivalentAccordingToCompareTo( bankAccount );
         assertThat( primary.isPrimary() ).isTrue();
 
-        bankAccounts = bean.getBankAccounts( lAccount, null, null, null );
+        bankAccounts = bean.getBankAccounts( lAccount, null, null, null, null );
         assertThat( bankAccounts ).isNotNull();
         numberOfPrimary = bankAccounts.stream().filter( new PaymentConfigBean.BankAccountPrimary() ).count();
         assertWithMessage( "only single record is being marked as a primary bank account" )
@@ -319,7 +319,7 @@ public class PaymentConfigBeanDbTest
     @Test( expectedExceptions = WrongEntityOwner.class )
     public void markBankAccountAsPrimary_WrongOwner()
     {
-        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null );
+        List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( lAccount, 0, 10, null, null );
         assertThat( bankAccounts ).isNotNull();
         assertThat( bankAccounts ).hasSize( 5 );
 

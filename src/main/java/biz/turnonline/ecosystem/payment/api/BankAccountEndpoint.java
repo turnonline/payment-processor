@@ -138,7 +138,7 @@ public class BankAccountEndpoint
             }
             else
             {
-                bankAccounts = config.getBankAccounts( account, offset, limit, country );
+                bankAccounts = config.getBankAccounts( account, offset, limit, country, bankCode );
             }
 
             MappingContext context = new MappingContext( new HashMap<>() );

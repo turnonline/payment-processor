@@ -45,16 +45,18 @@ public interface PaymentConfig
     /**
      * Returns the list of filtered bank accounts that's being owned by specified owner.
      *
-     * @param owner   the authenticated account as an owner of the bank accounts
-     * @param offset  the position of the first account to retrieve
-     * @param limit   the maximum number of accounts to retrieve
-     * @param country the country of the bank where bank account has been opened
+     * @param owner    the authenticated account as an owner of the bank accounts
+     * @param offset   the position of the first account to retrieve
+     * @param limit    the maximum number of accounts to retrieve
+     * @param country  the country of the bank where bank account has been opened
+     * @param bankCode the result should be limited to bank identified by this code
      * @return the list of filtered bank accounts
      */
     List<CompanyBankAccount> getBankAccounts( @Nonnull LocalAccount owner,
                                               @Nullable Integer offset,
                                               @Nullable Integer limit,
-                                              @Nullable String country );
+                                              @Nullable String country,
+                                              @Nullable String bankCode );
 
     /**
      * Returns the list of bank accounts that belongs to specified bank and owner.

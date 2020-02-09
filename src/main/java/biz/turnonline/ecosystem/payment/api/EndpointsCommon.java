@@ -49,7 +49,7 @@ class EndpointsCommon
 
     static String bankCodeNotFoundMessage( String code )
     {
-        String message = "Bank code with code '%s' has not been found";
+        String message = "Bank with code '%s' has not been found";
         return String.format( message, code );
     }
 

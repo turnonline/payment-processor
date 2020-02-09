@@ -139,7 +139,7 @@
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-revolut-business-client</artifactId>
-            <version>1.0-20200208.045400-2</version>
+            <version>1.0-20200209.091757-3</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

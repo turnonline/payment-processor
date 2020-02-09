@@ -187,7 +187,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getBankAccounts( account, 5, 15, null );
+                config.getBankAccounts( account, 5, 15, null, null );
 
                 //noinspection unchecked
                 mapper.mapAsList( ( List<CompanyBankAccount> ) any,
@@ -210,7 +210,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getBankAccounts( account, anyInt, anyInt, null );
+                config.getBankAccounts( account, anyInt, anyInt, null, null );
                 result = new RuntimeException();
             }
         };

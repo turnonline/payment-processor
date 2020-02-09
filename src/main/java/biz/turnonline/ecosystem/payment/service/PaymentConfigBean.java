@@ -6,6 +6,7 @@ import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import nl.garvelink.iban.IBAN;
@@ -69,7 +70,7 @@ class PaymentConfigBean
         checkNotNull( owner, TEMPLATE, "LocalAccount" );
         checkNotNull( bank, TEMPLATE, "Bank code" );
 
-        BankCode bankCode = codeBook.getBankCode( owner, bank, null, null );
+        BankCode bankCode = codeBook.getBankCode( owner, bank.toUpperCase(), null, null );
         if ( bankCode == null )
         {
             throw new BankCodeNotFound( bank );
@@ -123,9 +124,10 @@ class PaymentConfigBean
     public List<CompanyBankAccount> getBankAccounts( @Nonnull LocalAccount account,
                                                      @Nullable Integer offset,
                                                      @Nullable Integer limit,
-                                                     @Nullable String country )
+                                                     @Nullable String country,
+                                                     @Nullable String bankCode )
     {
-        return internalGetBankAccounts( account, offset, limit, country, null );
+        return internalGetBankAccounts( account, offset, limit, country, bankCode );
     }
 
     @Override
@@ -135,11 +137,12 @@ class PaymentConfigBean
         return internalGetBankAccounts( owner, null, null, null, bank );
     }
 
-    private List<CompanyBankAccount> internalGetBankAccounts( @Nonnull LocalAccount account,
-                                                              @Nullable Integer offset,
-                                                              @Nullable Integer limit,
-                                                              @Nullable String country,
-                                                              @Nullable String bankCode )
+    @VisibleForTesting
+    List<CompanyBankAccount> internalGetBankAccounts( @Nonnull LocalAccount account,
+                                                      @Nullable Integer offset,
+                                                      @Nullable Integer limit,
+                                                      @Nullable String country,
+                                                      @Nullable String bankCode )
     {
         checkNotNull( account, "LocalAccount cannot be null" );
         Criteria<CompanyBankAccount> criteria = Criteria.of( CompanyBankAccount.class );
@@ -209,7 +212,7 @@ class PaymentConfigBean
                 checkNotNull( id, TEMPLATE, "Bank account ID" ) );
 
         // mark old primary bank accounts to not primary
-        List<CompanyBankAccount> bankAccounts = getBankAccounts( account, null, null, null );
+        List<CompanyBankAccount> bankAccounts = internalGetBankAccounts( account, null, null, null, null );
 
         Collection<CompanyBankAccount> primary = bankAccounts.stream().filter( new BankAccountPrimary() ).collect( Collectors.toList() );
 
@@ -247,7 +250,7 @@ class PaymentConfigBean
 
     CompanyBankAccount getInternalPrimaryBankAccount( @Nonnull LocalAccount account, @Nullable String country )
     {
-        List<CompanyBankAccount> list = getBankAccounts( checkNotNull( account, TEMPLATE, "LocalAccount" ), null, null, null );
+        List<CompanyBankAccount> list = internalGetBankAccounts( checkNotNull( account, TEMPLATE, "LocalAccount" ), null, null, null, null );
         Collections.sort( list );
 
         country = country == null ? account.getDomicile().name() : country;
@@ -281,7 +284,7 @@ class PaymentConfigBean
         country = country == null ? account.getDomicile().name() : country;
         locale = account.getLocale( locale );
 
-        List<CompanyBankAccount> list = getBankAccounts( account, offset, limit, null );
+        List<CompanyBankAccount> list = internalGetBankAccounts( account, offset, limit, null, null );
         list.sort( new BankAccountSellerSorting( country ) );
         Iterator<CompanyBankAccount> iterator = list.iterator();
 
