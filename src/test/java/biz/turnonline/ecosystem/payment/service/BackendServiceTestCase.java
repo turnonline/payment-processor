@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Comvai, s.r.o. All Rights Reserved.
+ * Copyright (c) 2020 TurnOnline.biz s.r.o. All Rights Reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
