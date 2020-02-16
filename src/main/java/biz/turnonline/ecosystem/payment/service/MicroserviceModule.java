@@ -1,6 +1,6 @@
 package biz.turnonline.ecosystem.payment.service;
 
-import biz.turnonline.ecosystem.payment.oauth.RevolutCertDetails;
+import biz.turnonline.ecosystem.payment.oauth.RevolutCertMetadata;
 import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
@@ -113,7 +113,7 @@ public class MicroserviceModule
             factory.register( CompanyBankAccount.class );
             factory.register( BeneficiaryBankAccount.class );
             factory.register( Timestamp.class );
-            factory.register( RevolutCertDetails.class );
+            factory.register( RevolutCertMetadata.class );
         }
     }
 }

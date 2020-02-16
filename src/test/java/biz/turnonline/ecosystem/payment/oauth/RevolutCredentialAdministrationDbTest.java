@@ -14,7 +14,7 @@ import mockit.Tested;
 import mockit.Verifications;
 import org.testng.annotations.Test;
 
-import static biz.turnonline.ecosystem.payment.oauth.RevolutCertDetails.PRIVATE_KEY_NAME;
+import static biz.turnonline.ecosystem.payment.oauth.RevolutCertMetadata.PRIVATE_KEY_NAME;
 import static biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration.REFRESH_TOKEN_NAME;
 import static com.google.common.truth.Truth.assertWithMessage;
 
@@ -60,9 +60,15 @@ public class RevolutCredentialAdministrationDbTest
     {
         String clientId = "123";
         tested.storeClientId( clientId );
+        // mark as granted to check later whether new authorisation code will change it to false
+        tested.get().accessGranted().save();
 
         String code = "123";
         tested.storeCode( code );
+
+        assertWithMessage( "Revolut access authorised" )
+                .that( tested.get().isAccessAuthorised() )
+                .isFalse();
 
         assertWithMessage( "Revolut stored authorisation code" )
                 .that( tested.getCode( clientId ) )
@@ -72,7 +78,7 @@ public class RevolutCredentialAdministrationDbTest
     @Test
     public void clientId()
     {
-        RevolutCertDetails details = tested.get().setClientId( CLIENT_ID );
+        RevolutCertMetadata details = tested.get().setClientId( CLIENT_ID );
         details.save();
 
         // first not cached yet
@@ -96,6 +102,14 @@ public class RevolutCredentialAdministrationDbTest
     }
 
     @Test
+    public void clientId_NotSetYet()
+    {
+        assertWithMessage( "Revolut Client ID" )
+                .that( tested.clientId() )
+                .isNull();
+    }
+
+    @Test
     public void issuer()
     {
         assertWithMessage( "Revolut issuer (env variable)" )
@@ -107,7 +121,7 @@ public class RevolutCredentialAdministrationDbTest
     public void getCode()
     {
         String code = "oa_sand_AmHJf..";
-        RevolutCertDetails details = tested.get().setCode( code );
+        RevolutCertMetadata details = tested.get().setCode( code );
         details.save();
 
         assertWithMessage( "Revolut authorisation code" )
@@ -118,6 +132,9 @@ public class RevolutCredentialAdministrationDbTest
     @Test
     public void getRefreshToken()
     {
+        // set precondition first
+        tested.get().accessGranted();
+
         new Expectations( tested )
         {
             {
@@ -148,8 +165,29 @@ public class RevolutCredentialAdministrationDbTest
     }
 
     @Test
+    public void getRefreshToken_AccessNotGrantedYet()
+    {
+        new Expectations( tested )
+        {
+            {
+                tested.readRefreshToken( client );
+                result = REFRESH_TOKEN;
+                times = 0;
+            }
+        };
+
+        assertWithMessage( "Revolut refresh token" )
+                .that( tested.getRefreshToken( CLIENT_ID ) )
+                .isNull();
+    }
+
+    @Test
     public void getRefreshToken_CheckAccessRequest()
     {
+        // set precondition first
+        tested.get().accessGranted();
+
+        // test call
         tested.getRefreshToken( CLIENT_ID );
 
         new Verifications()
@@ -172,6 +210,9 @@ public class RevolutCredentialAdministrationDbTest
     @Test
     public void getRefreshToken_Exception()
     {
+        // set precondition first
+        tested.get().accessGranted();
+
         new Expectations( tested )
         {
             {
@@ -215,6 +256,23 @@ public class RevolutCredentialAdministrationDbTest
         assertWithMessage( "Revolut cached private key" )
                 .that( tested.getSecretKey( CLIENT_ID ) )
                 .isNotNull();
+    }
+
+    @Test
+    public void getSecretKey_NotSetYet()
+    {
+        new Expectations( tested )
+        {
+            {
+                tested.readSecretKey( client, PRIVATE_KEY_NAME );
+                result = null;
+                times = 1;
+            }
+        };
+
+        assertWithMessage( "Revolut private key" )
+                .that( tested.getSecretKey( CLIENT_ID ) )
+                .isNull();
     }
 
     @Test
@@ -275,6 +333,10 @@ public class RevolutCredentialAdministrationDbTest
                 .that( tested.getRefreshToken( CLIENT_ID ) )
                 .isEqualTo( REFRESH_TOKEN );
 
+        assertWithMessage( "Revolut access authorised" )
+                .that( tested.get().isAccessAuthorised() )
+                .isTrue();
+
         assertWithMessage( "Revolut authorisation code has been consumed" )
                 .that( tested.getCode( CLIENT_ID ) )
                 .isNull();
@@ -321,6 +383,10 @@ public class RevolutCredentialAdministrationDbTest
         assertWithMessage( "Revolut refresh token" )
                 .that( tested.getRefreshToken( CLIENT_ID ) )
                 .isEqualTo( REFRESH_TOKEN );
+
+        assertWithMessage( "Revolut access authorised" )
+                .that( tested.get().isAccessAuthorised() )
+                .isTrue();
 
         assertWithMessage( "Revolut authorisation code has been consumed" )
                 .that( tested.getCode( CLIENT_ID ) )

@@ -1,5 +1,8 @@
 package biz.turnonline.ecosystem.payment.oauth;
 
+import com.googlecode.objectify.Key;
+import org.apache.http.entity.ContentType;
+import org.ctoolkit.services.task.TaskExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +11,8 @@ import javax.inject.Singleton;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Enumeration;
 
 /**
@@ -26,15 +31,41 @@ public class RevolutOauth2AuthRedirect
 
     private final RevolutCredentialAdministration administration;
 
+    private final TaskExecutor executor;
+
     @Inject
-    public RevolutOauth2AuthRedirect( RevolutCredentialAdministration administration )
+    public RevolutOauth2AuthRedirect( RevolutCredentialAdministration administration,
+                                      TaskExecutor executor )
     {
         this.administration = administration;
+        this.executor = executor;
     }
 
     @Override
-    protected void doGet( HttpServletRequest request, HttpServletResponse response )
+    protected void doGet( HttpServletRequest request, HttpServletResponse response ) throws IOException
     {
+        String referer = request.getHeader( "referer" );
+        String allowed;
+
+        if ( referer != null && !referer.endsWith( "/" ) )
+        {
+            allowed = referer + "/";
+        }
+        else
+        {
+            allowed = referer;
+        }
+
+        // basic check of allowed referer
+        if ( !( "https://business.revolut.com/".equalsIgnoreCase( allowed )
+                || "https://sandbox-b2b.revolut.com/".equalsIgnoreCase( allowed ) ) )
+        {
+            LOGGER.warn( "Not allowed referer " + referer );
+            response.setStatus( HttpServletResponse.SC_UNAUTHORIZED );
+            responseUnauthorized( response );
+            return;
+        }
+
         String[] path = request.getRequestURI().split( "/" );
 
         for ( int index = 1; index < path.length; index++ )
@@ -66,16 +97,84 @@ public class RevolutOauth2AuthRedirect
         {
             try
             {
-                administration.storeCode( code );
+                Key<RevolutCertMetadata> detailsKey = administration.storeCode( code );
+                executor.schedule( new RevolutExchangeAuthorisationCode( detailsKey ) );
+
+                response.setStatus( HttpServletResponse.SC_OK );
+                responseOk( response );
             }
             catch ( Exception e )
             {
-                LOGGER.error( "Storing of incoming Authorisation Code has failed", e );
+                LOGGER.error( "Authorisation Code processing has failed", e );
                 response.setStatus( HttpServletResponse.SC_INTERNAL_SERVER_ERROR );
-                return;
+                responseFailure( response );
             }
         }
+        else
+        {
+            response.setStatus( HttpServletResponse.SC_BAD_REQUEST );
+            responseInvalid( response );
+        }
 
-        response.setStatus( HttpServletResponse.SC_OK );
+    }
+
+    private void responseOk( HttpServletResponse response ) throws IOException
+    {
+        response.setContentType( ContentType.TEXT_HTML.getMimeType() );
+
+        PrintWriter out = response.getWriter();
+        String body = "<html>\n" +
+                "<body>\n" +
+                "<h1>Authorisation code processing has started</h1>\n" +
+                "</body>\n" +
+                "</html>";
+
+        out.println( body );
+        out.close();
+    }
+
+    private void responseUnauthorized( HttpServletResponse response ) throws IOException
+    {
+        response.setContentType( ContentType.TEXT_HTML.getMimeType() );
+
+        PrintWriter out = response.getWriter();
+        String body = "<html>\n" +
+                "<body>\n" +
+                "<h1>Unauthorized</h1>\n" +
+                "</body>\n" +
+                "</html>";
+
+        out.println( body );
+        out.close();
+    }
+
+    private void responseInvalid( HttpServletResponse response ) throws IOException
+    {
+        response.setContentType( ContentType.TEXT_HTML.getMimeType() );
+
+        PrintWriter out = response.getWriter();
+        String body = "<html>\n" +
+                "<body>\n" +
+                "<h1>Invalid request</h1>\n" +
+                "</body>\n" +
+                "</html>";
+
+        out.println( body );
+        out.close();
+    }
+
+    private void responseFailure( HttpServletResponse response ) throws IOException
+    {
+        response.setContentType( ContentType.TEXT_HTML.getMimeType() );
+
+        PrintWriter out = response.getWriter();
+        String body = "<html>\n" +
+                "<body>\n" +
+                "<h1>Something went wrong, try again please</h1>\n" +
+                "</body>\n" +
+                "</html>";
+
+        out.println( body );
+        out.close();
     }
 }
