@@ -1,5 +1,7 @@
 package biz.turnonline.ecosystem.payment.service;
 
+import biz.turnonline.ecosystem.payment.oauth.RevolutCertDetails;
+import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
@@ -12,6 +14,7 @@ import biz.turnonline.ecosystem.payment.service.model.Timestamp;
 import biz.turnonline.ecosystem.payment.subscription.SubscriptionsModule;
 import biz.turnonline.ecosystem.revolut.business.facade.RevolutBusinessAdapterModule;
 import biz.turnonline.ecosystem.revolut.business.facade.RevolutBusinessClientModule;
+import biz.turnonline.ecosystem.revolut.business.oauth.RevolutCredential;
 import biz.turnonline.ecosystem.steward.facade.AccountStewardAdapterModule;
 import biz.turnonline.ecosystem.steward.facade.AccountStewardClientModule;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -67,6 +70,8 @@ public class MicroserviceModule
         bind( CodeBook.class ).to( CodeBookBean.class );
         bind( LocalAccountProvider.class ).to( LocalAccountProviderImpl.class );
         bind( Cache.class ).toProvider( JCacheProvider.class ).in( Singleton.class );
+        bind( RevolutCredential.Certificate.class ).to( RevolutCredentialAdministration.class );
+        bind( RevolutCredential.Storage.class ).to( RevolutCredentialAdministration.class );
 
         Multibinder<EntityRegistrar> registrar = Multibinder.newSetBinder( binder(), EntityRegistrar.class );
         registrar.addBinding().to( Entities.class );
@@ -108,6 +113,7 @@ public class MicroserviceModule
             factory.register( CompanyBankAccount.class );
             factory.register( BeneficiaryBankAccount.class );
             factory.register( Timestamp.class );
+            factory.register( RevolutCertDetails.class );
         }
     }
 }

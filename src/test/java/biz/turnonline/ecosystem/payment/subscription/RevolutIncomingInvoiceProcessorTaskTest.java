@@ -19,7 +19,7 @@ import mockit.MockUp;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
-import org.ctoolkit.restapi.client.AuthRequest;
+import org.ctoolkit.restapi.client.PayloadRequest;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -80,7 +80,7 @@ public class RevolutIncomingInvoiceProcessorTaskTest
     private PaymentConfig config;
 
     @Mocked
-    private AuthRequest<?> authBy;
+    private PayloadRequest<?> payloadRequest;
 
     private IncomingInvoice invoice;
 
@@ -106,7 +106,7 @@ public class RevolutIncomingInvoiceProcessorTaskTest
         new Expectations()
         {
             {
-                authBy.finish();
+                payloadRequest.finish();
                 result = new CreatePaymentDraftResponse().id( UUID.fromString( PAYMENT_DRAFT_ID ) );
                 minTimes = 0;
             }

@@ -72,10 +72,7 @@ class RevolutDebtorBankAccountsInit
     {
         LocalAccount owner = workWith();
 
-        List<Account> accounts = facade.list( Account.class )
-                .authBy( "TOKEN" )
-                .bearer()
-                .finish();
+        List<Account> accounts = facade.list( Account.class ).finish();
 
         if ( accounts == null || accounts.isEmpty() )
         {
@@ -94,10 +91,7 @@ class RevolutDebtorBankAccountsInit
         {
             String accountId = next.getId().toString();
             Identifier ofAccount = new Identifier( accountId );
-            List<AccountBankDetailsItem> details = facade.list( AccountBankDetailsItem.class, ofAccount )
-                    .authBy( "TOKEN" )
-                    .bearer()
-                    .finish();
+            List<AccountBankDetailsItem> details = facade.list( AccountBankDetailsItem.class, ofAccount ).finish();
 
             for ( AccountBankDetailsItem detail : details )
             {

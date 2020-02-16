@@ -3,6 +3,7 @@ package biz.turnonline.ecosystem.payment.oauth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,14 @@ public class RevolutOauth2AuthRedirect
     private static final long serialVersionUID = 1L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger( RevolutOauth2AuthRedirect.class );
+
+    private final RevolutCredentialAdministration administration;
+
+    @Inject
+    public RevolutOauth2AuthRedirect( RevolutCredentialAdministration administration )
+    {
+        this.administration = administration;
+    }
 
     @Override
     protected void doGet( HttpServletRequest request, HttpServletResponse response )
@@ -51,6 +60,20 @@ public class RevolutOauth2AuthRedirect
             name = headerNames.nextElement();
             value = request.getHeader( name );
             LOGGER.info( "Request header [" + name + " - " + value + "]" );
+        }
+
+        if ( code != null )
+        {
+            try
+            {
+                administration.storeCode( code );
+            }
+            catch ( Exception e )
+            {
+                LOGGER.error( "Storing of incoming Authorisation Code has failed", e );
+                response.setStatus( HttpServletResponse.SC_INTERNAL_SERVER_ERROR );
+                return;
+            }
         }
 
         response.setStatus( HttpServletResponse.SC_OK );

@@ -28,6 +28,7 @@ import java.util.List;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.TRUST_PAY_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.model.FormOfPayment.BANK_TRANSFER;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_AUDIENCE;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_ID;
@@ -135,7 +136,7 @@ class ProductBillingChangesSubscription
         {
             case "IncomingInvoice":
             {
-                IncomingInvoice invoice = fromString( data, IncomingInvoice.class );
+                IncomingInvoice invoice = command.fromData( IncomingInvoice.class );
                 DateTime last = delete && publishTime != null ? publishTime : invoice.getModificationDate();
 
                 Timestamp timestamp = Timestamp.of( dataType, uniqueKey, account, last );
@@ -163,7 +164,7 @@ class ProductBillingChangesSubscription
                 }
 
                 String method = payment.getMethod();
-                if ( !Strings.isNullOrEmpty( method ) && !"BANK_TRANSFER".equals( method ) )
+                if ( !Strings.isNullOrEmpty( method ) && !BANK_TRANSFER.name().equals( method ) )
                 {
                     LOGGER.warn( "Incoming invoice identified by '"
                             + uniqueKey
@@ -198,7 +199,7 @@ class ProductBillingChangesSubscription
             }
             case "PurchaseOrder":
             {
-                PurchaseOrder order = fromString( data, PurchaseOrder.class );
+                PurchaseOrder order = command.fromData( PurchaseOrder.class );
                 DateTime last = delete && publishTime != null ? publishTime : order.getModificationDate();
 
                 Timestamp timestamp = Timestamp.of( dataType, uniqueKey, account, last );

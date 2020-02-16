@@ -15,7 +15,7 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
-import org.ctoolkit.restapi.client.AuthRequest;
+import org.ctoolkit.restapi.client.PayloadRequest;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -67,7 +67,7 @@ public class RevolutBeneficiarySyncTaskTest
     private CodeBook codeBook;
 
     @Mocked
-    private AuthRequest<?> authBy;
+    private PayloadRequest<?> authBy;
 
     private IncomingInvoice invoice;
 

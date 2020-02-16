@@ -13,7 +13,7 @@ import mockit.MockUp;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
-import org.ctoolkit.restapi.client.AuthRequest;
+import org.ctoolkit.restapi.client.ListRetrievalRequest;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -53,7 +53,7 @@ public class RevolutDebtorBankAccountsInitTest
     private CodeBook codeBook;
 
     @Mocked
-    private AuthRequest<?> authBy;
+    private ListRetrievalRequest<?> authBy;
 
     private LocalAccount account = new LocalAccount( new biz.turnonline.ecosystem.steward.model.Account()
             .setId( 18495L )

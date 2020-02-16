@@ -32,7 +32,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 class RevolutBeneficiarySyncTask
         extends JsonTask<IncomingInvoice>
 {
-    private static final long serialVersionUID = 8592780869926520879L;
+    private static final long serialVersionUID = 4231567939684938821L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger( RevolutBeneficiarySyncTask.class );
 
@@ -155,8 +155,6 @@ class RevolutBeneficiarySyncTask
 
         Counterparty counterparty = facade.insert( request )
                 .answerBy( Counterparty.class )
-                .authBy( "TODO TOKEN" )
-                .bearer()
                 .finish();
 
         bankAccount.setExternalId( syncBank, counterparty.getId().toString() );

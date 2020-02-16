@@ -45,7 +45,7 @@ class RevolutIncomingInvoiceProcessorTask
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( RevolutIncomingInvoiceProcessorTask.class );
 
-    private static final long serialVersionUID = -7910527569620909467L;
+    private static final long serialVersionUID = -4932928259516372783L;
 
     private final Key<CompanyBankAccount> debtorBankAccountKey;
 
@@ -174,8 +174,6 @@ class RevolutIncomingInvoiceProcessorTask
 
         CreatePaymentDraftResponse response = facade.insert( request )
                 .answerBy( CreatePaymentDraftResponse.class )
-                .authBy( "TOKEN" )
-                .bearer()
                 .finish();
 
     }

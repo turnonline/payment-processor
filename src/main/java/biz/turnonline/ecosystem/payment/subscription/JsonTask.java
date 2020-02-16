@@ -2,9 +2,8 @@ package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.payment.service.NoRetryException;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import com.google.api.services.pubsub.model.PubsubMessage;
 import com.googlecode.objectify.Key;
-import org.ctoolkit.restapi.client.pubsub.PubsubMessageListener;
+import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.ctoolkit.services.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +21,10 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  */
 public abstract class JsonTask<T>
         extends Task<T>
-        implements PubsubMessageListener
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( JsonTask.class );
 
-    private static final long serialVersionUID = 8448437186747171180L;
+    private static final long serialVersionUID = -1531396992058227539L;
 
     private final Key<LocalAccount> accountKey;
 
@@ -65,7 +63,7 @@ public abstract class JsonTask<T>
 
     /**
      * De-serializes the JSON by the same implementation as Pub/Sub,
-     * see {@link PubsubMessageListener#fromString(String, Class)}
+     * see {@link PubsubCommand#fromString(String, Class)}
      *
      * @return the de-serialized instance
      */
@@ -75,7 +73,7 @@ public abstract class JsonTask<T>
         try
         {
             Class<T> type = checkNotNull( type(), "Data type can't be null" );
-            return fromString( json, type );
+            return PubsubCommand.fromString( json, type );
         }
         catch ( IOException e )
         {
@@ -108,15 +106,4 @@ public abstract class JsonTask<T>
      * @return the JSON data type
      */
     protected abstract Class<T> type();
-
-    /**
-     * TODO will be refactored once PubsubMessageListener functionality is moved to PubsubCommand
-     * This task implements {@link PubsubMessageListener} only in order to reuse
-     * the {@link PubsubMessageListener#fromString(String, Class)} method.
-     */
-    @Override
-    public final void onMessage( @Nonnull PubsubMessage message, @Nonnull String subscription )
-    {
-        throw new IllegalArgumentException( "Not intended to be called" );
-    }
 }

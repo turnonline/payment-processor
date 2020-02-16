@@ -14,7 +14,7 @@
     <packaging>war</packaging>
     <name>Payment Processor</name>
     <description>TurnOnline.biz Ecosystem Payment Processor REST API microservice</description>
-    <url>https://payment-processor-dot-turn-online-eu.appspot.com/api/explorer</url>
+    <url>https://developers.turnonline.biz/docs/payment.turnon.cloud/1</url>
 
     <scm>
         <connection>scm:git:[fetch=]git@github.com:turnonline/payment-processor.git</connection>
@@ -73,6 +73,10 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <argLine>-Xmx256m ${jmockit.setting}</argLine>
+                    <environmentVariables>
+                        <!-- Expected by unit tests -->
+                        <ENDPOINTS_SERVICE_NAME>payment.service.cloud</ENDPOINTS_SERVICE_NAME>
+                    </environmentVariables>
                 </configuration>
             </plugin>
         </plugins>
@@ -111,7 +115,7 @@
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-microservice-bom</artifactId>
-                <version>1.9.77</version>
+                <version>1.9.78-20200214.073640-2</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -139,7 +143,12 @@
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-revolut-business-client</artifactId>
-            <version>1.0-20200209.091757-3</version>
+            <version>1.0-20200215.113424-5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.cloud</groupId>
+            <artifactId>google-cloud-secretmanager</artifactId>
+            <version>0.2.1</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>

@@ -93,7 +93,7 @@ public class AccountStewardChangesSubscription
                 + " with length: "
                 + data.length() + " and unique key: '" + uniqueKey + "'" + ( delete ? " to be deleted" : "" ) );
 
-        Account account = fromString( data, Account.class );
+        Account account = command.fromData( Account.class );
         LocalAccount localAccount = lap.initGet( new LocalAccountProvider.Builder()
                 .accountId( command.getAccountId() )
                 .email( command.getAccountEmail() )
