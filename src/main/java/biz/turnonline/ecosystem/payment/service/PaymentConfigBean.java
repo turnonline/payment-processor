@@ -20,6 +20,9 @@ package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
+import biz.turnonline.ecosystem.payment.api.model.Certificate;
+import biz.turnonline.ecosystem.payment.oauth.RevolutCertMetadata;
+import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
@@ -49,6 +52,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -74,19 +78,28 @@ class PaymentConfigBean
 
     private final TaskExecutor executor;
 
+    private final RevolutCredentialAdministration revolut;
+
     @Inject
-    PaymentConfigBean( EntityExecutor datastore, CodeBook codeBook, TaskExecutor executor )
+    PaymentConfigBean( EntityExecutor datastore,
+                       CodeBook codeBook,
+                       TaskExecutor executor,
+                       RevolutCredentialAdministration revolut )
     {
         this.datastore = datastore;
         this.codeBook = codeBook;
         this.executor = executor;
+        this.revolut = revolut;
     }
 
     @Override
-    public void initBankAccounts( @Nonnull LocalAccount owner, @Nonnull String bank )
+    public Certificate enableApiAccess( @Nonnull LocalAccount owner,
+                                        @Nonnull String bank,
+                                        @Nonnull Certificate certificate )
     {
         checkNotNull( owner, TEMPLATE, "LocalAccount" );
         checkNotNull( bank, TEMPLATE, "Bank code" );
+        checkNotNull( certificate, TEMPLATE, "Certificate" );
 
         BankCode bankCode = codeBook.getBankCode( owner, bank.toUpperCase(), null, null );
         if ( bankCode == null )
@@ -96,7 +109,25 @@ class PaymentConfigBean
 
         if ( REVOLUT_BANK_CODE.equals( bankCode.getCode() ) )
         {
+            RevolutCertMetadata metadata = revolut.get();
+            Optional<String> clientId = Optional.ofNullable( certificate.getClientId() );
+            clientId.ifPresent( metadata::setClientId );
+
+            Optional<String> keyName = Optional.ofNullable( certificate.getKeyName() );
+            keyName.ifPresent( metadata::setKeyName );
+
+            if ( clientId.isPresent() || keyName.isPresent() )
+            {
+                metadata.save();
+            }
+
             executor.schedule( new RevolutDebtorBankAccountsInit( owner.entityKey() ) );
+
+            return new Certificate()
+                    .accessAuthorised( metadata.isAccessAuthorised() )
+                    .authorisedOn( metadata.getAuthorisedOn() )
+                    .clientId( metadata.getClientId() )
+                    .keyName( metadata.getKeyName() );
         }
         else
         {

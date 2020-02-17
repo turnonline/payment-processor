@@ -213,47 +213,31 @@ public class BankAccount
     @Override
     public boolean equals( Object o )
     {
-        if ( this == o )
-        {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() )
-        {
-            return false;
-        }
-        BankAccount bankAccount = ( BankAccount ) o;
-        return Objects.equals( this.id, bankAccount.id ) &&
-                Objects.equals( this.name, bankAccount.name ) &&
-                Objects.equals( this.branch, bankAccount.branch ) &&
-                Objects.equals( this.iban, bankAccount.iban ) &&
-                Objects.equals( this.bic, bankAccount.bic ) &&
-                Objects.equals( this.currency, bankAccount.currency ) &&
-                Objects.equals( this.primary, bankAccount.primary ) &&
-                Objects.equals( this.bank, bankAccount.bank );
+        if ( this == o ) return true;
+        if ( !( o instanceof BankAccount ) ) return false;
+        BankAccount that = ( BankAccount ) o;
+        return Objects.equals( iban, that.iban );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( id, name, branch, iban, bic, currency, primary, bank );
+        return Objects.hash( iban );
     }
 
     @Override
     public String toString()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.append( "class BankAccount {\n" );
-
-        sb.append( "    id: " ).append( toIndentedString( id ) ).append( "\n" );
-        sb.append( "    name: " ).append( toIndentedString( name ) ).append( "\n" );
-        sb.append( "    branch: " ).append( toIndentedString( branch ) ).append( "\n" );
-        sb.append( "    iban: " ).append( toIndentedString( iban ) ).append( "\n" );
-        sb.append( "    bic: " ).append( toIndentedString( bic ) ).append( "\n" );
-        sb.append( "    currency: " ).append( toIndentedString( currency ) ).append( "\n" );
-        sb.append( "    primary: " ).append( toIndentedString( primary ) ).append( "\n" );
-        sb.append( "    bank: " ).append( toIndentedString( bank ) ).append( "\n" );
-        sb.append( "}" );
-        return sb.toString();
+        return "class BankAccount {\n" +
+                "    id: " + toIndentedString( id ) + "\n" +
+                "    name: " + toIndentedString( name ) + "\n" +
+                "    branch: " + toIndentedString( branch ) + "\n" +
+                "    iban: " + toIndentedString( iban ) + "\n" +
+                "    bic: " + toIndentedString( bic ) + "\n" +
+                "    currency: " + toIndentedString( currency ) + "\n" +
+                "    primary: " + toIndentedString( primary ) + "\n" +
+                "    bank: " + toIndentedString( bank ) + "\n" +
+                "}";
     }
 
     /**

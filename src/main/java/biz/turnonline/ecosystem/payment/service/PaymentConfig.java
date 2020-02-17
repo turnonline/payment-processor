@@ -20,6 +20,7 @@ package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
+import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
@@ -40,14 +41,22 @@ public interface PaymentConfig
     String REVOLUT_BANK_CODE = "REVO";
 
     /**
-     * Onboard all bank accounts in to the service via bank API.
+     * Enables API access to bank account.
+     * <p>
+     * Onboard all the bank accounts in to the service via bank API (access granted by certificate).
+     * Once the task to grant access has been successfully finished, the customer's bank accounts will be available.
+     * </p>
      *
-     * @param owner the authenticated account as an owner of the all newly imported bank accounts
-     * @param bank  bank identification, the bank to sync bank accounts from
+     * @param owner       the authenticated account as an owner of the bank account
+     * @param bank        bank identification, the bank to enable API access
+     * @param certificate the certificate metadata, not a sensitive data.
+     * @return the certificate with all metadata populated
      * @throws ApiValidationException if specified bank code is unsupported
      * @throws BankCodeNotFound       if specified bank code not found
      */
-    void initBankAccounts( @Nonnull LocalAccount owner, @Nonnull String bank );
+    Certificate enableApiAccess( @Nonnull LocalAccount owner,
+                                 @Nonnull String bank,
+                                 @Nonnull Certificate certificate );
 
     /**
      * Returns the bank account for given ID owned by the specified owner.

@@ -19,7 +19,7 @@
 package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
-import biz.turnonline.ecosystem.payment.api.model.BankOnboard;
+import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.BankCodeNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
@@ -414,20 +414,21 @@ public class BankAccountEndpoint
         return result;
     }
 
-    @ApiMethod( name = "bank_accounts.init",
-            path = "bank-accounts/{bank_code}/init",
+    @ApiMethod( name = "bank_accounts.certificates",
+            path = "bank-accounts/{bank_code}/certificates/actual",
             httpMethod = ApiMethod.HttpMethod.PUT )
-    public void initBankAccounts( @Named( "bank_code" ) String bankCode,
-                                  BankOnboard onboard,
-                                  HttpServletRequest request,
-                                  User authUser )
+    public Certificate enableApiAccess( @Named( "bank_code" ) String bankCode,
+                                        Certificate certificate,
+                                        HttpServletRequest request,
+                                        User authUser )
             throws Exception
     {
         LocalAccount account = common.checkAccount( authUser, request );
+        Certificate result;
 
         try
         {
-            config.initBankAccounts( account, bankCode );
+            result = config.enableApiAccess( account, bankCode, certificate );
         }
         catch ( BankCodeNotFound e )
         {
@@ -435,7 +436,7 @@ public class BankAccountEndpoint
                     + MoreObjects.toStringHelper( "Input" )
                     .add( "Account", account.getId() )
                     .add( "bank_code", bankCode )
-                    .addValue( onboard )
+                    .addValue( certificate )
                     .toString(), e );
 
             throw new NotFoundException( bankCodeNotFoundMessage( e.getBankCode() ) );
@@ -446,7 +447,7 @@ public class BankAccountEndpoint
                     + MoreObjects.toStringHelper( "Input" )
                     .add( "Account", account.getId() )
                     .add( "bank_code", bankCode )
-                    .addValue( onboard )
+                    .addValue( certificate )
                     .toString(), e );
 
             throw new BadRequestException( e.getMessage() );
@@ -457,10 +458,12 @@ public class BankAccountEndpoint
                     + MoreObjects.toStringHelper( "Input" )
                     .add( "Account", account.getId() )
                     .add( "bank_code", bankCode )
-                    .addValue( onboard )
+                    .addValue( certificate )
                     .toString(), e );
 
             throw new InternalServerErrorException( tryAgainLaterMessage() );
         }
+
+        return result;
     }
 }

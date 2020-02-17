@@ -98,24 +98,17 @@ public class Bank
     @Override
     public boolean equals( Object o )
     {
-        if ( this == o )
-        {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() )
-        {
-            return false;
-        }
+        if ( this == o ) return true;
+        if ( !( o instanceof Bank ) ) return false;
         Bank bank = ( Bank ) o;
-        return Objects.equals( this.code, bank.code ) &&
-                Objects.equals( this.label, bank.label ) &&
-                Objects.equals( this.country, bank.country );
+        return Objects.equals( code, bank.code ) &&
+                Objects.equals( country, bank.country );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( code, label, country );
+        return Objects.hash( code, country );
     }
 
     @Override

@@ -20,7 +20,6 @@ package biz.turnonline.ecosystem.payment.api.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 /**
  * ErrorReason
@@ -97,29 +96,6 @@ public class ErrorReason
     public void setReason( String reason )
     {
         this.reason = reason;
-    }
-
-    @Override
-    public boolean equals( Object o )
-    {
-        if ( this == o )
-        {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() )
-        {
-            return false;
-        }
-        ErrorReason errorReason = ( ErrorReason ) o;
-        return Objects.equals( this.domain, errorReason.domain ) &&
-                Objects.equals( this.message, errorReason.message ) &&
-                Objects.equals( this.reason, errorReason.reason );
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash( domain, message, reason );
     }
 
     @Override

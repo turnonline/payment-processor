@@ -18,6 +18,7 @@
 
 package biz.turnonline.ecosystem.payment.service;
 
+import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
@@ -61,6 +62,9 @@ public class PrimaryAlternativeBankAccountTest
 
     @Injectable
     private TaskExecutor executor;
+
+    @Injectable
+    private RevolutCredentialAdministration revolut;
 
     private LocalAccount account;
 

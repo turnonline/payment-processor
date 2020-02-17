@@ -19,6 +19,8 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
+import biz.turnonline.ecosystem.payment.api.model.Certificate;
+import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
@@ -58,8 +60,13 @@ public class PaymentConfigBeanDbTest
 
     private static final String REVOLUT_IBAN_SET = "GB05REVO37687428278420";
 
+    private static final String CLIENT_ID = "client_Y6zhUcyAa..";
+
     @Inject
     private PaymentConfig bean;
+
+    @Inject
+    private RevolutCredentialAdministration revolut;
 
     @Inject
     private Injector injector;
@@ -92,7 +99,7 @@ public class PaymentConfigBeanDbTest
     }
 
     @Test
-    public <T extends TaskExecutor> void initBankAccounts_RevolutTaskScheduled()
+    public <T extends TaskExecutor> void enableApiAccess_RevolutTaskScheduled()
     {
         AtomicReference<Task<?>> scheduledTask = new AtomicReference<>();
 
@@ -107,7 +114,33 @@ public class PaymentConfigBeanDbTest
             }
         };
 
-        bean.initBankAccounts( lAccount, REVOLUT_BANK_CODE.toLowerCase() );
+        String privateKeyName = "Customized_Revolut_private_key_name";
+
+        Certificate certificate = new Certificate();
+        certificate.setClientId( CLIENT_ID );
+        certificate.setKeyName( privateKeyName );
+
+        Certificate result = bean.enableApiAccess( lAccount, REVOLUT_BANK_CODE.toLowerCase(), certificate );
+
+        assertWithMessage( "Updated certificate" )
+                .that( result )
+                .isNotNull();
+
+        assertWithMessage( "Certificate client ID" )
+                .that( result.getClientId() )
+                .isEqualTo( CLIENT_ID );
+
+        assertWithMessage( "Certificate private_key_name" )
+                .that( result.getKeyName() )
+                .isEqualTo( privateKeyName );
+
+        assertWithMessage( "Access authorised on" )
+                .that( result.getAuthorisedOn() )
+                .isNull();
+
+        assertWithMessage( "Access authorised to Revolut API" )
+                .that( result.isAccessAuthorised() )
+                .isFalse();
 
         assertWithMessage( "Task to initialize bank accounts" )
                 .that( scheduledTask.get() )
@@ -122,16 +155,58 @@ public class PaymentConfigBeanDbTest
                 .isEqualTo( lAccount.entityKey() );
     }
 
-    @Test( expectedExceptions = BankCodeNotFound.class )
-    public void initBankAccounts_BankCodeNotFound()
+    @Test
+    public <T extends TaskExecutor> void enableApiAccess_RevolutAccessAuthorised()
     {
-        bean.initBankAccounts( lAccount, "blacode" );
+        AtomicReference<Task<?>> scheduledTask = new AtomicReference<>();
+
+        // scheduled tasks mocked
+        new MockUp<T>()
+        {
+            @Mock
+            public TaskHandle schedule( Task<?> task )
+            {
+                scheduledTask.set( task );
+                return null;
+            }
+        };
+
+        Certificate certificate = new Certificate();
+        certificate.setClientId( CLIENT_ID );
+
+        // mark manually access Granted to the bank account API
+        revolut.get().accessGranted();
+
+        // test call
+        Certificate result = bean.enableApiAccess( lAccount, REVOLUT_BANK_CODE.toLowerCase(), certificate );
+
+        assertWithMessage( "Updated certificate" )
+                .that( result )
+                .isNotNull();
+
+        assertWithMessage( "Certificate client ID" )
+                .that( result.getClientId() )
+                .isEqualTo( CLIENT_ID );
+
+        assertWithMessage( "Access authorised on" )
+                .that( result.getAuthorisedOn() )
+                .isNotNull();
+
+        assertWithMessage( "Access authorised to Revolut API" )
+                .that( result.isAccessAuthorised() )
+                .isTrue();
+    }
+
+    @Test( expectedExceptions = BankCodeNotFound.class )
+    public void enableApiAccess_BankCodeNotFound()
+    {
+        bean.enableApiAccess( lAccount, "blacode", new Certificate() );
     }
 
     @Test( expectedExceptions = ApiValidationException.class )
-    public void initBankAccounts_UnsupportedBank()
+    public void enableApiAccess_UnsupportedBank()
     {
-        bean.initBankAccounts( lAccount, "0900" );
+        bean.enableApiAccess( lAccount, "0900", new Certificate() );
     }
 
     @Test

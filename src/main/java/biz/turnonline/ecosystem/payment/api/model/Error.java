@@ -20,7 +20,6 @@ package biz.turnonline.ecosystem.payment.api.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 /**
  * Error
@@ -50,29 +49,6 @@ public class Error
     {
         this.error = error;
     }
-
-
-    @Override
-    public boolean equals( Object o )
-    {
-        if ( this == o )
-        {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() )
-        {
-            return false;
-        }
-        Error error = ( Error ) o;
-        return Objects.equals( this.error, error.error );
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash( error );
-    }
-
 
     @Override
     public String toString()

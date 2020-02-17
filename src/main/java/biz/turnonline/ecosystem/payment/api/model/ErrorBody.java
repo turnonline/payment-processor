@@ -21,7 +21,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * ErrorBody
@@ -104,29 +103,6 @@ public class ErrorBody
     public void setMessage( String message )
     {
         this.message = message;
-    }
-
-    @Override
-    public boolean equals( Object o )
-    {
-        if ( this == o )
-        {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() )
-        {
-            return false;
-        }
-        ErrorBody errorBody = ( ErrorBody ) o;
-        return Objects.equals( this.code, errorBody.code ) &&
-                Objects.equals( this.errors, errorBody.errors ) &&
-                Objects.equals( this.message, errorBody.message );
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return Objects.hash( code, errors, message );
     }
 
     @Override

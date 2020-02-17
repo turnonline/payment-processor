@@ -239,12 +239,11 @@ public class RevolutCredentialAdministration
     }
 
     /**
-     * Returns Revolut certificate details entity.
+     * Returns Revolut certificate metadata entity.
      *
-     * @return the certificate details
+     * @return the certificate metadata
      */
-    @VisibleForTesting
-    RevolutCertMetadata get()
+    public RevolutCertMetadata get()
     {
         RevolutCertMetadata details = ofy().load().type( RevolutCertMetadata.class ).id( ISSUER ).now();
         if ( details == null )

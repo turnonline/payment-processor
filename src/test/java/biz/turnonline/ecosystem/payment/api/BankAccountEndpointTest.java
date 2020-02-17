@@ -19,7 +19,7 @@
 package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
-import biz.turnonline.ecosystem.payment.api.model.BankOnboard;
+import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.BankCodeNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
@@ -738,69 +738,73 @@ public class BankAccountEndpointTest
     }
 
     @Test
-    public void initBankAccounts_Revolut() throws Exception
+    public void enableApiAccess_Revolut() throws Exception
     {
+        Certificate certificate = new Certificate();
         new Expectations()
         {
             {
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.initBankAccounts( account, REVOLUT_BANK_CODE );
+                config.enableApiAccess( account, REVOLUT_BANK_CODE, certificate );
             }
         };
 
-        endpoint.initBankAccounts( REVOLUT_BANK_CODE, new BankOnboard(), request, authUser );
+        endpoint.enableApiAccess( REVOLUT_BANK_CODE, certificate, request, authUser );
     }
 
     @Test( expectedExceptions = NotFoundException.class )
-    public void initBankAccounts_BankCodeNotFound() throws Exception
+    public void enableApiAccess_BankCodeNotFound() throws Exception
     {
+        Certificate certificate = new Certificate();
         new Expectations()
         {
             {
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.initBankAccounts( account, anyString );
+                config.enableApiAccess( account, anyString, certificate );
                 result = new BankCodeNotFound( "blacode" );
             }
         };
 
-        endpoint.initBankAccounts( "blacode", new BankOnboard(), request, authUser );
+        endpoint.enableApiAccess( "blacode", certificate, request, authUser );
     }
 
     @Test( expectedExceptions = BadRequestException.class )
-    public void initBankAccounts_UnsupportedBank() throws Exception
+    public void enableApiAccess_UnsupportedBank() throws Exception
     {
+        Certificate certificate = new Certificate();
         new Expectations()
         {
             {
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.initBankAccounts( account, anyString );
+                config.enableApiAccess( account, anyString, certificate );
                 result = new ApiValidationException( "Onboarding unsupported" );
             }
         };
 
-        endpoint.initBankAccounts( "1100", new BankOnboard(), request, authUser );
+        endpoint.enableApiAccess( "1100", certificate, request, authUser );
     }
 
     @Test( expectedExceptions = InternalServerErrorException.class )
-    public void initBankAccounts_BackendError() throws Exception
+    public void enableApiAccess_BackendError() throws Exception
     {
+        Certificate certificate = new Certificate();
         new Expectations()
         {
             {
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.initBankAccounts( account, anyString );
+                config.enableApiAccess( account, anyString, certificate );
                 result = new RuntimeException();
             }
         };
 
-        endpoint.initBankAccounts( REVOLUT_BANK_CODE, new BankOnboard(), request, authUser );
+        endpoint.enableApiAccess( REVOLUT_BANK_CODE, certificate, request, authUser );
     }
 }

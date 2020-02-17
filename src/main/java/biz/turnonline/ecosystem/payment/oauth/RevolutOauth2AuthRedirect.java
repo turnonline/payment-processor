@@ -188,7 +188,7 @@ public class RevolutOauth2AuthRedirect
         PrintWriter out = response.getWriter();
         String body = "<html>\n" +
                 "<body>\n" +
-                "<h1>Something went wrong, try again please</h1>\n" +
+                "<h1>Something went wrong, try again later</h1>\n" +
                 "</body>\n" +
                 "</html>";
 

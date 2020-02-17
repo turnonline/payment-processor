@@ -495,14 +495,14 @@
                 }
             ]
         },
-        "/v1/bank-accounts/{bank_code}/init": {
+        "/v1/bank-accounts/{bank_code}/certificates/actual": {
             "put": {
                 "tags": [
                     "Bank Accounts"
                 ],
-                "summary": "Onboard bank accounts",
-                "description": "Onboard all bank accounts in to the service via bank API. Once the task has been successfully finished, the customer's bank accounts will be available via endpoint to search bank accounts.",
-                "operationId": "initBankAccounts",
+                "summary": "Enables API access",
+                "description": "Enables API access to bank account. Onboard all the bank accounts in to the service via bank API (access granted by certificate). Once the task to grant access has been successfully finished, the customer's bank accounts will be available via endpoint to search bank accounts.",
+                "operationId": "enableApiAccess",
                 "consumes": [
                     "application/json"
                 ],
@@ -515,13 +515,16 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/BankOnboard"
+                            "$ref": "#/definitions/Certificate"
                         }
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "The confirmation, the task to onboard specified bank via API has been started."
+                    "200": {
+                        "description": "The confirmation, the task to onboard specified bank via API has been started.",
+                        "schema": {
+                            "$ref": "#/definitions/Certificate"
+                        }
                     },
                     "400": {
                         "description": "The error indicates that client has tried to onboard a bank that is not supported at that time. The client should not repeat the request without modifications.",
@@ -827,14 +830,28 @@
                 }
             }
         },
-        "BankOnboard": {
+        "Certificate": {
             "type": "object",
             "properties": {
+                "accessAuthorised": {
+                    "type": "boolean",
+                    "description": "Boolean indication whether access to bank API has been already granted."
+                },
+                "authorisedOn": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Date and time when access to bank API was granted."
+                },
                 "clientId": {
                     "type": "string",
                     "description": "Identification of the app within the bank."
+                },
+                "keyName": {
+                    "type": "string",
+                    "description": "Secret manager private key name configurable by the client, or default one (default value depends on concrete bank)."
                 }
-            }
+            },
+            "description": "Certificate metadata, not a sensitive data."
         },
         "Error": {
             "type": "object",

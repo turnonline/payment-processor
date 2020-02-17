@@ -40,7 +40,7 @@ public class RevolutCertMetadata
 {
     public static final String PRIVATE_KEY_NAME = "Revolut_private_key";
 
-    private static final long serialVersionUID = -2849732004177891213L;
+    private static final long serialVersionUID = -2081880614068205005L;
 
     private boolean accessAuthorised;
 

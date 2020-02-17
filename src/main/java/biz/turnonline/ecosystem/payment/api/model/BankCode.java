@@ -126,25 +126,17 @@ public class BankCode
     @Override
     public boolean equals( Object o )
     {
-        if ( this == o )
-        {
-            return true;
-        }
-        if ( o == null || getClass() != o.getClass() )
-        {
-            return false;
-        }
+        if ( this == o ) return true;
+        if ( !( o instanceof BankCode ) ) return false;
         BankCode bankCode = ( BankCode ) o;
-        return Objects.equals( this.code, bankCode.code ) &&
-                Objects.equals( this.label, bankCode.label ) &&
-                Objects.equals( this.locale, bankCode.locale ) &&
-                Objects.equals( this.country, bankCode.country );
+        return Objects.equals( code, bankCode.code ) &&
+                Objects.equals( country, bankCode.country );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( code, label, locale, country );
+        return Objects.hash( code, country );
     }
 
     @Override
