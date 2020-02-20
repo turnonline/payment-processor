@@ -208,7 +208,7 @@ public class RevolutRefreshAccessFlowDbTest
      * even the current one did not expire yet. But for some reason the authorisation code is invalid
      * (Revolut API will refuse the call as 400).
      */
-    @Test( priority = 1 )
+    @Test
     public void step2_NewAuthorisationCode_Unauthorized() throws IOException
     {
         // authorisation code taken from query parameter, that's coming when client has decided to refresh access
@@ -281,7 +281,7 @@ public class RevolutRefreshAccessFlowDbTest
      * <p>
      * Previous step has reset access token, token server to refresh token will be called.
      */
-    @Test( priority = 2 )
+    @Test
     public <R extends LowLevelHttpRequest> void step3_StandardCallRevolutAPI()
     {
         mockUpSecretManager();
@@ -322,7 +322,7 @@ public class RevolutRefreshAccessFlowDbTest
      * Client has decided to refresh access (Revolut Certificate Settings) even the current one did not expire yet.
      * Exchange of the authorisation code will be successful.
      */
-    @Test( priority = 3 )
+    @Test
     public <R extends LowLevelHttpRequest> void step4_ExchangeAuthorisationCode()
     {
         // authorisation code taken from query parameter, that's coming when client has decided to refresh access
@@ -399,7 +399,7 @@ public class RevolutRefreshAccessFlowDbTest
      * The standard step, refresh token is valid and calling Revolut API works fine (access granted).
      * Access token doesn't have to be refreshed (as it was done in previous step).
      */
-    @Test( priority = 4 )
+    @Test
     public <R extends LowLevelHttpRequest> void step5_StandardCallRevolutAPI()
     {
         mockUpSecretManager();
