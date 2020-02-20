@@ -18,7 +18,6 @@
 
 package biz.turnonline.ecosystem.payment.oauth;
 
-import biz.turnonline.ecosystem.revolut.business.facade.RevolutBusinessProvider;
 import biz.turnonline.ecosystem.revolut.business.oauth.RevolutCredential;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.appengine.api.utils.SystemProperty;
@@ -41,7 +40,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.util.Map;
@@ -81,8 +79,6 @@ public class RevolutCredentialAdministration
 
     private final String ISSUER;
 
-    private final RevolutBusinessProvider revolut;
-
     /**
      * The GCP identification. It must be the project where the microservice is running
      * in order to connect to the Secret Manager within the same project.
@@ -91,10 +87,8 @@ public class RevolutCredentialAdministration
 
     private final Map<String, Object> cache;
 
-    @Inject
-    public RevolutCredentialAdministration( RevolutBusinessProvider revolut )
+    public RevolutCredentialAdministration()
     {
-        this.revolut = revolut;
         String serviceNameKey = "ENDPOINTS_SERVICE_NAME";
         String error = "Environment variable " + serviceNameKey + " is null, it's mandatory";
 
@@ -110,7 +104,6 @@ public class RevolutCredentialAdministration
         return ofy().transact( () -> {
             RevolutCertMetadata details = get().setCode( code );
             details.save();
-            revolut.resetAccessToken();
             return details.entityKey();
         } );
     }

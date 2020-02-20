@@ -21,6 +21,7 @@ package biz.turnonline.ecosystem.payment.oauth;
 import biz.turnonline.ecosystem.payment.service.BackendServiceTestCase;
 import biz.turnonline.ecosystem.payment.service.RevolutDebtorBankAccountsInitTest;
 import biz.turnonline.ecosystem.revolut.business.account.model.Account;
+import biz.turnonline.ecosystem.revolut.business.facade.RevolutBusinessProvider;
 import com.google.api.client.auth.oauth2.TokenRequest;
 import com.google.api.client.auth.oauth2.TokenResponse;
 import com.google.api.client.auth.oauth2.TokenResponseException;
@@ -30,6 +31,7 @@ import com.google.api.client.http.HttpStatusCodes;
 import com.google.api.client.http.LowLevelHttpRequest;
 import com.google.api.client.http.LowLevelHttpResponse;
 import com.google.api.client.json.Json;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.testing.http.MockLowLevelHttpResponse;
 import com.google.cloud.secretmanager.v1beta1.SecretManagerServiceClient;
 import com.google.common.io.ByteStreams;
@@ -39,9 +41,7 @@ import mockit.Invocation;
 import mockit.Mock;
 import mockit.MockUp;
 import mockit.Mocked;
-import mockit.Tested;
 import org.ctoolkit.restapi.client.RestFacade;
-import org.ctoolkit.restapi.client.adapter.GoogleApiProxyFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -73,11 +73,13 @@ public class RevolutOauth2AuthRedirectFlowDbTest
 
     private static final String AUTHORISATION_CODE = "oa_sand_xC123..";
 
-    @Tested
     private RevolutExchangeAuthorisationCode tested;
 
     @Inject
     private RevolutCredentialAdministration administration;
+
+    @Inject
+    private RevolutBusinessProvider revolut;
 
     @Inject
     @Injectable
@@ -85,9 +87,6 @@ public class RevolutOauth2AuthRedirectFlowDbTest
 
     @Mocked
     private SecretManagerServiceClient client;
-
-    @Inject
-    private GoogleApiProxyFactory apiFactory;
 
     @Injectable
     private HttpResponse revolutResponse;
@@ -104,8 +103,11 @@ public class RevolutOauth2AuthRedirectFlowDbTest
         metadata.accessGranted();
         metadata.save();
 
-        authorisedOn = administration.get().getAuthorisedOn();
+        authorisedOn = metadata.getAuthorisedOn();
+
         tested = new RevolutExchangeAuthorisationCode( metadata.entityKey() );
+        tested.facade = facade;
+        tested.revolut = revolut;
     }
 
     public void beforeMethod()
@@ -241,7 +243,7 @@ public class RevolutOauth2AuthRedirectFlowDbTest
             @Mock
             public TokenResponse execute() throws IOException
             {
-                throw TokenResponseException.from( apiFactory.getJsonFactory(), revolutResponse );
+                throw TokenResponseException.from( JacksonFactory.getDefaultInstance(), revolutResponse );
             }
         };
 

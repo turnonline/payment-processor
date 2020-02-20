@@ -19,6 +19,7 @@
 package biz.turnonline.ecosystem.payment.oauth;
 
 import biz.turnonline.ecosystem.revolut.business.account.model.Account;
+import biz.turnonline.ecosystem.revolut.business.facade.RevolutBusinessProvider;
 import com.googlecode.objectify.Key;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -46,6 +47,9 @@ public class RevolutExchangeAuthorisationCodeTest
 
     @Injectable
     private RestFacade facade;
+
+    @Injectable
+    private RevolutBusinessProvider revolut;
 
     @Injectable
     private Key<RevolutCertMetadata> key;

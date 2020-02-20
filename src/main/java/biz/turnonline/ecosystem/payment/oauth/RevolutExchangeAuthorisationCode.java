@@ -19,6 +19,7 @@
 package biz.turnonline.ecosystem.payment.oauth;
 
 import biz.turnonline.ecosystem.revolut.business.account.model.Account;
+import biz.turnonline.ecosystem.revolut.business.facade.RevolutBusinessProvider;
 import com.googlecode.objectify.Key;
 import org.ctoolkit.restapi.client.ClientErrorException;
 import org.ctoolkit.restapi.client.ForbiddenException;
@@ -46,7 +47,10 @@ public class RevolutExchangeAuthorisationCode
     private static final long serialVersionUID = 7682871294183932878L;
 
     @Inject
-    transient private RestFacade facade;
+    transient RestFacade facade;
+
+    @Inject
+    transient RevolutBusinessProvider revolut;
 
     public RevolutExchangeAuthorisationCode( @Nonnull Key<RevolutCertMetadata> key )
     {
@@ -58,6 +62,7 @@ public class RevolutExchangeAuthorisationCode
     protected void execute()
     {
         RevolutCertMetadata details;
+        revolut.resetAccessToken();
 
         try
         {
