@@ -42,6 +42,7 @@ import mockit.Mock;
 import mockit.MockUp;
 import mockit.Mocked;
 import org.ctoolkit.restapi.client.RestFacade;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -103,13 +104,18 @@ public class RevolutOauth2AuthRedirectFlowDbTest
         RevolutCertMetadata metadata = administration.get().setClientId( CLIENT_ID );
         metadata.accessGranted();
         metadata.save();
-        ofy().flush();
 
-        authorisedOn = administration.get().getAuthorisedOn();
+        authorisedOn = metadata.getAuthorisedOn();
 
         tested = new RevolutExchangeAuthorisationCode( metadata.entityKey() );
         tested.facade = facade;
         tested.revolut = revolut;
+    }
+
+    @AfterClass
+    public void afterClass()
+    {
+        super.helper.tearDown();
     }
 
     public void beforeMethod()
