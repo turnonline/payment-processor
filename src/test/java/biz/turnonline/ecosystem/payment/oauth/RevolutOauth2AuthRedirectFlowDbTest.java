@@ -42,6 +42,8 @@ import mockit.Mock;
 import mockit.MockUp;
 import mockit.Mocked;
 import org.ctoolkit.restapi.client.RestFacade;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -70,6 +72,8 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class RevolutOauth2AuthRedirectFlowDbTest
         extends BackendServiceTestCase
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger( RevolutOauth2AuthRedirectFlowDbTest.class );
+
     private static final String CLIENT_ID = "client-123xvB";
 
     private static final String AUTHORISATION_CODE = "oa_sand_xC123..";
@@ -103,6 +107,7 @@ public class RevolutOauth2AuthRedirectFlowDbTest
         RevolutCertMetadata metadata = administration.get().setClientId( CLIENT_ID );
         metadata.accessGranted();
         metadata.save();
+        LOGGER.info( "Initial state of " + metadata );
 
         authorisedOn = metadata.getAuthorisedOn();
 
