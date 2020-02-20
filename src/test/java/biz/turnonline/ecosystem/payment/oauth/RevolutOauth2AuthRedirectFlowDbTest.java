@@ -56,6 +56,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static com.google.api.client.googleapis.testing.auth.oauth2.MockGoogleCredential.ACCESS_TOKEN;
 import static com.google.api.client.googleapis.testing.auth.oauth2.MockGoogleCredential.REFRESH_TOKEN;
 import static com.google.common.truth.Truth.assertWithMessage;
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
  * Unit testing Revolut OAuth2 Redirect flow against emulated datastore.
@@ -113,6 +114,7 @@ public class RevolutOauth2AuthRedirectFlowDbTest
     public void beforeMethod()
     {
         // we want to keep the state for class lifecycle
+        ofy().flush();
     }
 
     public void afterMethod()
