@@ -156,7 +156,7 @@ public class RevolutCertMetadata
     @Override
     public void save()
     {
-        ofy().transact( () -> ofy().defer().save().entity( this ) );
+        ofy().transact( () -> ofy().save().entity( this ).now() );
     }
 
     @Override

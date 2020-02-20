@@ -257,6 +257,10 @@ public class RevolutOauth2AuthRedirectFlowDbTest
                 .that( tokenStored.get() )
                 .isFalse();
 
+        assertWithMessage( "Revolut authorised on" )
+                .that( administration.get().getAuthorisedOn() )
+                .isEqualTo( authorisedOn );
+
         assertWithMessage( "Authorisation code reset" )
                 .that( administration.getCode( CLIENT_ID ) )
                 .isNull();
