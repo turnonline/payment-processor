@@ -61,7 +61,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
- * Unit testing Revolut OAuth2 Redirect flow against emulated datastore.
+ * Unit testing Revolut OAuth2 refresh access flow against emulated datastore.
  * Mirroring the functionality from {@link RevolutOauth2AuthRedirect}.
  * <p>
  * This test case is being configured to keep the datastore state for whole class lifecycle.
@@ -69,10 +69,10 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 @SuppressWarnings( "ResultOfMethodCallIgnored" )
-public class RevolutOauth2AuthRedirectFlowDbTest
+public class RevolutRefreshAccessFlowDbTest
         extends BackendServiceTestCase
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger( RevolutOauth2AuthRedirectFlowDbTest.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( RevolutRefreshAccessFlowDbTest.class );
 
     private static final String CLIENT_ID = "client-123xvB";
 
@@ -208,7 +208,7 @@ public class RevolutOauth2AuthRedirectFlowDbTest
      * even the current one did not expire yet. But for some reason the authorisation code is invalid
      * (Revolut API will refuse the call as 400).
      */
-    @Test( dependsOnMethods = "Step1_StandardCallRevolutAPI" )
+    @Test( priority = 1 )
     public void Step2_NewAuthorisationCode_Unauthorized() throws IOException
     {
         // authorisation code taken from query parameter, that's coming when client has decided to refresh access
@@ -228,7 +228,7 @@ public class RevolutOauth2AuthRedirectFlowDbTest
                 // details needed to make sure AccessToken will be reset, see Credential.refreshToken()
                 revolutResponse.getContent();
                 String name = "revolut_unauthorized_client.json";
-                result = RevolutOauth2AuthRedirectFlowDbTest.class.getResourceAsStream( name );
+                result = RevolutRefreshAccessFlowDbTest.class.getResourceAsStream( name );
 
                 revolutResponse.getHeaders();
                 result = new HttpHeaders();
@@ -281,7 +281,7 @@ public class RevolutOauth2AuthRedirectFlowDbTest
      * <p>
      * Previous step has reset access token, token server to refresh token will be called.
      */
-    @Test( dependsOnMethods = "Step2_NewAuthorisationCode_Unauthorized" )
+    @Test( priority = 2 )
     public <R extends LowLevelHttpRequest> void Step3_StandardCallRevolutAPI()
     {
         mockUpSecretManager();
@@ -322,7 +322,7 @@ public class RevolutOauth2AuthRedirectFlowDbTest
      * Client has decided to refresh access (Revolut Certificate Settings) even the current one did not expire yet.
      * Exchange of the authorisation code will be successful.
      */
-    @Test( dependsOnMethods = "Step3_StandardCallRevolutAPI" )
+    @Test( priority = 3 )
     public <R extends LowLevelHttpRequest> void Step4_ExchangeAuthorisationCode()
     {
         // authorisation code taken from query parameter, that's coming when client has decided to refresh access
@@ -399,7 +399,7 @@ public class RevolutOauth2AuthRedirectFlowDbTest
      * The standard step, refresh token is valid and calling Revolut API works fine (access granted).
      * Access token doesn't have to be refreshed (as it was done in previous step).
      */
-    @Test( dependsOnMethods = "Step4_ExchangeAuthorisationCode" )
+    @Test( priority = 4 )
     public <R extends LowLevelHttpRequest> void Step5_StandardCallRevolutAPI()
     {
         mockUpSecretManager();
