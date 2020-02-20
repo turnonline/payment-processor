@@ -42,7 +42,6 @@ import mockit.Mock;
 import mockit.MockUp;
 import mockit.Mocked;
 import org.ctoolkit.restapi.client.RestFacade;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -110,12 +109,6 @@ public class RevolutOauth2AuthRedirectFlowDbTest
         tested = new RevolutExchangeAuthorisationCode( metadata.entityKey() );
         tested.facade = facade;
         tested.revolut = revolut;
-    }
-
-    @AfterClass
-    public void afterClass()
-    {
-        super.helper.tearDown();
     }
 
     public void beforeMethod()
@@ -263,10 +256,6 @@ public class RevolutOauth2AuthRedirectFlowDbTest
         assertWithMessage( "Refresh token stored" )
                 .that( tokenStored.get() )
                 .isFalse();
-
-        assertWithMessage( "Revolut authorised on" )
-                .that( administration.get().getAuthorisedOn() )
-                .isEqualTo( authorisedOn );
 
         assertWithMessage( "Authorisation code reset" )
                 .that( administration.getCode( CLIENT_ID ) )
