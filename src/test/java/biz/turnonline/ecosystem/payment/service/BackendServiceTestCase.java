@@ -63,7 +63,7 @@ public class BackendServiceTestCase
 
     private LocalObjectifyHelper ofyHelper;
 
-    private LocalServiceTestHelper helper;
+    protected LocalServiceTestHelper helper;
 
     public static <T> T getFromFile( String json, Class<T> valueType )
     {

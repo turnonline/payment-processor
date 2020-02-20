@@ -67,7 +67,7 @@ class RevolutDebtorBankAccountsInit
 
     RevolutDebtorBankAccountsInit( @Nonnull Key<LocalAccount> accountKey )
     {
-        super( "Revolut-BankAccounts-Init" );
+        super( "Init-Revolut-BankAccounts" );
         super.setEntityKey( checkNotNull( accountKey, "LocalAccount key can't be null" ) );
     }
 

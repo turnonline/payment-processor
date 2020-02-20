@@ -124,7 +124,7 @@ class PaymentConfigBean
             executor.schedule( new RevolutDebtorBankAccountsInit( owner.entityKey() ) );
 
             return new Certificate()
-                    .accessAuthorised( metadata.isAccessAuthorised() )
+                    .accessAuthorised( metadata.getAuthorisedOn() != null )
                     .authorisedOn( metadata.getAuthorisedOn() )
                     .clientId( metadata.getClientId() )
                     .keyName( metadata.getKeyName() );

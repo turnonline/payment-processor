@@ -40,9 +40,7 @@ public class RevolutCertMetadata
 {
     public static final String PRIVATE_KEY_NAME = "Revolut_private_key";
 
-    private static final long serialVersionUID = -2081880614068205005L;
-
-    private boolean accessAuthorised;
+    private static final long serialVersionUID = -5057920105777123556L;
 
     private Date authorisedOn;
 
@@ -56,14 +54,13 @@ public class RevolutCertMetadata
     private String keyName = PRIVATE_KEY_NAME;
 
     /**
-     * Returns the boolean indication whether access to Revolut for Business API
-     * for current authorisation code has been already granted.
+     * Returns the boolean indication whether there is a new authorisation code.
      *
-     * @return true if access is already granted
+     * @return true if new authorisation code has been set
      */
-    public boolean isAccessAuthorised()
+    public boolean isNewCode()
     {
-        return accessAuthorised;
+        return code != null;
     }
 
     /**
@@ -72,7 +69,7 @@ public class RevolutCertMetadata
      */
     public RevolutCertMetadata accessGranted()
     {
-        this.accessAuthorised = true;
+        this.code = null;
         this.authorisedOn = new Date();
         return this;
     }
@@ -114,14 +111,12 @@ public class RevolutCertMetadata
     }
 
     /**
-     * Sets a new authorisation code to be authorized, {@link #isAccessAuthorised()} will return {@code false}.
+     * Sets a new authorisation code to be authorized, {@link #isNewCode()} will return {@code true}.
      *
      * @param code the new authorisation code to be set
      */
     public RevolutCertMetadata setCode( String code )
     {
-        this.accessAuthorised = false;
-        this.authorisedOn = null;
         this.code = code;
         return this;
     }
@@ -174,7 +169,6 @@ public class RevolutCertMetadata
     public String toString()
     {
         return MoreObjects.toStringHelper( this )
-                .add( "accessAuthorised", accessAuthorised )
                 .add( "authorisedOn", authorisedOn )
                 .add( "clientId", clientId )
                 .add( "code", code )

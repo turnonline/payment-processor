@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Setting up access to business account.
  * Authorisation Code exchange will enable access to Revolut for Business API.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
@@ -58,7 +57,7 @@ public class RevolutExchangeAuthorisationCode
     @Override
     protected void execute()
     {
-        RevolutCertMetadata details = null;
+        RevolutCertMetadata details;
 
         try
         {
@@ -67,13 +66,16 @@ public class RevolutExchangeAuthorisationCode
             facade.list( Account.class ).finish();
 
             details = workWith( null );
-            LOGGER.warn( "Authorisation code has been exchanged to authorize access to Revolut for Business API: "
+            details.accessGranted().save();
+            LOGGER.info( "Authorisation code has been exchanged to authorize access to Revolut for Business API: "
                     + details );
 
         }
         catch ( UnauthorizedException | ClientErrorException | ForbiddenException e )
         {
-            LOGGER.warn( "Authorisation code seems to be invalid: " + details, e );
+            details = workWith( null );
+            LOGGER.warn( "Authorisation code seems to be invalid and will be reset; " + details, e );
+            details.setCode( null ).save();
         }
     }
 }

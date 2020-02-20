@@ -92,7 +92,7 @@ class LocalObjectifyHelper
         }
         catch ( IOException e )
         {
-            throw new RuntimeException( e );
+            e.printStackTrace();
         }
     }
 
