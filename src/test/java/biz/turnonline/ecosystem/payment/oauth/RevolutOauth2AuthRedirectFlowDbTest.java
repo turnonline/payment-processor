@@ -103,6 +103,7 @@ public class RevolutOauth2AuthRedirectFlowDbTest
         RevolutCertMetadata metadata = administration.get().setClientId( CLIENT_ID );
         metadata.accessGranted();
         metadata.save();
+        ofy().flush();
 
         authorisedOn = administration.get().getAuthorisedOn();
 
@@ -114,12 +115,12 @@ public class RevolutOauth2AuthRedirectFlowDbTest
     public void beforeMethod()
     {
         // we want to keep the state for class lifecycle
-        ofy().flush();
     }
 
     public void afterMethod()
     {
         // we want to keep the state for class lifecycle
+        ofy().flush();
     }
 
     /**
