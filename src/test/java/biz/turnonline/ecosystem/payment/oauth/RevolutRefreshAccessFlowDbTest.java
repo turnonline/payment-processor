@@ -132,7 +132,7 @@ public class RevolutRefreshAccessFlowDbTest
      * Access token will be refreshed.
      */
     @Test
-    public <R extends LowLevelHttpRequest> void Step1_StandardCallRevolutAPI()
+    public <R extends LowLevelHttpRequest> void step1_StandardCallRevolutAPI()
     {
         // pre-conditions checks
         assertWithMessage( "Revolut authorised on" )
@@ -209,7 +209,7 @@ public class RevolutRefreshAccessFlowDbTest
      * (Revolut API will refuse the call as 400).
      */
     @Test( priority = 1 )
-    public void Step2_NewAuthorisationCode_Unauthorized() throws IOException
+    public void step2_NewAuthorisationCode_Unauthorized() throws IOException
     {
         // authorisation code taken from query parameter, that's coming when client has decided to refresh access
         administration.storeCode( AUTHORISATION_CODE );
@@ -282,7 +282,7 @@ public class RevolutRefreshAccessFlowDbTest
      * Previous step has reset access token, token server to refresh token will be called.
      */
     @Test( priority = 2 )
-    public <R extends LowLevelHttpRequest> void Step3_StandardCallRevolutAPI()
+    public <R extends LowLevelHttpRequest> void step3_StandardCallRevolutAPI()
     {
         mockUpSecretManager();
 
@@ -323,7 +323,7 @@ public class RevolutRefreshAccessFlowDbTest
      * Exchange of the authorisation code will be successful.
      */
     @Test( priority = 3 )
-    public <R extends LowLevelHttpRequest> void Step4_ExchangeAuthorisationCode()
+    public <R extends LowLevelHttpRequest> void step4_ExchangeAuthorisationCode()
     {
         // authorisation code taken from query parameter, that's coming when client has decided to refresh access
         administration.storeCode( AUTHORISATION_CODE );
@@ -400,7 +400,7 @@ public class RevolutRefreshAccessFlowDbTest
      * Access token doesn't have to be refreshed (as it was done in previous step).
      */
     @Test( priority = 4 )
-    public <R extends LowLevelHttpRequest> void Step5_StandardCallRevolutAPI()
+    public <R extends LowLevelHttpRequest> void step5_StandardCallRevolutAPI()
     {
         mockUpSecretManager();
 
