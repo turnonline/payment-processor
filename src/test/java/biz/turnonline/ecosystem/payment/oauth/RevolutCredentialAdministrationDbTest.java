@@ -91,6 +91,10 @@ public class RevolutCredentialAdministrationDbTest
                 .that( tested.getCode( clientId ) )
                 .isEqualTo( code );
 
+        assertWithMessage( "Revolut authorised on (access not granted yet)" )
+                .that( tested.get().getAuthorisedOn() )
+                .isNull();
+
         assertWithMessage( "Revolut has a new authorisation code" )
                 .that( tested.get().isNewCode() )
                 .isTrue();
@@ -108,6 +112,31 @@ public class RevolutCredentialAdministrationDbTest
 
         assertWithMessage( "Revolut authorisation code has been consumed" )
                 .that( !tested.get().isNewCode() )
+                .isTrue();
+    }
+
+    @Test
+    public void storeCode_accessGrantedThenNewCode()
+    {
+        String clientId = "client-123";
+        tested.get().setClientId( clientId ).save();
+
+        // mark as access granted
+        tested.get().accessGranted().save();
+
+        String code = "code-123";
+        tested.storeCode( code );
+
+        assertWithMessage( "Revolut stored authorisation code" )
+                .that( tested.getCode( clientId ) )
+                .isEqualTo( code );
+
+        assertWithMessage( "Revolut authorised on" )
+                .that( tested.get().getAuthorisedOn() )
+                .isNotNull();
+
+        assertWithMessage( "Revolut has a new authorisation code" )
+                .that( tested.get().isNewCode() )
                 .isTrue();
     }
 

@@ -103,7 +103,7 @@ public class RevolutOauth2AuthRedirectFlowDbTest
         metadata.accessGranted();
         metadata.save();
 
-        authorisedOn = metadata.getAuthorisedOn();
+        authorisedOn = administration.get().getAuthorisedOn();
 
         tested = new RevolutExchangeAuthorisationCode( metadata.entityKey() );
         tested.facade = facade;
@@ -206,15 +206,6 @@ public class RevolutOauth2AuthRedirectFlowDbTest
     {
         // authorisation code taken from query parameter, that's coming when client has decided to refresh access
         administration.storeCode( AUTHORISATION_CODE );
-
-        // pre-conditions checks
-        assertWithMessage( "Revolut authorised on" )
-                .that( administration.get().getAuthorisedOn() )
-                .isEqualTo( authorisedOn );
-
-        assertWithMessage( "New authorisation code" )
-                .that( administration.get().isNewCode() )
-                .isTrue();
 
         mockUpSecretManager();
 
