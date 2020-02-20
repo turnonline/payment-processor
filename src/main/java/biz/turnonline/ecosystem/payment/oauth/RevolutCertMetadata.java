@@ -174,6 +174,7 @@ public class RevolutCertMetadata
                 .add( "clientId", clientId )
                 .add( "code", code )
                 .add( "keyName", keyName )
+                .add( "parent", super.toString() )
                 .toString();
     }
 }
