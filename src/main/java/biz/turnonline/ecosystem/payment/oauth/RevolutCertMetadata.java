@@ -169,6 +169,7 @@ public class RevolutCertMetadata
     public String toString()
     {
         return MoreObjects.toStringHelper( this )
+                .add( "name", getId() )
                 .add( "authorisedOn", authorisedOn )
                 .add( "clientId", clientId )
                 .add( "code", code )
