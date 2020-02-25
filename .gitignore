@@ -24,3 +24,4 @@ dependency-reduced-pom.xml
 buildNumber.properties
 
 *.DS_Store
+/src/main/resources/config.properties

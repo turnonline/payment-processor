@@ -44,7 +44,9 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
+import com.google.inject.name.Names;
 import net.sf.jsr107cache.Cache;
+import org.ctoolkit.restapi.client.ApiCredential;
 import org.ctoolkit.restapi.client.adapter.BeanMapperConfig;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeAppEngineModule;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeDefaultOrikaModule;
@@ -105,6 +107,11 @@ public class MicroserviceModule
 
         // single declaration to request static injection for all Task related injection
         requestStaticInjection( Task.class );
+
+        ApiCredential config = new ApiCredential();
+        config.setNumberOfRetries( 10 );
+        config.load( "/config.properties" );
+        Names.bindProperties( binder(), config );
     }
 
     @Provides
