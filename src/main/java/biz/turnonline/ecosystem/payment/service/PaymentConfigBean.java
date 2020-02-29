@@ -28,6 +28,7 @@ import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
 import nl.garvelink.iban.IBAN;
@@ -121,7 +122,11 @@ class PaymentConfigBean
                 metadata.save();
             }
 
-            executor.schedule( new RevolutDebtorBankAccountsInit( owner.entityKey() ) );
+            // Init bank accounts only Client ID is present, otherwise initialization will fail
+            if ( !Strings.isNullOrEmpty( metadata.getClientId() ) )
+            {
+                executor.schedule( new RevolutDebtorBankAccountsInit( owner.entityKey() ) );
+            }
 
             return new Certificate()
                     .accessAuthorised( metadata.getAuthorisedOn() != null )

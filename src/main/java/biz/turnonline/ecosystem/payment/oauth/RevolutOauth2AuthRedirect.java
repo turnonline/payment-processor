@@ -18,6 +18,7 @@
 
 package biz.turnonline.ecosystem.payment.oauth;
 
+import com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
 import org.apache.http.entity.ContentType;
 import org.ctoolkit.services.task.TaskExecutor;
@@ -111,6 +112,16 @@ public class RevolutOauth2AuthRedirect
             LOGGER.info( "Request header [" + name + " - " + value + "]" );
         }
 
+        RevolutCertMetadata certMetadata = administration.get();
+        String clientId = certMetadata.getClientId();
+        if ( Strings.isNullOrEmpty( clientId ) )
+        {
+            LOGGER.warn( "Client ID can't be null: " + certMetadata );
+            response.setStatus( HttpServletResponse.SC_BAD_REQUEST );
+            responseMissingClientId( response );
+            return;
+        }
+
         if ( code != null )
         {
             try
@@ -174,6 +185,21 @@ public class RevolutOauth2AuthRedirect
         String body = "<html>\n" +
                 "<body>\n" +
                 "<h1>Invalid request</h1>\n" +
+                "</body>\n" +
+                "</html>";
+
+        out.println( body );
+        out.close();
+    }
+
+    private void responseMissingClientId( HttpServletResponse response ) throws IOException
+    {
+        response.setContentType( ContentType.TEXT_HTML.getMimeType() );
+
+        PrintWriter out = response.getWriter();
+        String body = "<html>\n" +
+                "<body>\n" +
+                "<h1>Client ID can't be null, provide Client ID first via API</h1>\n" +
                 "</body>\n" +
                 "</html>";
 

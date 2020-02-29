@@ -158,6 +158,37 @@ public class RevolutOauth2AuthRedirectTest
     }
 
     @Test
+    public void doGet_MissingClientId() throws IOException
+    {
+        new Expectations()
+        {
+            {
+                request.getRequestURI();
+                result = "/revolut/oauth2/";
+                minTimes = 0;
+
+                request.getHeader( "referer" );
+                result = "https://business.revolut.com";
+
+                request.getParameter( "code" );
+                result = CODE;
+            }
+        };
+
+        tested.doGet( request, response );
+
+        new Verifications()
+        {
+            {
+                response.setStatus( withEqual( HttpServletResponse.SC_BAD_REQUEST ) );
+
+                executor.schedule( ( Task<?> ) any );
+                times = 0;
+            }
+        };
+    }
+
+    @Test
     public void doGet_SchedulerError() throws IOException
     {
         expectationsDefault();
@@ -231,11 +262,18 @@ public class RevolutOauth2AuthRedirectTest
 
     private void expectationsDefault()
     {
+        RevolutCertMetadata certMetadata = new RevolutCertMetadata();
+        certMetadata.setClientId( "Non-Null-ClientID" );
+
         new Expectations()
         {
             {
                 request.getRequestURI();
-                result = "/payment/oauth2/";
+                result = "/revolut/oauth2/";
+                minTimes = 0;
+
+                administration.get();
+                result = certMetadata;
                 minTimes = 0;
             }
         };
