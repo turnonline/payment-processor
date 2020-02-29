@@ -76,7 +76,7 @@ public class RevolutOauth2AuthRedirect
 
         // basic check of allowed referer
         if ( !( "https://business.revolut.com/".equalsIgnoreCase( allowed )
-                || "https://sandbox-b2b.revolut.com/".equalsIgnoreCase( allowed ) ) )
+                || "https://sandbox-business.revolut.com/".equalsIgnoreCase( allowed ) ) )
         {
             LOGGER.warn( "Not allowed referer " + referer );
             response.setStatus( HttpServletResponse.SC_UNAUTHORIZED );
