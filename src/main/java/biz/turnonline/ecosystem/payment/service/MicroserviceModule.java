@@ -29,6 +29,9 @@ import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccountProviderImpl;
 import biz.turnonline.ecosystem.payment.service.model.PaymentBeanMapperConfig;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
+import biz.turnonline.ecosystem.payment.service.model.Transaction;
+import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
+import biz.turnonline.ecosystem.payment.service.model.TransactionInvoice;
 import biz.turnonline.ecosystem.payment.subscription.SubscriptionsModule;
 import biz.turnonline.ecosystem.revolut.business.facade.RevolutBusinessAdapterModule;
 import biz.turnonline.ecosystem.revolut.business.facade.RevolutBusinessClientModule;
@@ -141,6 +144,9 @@ public class MicroserviceModule
             factory.register( BeneficiaryBankAccount.class );
             factory.register( Timestamp.class );
             factory.register( RevolutCertMetadata.class );
+            factory.register( Transaction.class );
+            factory.register( TransactionInvoice.class );
+            factory.register( TransactionBill.class );
         }
     }
 }

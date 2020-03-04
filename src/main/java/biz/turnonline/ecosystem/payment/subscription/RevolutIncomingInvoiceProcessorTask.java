@@ -23,7 +23,9 @@ import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.payment.service.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftRequest;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftResponse;
 import biz.turnonline.ecosystem.revolut.business.draft.model.PaymentReceiver;
@@ -31,6 +33,7 @@ import biz.turnonline.ecosystem.revolut.business.draft.model.PaymentRequest;
 import com.google.api.client.util.DateTime;
 import com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
+import org.ctoolkit.restapi.client.ClientErrorException;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +46,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.UUID;
 
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -54,6 +58,8 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  *     <li>Debtor's bank account is ready to be debited {@link CompanyBankAccount#isDebtorReady()}</li>
  *     <li>{@link InvoicePayment} has all mandatory properties to make a payment</li>
  *     <li>Beneficiary bank account is already synced with Revolut, see {@link RevolutBeneficiarySyncTask}</li>
+ *     <li>There is transaction record already prepared to be populated from invoice payments
+ *     if payment sync is successful</li>
  * </ul>
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
@@ -63,9 +69,11 @@ class RevolutIncomingInvoiceProcessorTask
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( RevolutIncomingInvoiceProcessorTask.class );
 
-    private static final long serialVersionUID = -4932928259516372783L;
+    private static final long serialVersionUID = 7602323455177165927L;
 
     private final Key<CompanyBankAccount> debtorBankAccountKey;
+
+    private final Key<Transaction> transactionKey;
 
     @Inject
     transient private RestFacade facade;
@@ -80,14 +88,17 @@ class RevolutIncomingInvoiceProcessorTask
      * @param json          the incoming invoice as JSON payload
      * @param delete        {@code true} to be incoming invoice processed as deleted
      * @param debtorBankKey the debtor bank account key, the bank account to be debited
+     * @param t             the transaction draft to be populated if payment sync is successful
      */
     RevolutIncomingInvoiceProcessorTask( @Nonnull Key<LocalAccount> accountKey,
                                          @Nonnull String json,
                                          boolean delete,
-                                         @Nonnull Key<CompanyBankAccount> debtorBankKey )
+                                         @Nonnull Key<CompanyBankAccount> debtorBankKey,
+                                         @Nonnull Transaction t )
     {
         super( accountKey, json, delete );
         this.debtorBankAccountKey = checkNotNull( debtorBankKey, "Debtor bank account key can't be null" );
+        this.transactionKey = checkNotNull( t.entityKey(), "Transaction draft key can't be null" );
     }
 
     @Override
@@ -150,20 +161,28 @@ class RevolutIncomingInvoiceProcessorTask
             return;
         }
 
+        Transaction transaction = getTransactionDraft();
+        if ( transaction == null )
+        {
+            LOGGER.warn( "Transaction draft not found for " + transactionKey );
+            return;
+        }
+
         if ( isDelete() )
         {
 
         }
         else
         {
-            schedulePaymentDraft( debtor, debtorBank, beneficiaryExtId, payment );
+            schedulePaymentDraft( debtor, debtorBank, beneficiaryExtId, payment, transaction );
         }
     }
 
     private void schedulePaymentDraft( @Nonnull LocalAccount debtor,
                                        @Nonnull CompanyBankAccount debtorBank,
                                        @Nonnull String beneficiaryId,
-                                       @Nonnull InvoicePayment payment )
+                                       @Nonnull InvoicePayment payment,
+                                       @Nonnull Transaction transaction )
     {
         String debtorExtId = debtorBank.getExternalId();
         String debtorCurrency = debtorBank.getCurrency();
@@ -174,12 +193,13 @@ class RevolutIncomingInvoiceProcessorTask
         Long vs = payment.getVariableSymbol();
 
         String title = key + ( vs == null ? "" : ", VS: " + vs );
+        String reference = "Payment for: " + title;
 
         PaymentRequest payDraft = new PaymentRequest();
         payDraft.amount( totalAmount )
                 .accountId( debtorExtId )
                 .currency( debtorCurrency )
-                .reference( "Payment for: " + title );
+                .reference( reference );
 
         PaymentReceiver receiver = new PaymentReceiver();
         receiver.counterpartyId( UUID.fromString( beneficiaryId ) );
@@ -190,10 +210,27 @@ class RevolutIncomingInvoiceProcessorTask
                 .scheduleFor( dueDate )
                 .addPaymentsItem( payDraft );
 
-        CreatePaymentDraftResponse response = facade.insert( request )
-                .answerBy( CreatePaymentDraftResponse.class )
-                .finish();
+        try
+        {
+            CreatePaymentDraftResponse response = facade.insert( request )
+                    .answerBy( CreatePaymentDraftResponse.class )
+                    .finish();
 
+            transaction.credit( true )
+                    .amount( totalAmount )
+                    .currency( debtorCurrency )
+                    .key( key )
+                    .type( FormOfPayment.TRANSFER )
+                    .bankCode( REVOLUT_BANK_CODE )
+                    .reference( reference )
+                    .externalId( response.getId().toString() );
+
+            transaction.save();
+        }
+        catch ( ClientErrorException e )
+        {
+            LOGGER.error( "Payment request has failed for invoice: " + reference, e );
+        }
     }
 
     /**
@@ -246,6 +283,11 @@ class RevolutIncomingInvoiceProcessorTask
     CompanyBankAccount getDebtorBankAccount()
     {
         return ofy().load().key( debtorBankAccountKey ).now();
+    }
+
+    Transaction getTransactionDraft()
+    {
+        return ofy().load().key( transactionKey ).now();
     }
 
     @Override

@@ -18,6 +18,7 @@
 
 package biz.turnonline.ecosystem.payment.service;
 
+import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
@@ -27,6 +28,8 @@ import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.payment.service.model.Transaction;
+import biz.turnonline.ecosystem.payment.service.model.TransactionInvoice;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
@@ -413,6 +416,41 @@ class PaymentConfigBean
     {
         Criteria<BeneficiaryBankAccount> criteria = beneficiaryQuery( owner, iban );
         return datastore.count( criteria ) > 0;
+    }
+
+    @Override
+    public Transaction createTransactionDraft( @Nonnull LocalAccount owner, @Nonnull IncomingInvoice invoice )
+    {
+        checkNotNull( owner, "LocalAccount cannot be null" );
+        checkNotNull( invoice, "Incoming invoice cannot be null" );
+
+        Long orderId = invoice.getOrderId();
+        Long invoiceId = invoice.getId();
+
+        Criteria<TransactionInvoice> criteria = Criteria.of( TransactionInvoice.class );
+        criteria.equal( "orderId", orderId );
+        criteria.equal( "invoiceId", invoiceId );
+        criteria.reference( "owner", owner );
+
+        List<TransactionInvoice> list = datastore.list( criteria );
+        TransactionInvoice transaction;
+
+        if ( list.isEmpty() )
+        {
+            transaction = new TransactionInvoice( orderId, invoiceId );
+            transaction.setOwner( owner );
+            transaction.save();
+        }
+        else
+        {
+            transaction = list.get( 0 );
+            if ( list.size() > 1 )
+            {
+                LOGGER.warn( "Expected only single transaction, got " + list.size() );
+            }
+        }
+
+        return transaction;
     }
 
     private Criteria<BeneficiaryBankAccount> beneficiaryQuery( @Nonnull LocalAccount owner, @Nonnull String iban )

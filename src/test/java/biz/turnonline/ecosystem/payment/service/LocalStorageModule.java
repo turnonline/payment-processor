@@ -24,6 +24,7 @@ import com.google.cloud.storage.Storage;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import org.ctoolkit.services.storage.DefaultStorageProvider;
+import org.ctoolkit.services.storage.guice.GuicefiedOfyFactory;
 
 import javax.inject.Singleton;
 
@@ -39,6 +40,7 @@ public class LocalStorageModule
     protected void configure()
     {
         bind( Storage.class ).toProvider( DefaultStorageProvider.class ).in( Singleton.class );
+        bind( GuicefiedOfyFactory.class ).asEagerSingleton();
     }
 
     @Provides

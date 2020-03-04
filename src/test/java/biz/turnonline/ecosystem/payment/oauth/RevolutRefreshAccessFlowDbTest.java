@@ -44,6 +44,7 @@ import mockit.Mocked;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -125,6 +126,12 @@ public class RevolutRefreshAccessFlowDbTest
     {
         // we want to keep the state for class lifecycle
         ofy().flush();
+    }
+
+    @AfterClass
+    public void afterClass()
+    {
+        super.helper.tearDown();
     }
 
     /**

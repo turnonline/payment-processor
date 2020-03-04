@@ -19,19 +19,18 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
 /**
- * The form of payment code-book enums.
+ * The payment type code-book enums.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 public enum FormOfPayment
 {
-    BANK_TRANSFER,
+    CARD_PAYMENT,
     CASH,
-    CREDIT_CARD,
-    DEBIT_CARD;
+    TRANSFER;
 
     public static FormOfPayment getDefault()
     {
-        return BANK_TRANSFER;
+        return TRANSFER;
     }
 }

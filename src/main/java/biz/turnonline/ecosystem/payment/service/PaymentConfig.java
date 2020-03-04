@@ -18,12 +18,14 @@
 
 package biz.turnonline.ecosystem.payment.service;
 
+import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.payment.service.model.Transaction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -212,4 +214,15 @@ public interface PaymentConfig
      * @throws IllegalArgumentException if the IBAN is malformed or otherwise fails validation.
      */
     boolean isBeneficiary( @Nonnull LocalAccount owner, @Nonnull String iban );
+
+    /**
+     * Creates a new empty transaction record that is associated with given invoice (order and invoice IDs).
+     * <p>
+     * Idempotent, if transaction record already exist, new won't be created only the existing one will be returned.
+     *
+     * @param owner   the account as an identification to whom to associate newly created transaction
+     * @param invoice the invoice as a source of the transaction identification
+     * @return the newly created transaction
+     */
+    Transaction createTransactionDraft( @Nonnull LocalAccount owner, @Nonnull IncomingInvoice invoice );
 }

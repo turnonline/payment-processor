@@ -18,6 +18,7 @@
 
 package biz.turnonline.ecosystem.payment.service;
 
+import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
@@ -25,6 +26,7 @@ import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.PaymentGate;
+import biz.turnonline.ecosystem.payment.service.model.Transaction;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.appengine.api.taskqueue.TaskHandle;
 import com.google.inject.Injector;
@@ -75,9 +77,13 @@ public class PaymentConfigBeanDbTest
 
     private LocalAccount lAnother;
 
+    private IncomingInvoice invoice;
+
     @BeforeMethod
     public void before()
     {
+        invoice = genericJsonFromFile( "incoming-invoice.pubsub.json", IncomingInvoice.class );
+
         Account account = genericJsonFromFile( "account.json", Account.class );
         lAccount = new LocalAccount( account );
         lAccount.save();
@@ -557,6 +563,36 @@ public class PaymentConfigBeanDbTest
     public void beneficiaryGet_InvalidIBAN()
     {
         bean.getBeneficiary( lAccount, "GB67REVO38133722681951" );
+    }
+
+    @Test
+    public void createTransactionDraft_Idempotent()
+    {
+        Transaction transaction = bean.createTransactionDraft( lAccount, invoice );
+        assertWithMessage( "Transaction draft for incoming invoice" )
+                .that( transaction )
+                .isNotNull();
+
+        assertWithMessage( "Transaction draft key" )
+                .that( transaction.entityKey() )
+                .isNotNull();
+
+        int count = ofy().load().type( Transaction.class ).filter( "owner", lAccount ).count();
+        assertWithMessage( "Number of Transaction record in datastore" )
+                .that( count )
+                .isEqualTo( 1 );
+
+        ofy().flush();
+        // try to create a new record with the same incoming invoice
+        transaction = bean.createTransactionDraft( lAccount, invoice );
+        assertWithMessage( "Transaction draft for incoming invoice" )
+                .that( transaction )
+                .isNotNull();
+
+        count = ofy().load().type( Transaction.class ).filter( "owner", lAccount ).count();
+        assertWithMessage( "Number of Transaction record in datastore" )
+                .that( count )
+                .isEqualTo( 1 );
     }
 
     private int countBeneficiaries( LocalAccount owner )

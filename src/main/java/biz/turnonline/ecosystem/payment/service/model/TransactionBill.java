@@ -16,27 +16,41 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package biz.turnonline.ecosystem.payment.service;
+package biz.turnonline.ecosystem.payment.service.model;
 
-import biz.turnonline.ecosystem.payment.oauth.RevolutOauth2AuthRedirect;
-import com.google.inject.servlet.ServletModule;
+import com.googlecode.objectify.annotation.Index;
+import com.googlecode.objectify.annotation.Subclass;
+
+import javax.annotation.Nonnull;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Servlet injection configuration.
- * <p>
- * Path '/revolut/oauth2' mapped to servlet that processes OAuth2
- * redirection to authorise access to Revolut Business API.
- * </p>
+ * Transaction that represents a payment for a bill (statement of charges from cash register etc.).
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
- * @see RevolutOauth2AuthRedirect
  */
-public class MicroserviceServletModule
-        extends ServletModule
+@Subclass( name = "Bill", index = true )
+public class TransactionBill
+        extends Transaction
 {
-    @Override
-    protected void configureServlets()
+    private static final long serialVersionUID = -8213534781466727086L;
+
+    @Index
+    private Long billId;
+
+    public TransactionBill( @Nonnull Long billId )
     {
-        serve( "/revolut/oauth2" ).with( RevolutOauth2AuthRedirect.class );
+        this.billId = checkNotNull( billId );
+    }
+
+    /**
+     * Returns the unique identification of the bill.
+     *
+     * @return the bill Id
+     */
+    public Long getBillId()
+    {
+        return billId;
     }
 }

@@ -26,6 +26,7 @@ import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
+import biz.turnonline.ecosystem.payment.service.model.Transaction;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
 import com.google.common.base.Strings;
@@ -46,7 +47,7 @@ import java.util.List;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.TRUST_PAY_BANK_CODE;
-import static biz.turnonline.ecosystem.payment.service.model.FormOfPayment.BANK_TRANSFER;
+import static biz.turnonline.ecosystem.payment.service.model.FormOfPayment.TRANSFER;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_AUDIENCE;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_ID;
@@ -64,7 +65,7 @@ import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ENTITY_ID;
  * </ul>
  * Payment (bank transfer) will be scheduled only if one of the condition is being matched:
  * <ul>
- *     <li>{@link InvoicePayment#getMethod()} is BANK_TRANSFER</li>
+ *     <li>{@link InvoicePayment#getMethod()} is TRANSFER</li>
  *     <li>{@link InvoicePayment#getMethod()} is {@code null}, meaning not configured at all,
  *     but rest of the payment properties are valid for bank transfer</li>
  * </ul>
@@ -182,7 +183,7 @@ class ProductBillingChangesSubscription
                 }
 
                 String method = payment.getMethod();
-                if ( !Strings.isNullOrEmpty( method ) && !BANK_TRANSFER.name().equals( method ) )
+                if ( !Strings.isNullOrEmpty( method ) && !TRANSFER.name().equals( method ) )
                 {
                     LOGGER.warn( "Incoming invoice identified by '"
                             + uniqueKey
@@ -195,12 +196,15 @@ class ProductBillingChangesSubscription
                 {
                     case REVOLUT_BANK_CODE:
                     {
+                        // prepares an empty transaction to be completed later (idempotent call)
+                        Transaction tDraft = config.createTransactionDraft( account, invoice );
+
                         // incoming invoice has been successfully de-serialized, schedule processing
                         Key<LocalAccount> accountKey = account.entityKey();
                         Key<CompanyBankAccount> debtorBankKey = debtorBank.entityKey();
 
                         Task<IncomingInvoice> tasks = new RevolutBeneficiarySyncTask( accountKey, data, debtorBankKey );
-                        tasks.addNext( new RevolutIncomingInvoiceProcessorTask( accountKey, data, delete, debtorBankKey ) );
+                        tasks.addNext( new RevolutIncomingInvoiceProcessorTask( accountKey, data, delete, debtorBankKey, tDraft ) );
 
                         executor.schedule( tasks );
                         timestamp.done();
