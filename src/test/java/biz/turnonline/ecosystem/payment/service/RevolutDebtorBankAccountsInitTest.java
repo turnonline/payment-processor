@@ -237,7 +237,7 @@ public class RevolutDebtorBankAccountsInitTest
     }
 
     @Test
-    public void execute_BankAccountsSuccessfullyStored_ExclNotPublic()
+    public void execute_BankAccountsSuccessfullyStored_InclNotPublic()
     {
         accounts.get( 2 ).setPublic( Boolean.FALSE );
         new Expectations( tested )
@@ -270,7 +270,7 @@ public class RevolutDebtorBankAccountsInitTest
 
                 assertWithMessage( "Number of company bank accounts stored" )
                         .that( bas )
-                        .hasSize( 2 );
+                        .hasSize( 3 );
             }
         };
     }

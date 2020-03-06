@@ -73,8 +73,7 @@ class RevolutDebtorBankAccountsInit
 
     private static boolean inclPublicActive( Account account )
     {
-        if ( ( account.getPublic() == null ? false : account.getPublic() )
-                && account.getState() == Account.StateEnum.ACTIVE )
+        if ( account.getState() == Account.StateEnum.ACTIVE )
         {
             return true;
         }

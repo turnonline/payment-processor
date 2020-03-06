@@ -216,16 +216,24 @@ class RevolutIncomingInvoiceProcessorTask
                     .answerBy( CreatePaymentDraftResponse.class )
                     .finish();
 
-            transaction.credit( true )
-                    .amount( totalAmount )
-                    .currency( debtorCurrency )
-                    .key( key )
-                    .type( FormOfPayment.TRANSFER )
-                    .bankCode( REVOLUT_BANK_CODE )
-                    .reference( reference )
-                    .externalId( response.getId().toString() );
+            if ( response.getId() != null )
+            {
+                transaction.credit( true )
+                        .amount( totalAmount )
+                        .currency( debtorCurrency )
+                        .key( key )
+                        .type( FormOfPayment.TRANSFER )
+                        .bankCode( REVOLUT_BANK_CODE )
+                        .reference( reference )
+                        .externalId( response.getId().toString() );
 
-            transaction.save();
+                transaction.save();
+            }
+            else
+            {
+                LOGGER.info( transaction.toString() );
+                LOGGER.error( "Payment draft response does not have ID ?? " + response );
+            }
         }
         catch ( ClientErrorException e )
         {
