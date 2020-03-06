@@ -19,6 +19,7 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.oauth.RevolutOauth2AuthRedirect;
+import biz.turnonline.ecosystem.payment.webhook.RevolutWebhookSubscription;
 import com.google.inject.servlet.ServletModule;
 
 /**
@@ -38,5 +39,6 @@ public class MicroserviceServletModule
     protected void configureServlets()
     {
         serve( "/revolut/oauth2" ).with( RevolutOauth2AuthRedirect.class );
+        serve( "/revolut/webhook" ).with( RevolutWebhookSubscription.class );
     }
 }
