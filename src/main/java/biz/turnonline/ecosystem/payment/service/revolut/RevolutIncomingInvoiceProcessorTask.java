@@ -26,7 +26,7 @@ import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Transaction;
-import biz.turnonline.ecosystem.payment.subscription.JsonTask;
+import biz.turnonline.ecosystem.payment.subscription.JsonAccountTask;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftRequest;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftResponse;
 import biz.turnonline.ecosystem.revolut.business.draft.model.PaymentReceiver;
@@ -66,11 +66,11 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 public class RevolutIncomingInvoiceProcessorTask
-        extends JsonTask<IncomingInvoice>
+        extends JsonAccountTask<IncomingInvoice>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( RevolutIncomingInvoiceProcessorTask.class );
 
-    private static final long serialVersionUID = 7602323455177165927L;
+    private static final long serialVersionUID = 3929322395019063720L;
 
     private final Key<CompanyBankAccount> debtorBankAccountKey;
 
@@ -97,7 +97,7 @@ public class RevolutIncomingInvoiceProcessorTask
                                                 @Nonnull Key<CompanyBankAccount> debtorBankKey,
                                                 @Nonnull Transaction t )
     {
-        super( accountKey, json, delete );
+        super( accountKey, json, delete, "Revolut-Invoice-Processing" );
         this.debtorBankAccountKey = checkNotNull( debtorBankKey, "Debtor bank account key can't be null" );
         this.transactionKey = checkNotNull( t.entityKey(), "Transaction draft key can't be null" );
     }

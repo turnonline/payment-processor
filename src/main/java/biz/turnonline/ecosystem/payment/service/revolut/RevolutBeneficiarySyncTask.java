@@ -26,7 +26,7 @@ import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import biz.turnonline.ecosystem.payment.subscription.JsonTask;
+import biz.turnonline.ecosystem.payment.subscription.JsonAccountTask;
 import biz.turnonline.ecosystem.revolut.business.counterparty.model.Counterparty;
 import biz.turnonline.ecosystem.revolut.business.counterparty.model.CreateCounterpartyRequest;
 import biz.turnonline.ecosystem.revolut.business.counterparty.model.ProfileType;
@@ -49,11 +49,11 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 public class RevolutBeneficiarySyncTask
-        extends JsonTask<IncomingInvoice>
+        extends JsonAccountTask<IncomingInvoice>
 {
-    private static final long serialVersionUID = 4231567939684938821L;
-
     private static final Logger LOGGER = LoggerFactory.getLogger( RevolutBeneficiarySyncTask.class );
+
+    private static final long serialVersionUID = 4380090882116827745L;
 
     private final Key<CompanyBankAccount> debtorBankAccountKey;
 
@@ -74,7 +74,7 @@ public class RevolutBeneficiarySyncTask
                                        @Nonnull String json,
                                        @Nonnull Key<CompanyBankAccount> debtorBankKey )
     {
-        super( accountKey, json, false );
+        super( accountKey, json, false, "Revolut-Beneficiary-Sync" );
         this.debtorBankAccountKey = checkNotNull( debtorBankKey, "Debtor bank account key can't be null" );
     }
 

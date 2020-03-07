@@ -1,0 +1,9 @@
+{
+    "event": "TransactionStateChanged",
+    "timestamp": "2020-03-06T11:11:17.925965Z",
+    "data": {
+        "id": "8700708e-4ce3-4f22-96f3-d05bb1da86f5",
+        "old_state": "pending",
+        "new_state": "completed"
+    }
+}

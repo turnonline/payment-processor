@@ -16,42 +16,39 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package biz.turnonline.ecosystem.payment.subscription;
+package biz.turnonline.ecosystem.payment.service.revolut.webhook;
 
-import biz.turnonline.ecosystem.billing.model.PurchaseOrder;
-import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import com.googlecode.objectify.Key;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import biz.turnonline.ecosystem.payment.subscription.JsonTask;
 
 import javax.annotation.Nonnull;
 
 /**
- * The asynchronous task to process purchase order.
+ * Async {@link TransactionCreated} event processor.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-class PurchaseOrderProcessorTask
-        extends JsonAccountTask<PurchaseOrder>
+public class TransactionCreatedTask
+        extends JsonTask<TransactionCreated>
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger( PurchaseOrderProcessorTask.class );
-
-    private static final long serialVersionUID = 2155479255175862359L;
-
-    PurchaseOrderProcessorTask( @Nonnull Key<LocalAccount> accountKey, @Nonnull String json, boolean delete )
+    /**
+     * Constructor.
+     *
+     * @param json the event JSON payload
+     */
+    public TransactionCreatedTask( @Nonnull String json )
     {
-        super( accountKey, json, delete, "Purchase-Order-Processing" );
+        super( json, "Revolut-Webhook-TransactionCreated" );
     }
 
     @Override
-    protected void execute( @Nonnull LocalAccount debtor, @Nonnull PurchaseOrder order )
+    protected void execute( @Nonnull TransactionCreated resource )
     {
 
     }
 
     @Override
-    protected Class<PurchaseOrder> type()
+    protected Class<TransactionCreated> type()
     {
-        return PurchaseOrder.class;
+        return TransactionCreated.class;
     }
 }

@@ -18,18 +18,22 @@
 
 package biz.turnonline.ecosystem.payment.subscription;
 
+import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionCreatedTask;
+import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChangedTask;
+import com.google.api.client.json.JsonParser;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import org.ctoolkit.services.task.TaskExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.stream.Collectors;
@@ -98,10 +102,36 @@ public class RevolutWebhookSubscription
             LOGGER.info( "Request header [" + name + " - " + value + "]" );
         }
 
-        ServletInputStream stream = request.getInputStream();
+        InputStream stream = request.getInputStream();
         String body = new BufferedReader( new InputStreamReader( stream ) )
                 .lines()
                 .collect( Collectors.joining( "\n" ) );
+
         LOGGER.info( body );
+
+        // Parse the JSON event in order to read only the event type
+        JsonParser parser = JacksonFactory.getDefaultInstance().createJsonParser( body );
+        parser.skipToKey( "event" );
+        String event = parser.parseAndClose( String.class );
+        switch ( event )
+        {
+            case "TransactionCreated":
+            {
+                executor.schedule( new TransactionCreatedTask( body ) );
+                LOGGER.info( event + " task scheduled" );
+                break;
+            }
+            case "TransactionStateChanged":
+            {
+                executor.schedule( new TransactionStateChangedTask( body ) );
+                LOGGER.info( event + " task scheduled" );
+                break;
+            }
+            default:
+            {
+                LOGGER.warn( "Unknown Revolut web-hook event type: " + event );
+                LOGGER.info( body );
+            }
+        }
     }
 }
