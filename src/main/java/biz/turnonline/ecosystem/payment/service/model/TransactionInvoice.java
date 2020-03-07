@@ -32,7 +32,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @Subclass( name = "Invoice", index = true )
 public class TransactionInvoice
-        extends Transaction
+        extends CommonTransaction
 {
     private static final long serialVersionUID = 7396725695386439571L;
 

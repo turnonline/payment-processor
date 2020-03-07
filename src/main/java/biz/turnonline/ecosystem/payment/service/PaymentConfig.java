@@ -23,9 +23,9 @@ import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import biz.turnonline.ecosystem.payment.service.model.Transaction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -224,5 +224,5 @@ public interface PaymentConfig
      * @param invoice the invoice as a source of the transaction identification
      * @return the newly created transaction
      */
-    Transaction createTransactionDraft( @Nonnull LocalAccount owner, @Nonnull IncomingInvoice invoice );
+    CommonTransaction createTransactionDraft( @Nonnull LocalAccount owner, @Nonnull IncomingInvoice invoice );
 }

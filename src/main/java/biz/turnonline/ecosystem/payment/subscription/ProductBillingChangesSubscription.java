@@ -23,10 +23,10 @@ import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.billing.model.PurchaseOrder;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
-import biz.turnonline.ecosystem.payment.service.model.Transaction;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutBeneficiarySyncTask;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutIncomingInvoiceProcessorTask;
 import com.google.api.client.util.DateTime;
@@ -199,7 +199,7 @@ class ProductBillingChangesSubscription
                     case REVOLUT_BANK_CODE:
                     {
                         // prepares an empty transaction to be completed later (idempotent call)
-                        Transaction tDraft = config.createTransactionDraft( account, invoice );
+                        CommonTransaction tDraft = config.createTransactionDraft( account, invoice );
 
                         // incoming invoice has been successfully de-serialized, schedule processing
                         Key<LocalAccount> accountKey = account.entityKey();

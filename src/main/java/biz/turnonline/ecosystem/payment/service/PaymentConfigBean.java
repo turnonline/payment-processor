@@ -26,9 +26,9 @@ import biz.turnonline.ecosystem.payment.oauth.RevolutCertMetadata;
 import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import biz.turnonline.ecosystem.payment.service.model.Transaction;
 import biz.turnonline.ecosystem.payment.service.model.TransactionInvoice;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutDebtorBankAccountsInit;
 import com.google.common.annotations.VisibleForTesting;
@@ -420,7 +420,7 @@ class PaymentConfigBean
     }
 
     @Override
-    public Transaction createTransactionDraft( @Nonnull LocalAccount owner, @Nonnull IncomingInvoice invoice )
+    public CommonTransaction createTransactionDraft( @Nonnull LocalAccount owner, @Nonnull IncomingInvoice invoice )
     {
         checkNotNull( owner, "LocalAccount cannot be null" );
         checkNotNull( invoice, "Incoming invoice cannot be null" );

@@ -24,12 +24,12 @@ import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CodeBookItem;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccountProviderImpl;
 import biz.turnonline.ecosystem.payment.service.model.PaymentBeanMapperConfig;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
-import biz.turnonline.ecosystem.payment.service.model.Transaction;
 import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
 import biz.turnonline.ecosystem.payment.service.model.TransactionInvoice;
 import biz.turnonline.ecosystem.payment.subscription.SubscriptionsModule;
@@ -144,7 +144,7 @@ public class MicroserviceModule
             factory.register( BeneficiaryBankAccount.class );
             factory.register( Timestamp.class );
             factory.register( RevolutCertMetadata.class );
-            factory.register( Transaction.class );
+            factory.register( CommonTransaction.class );
             factory.register( TransactionInvoice.class );
             factory.register( TransactionBill.class );
         }

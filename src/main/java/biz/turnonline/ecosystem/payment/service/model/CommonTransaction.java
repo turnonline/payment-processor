@@ -36,7 +36,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * Database representation of the transaction (either credit or debit).
  **/
 @Entity( name = "PP_Transaction" )
-public class Transaction
+public class CommonTransaction
         extends EntityLongIdentity
         implements HasOwner<LocalAccount>
 {
@@ -69,7 +69,7 @@ public class Transaction
     /**
      * The transaction amount absolute value.
      **/
-    public Transaction amount( Double amount )
+    public CommonTransaction amount( Double amount )
     {
         this.amount = amount;
         return this;
@@ -88,7 +88,7 @@ public class Transaction
     /**
      * The bank identified by code
      */
-    public Transaction bankCode( String bankCode )
+    public CommonTransaction bankCode( String bankCode )
     {
         this.bankCode = bankCode;
         return this;
@@ -107,7 +107,7 @@ public class Transaction
     /**
      * The date when the transaction was completed.
      */
-    public Transaction completedAt( Date completedAt )
+    public CommonTransaction completedAt( Date completedAt )
     {
         this.completedAt = completedAt;
         return this;
@@ -126,7 +126,7 @@ public class Transaction
     /**
      * The boolean indicating whether the payment has positive or negative amount; true - credit, false - debit.
      **/
-    public Transaction credit( boolean credit )
+    public CommonTransaction credit( boolean credit )
     {
         this.credit = credit;
         return this;
@@ -145,7 +145,7 @@ public class Transaction
     /**
      * The payment currency alphabetic code based on the ISO 4217.
      **/
-    public Transaction currency( String currency )
+    public CommonTransaction currency( String currency )
     {
         this.currency = currency;
         return this;
@@ -164,7 +164,7 @@ public class Transaction
     /**
      * The payment type that has been used to make this payment.
      **/
-    public Transaction type( FormOfPayment type )
+    public CommonTransaction type( FormOfPayment type )
     {
         this.type = type;
         return this;
@@ -183,7 +183,7 @@ public class Transaction
     /**
      * The unique payment identification related to the associated invoice or bill.
      **/
-    public Transaction key( String key )
+    public CommonTransaction key( String key )
     {
         this.key = key;
         return this;
@@ -202,7 +202,7 @@ public class Transaction
     /**
      * A user provided payment reference.
      */
-    public Transaction reference( String reference )
+    public CommonTransaction reference( String reference )
     {
         this.reference = reference;
         return this;
@@ -218,7 +218,7 @@ public class Transaction
         this.reference = reference;
     }
 
-    public Transaction externalId( String extId )
+    public CommonTransaction externalId( String extId )
     {
         this.extId = extId;
         return this;
@@ -262,8 +262,8 @@ public class Transaction
     public boolean equals( Object o )
     {
         if ( this == o ) return true;
-        if ( !( o instanceof Transaction ) ) return false;
-        Transaction that = ( Transaction ) o;
+        if ( !( o instanceof CommonTransaction ) ) return false;
+        CommonTransaction that = ( CommonTransaction ) o;
         return credit == that.credit &&
                 Objects.equals( amount, that.amount ) &&
                 Objects.equals( bankCode, that.bankCode ) &&

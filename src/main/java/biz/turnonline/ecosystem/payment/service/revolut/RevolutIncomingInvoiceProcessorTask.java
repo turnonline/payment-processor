@@ -22,10 +22,10 @@ import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import biz.turnonline.ecosystem.payment.service.model.Transaction;
 import biz.turnonline.ecosystem.payment.subscription.JsonAccountTask;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftRequest;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftResponse;
@@ -74,7 +74,7 @@ public class RevolutIncomingInvoiceProcessorTask
 
     private final Key<CompanyBankAccount> debtorBankAccountKey;
 
-    private final Key<Transaction> transactionKey;
+    private final Key<CommonTransaction> transactionKey;
 
     @Inject
     transient private RestFacade facade;
@@ -95,7 +95,7 @@ public class RevolutIncomingInvoiceProcessorTask
                                                 @Nonnull String json,
                                                 boolean delete,
                                                 @Nonnull Key<CompanyBankAccount> debtorBankKey,
-                                                @Nonnull Transaction t )
+                                                @Nonnull CommonTransaction t )
     {
         super( accountKey, json, delete, "Revolut-Invoice-Processing" );
         this.debtorBankAccountKey = checkNotNull( debtorBankKey, "Debtor bank account key can't be null" );
@@ -162,7 +162,7 @@ public class RevolutIncomingInvoiceProcessorTask
             return;
         }
 
-        Transaction transaction = getTransactionDraft();
+        CommonTransaction transaction = getTransactionDraft();
         if ( transaction == null )
         {
             LOGGER.warn( "Transaction draft not found for " + transactionKey );
@@ -183,7 +183,7 @@ public class RevolutIncomingInvoiceProcessorTask
                                        @Nonnull CompanyBankAccount debtorBank,
                                        @Nonnull String beneficiaryId,
                                        @Nonnull InvoicePayment payment,
-                                       @Nonnull Transaction transaction )
+                                       @Nonnull CommonTransaction transaction )
     {
         String debtorExtId = debtorBank.getExternalId();
         String debtorCurrency = debtorBank.getCurrency();
@@ -294,7 +294,7 @@ public class RevolutIncomingInvoiceProcessorTask
         return ofy().load().key( debtorBankAccountKey ).now();
     }
 
-    Transaction getTransactionDraft()
+    CommonTransaction getTransactionDraft()
     {
         return ofy().load().key( transactionKey ).now();
     }

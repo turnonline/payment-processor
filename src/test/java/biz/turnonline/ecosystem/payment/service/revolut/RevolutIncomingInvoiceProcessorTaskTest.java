@@ -21,9 +21,9 @@ package biz.turnonline.ecosystem.payment.service.revolut;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import biz.turnonline.ecosystem.payment.service.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftRequest;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftResponse;
 import biz.turnonline.ecosystem.revolut.business.draft.model.PaymentReceiver;
@@ -81,7 +81,7 @@ public class RevolutIncomingInvoiceProcessorTaskTest
     private Key<LocalAccount> accountKey;
 
     @Injectable
-    private Transaction transaction;
+    private CommonTransaction transaction;
 
     @Injectable
     private String json = "{}";
@@ -105,7 +105,7 @@ public class RevolutIncomingInvoiceProcessorTaskTest
     private PayloadRequest<?> payloadRequest;
 
     @Mocked
-    private Key<Transaction> transactionKey;
+    private Key<CommonTransaction> transactionKey;
 
     private IncomingInvoice invoice;
 
@@ -128,7 +128,7 @@ public class RevolutIncomingInvoiceProcessorTaskTest
         debtorBank.setCurrency( DEBTOR_CURRENCY );
         debtorBank.setExternalId( DEBTOR_EXT_ID );
 
-        transaction = new Transaction();
+        transaction = new CommonTransaction();
 
         new Expectations( transaction )
         {

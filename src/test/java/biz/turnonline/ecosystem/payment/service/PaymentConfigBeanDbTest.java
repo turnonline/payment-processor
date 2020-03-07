@@ -23,10 +23,10 @@ import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.PaymentGate;
-import biz.turnonline.ecosystem.payment.service.model.Transaction;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutDebtorBankAccountsInit;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.appengine.api.taskqueue.TaskHandle;
@@ -569,7 +569,7 @@ public class PaymentConfigBeanDbTest
     @Test
     public void createTransactionDraft_Idempotent()
     {
-        Transaction transaction = bean.createTransactionDraft( lAccount, invoice );
+        CommonTransaction transaction = bean.createTransactionDraft( lAccount, invoice );
         assertWithMessage( "Transaction draft for incoming invoice" )
                 .that( transaction )
                 .isNotNull();
@@ -578,7 +578,7 @@ public class PaymentConfigBeanDbTest
                 .that( transaction.entityKey() )
                 .isNotNull();
 
-        int count = ofy().load().type( Transaction.class ).filter( "owner", lAccount ).count();
+        int count = ofy().load().type( CommonTransaction.class ).filter( "owner", lAccount ).count();
         assertWithMessage( "Number of Transaction record in datastore" )
                 .that( count )
                 .isEqualTo( 1 );
@@ -590,7 +590,7 @@ public class PaymentConfigBeanDbTest
                 .that( transaction )
                 .isNotNull();
 
-        count = ofy().load().type( Transaction.class ).filter( "owner", lAccount ).count();
+        count = ofy().load().type( CommonTransaction.class ).filter( "owner", lAccount ).count();
         assertWithMessage( "Number of Transaction record in datastore" )
                 .that( count )
                 .isEqualTo( 1 );
