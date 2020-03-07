@@ -19,7 +19,7 @@
 package biz.turnonline.ecosystem.payment.oauth;
 
 import biz.turnonline.ecosystem.payment.service.BackendServiceTestCase;
-import biz.turnonline.ecosystem.payment.service.RevolutDebtorBankAccountsInitTest;
+import biz.turnonline.ecosystem.payment.service.revolut.RevolutDebtorBankAccountsInitTest;
 import biz.turnonline.ecosystem.revolut.business.account.model.Account;
 import biz.turnonline.ecosystem.revolut.business.facade.RevolutBusinessProvider;
 import com.google.api.client.auth.oauth2.TokenRequest;

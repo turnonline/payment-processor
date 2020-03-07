@@ -16,8 +16,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package biz.turnonline.ecosystem.payment.service;
+package biz.turnonline.ecosystem.payment.service.revolut;
 
+import biz.turnonline.ecosystem.payment.service.CodeBook;
+import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.revolut.business.account.model.Account;
@@ -34,7 +36,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,8 +49,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-@Singleton
-class RevolutDebtorBankAccountsInit
+public class RevolutDebtorBankAccountsInit
         extends Task<LocalAccount>
 {
     private static final long serialVersionUID = 8695929281304701916L;
@@ -65,7 +65,7 @@ class RevolutDebtorBankAccountsInit
     @Inject
     transient private CodeBook codeBook;
 
-    RevolutDebtorBankAccountsInit( @Nonnull Key<LocalAccount> accountKey )
+    public RevolutDebtorBankAccountsInit( @Nonnull Key<LocalAccount> accountKey )
     {
         super( "Init-Revolut-BankAccounts" );
         super.setEntityKey( checkNotNull( accountKey, "LocalAccount key can't be null" ) );

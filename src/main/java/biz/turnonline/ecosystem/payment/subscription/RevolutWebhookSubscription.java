@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package biz.turnonline.ecosystem.payment.webhook;
+package biz.turnonline.ecosystem.payment.subscription;
 
 import org.ctoolkit.services.task.TaskExecutor;
 import org.slf4j.Logger;

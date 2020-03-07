@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package biz.turnonline.ecosystem.payment.subscription;
+package biz.turnonline.ecosystem.payment.service.revolut;
 
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.billing.model.InvoicePayment;
@@ -26,6 +26,7 @@ import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Transaction;
+import biz.turnonline.ecosystem.payment.subscription.JsonTask;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftRequest;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftResponse;
 import biz.turnonline.ecosystem.revolut.business.draft.model.PaymentReceiver;
@@ -64,7 +65,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-class RevolutIncomingInvoiceProcessorTask
+public class RevolutIncomingInvoiceProcessorTask
         extends JsonTask<IncomingInvoice>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( RevolutIncomingInvoiceProcessorTask.class );
@@ -90,11 +91,11 @@ class RevolutIncomingInvoiceProcessorTask
      * @param debtorBankKey the debtor bank account key, the bank account to be debited
      * @param t             the transaction draft to be populated if payment sync is successful
      */
-    RevolutIncomingInvoiceProcessorTask( @Nonnull Key<LocalAccount> accountKey,
-                                         @Nonnull String json,
-                                         boolean delete,
-                                         @Nonnull Key<CompanyBankAccount> debtorBankKey,
-                                         @Nonnull Transaction t )
+    public RevolutIncomingInvoiceProcessorTask( @Nonnull Key<LocalAccount> accountKey,
+                                                @Nonnull String json,
+                                                boolean delete,
+                                                @Nonnull Key<CompanyBankAccount> debtorBankKey,
+                                                @Nonnull Transaction t )
     {
         super( accountKey, json, delete );
         this.debtorBankAccountKey = checkNotNull( debtorBankKey, "Debtor bank account key can't be null" );

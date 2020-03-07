@@ -19,7 +19,7 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.oauth.RevolutOauth2AuthRedirect;
-import biz.turnonline.ecosystem.payment.webhook.RevolutWebhookSubscription;
+import biz.turnonline.ecosystem.payment.subscription.RevolutWebhookSubscription;
 import com.google.inject.servlet.ServletModule;
 
 /**

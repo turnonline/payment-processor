@@ -27,6 +27,7 @@ import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.PaymentGate;
 import biz.turnonline.ecosystem.payment.service.model.Transaction;
+import biz.turnonline.ecosystem.payment.service.revolut.RevolutDebtorBankAccountsInit;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.appengine.api.taskqueue.TaskHandle;
 import com.google.inject.Injector;

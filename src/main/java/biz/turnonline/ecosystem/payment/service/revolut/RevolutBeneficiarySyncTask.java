@@ -16,7 +16,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package biz.turnonline.ecosystem.payment.subscription;
+package biz.turnonline.ecosystem.payment.service.revolut;
 
 import biz.turnonline.ecosystem.billing.model.BankAccount;
 import biz.turnonline.ecosystem.billing.model.Creditor;
@@ -26,6 +26,7 @@ import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.payment.subscription.JsonTask;
 import biz.turnonline.ecosystem.revolut.business.counterparty.model.Counterparty;
 import biz.turnonline.ecosystem.revolut.business.counterparty.model.CreateCounterpartyRequest;
 import biz.turnonline.ecosystem.revolut.business.counterparty.model.ProfileType;
@@ -47,7 +48,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-class RevolutBeneficiarySyncTask
+public class RevolutBeneficiarySyncTask
         extends JsonTask<IncomingInvoice>
 {
     private static final long serialVersionUID = 4231567939684938821L;
@@ -69,9 +70,9 @@ class RevolutBeneficiarySyncTask
      * @param json          the incoming invoice as JSON payload
      * @param debtorBankKey the debtor bank account key, the bank account to be debited
      */
-    RevolutBeneficiarySyncTask( @Nonnull Key<LocalAccount> accountKey,
-                                @Nonnull String json,
-                                @Nonnull Key<CompanyBankAccount> debtorBankKey )
+    public RevolutBeneficiarySyncTask( @Nonnull Key<LocalAccount> accountKey,
+                                       @Nonnull String json,
+                                       @Nonnull Key<CompanyBankAccount> debtorBankKey )
     {
         super( accountKey, json, false );
         this.debtorBankAccountKey = checkNotNull( debtorBankKey, "Debtor bank account key can't be null" );
