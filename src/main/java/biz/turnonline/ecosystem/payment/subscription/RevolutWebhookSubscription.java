@@ -19,9 +19,12 @@
 package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionCreatedTask;
+import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChanged;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChangedTask;
-import com.google.api.client.json.JsonParser;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.common.base.Strings;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.ctoolkit.services.task.TaskExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,19 +34,18 @@ import javax.inject.Singleton;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Enumeration;
-import java.util.stream.Collectors;
 
 /**
  * Revolut web-hook mechanism that allows you to receive updates about business account.
+ * Once a valid event has been received a corresponding task will be scheduled to process the event.
  * Currently the following events are supported:
  * <ul>
- *     <li>Transaction Creation (TransactionCreated)</li>
- *     <li>Transaction State Change (TransactionStateChanged)</li>
+ *     <li>Transaction created processed by {@link TransactionCreatedTask}</li>
+ *     <li>{@link TransactionStateChanged} processed by {@link TransactionStateChangedTask}</li>
  * </ul>
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
@@ -68,17 +70,17 @@ public class RevolutWebhookSubscription
     protected void doPost( HttpServletRequest request, HttpServletResponse response )
             throws IOException
     {
-        process( request );
+        process( request, response );
     }
 
     @Override
     protected void doPut( HttpServletRequest request, HttpServletResponse response )
             throws IOException
     {
-        process( request );
+        process( request, response );
     }
 
-    private void process( HttpServletRequest request ) throws IOException
+    private void process( HttpServletRequest request, HttpServletResponse response ) throws IOException
     {
         String referer = request.getHeader( "referer" );
         LOGGER.info( "Referer " + referer );
@@ -103,34 +105,54 @@ public class RevolutWebhookSubscription
         }
 
         InputStream stream = request.getInputStream();
-        String body = new BufferedReader( new InputStreamReader( stream ) )
-                .lines()
-                .collect( Collectors.joining( "\n" ) );
+        if ( stream == null )
+        {
+            response.setStatus( HttpServletResponse.SC_BAD_REQUEST );
+            return;
+        }
 
-        LOGGER.info( body );
+        // Parse the JSON event in order to read first the event type
+        JsonElement element = JsonParser.parseReader( new InputStreamReader( stream ) );
+        JsonObject jsonObject = element.getAsJsonObject();
+        JsonElement jsonEvent = jsonObject.get( "event" );
+        String event = jsonEvent == null ? "" : jsonEvent.getAsString();
 
-        // Parse the JSON event in order to read only the event type
-        JsonParser parser = JacksonFactory.getDefaultInstance().createJsonParser( body );
-        parser.skipToKey( "event" );
-        String event = parser.parseAndClose( String.class );
         switch ( event )
         {
             case "TransactionCreated":
             {
-                executor.schedule( new TransactionCreatedTask( body ) );
-                LOGGER.info( event + " task scheduled" );
+                JsonElement dataElement = jsonObject.get( "data" );
+                String json = dataElement == null ? null : dataElement.toString();
+                if ( !Strings.isNullOrEmpty( json ) )
+                {
+                    executor.schedule( new TransactionCreatedTask( json ) );
+                    LOGGER.info( event + " task scheduled" );
+                }
+                else
+                {
+                    LOGGER.warn( "Event has unexpected structure " + jsonObject );
+                }
                 break;
             }
             case "TransactionStateChanged":
             {
-                executor.schedule( new TransactionStateChangedTask( body ) );
-                LOGGER.info( event + " task scheduled" );
+                JsonElement dataElement = jsonObject.get( "data" );
+                String json = dataElement == null ? null : dataElement.toString();
+                if ( !Strings.isNullOrEmpty( json ) )
+                {
+                    executor.schedule( new TransactionStateChangedTask( json ) );
+                    LOGGER.info( event + " task scheduled" );
+                }
+                else
+                {
+                    LOGGER.warn( "Event has unexpected structure " + jsonObject );
+                }
                 break;
             }
             default:
             {
                 LOGGER.warn( "Unknown Revolut web-hook event type: " + event );
-                LOGGER.info( body );
+                LOGGER.info( "Request body: " + jsonObject );
             }
         }
     }

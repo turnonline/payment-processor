@@ -19,14 +19,17 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
 import com.google.common.base.MoreObjects;
-import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Index;
 import org.ctoolkit.services.datastore.objectify.EntityLongIdentity;
-import org.ctoolkit.services.storage.HasOwner;
+import org.ctoolkit.services.datastore.objectify.IndexModificationDate;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -38,12 +41,13 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 @Entity( name = "PP_Transaction" )
 public class CommonTransaction
         extends EntityLongIdentity
-        implements HasOwner<LocalAccount>
+        implements IndexModificationDate
 {
-    private static final long serialVersionUID = -1148494734053283570L;
+    private static final long serialVersionUID = -5656152864624030547L;
 
-    @Index
-    private Ref<LocalAccount> owner;
+    private Long accountId;
+
+    private Double balance;
 
     @Index
     private String bankCode;
@@ -58,13 +62,37 @@ public class CommonTransaction
 
     private String currency;
 
+    @Index
     private boolean credit;
 
+    @Index
+    private boolean failure = true;
+
+    @Index
     private FormOfPayment type;
 
     private String reference;
 
+    private List<Object> origins;
+
+    @Index
     private String extId;
+
+    /**
+     * Either a debtor or creditor bank account identification.
+     *
+     * @return the account Id
+     */
+    public CommonTransaction accountId( Long accountId )
+    {
+        this.accountId = accountId;
+        return this;
+    }
+
+    public Long getAccountId()
+    {
+        return accountId;
+    }
 
     /**
      * The transaction amount absolute value.
@@ -80,9 +108,18 @@ public class CommonTransaction
         return amount;
     }
 
-    public void setAmount( Double amount )
+    /**
+     * The balance after the transaction.
+     */
+    public CommonTransaction balance( Double balance )
     {
-        this.amount = amount;
+        this.balance = balance;
+        return this;
+    }
+
+    public Double getBalance()
+    {
+        return balance;
     }
 
     /**
@@ -99,28 +136,18 @@ public class CommonTransaction
         return bankCode;
     }
 
-    public void setBankCode( String bankCode )
-    {
-        this.bankCode = bankCode;
-    }
-
     /**
      * The date when the transaction was completed.
      */
-    public CommonTransaction completedAt( Date completedAt )
+    public CommonTransaction completedAt( OffsetDateTime completedAt )
     {
-        this.completedAt = completedAt;
+        this.completedAt = toDate( completedAt );
         return this;
     }
 
     public Date getCompletedAt()
     {
         return completedAt;
-    }
-
-    public void setCompletedAt( Date completedAt )
-    {
-        this.completedAt = completedAt;
     }
 
     /**
@@ -137,9 +164,21 @@ public class CommonTransaction
         return credit;
     }
 
-    public void setCredit( boolean credit )
+    /**
+     * The boolean indication whether transaction has failed.
+     */
+    public CommonTransaction failure( boolean failure )
     {
-        this.credit = credit;
+        this.failure = failure;
+        return this;
+    }
+
+    /**
+     * Returns {@code true} if transaction has failed.
+     */
+    public boolean isFailure()
+    {
+        return failure;
     }
 
     /**
@@ -156,11 +195,6 @@ public class CommonTransaction
         return currency;
     }
 
-    public void setCurrency( String currency )
-    {
-        this.currency = currency;
-    }
-
     /**
      * The payment type that has been used to make this payment.
      **/
@@ -173,11 +207,6 @@ public class CommonTransaction
     public FormOfPayment getType()
     {
         return type;
-    }
-
-    public void setType( FormOfPayment type )
-    {
-        this.type = type;
     }
 
     /**
@@ -194,11 +223,6 @@ public class CommonTransaction
         return key;
     }
 
-    public void setKey( String key )
-    {
-        this.key = key;
-    }
-
     /**
      * A user provided payment reference.
      */
@@ -211,11 +235,6 @@ public class CommonTransaction
     public String getReference()
     {
         return reference;
-    }
-
-    public void setReference( String reference )
-    {
-        this.reference = reference;
     }
 
     public CommonTransaction externalId( String extId )
@@ -234,9 +253,35 @@ public class CommonTransaction
         return extId;
     }
 
-    public void setExternalId( String extId )
+    /**
+     * Adds incoming transaction to be stored for archiving purpose.
+     *
+     * @param origin the origin incoming transaction
+     */
+    public void addOrigin( @Nonnull Object origin )
     {
-        this.extId = extId;
+        checkNotNull( origin, "Origin incoming transaction can't be null" );
+        if ( this.origins == null )
+        {
+            this.origins = new ArrayList<>();
+        }
+
+        this.origins.add( origin );
+    }
+
+    public List<Object> getOrigins()
+    {
+        return origins;
+    }
+
+    public Date toDate( @Nullable OffsetDateTime odt )
+    {
+        if ( odt == null )
+        {
+            return null;
+        }
+
+        return Date.from( odt.toInstant() );
     }
 
     @Override
@@ -283,7 +328,6 @@ public class CommonTransaction
     {
         return MoreObjects.toStringHelper( this )
                 .addValue( super.toString() )
-                .add( "owner", owner )
                 .add( "bankCode", bankCode )
                 .add( "completedAt", completedAt )
                 .add( "key", key )
@@ -293,19 +337,8 @@ public class CommonTransaction
                 .add( "type", type )
                 .add( "reference", reference )
                 .add( "extId", extId )
+                .add( "origins", origins )
                 .toString();
-    }
-
-    @Override
-    public LocalAccount getOwner()
-    {
-        return fromRef( owner, null );
-    }
-
-    @Override
-    public void setOwner( @Nonnull LocalAccount owner )
-    {
-        this.owner = Ref.create( checkNotNull( owner, "LocalAccount as an owner can't be null" ) );
     }
 }
 

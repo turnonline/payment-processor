@@ -80,7 +80,7 @@ class ProductBillingChangesSubscription
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( ProductBillingChangesSubscription.class );
 
-    private static final long serialVersionUID = 2547878701538798649L;
+    private static final long serialVersionUID = 6847823217376648290L;
 
     private final TaskExecutor executor;
 
@@ -199,7 +199,7 @@ class ProductBillingChangesSubscription
                     case REVOLUT_BANK_CODE:
                     {
                         // prepares an empty transaction to be completed later (idempotent call)
-                        CommonTransaction tDraft = config.createTransactionDraft( account, invoice );
+                        CommonTransaction tDraft = config.createTransactionDraft( invoice );
 
                         // incoming invoice has been successfully de-serialized, schedule processing
                         Key<LocalAccount> accountKey = account.entityKey();

@@ -569,7 +569,7 @@ public class PaymentConfigBeanDbTest
     @Test
     public void createTransactionDraft_Idempotent()
     {
-        CommonTransaction transaction = bean.createTransactionDraft( lAccount, invoice );
+        CommonTransaction transaction = bean.createTransactionDraft( invoice );
         assertWithMessage( "Transaction draft for incoming invoice" )
                 .that( transaction )
                 .isNotNull();
@@ -578,19 +578,54 @@ public class PaymentConfigBeanDbTest
                 .that( transaction.entityKey() )
                 .isNotNull();
 
-        int count = ofy().load().type( CommonTransaction.class ).filter( "owner", lAccount ).count();
+        int count = ofy().load().type( CommonTransaction.class ).count();
         assertWithMessage( "Number of Transaction record in datastore" )
                 .that( count )
                 .isEqualTo( 1 );
 
         ofy().flush();
         // try to create a new record with the same incoming invoice
-        transaction = bean.createTransactionDraft( lAccount, invoice );
+        transaction = bean.createTransactionDraft( invoice );
         assertWithMessage( "Transaction draft for incoming invoice" )
                 .that( transaction )
                 .isNotNull();
 
-        count = ofy().load().type( CommonTransaction.class ).filter( "owner", lAccount ).count();
+        count = ofy().load().type( CommonTransaction.class ).count();
+        assertWithMessage( "Number of Transaction record in datastore" )
+                .that( count )
+                .isEqualTo( 1 );
+    }
+
+    @Test
+    public void createTransaction_Idempotent()
+    {
+        String extId = "91b160cf-d524-43ee-a2ee-687b8b91a3fa";
+        CommonTransaction transaction = bean.createTransaction( extId );
+
+        assertWithMessage( "Transaction for external expense" )
+                .that( transaction )
+                .isNotNull();
+
+        assertWithMessage( "Transaction for external expense key" )
+                .that( transaction.entityKey() )
+                .isNull();
+
+        transaction.save();
+
+        int count = ofy().load().type( CommonTransaction.class ).count();
+        assertWithMessage( "Number of Transaction record in datastore" )
+                .that( count )
+                .isEqualTo( 1 );
+
+        ofy().clear();
+
+        // try to create a new record with the same external Id
+        transaction = bean.createTransaction( extId );
+        assertWithMessage( "Transaction for external expense" )
+                .that( transaction )
+                .isNotNull();
+
+        count = ofy().load().type( CommonTransaction.class ).count();
         assertWithMessage( "Number of Transaction record in datastore" )
                 .that( count )
                 .isEqualTo( 1 );

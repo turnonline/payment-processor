@@ -29,6 +29,7 @@ import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
 import biz.turnonline.ecosystem.payment.service.model.TransactionInvoice;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutDebtorBankAccountsInit;
 import com.google.common.annotations.VisibleForTesting;
@@ -420,9 +421,8 @@ class PaymentConfigBean
     }
 
     @Override
-    public CommonTransaction createTransactionDraft( @Nonnull LocalAccount owner, @Nonnull IncomingInvoice invoice )
+    public CommonTransaction createTransactionDraft( @Nonnull IncomingInvoice invoice )
     {
-        checkNotNull( owner, "LocalAccount cannot be null" );
         checkNotNull( invoice, "Incoming invoice cannot be null" );
 
         Long orderId = invoice.getOrderId();
@@ -431,7 +431,6 @@ class PaymentConfigBean
         Criteria<TransactionInvoice> criteria = Criteria.of( TransactionInvoice.class );
         criteria.equal( "orderId", orderId );
         criteria.equal( "invoiceId", invoiceId );
-        criteria.reference( "owner", owner );
 
         List<TransactionInvoice> list = datastore.list( criteria );
         TransactionInvoice transaction;
@@ -439,7 +438,6 @@ class PaymentConfigBean
         if ( list.isEmpty() )
         {
             transaction = new TransactionInvoice( orderId, invoiceId );
-            transaction.setOwner( owner );
             transaction.save();
         }
         else
@@ -449,6 +447,34 @@ class PaymentConfigBean
             {
                 LOGGER.warn( "Expected only single transaction, got " + list.size() );
             }
+        }
+
+        return transaction;
+    }
+
+    @Override
+    public CommonTransaction createTransaction( @Nonnull String extId )
+    {
+        Criteria<CommonTransaction> criteria = Criteria.of( CommonTransaction.class );
+        criteria.equal( "extId", extId );
+        List<CommonTransaction> transactions = datastore.list( criteria );
+
+        CommonTransaction transaction;
+        if ( !transactions.isEmpty() )
+        {
+            transaction = transactions.get( 0 );
+
+            int size = transactions.size();
+            if ( size > 1 )
+            {
+                LOGGER.warn( "There are more transactions for single Ext ID: " + extId + ", number of records " + size );
+            }
+        }
+        else
+        {
+            // If the transaction record does not exist yet, the invoice hasn't been issued
+            // and the incoming transaction represents an expenses paid outside of the service.
+            transaction = new TransactionBill( extId );
         }
 
         return transaction;

@@ -19,7 +19,9 @@
 package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionCreatedTask;
+import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChanged;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChangedTask;
+import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
 import com.google.appengine.api.taskqueue.TaskOptions;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -63,7 +65,7 @@ public class RevolutWebhookSubscriptionTest
         {
             {
                 request.getInputStream();
-                result = new MockedInputStream( "transaction-created-card-payment.json" );
+                result = new MockedInputStream( "transaction-created-card_payment.json" );
             }
         };
 
@@ -82,6 +84,12 @@ public class RevolutWebhookSubscriptionTest
                 assertWithMessage( "Type of the event task" )
                         .that( task )
                         .isInstanceOf( TransactionCreatedTask.class );
+
+                TransactionCreatedTask tt = ( TransactionCreatedTask ) task;
+                Transaction event = tt.workWith();
+                assertWithMessage( "Task transaction payload" )
+                        .that( event )
+                        .isNotNull();
             }
         };
     }
@@ -112,6 +120,12 @@ public class RevolutWebhookSubscriptionTest
                 assertWithMessage( "Type of the event task" )
                         .that( task )
                         .isInstanceOf( TransactionStateChangedTask.class );
+
+                TransactionStateChangedTask tt = ( TransactionStateChangedTask ) task;
+                TransactionStateChanged event = tt.workWith();
+                assertWithMessage( "Task event payload" )
+                        .that( event )
+                        .isNotNull();
             }
         };
     }
@@ -128,6 +142,108 @@ public class RevolutWebhookSubscriptionTest
         };
 
         tested.doPost( request, response );
+
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task<?> ) any );
+                times = 0;
+
+                executor.schedule( ( Task<?> ) any, ( TaskOptions ) any );
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void transactionCreated_InvalidStructure() throws IOException
+    {
+        new Expectations()
+        {
+            {
+                request.getInputStream();
+                result = new MockedInputStream( "transaction-created-invalid-structure.json" );
+            }
+        };
+
+        tested.doPost( request, response );
+
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task<?> ) any );
+                times = 0;
+
+                executor.schedule( ( Task<?> ) any, ( TaskOptions ) any );
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void transactionStateChanged_InvalidStructure() throws IOException
+    {
+        new Expectations()
+        {
+            {
+                request.getInputStream();
+                result = new MockedInputStream( "transaction-state-changed-invalid-structure.json" );
+            }
+        };
+
+        tested.doPut( request, response );
+
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task<?> ) any );
+                times = 0;
+
+                executor.schedule( ( Task<?> ) any, ( TaskOptions ) any );
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void transactionEvent_MissingBody() throws IOException
+    {
+        new Expectations()
+        {
+            {
+                request.getInputStream();
+                result = null;
+            }
+        };
+
+        tested.doPut( request, response );
+
+        new Verifications()
+        {
+            {
+                response.setStatus( HttpServletResponse.SC_BAD_REQUEST );
+
+                executor.schedule( ( Task<?> ) any );
+                times = 0;
+
+                executor.schedule( ( Task<?> ) any, ( TaskOptions ) any );
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void transactionEvent_EmptyJsonBody() throws IOException
+    {
+        new Expectations()
+        {
+            {
+                request.getInputStream();
+                result = new MockedInputStream( "empty-json.json" );
+            }
+        };
+
+        tested.doPut( request, response );
 
         new Verifications()
         {

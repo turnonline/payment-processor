@@ -19,7 +19,10 @@
 package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.payment.service.NoRetryException;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.common.annotations.VisibleForTesting;
 import org.ctoolkit.services.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +33,7 @@ import java.io.IOException;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * The base task that accepts JSON string to be deserialized to target entity (data type) by {@link JacksonFactory}.
+ * The base task that accepts JSON string to be deserialized to target entity (data type) by {@link ObjectMapper}.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
@@ -39,7 +42,7 @@ public abstract class JsonTask<T>
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( JsonTask.class );
 
-    private static final long serialVersionUID = -979562135438724603L;
+    private static final long serialVersionUID = -576061063009827910L;
 
     private final String json;
 
@@ -55,8 +58,9 @@ public abstract class JsonTask<T>
         this.json = checkNotNull( json, "JSON can't be null" );
     }
 
+    @VisibleForTesting
     @Override
-    protected final void execute()
+    public final void execute()
     {
         execute( workWith() );
     }
@@ -72,7 +76,12 @@ public abstract class JsonTask<T>
         try
         {
             Class<T> type = checkNotNull( type(), "Target data type can't be null" );
-            return JacksonFactory.getDefaultInstance().fromString( json, type );
+            ObjectMapper mapper = new ObjectMapper()
+                    // to be backward compatible if some properties are added over time
+                    .disable( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES )
+                    .registerModule( new JavaTimeModule() );
+
+            return mapper.readValue( json, type );
         }
         catch ( IOException e )
         {
@@ -80,7 +89,6 @@ public abstract class JsonTask<T>
             throw new NoRetryException();
         }
     }
-
 
     /**
      * The client implementation to be executed asynchronously.

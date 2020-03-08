@@ -18,9 +18,21 @@
 
 package biz.turnonline.ecosystem.payment.service.revolut.webhook;
 
+import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.subscription.JsonTask;
+import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
+import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionState;
+import org.ctoolkit.restapi.client.ClientErrorException;
+import org.ctoolkit.restapi.client.NotFoundException;
+import org.ctoolkit.restapi.client.RestFacade;
+import org.ctoolkit.restapi.client.UnauthorizedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import java.util.UUID;
 
 /**
  * * Async {@link TransactionStateChanged} event processor.
@@ -30,10 +42,18 @@ import javax.annotation.Nonnull;
 public class TransactionStateChangedTask
         extends JsonTask<TransactionStateChanged>
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger( TransactionStateChangedTask.class );
+
+    private static final long serialVersionUID = 8264148597336503259L;
+
+    transient private PaymentConfig config;
+
+    transient private RestFacade facade;
+
     /**
      * Constructor.
      *
-     * @param json the event JSON payload
+     * @param json the event JSON payload of type {@link TransactionStateChanged}
      */
     public TransactionStateChangedTask( @Nonnull String json )
     {
@@ -43,12 +63,59 @@ public class TransactionStateChangedTask
     @Override
     protected void execute( @Nonnull TransactionStateChanged resource )
     {
+        TransactionStateChangedData incoming = resource.getData();
+        if ( incoming == null )
+        {
+            LOGGER.warn( "Invalid incoming transaction status change, it has no data " + resource.getTimestamp() );
+            return;
+        }
 
+        UUID id = incoming.getId();
+        if ( id == null )
+        {
+            LOGGER.warn( "Invalid incoming transaction status change, it has no ID " + resource.getTimestamp() );
+            return;
+        }
+
+        try
+        {
+            facade.get( Transaction.class ).identifiedBy( id.toString() ).finish();
+            LOGGER.info( "Incoming transaction status change (via webhook) found in bank system too" );
+        }
+        catch ( ClientErrorException | NotFoundException | UnauthorizedException e )
+        {
+            LOGGER.error( "Unknown incoming transaction identified by transaction Id: " + id, e );
+            return;
+        }
+
+        CommonTransaction transaction = config.createTransaction( id.toString() );
+
+        if ( TransactionState.COMPLETED.getValue().equals( incoming.getNewState() )
+                && transaction.getCompletedAt() == null
+                && !transaction.isFailure() )
+        {
+            // update only if transaction is not yet marked as completed
+            transaction.completedAt( resource.getTimestamp() );
+            transaction.addOrigin( incoming );
+            transaction.save();
+        }
     }
 
     @Override
     protected Class<TransactionStateChanged> type()
     {
         return TransactionStateChanged.class;
+    }
+
+    @Inject
+    void setConfig( PaymentConfig config )
+    {
+        this.config = config;
+    }
+
+    @Inject
+    void setFacade( RestFacade facade )
+    {
+        this.facade = facade;
     }
 }

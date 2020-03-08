@@ -26,6 +26,7 @@ import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -220,9 +221,17 @@ public interface PaymentConfig
      * <p>
      * Idempotent, if transaction record already exist, new won't be created only the existing one will be returned.
      *
-     * @param owner   the account as an identification to whom to associate newly created transaction
      * @param invoice the invoice as a source of the transaction identification
      * @return the newly created transaction
      */
-    CommonTransaction createTransactionDraft( @Nonnull LocalAccount owner, @Nonnull IncomingInvoice invoice );
+    CommonTransaction createTransactionDraft( @Nonnull IncomingInvoice invoice );
+
+    /**
+     * Creates (in memory only) a new instance of the {@link TransactionBill} for the external Id.
+     * To be idempotent, first searches for transaction with specified identification, if found it will be returned.
+     *
+     * @param extId the external identification of the transaction
+     * @return the transaction
+     */
+    CommonTransaction createTransaction( @Nonnull String extId );
 }

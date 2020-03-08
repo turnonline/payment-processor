@@ -27,6 +27,7 @@ public enum FormOfPayment
 {
     CARD_PAYMENT,
     CASH,
+    REFUND,
     TRANSFER;
 
     public static FormOfPayment getDefault()

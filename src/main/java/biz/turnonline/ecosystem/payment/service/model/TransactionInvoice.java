@@ -34,13 +34,21 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class TransactionInvoice
         extends CommonTransaction
 {
-    private static final long serialVersionUID = 7396725695386439571L;
+    private static final long serialVersionUID = 8405337529001554785L;
 
     @Index
     private Long orderId;
 
     @Index
     private Long invoiceId;
+
+    /**
+     * Needed if instantiated by objectify.
+     */
+    @SuppressWarnings( "unused" )
+    TransactionInvoice()
+    {
+    }
 
     public TransactionInvoice( @Nonnull Long orderId, @Nonnull Long invoiceId )
     {

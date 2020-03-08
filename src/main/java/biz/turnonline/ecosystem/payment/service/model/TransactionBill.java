@@ -34,14 +34,22 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class TransactionBill
         extends CommonTransaction
 {
-    private static final long serialVersionUID = -8213534781466727086L;
+    private static final long serialVersionUID = -5485341182934635057L;
 
     @Index
     private Long billId;
 
-    public TransactionBill( @Nonnull Long billId )
+    /**
+     * Needed if instantiated by objectify.
+     */
+    @SuppressWarnings( "unused" )
+    TransactionBill()
     {
-        this.billId = checkNotNull( billId );
+    }
+
+    public TransactionBill( @Nonnull String extId )
+    {
+        super.externalId( checkNotNull( extId, "The bill external ID can't be null" ) );
     }
 
     /**
@@ -52,5 +60,15 @@ public class TransactionBill
     public Long getBillId()
     {
         return billId;
+    }
+
+    /**
+     * The bill identified by ID to be associated with this transaction.
+     *
+     * @param billId the bill ID to be set
+     */
+    public void setBillId( Long billId )
+    {
+        this.billId = billId;
     }
 }

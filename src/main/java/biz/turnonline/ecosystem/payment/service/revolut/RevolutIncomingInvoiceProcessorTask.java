@@ -70,7 +70,7 @@ public class RevolutIncomingInvoiceProcessorTask
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( RevolutIncomingInvoiceProcessorTask.class );
 
-    private static final long serialVersionUID = 3929322395019063720L;
+    private static final long serialVersionUID = 3094407700729325038L;
 
     private final Key<CompanyBankAccount> debtorBankAccountKey;
 
