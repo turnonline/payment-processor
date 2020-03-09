@@ -39,11 +39,11 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * Database representation of the transaction (either credit or debit).
  **/
 @Entity( name = "PP_Transaction" )
-public class CommonTransaction
+public abstract class CommonTransaction
         extends EntityLongIdentity
         implements IndexModificationDate
 {
-    private static final long serialVersionUID = -5656152864624030547L;
+    private static final long serialVersionUID = -4345791753726496666L;
 
     private Long accountId;
 

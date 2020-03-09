@@ -65,6 +65,8 @@ public class PaymentConfigBeanDbTest
 
     private static final String CLIENT_ID = "client_Y6zhUcyAa..";
 
+    private static final String BANK_ACCOUNT_EXT_ID = "9967e306-af32-4663-923b-09b5dff13c3c";
+
     @Inject
     private PaymentConfig bean;
 
@@ -424,6 +426,43 @@ public class PaymentConfigBeanDbTest
         assertThat( bankAccounts ).hasSize( 5 );
 
         bean.markBankAccountAsPrimary( lAnother, bankAccounts.get( 0 ).getId() );
+    }
+
+    @Test
+    public void getBankAccount_ByExternalId()
+    {
+        // prepare company bank account to have an external Id
+        CompanyBankAccount bankAccountWithExtId = null;
+        for ( CompanyBankAccount ba : bean.getBankAccounts( lAccount, "0900" ) )
+        {
+            bankAccountWithExtId = ba;
+            ba.setExternalId( BANK_ACCOUNT_EXT_ID );
+            ba.save();
+            break;
+        }
+        // clear cache
+        ofy().clear();
+
+        // test call
+        CompanyBankAccount bankAccount = bean.getBankAccount( BANK_ACCOUNT_EXT_ID );
+
+        assertWithMessage( "Company bank account identified by external Id" )
+                .that( bankAccount )
+                .isNotNull();
+
+        assertWithMessage( "Company bank account identified by external Id" )
+                .that( bankAccount )
+                .isEqualTo( bankAccountWithExtId );
+    }
+
+    @Test
+    public void getBankAccount_ByExternalIdNotFound()
+    {
+        CompanyBankAccount bankAccount = bean.getBankAccount( BANK_ACCOUNT_EXT_ID );
+
+        assertWithMessage( "Company bank account identified by external Id" )
+                .that( bankAccount )
+                .isNull();
     }
 
     @Test( expectedExceptions = BankAccountNotFound.class )

@@ -20,6 +20,7 @@ package biz.turnonline.ecosystem.payment.service.revolut.webhook;
 
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
+import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.subscription.JsonTask;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
@@ -37,6 +38,7 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.UUID;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 
@@ -96,6 +98,20 @@ public class TransactionCreatedTask
                 .currency( leg.getCurrency() )
                 .balance( leg.getBalance() )
                 .reference( incoming.getReference() );
+
+        UUID accountId = leg.getAccountId();
+        if ( accountId != null )
+        {
+            CompanyBankAccount bankAccount = config.getBankAccount( accountId.toString() );
+            if ( bankAccount != null )
+            {
+                transaction.accountId( bankAccount.getId() );
+            }
+            else
+            {
+                LOGGER.warn( "Company bank account not found for external ID " + accountId );
+            }
+        }
 
         TransactionState state = incoming.getState();
         if ( TransactionState.CREATED == state
