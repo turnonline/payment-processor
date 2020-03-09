@@ -155,5 +155,8 @@ public class RevolutWebhookSubscription
                 LOGGER.info( "Request body: " + jsonObject );
             }
         }
+
+        // temporary logging of the body
+        LOGGER.info( jsonObject.toString() );
     }
 }
