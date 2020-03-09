@@ -159,6 +159,23 @@ class PaymentConfigBean
         return checkOwner( account, bankAccount );
     }
 
+    @Override
+    public CompanyBankAccount getBankAccount( @Nonnull String externalId )
+    {
+        checkNotNull( externalId, TEMPLATE, "External Id" );
+
+        Criteria<CompanyBankAccount> criteria = Criteria.of( CompanyBankAccount.class );
+        for ( CompanyBankAccount bankAccount : datastore.list( criteria ) )
+        {
+            if ( externalId.equals( bankAccount.getExternalId() ) )
+            {
+                return bankAccount;
+            }
+        }
+
+        return null;
+    }
+
     private CompanyBankAccount loadBankAccount( @Nonnull Long id )
     {
         return ofy().load().type( CompanyBankAccount.class ).id( id ).now();

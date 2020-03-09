@@ -73,6 +73,14 @@ public interface PaymentConfig
     CompanyBankAccount getBankAccount( @Nonnull LocalAccount owner, @Nonnull Long id );
 
     /**
+     * Returns the bank account for given external ID.
+     *
+     * @param externalId the external ID of the bank account to be found
+     * @return the bank account or {@code null} if not found
+     */
+    CompanyBankAccount getBankAccount( @Nonnull String externalId );
+
+    /**
      * Returns the list of filtered bank accounts that's being owned by specified owner.
      *
      * @param owner    the authenticated account as an owner of the bank accounts

@@ -21,16 +21,20 @@ package biz.turnonline.ecosystem.payment.service.revolut.webhook;
 import biz.turnonline.ecosystem.payment.service.BackendServiceTestCase;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
+import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
+import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
 import biz.turnonline.ecosystem.payment.subscription.MockedInputStream;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType;
+import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Tested;
+import org.ctoolkit.agent.service.impl.ImportTask;
 import org.ctoolkit.restapi.client.ClientErrorException;
 import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.RestFacade;
@@ -64,6 +68,8 @@ public class TransactionCreatedFlowTest
         extends BackendServiceTestCase
 {
     static final String TRANSACTION_EXT_ID = "0dfaec58-6043-11ea-bc55-0242ac130003";
+
+    static final String BANK_ACCOUNT_EXT_ID = "bdab1c20-8d8c-430d-b967-87ac01af060c";
 
     private TransactionCreatedTask created;
 
@@ -117,6 +123,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction amount" )
                 .that( transaction.getAmount() )
                 .isEqualTo( 2.0 );
+
+        assertWithMessage( "Transaction related account Id" )
+                .that( transaction.getAccountId() )
+                .isNull();
 
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
@@ -186,6 +196,10 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 123.11 );
 
+        assertWithMessage( "Transaction related account Id" )
+                .that( transaction.getAccountId() )
+                .isNull();
+
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isEqualTo( 0.0 );
@@ -250,6 +264,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction amount" )
                 .that( transaction.getAmount() )
                 .isEqualTo( 0.0 );
+
+        assertWithMessage( "Transaction related account Id" )
+                .that( transaction.getAccountId() )
+                .isNull();
 
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
@@ -316,6 +334,10 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 123.11 );
 
+        assertWithMessage( "Transaction related account Id" )
+                .that( transaction.getAccountId() )
+                .isNull();
+
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isEqualTo( 22.5 );
@@ -363,6 +385,19 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_TRANSFER_ExternalNonRevolut()
     {
+        LocalAccount account = new LocalAccount( genericJsonFromFile( "account.json", Account.class ) );
+
+        // import test bank accounts
+        ImportTask task = new ImportTask( "/testdataset/changeset_00001.xml" );
+        task.run();
+
+        CompanyBankAccount primaryBankAccount = config.getPrimaryBankAccount( account, null );
+        // set bank account external Id taken from transaction-created-transfer-non-revolut.json
+        primaryBankAccount.setExternalId( BANK_ACCOUNT_EXT_ID );
+        primaryBankAccount.save();
+
+        long companyBankAccountID = primaryBankAccount.getId();
+
         created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() + "-non-revolut" ) );
         created.setConfig( config );
         created.setFacade( facade );
@@ -376,6 +411,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction reference" )
                 .that( transaction.getReference() )
                 .isEqualTo( "Payment for Blows & Wistles Co." );
+
+        assertWithMessage( "Transaction related account Id" )
+                .that( transaction.getAccountId() )
+                .isEqualTo( companyBankAccountID );
 
         assertWithMessage( "Transaction amount" )
                 .that( transaction.getAmount() )
@@ -447,6 +486,10 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 99.22 );
 
+        assertWithMessage( "Transaction related account Id" )
+                .that( transaction.getAccountId() )
+                .isNull();
+
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isNull();
@@ -512,6 +555,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction amount" )
                 .that( transaction.getAmount() )
                 .isEqualTo( 15.00 );
+
+        assertWithMessage( "Transaction related account Id" )
+                .that( transaction.getAccountId() )
+                .isNull();
 
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
