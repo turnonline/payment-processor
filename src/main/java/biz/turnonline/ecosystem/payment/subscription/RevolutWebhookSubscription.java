@@ -137,10 +137,9 @@ public class RevolutWebhookSubscription
             case "TransactionStateChanged":
             {
                 JsonElement dataElement = jsonObject.get( "data" );
-                String json = dataElement == null ? null : dataElement.toString();
-                if ( !Strings.isNullOrEmpty( json ) )
+                if ( dataElement != null )
                 {
-                    executor.schedule( new TransactionStateChangedTask( json ) );
+                    executor.schedule( new TransactionStateChangedTask( jsonObject.toString() ) );
                     LOGGER.info( event + " task scheduled" );
                 }
                 else

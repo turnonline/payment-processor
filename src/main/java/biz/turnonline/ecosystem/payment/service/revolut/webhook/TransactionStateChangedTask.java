@@ -35,7 +35,9 @@ import javax.inject.Inject;
 import java.util.UUID;
 
 /**
- * * Async {@link TransactionStateChanged} event processor.
+ * Async {@link TransactionStateChanged} event processor.
+ * <p>
+ * Incoming transaction Id is being used to compare {@link Transaction#getState()} from the bank.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
@@ -77,9 +79,10 @@ public class TransactionStateChangedTask
             return;
         }
 
+        Transaction transactionFromBank;
         try
         {
-            facade.get( Transaction.class ).identifiedBy( id.toString() ).finish();
+            transactionFromBank = facade.get( Transaction.class ).identifiedBy( id.toString() ).finish();
             LOGGER.info( "Incoming transaction status change (via webhook) found in bank system too" );
         }
         catch ( ClientErrorException | NotFoundException | UnauthorizedException e )
@@ -89,6 +92,13 @@ public class TransactionStateChangedTask
         }
 
         CommonTransaction transaction = config.createTransaction( id.toString() );
+        TransactionState state = transactionFromBank.getState();
+
+        if ( !( state != null && state.getValue().equals( incoming.getNewState() ) ) )
+        {
+            LOGGER.error( "Mismatched state, incoming " + resource );
+            return;
+        }
 
         if ( TransactionState.COMPLETED.getValue().equals( incoming.getNewState() )
                 && transaction.getCompletedAt() == null

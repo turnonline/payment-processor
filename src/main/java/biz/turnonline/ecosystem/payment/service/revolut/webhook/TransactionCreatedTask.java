@@ -44,6 +44,8 @@ import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BAN
 
 /**
  * Async task to process Revolut {@link Transaction}.
+ * <p>
+ * Incoming transaction Id is being only used to get {@link Transaction} from the bank.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
@@ -72,10 +74,11 @@ public class TransactionCreatedTask
     protected void execute( @Nonnull Transaction incoming )
     {
         String id = Strings.isNullOrEmpty( incoming.getId() ) ? "" : incoming.getId();
+        Transaction transactionFromBank;
 
         try
         {
-            facade.get( Transaction.class ).identifiedBy( id ).finish();
+            transactionFromBank = facade.get( Transaction.class ).identifiedBy( id ).finish();
             LOGGER.info( "Incoming transaction (via webhook) found in bank system too" );
         }
         catch ( ClientErrorException | NotFoundException | UnauthorizedException e )
@@ -84,7 +87,7 @@ public class TransactionCreatedTask
             return;
         }
 
-        List<TransactionLeg> legs = incoming.getLegs();
+        List<TransactionLeg> legs = transactionFromBank.getLegs();
         if ( legs == null || legs.isEmpty() )
         {
             LOGGER.warn( "Invalid incoming transaction, it has leg; ID " + id );
@@ -97,7 +100,7 @@ public class TransactionCreatedTask
         transaction.bankCode( REVOLUT_BANK_CODE )
                 .currency( leg.getCurrency() )
                 .balance( leg.getBalance() )
-                .reference( incoming.getReference() );
+                .reference( transactionFromBank.getReference() );
 
         UUID accountId = leg.getAccountId();
         if ( accountId != null )
@@ -113,7 +116,7 @@ public class TransactionCreatedTask
             }
         }
 
-        TransactionState state = incoming.getState();
+        TransactionState state = transactionFromBank.getState();
         if ( TransactionState.CREATED == state
                 || TransactionState.PENDING == state
                 || TransactionState.COMPLETED == state )
@@ -143,23 +146,23 @@ public class TransactionCreatedTask
 
         if ( TransactionState.COMPLETED.equals( state ) )
         {
-            transaction.completedAt( incoming.getUpdatedAt() );
+            transaction.completedAt( transactionFromBank.getUpdatedAt() );
         }
 
-        if ( TransactionType.CARD_PAYMENT.equals( incoming.getType() ) )
+        if ( TransactionType.CARD_PAYMENT.equals( transactionFromBank.getType() ) )
         {
             transaction.type( FormOfPayment.CARD_PAYMENT );
         }
-        else if ( TransactionType.TRANSFER.equals( incoming.getType() ) )
+        else if ( TransactionType.TRANSFER.equals( transactionFromBank.getType() ) )
         {
             transaction.type( FormOfPayment.TRANSFER );
         }
-        else if ( TransactionType.REFUND.equals( incoming.getType() ) )
+        else if ( TransactionType.REFUND.equals( transactionFromBank.getType() ) )
         {
             transaction.type( FormOfPayment.REFUND );
         }
 
-        transaction.addOrigin( incoming );
+        transaction.addOrigin( transactionFromBank );
         transaction.save();
     }
 

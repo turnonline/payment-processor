@@ -22,6 +22,7 @@ import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
+import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionState;
 import mockit.Expectations;
 import mockit.Injectable;
 import org.ctoolkit.restapi.client.ClientErrorException;
@@ -67,10 +68,45 @@ public class TransactionStateChangedTaskTest
 
         transaction.failure( false );
 
+        Transaction t = new Transaction();
+        t.setState( TransactionState.fromValue( tested.workWith().getData().getNewState() ) );
+
         new Expectations( transaction )
         {
             {
+                // mocking of the transaction from remote bank system
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+
                 transaction.save();
+            }
+        };
+
+        tested.execute();
+    }
+
+    @Test
+    public void stateMismatch()
+    {
+        TransactionStateChangedTask tested;
+        tested = new TransactionStateChangedTask( toJson( "transaction-state-changed.json" ) );
+        tested.setConfig( config );
+        tested.setFacade( facade );
+
+        transaction.failure( false );
+
+        Transaction t = new Transaction();
+        t.setState( TransactionState.PENDING );
+
+        new Expectations( transaction )
+        {
+            {
+                // mocking of the transaction from remote bank system
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+
+                transaction.save();
+                times = 0;
             }
         };
 
@@ -87,9 +123,16 @@ public class TransactionStateChangedTaskTest
 
         transaction.failure( true );
 
+        Transaction t = new Transaction();
+        t.setState( TransactionState.fromValue( tested.workWith().getData().getNewState() ) );
+
         new Expectations( transaction )
         {
             {
+                // mocking of the transaction from remote bank system
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+
                 transaction.save();
                 times = 0;
             }
@@ -109,9 +152,16 @@ public class TransactionStateChangedTaskTest
         transaction.completedAt( OffsetDateTime.now() );
         transaction.failure( false );
 
+        Transaction t = new Transaction();
+        t.setState( TransactionState.fromValue( tested.workWith().getData().getNewState() ) );
+
         new Expectations( transaction )
         {
             {
+                // mocking of the transaction from remote bank system
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+
                 transaction.save();
                 times = 0;
             }
