@@ -27,8 +27,13 @@ import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
 import biz.turnonline.ecosystem.payment.subscription.MockedInputStream;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
+import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionState;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType;
 import biz.turnonline.ecosystem.steward.model.Account;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import mockit.Expectations;
@@ -86,6 +91,11 @@ public class TransactionCreatedFlowTest
     @Injectable
     private RestFacade facade;
 
+    static ObjectMapper mapper = new ObjectMapper()
+            .disable( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES )
+            .registerModule( new JavaTimeModule() );
+
+
     static String toJson( String fileName )
     {
         InputStream stream = MockedInputStream.class.getResourceAsStream( fileName );
@@ -104,11 +114,26 @@ public class TransactionCreatedFlowTest
      * Example of transaction for card payment.
      */
     @Test
-    public void successful_CARD_PAYMENT()
+    public void successful_CARD_PAYMENT() throws JsonProcessingException
     {
-        created = new TransactionCreatedTask( toJsonCreated( CARD_PAYMENT.getValue() ) );
+        String json = toJsonCreated( CARD_PAYMENT.getValue() );
+        created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+
+        // mocking of the transaction from remote bank system
+        Transaction t = mapper.readValue( json, Transaction.class );
+        Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
+        afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        new Expectations()
+        {
+            {
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+                result = afterStateChanged;
+            }
+        };
 
         // test call
         created.execute();
@@ -173,14 +198,62 @@ public class TransactionCreatedFlowTest
     }
 
     /**
+     * Example of transaction for card payment, the incoming.
+     * The {@link Transaction} from the bank takes precedence, only the ID is being used from the incoming transaction.
+     */
+    @Test
+    public void successful_CARD_PAYMENT_OverTRANSFER() throws JsonProcessingException
+    {
+        String json = toJsonCreated( TRANSFER.getValue() );
+        created = new TransactionCreatedTask( json );
+        created.setConfig( config );
+        created.setFacade( facade );
+
+        // mocking of the transaction from remote bank system
+        Transaction t = mapper.readValue( toJsonCreated( CARD_PAYMENT.getValue() ), Transaction.class );
+        new Expectations()
+        {
+            {
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+            }
+        };
+
+        // test call
+        created.execute();
+
+        CommonTransaction transaction = ofy().load().type( CommonTransaction.class ).first().now();
+        verifyTransactionBasics( transaction );
+
+        assertWithMessage( "Transaction type" )
+                .that( transaction.getType() )
+                .isEqualTo( FormOfPayment.CARD_PAYMENT );
+    }
+
+    /**
      * Example of transaction for internal transfer between your accounts:
      */
     @Test
-    public void successful_TRANSFER_Internal()
+    public void successful_TRANSFER_Internal() throws JsonProcessingException
     {
-        created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() + "-internal" ) );
+        String json = toJsonCreated( TRANSFER.getValue() + "-internal" );
+        created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+
+        // mocking of the transaction from remote bank system
+        Transaction t = mapper.readValue( json, Transaction.class );
+        Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
+        afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        new Expectations()
+        {
+            {
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+                result = afterStateChanged;
+            }
+        };
 
         // test call
         created.execute();
@@ -245,11 +318,26 @@ public class TransactionCreatedFlowTest
      * Example of transaction for a payment to another Revolut business/user.
      */
     @Test
-    public void successful_TRANSFER_External()
+    public void successful_TRANSFER_External() throws JsonProcessingException
     {
-        created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() ) );
+        String json = toJsonCreated( TRANSFER.getValue() );
+        created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+
+        // mocking of the transaction from remote bank system
+        Transaction t = mapper.readValue( json, Transaction.class );
+        Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
+        afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        new Expectations()
+        {
+            {
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+                result = afterStateChanged;
+            }
+        };
 
         // test call
         created.execute();
@@ -314,11 +402,26 @@ public class TransactionCreatedFlowTest
      * Example of transaction for a cross-currency payment to another Revolut business/user.
      */
     @Test
-    public void successful_TRANSFER_ExternalCrossCurrency()
+    public void successful_TRANSFER_ExternalCrossCurrency() throws JsonProcessingException
     {
-        created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() + "-cross-currency" ) );
+        String json = toJsonCreated( TRANSFER.getValue() + "-cross-currency" );
+        created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+
+        // mocking of the transaction from remote bank system
+        Transaction t = mapper.readValue( json, Transaction.class );
+        Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
+        afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        new Expectations()
+        {
+            {
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+                result = afterStateChanged;
+            }
+        };
 
         // test call
         created.execute();
@@ -383,7 +486,7 @@ public class TransactionCreatedFlowTest
      * Example of transaction for a payment to external counterparty.
      */
     @Test
-    public void successful_TRANSFER_ExternalNonRevolut()
+    public void successful_TRANSFER_ExternalNonRevolut() throws JsonProcessingException
     {
         LocalAccount account = new LocalAccount( genericJsonFromFile( "account.json", Account.class ) );
 
@@ -398,9 +501,24 @@ public class TransactionCreatedFlowTest
 
         long companyBankAccountID = primaryBankAccount.getId();
 
-        created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() + "-non-revolut" ) );
+        String json = toJsonCreated( TRANSFER.getValue() + "-non-revolut" );
+        created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+
+        // mocking of the transaction from remote bank system
+        Transaction t = mapper.readValue( json, Transaction.class );
+        Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
+        afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        new Expectations()
+        {
+            {
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+                result = afterStateChanged;
+            }
+        };
 
         // test call
         created.execute();
@@ -466,11 +584,26 @@ public class TransactionCreatedFlowTest
      * Testing whether status change to 'completed' will be ignored.
      */
     @Test
-    public void successful_TRANSFER_Failed()
+    public void successful_TRANSFER_Failed() throws JsonProcessingException
     {
-        created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() + "-failed" ) );
+        String json = toJsonCreated( TRANSFER.getValue() + "-failed" );
+        created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+
+        // mocking of the transaction from remote bank system
+        Transaction t = mapper.readValue( json, Transaction.class );
+        Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
+        afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        new Expectations()
+        {
+            {
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+                result = afterStateChanged;
+            }
+        };
 
         // test call
         created.execute();
@@ -536,11 +669,26 @@ public class TransactionCreatedFlowTest
      * Testing whether status change to 'completed' will be ignored.
      */
     @Test
-    public void successful_REFUND()
+    public void successful_REFUND() throws JsonProcessingException
     {
-        created = new TransactionCreatedTask( toJsonCreated( REFUND.getValue() ) );
+        String json = toJsonCreated( REFUND.getValue() );
+        created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+
+        // mocking of the transaction from remote bank system
+        Transaction t = mapper.readValue( json, Transaction.class );
+        Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
+        afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        new Expectations()
+        {
+            {
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+                result = afterStateChanged;
+            }
+        };
 
         // test call
         created.execute();
@@ -635,7 +783,7 @@ public class TransactionCreatedFlowTest
         new Expectations()
         {
             {
-                facade.get( Transaction.class ).identifiedBy( anyString ).finish();
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
                 result = new ClientErrorException();
             }
         };
@@ -674,11 +822,26 @@ public class TransactionCreatedFlowTest
     }
 
     @Test
-    public void unsuccessful_MissingLegs()
+    public void unsuccessful_MissingLegs() throws JsonProcessingException
     {
-        created = new TransactionCreatedTask( toJsonCreated( "missing-legs" ) );
+        String json = toJsonCreated( "missing-legs" );
+        created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+
+        // mocking of the transaction from remote bank system
+        Transaction t = mapper.readValue( json, Transaction.class );
+        Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
+        afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        new Expectations()
+        {
+            {
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+                result = afterStateChanged;
+            }
+        };
 
         // test call
         created.execute();
