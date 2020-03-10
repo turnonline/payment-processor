@@ -32,18 +32,16 @@ import java.util.UUID;
 } )
 public class TransactionStateChangedData
 {
-    @JsonProperty( "id" )
     private UUID id;
 
-    @JsonProperty( "old_state" )
     private String oldState;
 
-    @JsonProperty( "new_state" )
     private String newState;
 
     /**
      * The ID of transaction.
      */
+    @JsonProperty( "id" )
     public UUID getId()
     {
         return id;
@@ -57,6 +55,7 @@ public class TransactionStateChangedData
     /**
      * Previous state of the transaction.
      */
+    @JsonProperty( "old_state" )
     public String getOldState()
     {
         return oldState;
@@ -70,6 +69,7 @@ public class TransactionStateChangedData
     /**
      * New state of the transaction.
      */
+    @JsonProperty( "new_state" )
     public String getNewState()
     {
         return newState;
