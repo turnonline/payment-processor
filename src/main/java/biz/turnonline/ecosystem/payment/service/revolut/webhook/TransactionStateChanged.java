@@ -35,15 +35,13 @@ import java.time.OffsetDateTime;
 } )
 public class TransactionStateChanged
 {
-    @JsonProperty( "event" )
     private String event;
 
-    @JsonProperty( "timestamp" )
     private OffsetDateTime timestamp;
 
-    @JsonProperty( "data" )
     private TransactionStateChangedData data;
 
+    @JsonProperty( "event" )
     public String getEvent()
     {
         return event;
@@ -54,6 +52,7 @@ public class TransactionStateChanged
         this.event = event;
     }
 
+    @JsonProperty( "timestamp" )
     public OffsetDateTime getTimestamp()
     {
         return timestamp;
@@ -64,6 +63,7 @@ public class TransactionStateChanged
         this.timestamp = timestamp;
     }
 
+    @JsonProperty( "data" )
     public TransactionStateChangedData getData()
     {
         return data;
