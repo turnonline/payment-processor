@@ -36,6 +36,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionCreatedFlowTest.TRANSACTION_EXT_ID;
+import static biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType.CARD_PAYMENT;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 /**
@@ -87,9 +89,62 @@ public class RevolutWebhookSubscriptionTest
 
                 TransactionCreatedTask tt = ( TransactionCreatedTask ) task;
                 Transaction event = tt.workWith();
+
                 assertWithMessage( "Task transaction payload" )
                         .that( event )
                         .isNotNull();
+
+                assertWithMessage( "Transaction ID" )
+                        .that( event.getId() )
+                        .isEqualTo( TRANSACTION_EXT_ID );
+
+                assertWithMessage( "Transaction type" )
+                        .that( event.getType() )
+                        .isEqualTo( CARD_PAYMENT );
+
+                assertWithMessage( "Transaction merchant" )
+                        .that( event.getMerchant() )
+                        .isNotNull();
+
+                assertWithMessage( "Transaction merchant name" )
+                        .that( event.getMerchant().getName() )
+                        .isEqualTo( "Best, Ltd." );
+
+                assertWithMessage( "Transaction city" )
+                        .that( event.getMerchant().getCity() )
+                        .isEqualTo( "Bratislava" );
+
+                assertWithMessage( "Transaction merchant category code" )
+                        .that( event.getMerchant().getCategoryCode() )
+                        .isEqualTo( "7523" );
+
+                assertWithMessage( "Transaction merchant country" )
+                        .that( event.getMerchant().getCountry() )
+                        .isEqualTo( "SVK" );
+
+                assertWithMessage( "Transaction legs" )
+                        .that( event.getLegs() )
+                        .hasSize( 1 );
+
+                assertWithMessage( "Transaction card" )
+                        .that( event.getCard() )
+                        .isNotNull();
+
+                assertWithMessage( "Transaction card number" )
+                        .that( event.getCard().getCardNumber() )
+                        .isEqualTo( "442581******7123" );
+
+                assertWithMessage( "Transaction card first name" )
+                        .that( event.getCard().getFirstName() )
+                        .isEqualTo( "John" );
+
+                assertWithMessage( "Transaction card last name" )
+                        .that( event.getCard().getLastName() )
+                        .isEqualTo( "Foo" );
+
+                assertWithMessage( "Transaction card phone" )
+                        .that( event.getCard().getPhone() )
+                        .isEqualTo( "+421905905905" );
             }
         };
     }
@@ -123,9 +178,30 @@ public class RevolutWebhookSubscriptionTest
 
                 TransactionStateChangedTask tt = ( TransactionStateChangedTask ) task;
                 TransactionStateChanged event = tt.workWith();
-                assertWithMessage( "Task event payload" )
+
+                assertWithMessage( "Event payload" )
                         .that( event )
                         .isNotNull();
+
+                assertWithMessage( "Event type" )
+                        .that( event.getEvent() )
+                        .isEqualTo( "TransactionStateChanged" );
+
+                assertWithMessage( "Event timestamp" )
+                        .that( event.getTimestamp() )
+                        .isNotNull();
+
+                assertWithMessage( "Event data" )
+                        .that( event.getData() )
+                        .isNotNull();
+
+                assertWithMessage( "Event data old state" )
+                        .that( event.getData().getOldState() )
+                        .isEqualTo( "pending" );
+
+                assertWithMessage( "Event data new state" )
+                        .that( event.getData().getNewState() )
+                        .isEqualTo( "completed" );
             }
         };
     }

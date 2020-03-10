@@ -67,7 +67,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class TransactionCreatedFlowTest
         extends BackendServiceTestCase
 {
-    static final String TRANSACTION_EXT_ID = "0dfaec58-6043-11ea-bc55-0242ac130003";
+    public static final String TRANSACTION_EXT_ID = "0dfaec58-6043-11ea-bc55-0242ac130003";
 
     static final String BANK_ACCOUNT_EXT_ID = "bdab1c20-8d8c-430d-b967-87ac01af060c";
 
