@@ -606,9 +606,9 @@ public class PaymentConfigBeanDbTest
     }
 
     @Test
-    public void createTransactionDraft_Idempotent()
+    public void initGetTransactionDraft_Idempotent()
     {
-        CommonTransaction transaction = bean.createTransactionDraft( invoice );
+        CommonTransaction transaction = bean.initGetTransactionDraft( invoice );
         assertWithMessage( "Transaction draft for incoming invoice" )
                 .that( transaction )
                 .isNotNull();
@@ -624,7 +624,7 @@ public class PaymentConfigBeanDbTest
 
         ofy().flush();
         // try to create a new record with the same incoming invoice
-        transaction = bean.createTransactionDraft( invoice );
+        transaction = bean.initGetTransactionDraft( invoice );
         assertWithMessage( "Transaction draft for incoming invoice" )
                 .that( transaction )
                 .isNotNull();
@@ -636,10 +636,10 @@ public class PaymentConfigBeanDbTest
     }
 
     @Test
-    public void createTransaction_Idempotent()
+    public void initGetTransaction_Idempotent()
     {
         String extId = "91b160cf-d524-43ee-a2ee-687b8b91a3fa";
-        CommonTransaction transaction = bean.createTransaction( extId );
+        CommonTransaction transaction = bean.initGetTransaction( extId );
 
         assertWithMessage( "Transaction for external expense" )
                 .that( transaction )
@@ -659,7 +659,7 @@ public class PaymentConfigBeanDbTest
         ofy().clear();
 
         // try to create a new record with the same external Id
-        transaction = bean.createTransaction( extId );
+        transaction = bean.initGetTransaction( extId );
         assertWithMessage( "Transaction for external expense" )
                 .that( transaction )
                 .isNotNull();

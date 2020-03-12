@@ -96,7 +96,7 @@ public class TransactionCreatedTask
 
         TransactionLeg leg = legs.get( 0 );
 
-        CommonTransaction transaction = config.createTransaction( id );
+        CommonTransaction transaction = config.initGetTransaction( id );
         transaction.bankCode( REVOLUT_BANK_CODE )
                 .currency( leg.getCurrency() )
                 .balance( leg.getBalance() )
@@ -108,7 +108,7 @@ public class TransactionCreatedTask
             CompanyBankAccount bankAccount = config.getBankAccount( accountId.toString() );
             if ( bankAccount != null )
             {
-                transaction.accountId( bankAccount.getId() );
+                transaction.bankAccountKey( bankAccount.entityKey() );
             }
             else
             {
@@ -126,6 +126,11 @@ public class TransactionCreatedTask
         else
         {
             transaction.failure( true );
+        }
+
+        if ( state != null )
+        {
+            transaction.status( CommonTransaction.State.fromValue( transactionFromBank.getState().getValue() ) );
         }
 
         Double amount = leg.getAmount();

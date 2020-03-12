@@ -55,6 +55,9 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State.COMPLETED;
+import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State.FAILED;
+import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State.PENDING;
 import static biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType.CARD_PAYMENT;
 import static biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType.REFUND;
 import static biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType.TRANSFER;
@@ -150,7 +153,7 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( 2.0 );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
+                .that( transaction.getBankAccountKey() )
                 .isNull();
 
         assertWithMessage( "Balance after transaction" )
@@ -164,6 +167,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isFalse();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( PENDING );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -187,6 +194,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction status changed, completed at" )
                 .that( transaction.getCompletedAt() )
                 .isNotNull();
+
+        assertWithMessage( "Transaction status changed" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )
@@ -270,7 +281,7 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( 123.11 );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
+                .that( transaction.getBankAccountKey() )
                 .isNull();
 
         assertWithMessage( "Balance after transaction" )
@@ -284,6 +295,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isFalse();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -304,6 +319,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 1 );
+
+        assertWithMessage( "Transaction status changed" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )
@@ -354,7 +373,7 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( 0.0 );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
+                .that( transaction.getBankAccountKey() )
                 .isNull();
 
         assertWithMessage( "Balance after transaction" )
@@ -368,6 +387,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isTrue();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -388,6 +411,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 1 );
+
+        assertWithMessage( "Transaction status changed" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )
@@ -438,7 +465,7 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( 123.11 );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
+                .that( transaction.getBankAccountKey() )
                 .isNull();
 
         assertWithMessage( "Balance after transaction" )
@@ -452,6 +479,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isFalse();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -472,6 +503,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 1 );
+
+        assertWithMessage( "Transaction status changed" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )
@@ -498,8 +533,6 @@ public class TransactionCreatedFlowTest
         // set bank account external Id taken from transaction-created-transfer-non-revolut.json
         primaryBankAccount.setExternalId( BANK_ACCOUNT_EXT_ID );
         primaryBankAccount.save();
-
-        long companyBankAccountID = primaryBankAccount.getId();
 
         String json = toJsonCreated( TRANSFER.getValue() + "-non-revolut" );
         created = new TransactionCreatedTask( json );
@@ -531,8 +564,8 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( "Payment for Blows & Wistles Co." );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
-                .isEqualTo( companyBankAccountID );
+                .that( transaction.getBankAccountKey() )
+                .isEqualTo( primaryBankAccount.entityKey() );
 
         assertWithMessage( "Transaction amount" )
                 .that( transaction.getAmount() )
@@ -549,6 +582,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isFalse();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( PENDING );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -569,6 +606,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 1 );
+
+        assertWithMessage( "Transaction status changed" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )
@@ -620,7 +661,7 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( 99.22 );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
+                .that( transaction.getBankAccountKey() )
                 .isNull();
 
         assertWithMessage( "Balance after transaction" )
@@ -634,6 +675,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isFalse();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( FAILED );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -654,6 +699,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 1 );
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( FAILED );
 
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )
@@ -705,7 +754,7 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( 15.00 );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
+                .that( transaction.getBankAccountKey() )
                 .isNull();
 
         assertWithMessage( "Balance after transaction" )
@@ -719,6 +768,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isTrue();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -739,6 +792,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 1 );
+
+        assertWithMessage( "Transaction status changed" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )

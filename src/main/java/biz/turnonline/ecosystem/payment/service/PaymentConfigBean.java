@@ -147,6 +147,12 @@ class PaymentConfigBean
     }
 
     @Override
+    public LocalAccount getLocalAccount()
+    {
+        return null;
+    }
+
+    @Override
     public CompanyBankAccount getBankAccount( @Nonnull LocalAccount account, @Nonnull Long id )
     {
         checkNotNull( account, TEMPLATE, "LocalAccount" );
@@ -438,7 +444,7 @@ class PaymentConfigBean
     }
 
     @Override
-    public CommonTransaction createTransactionDraft( @Nonnull IncomingInvoice invoice )
+    public CommonTransaction initGetTransactionDraft( @Nonnull IncomingInvoice invoice )
     {
         checkNotNull( invoice, "Incoming invoice cannot be null" );
 
@@ -470,7 +476,7 @@ class PaymentConfigBean
     }
 
     @Override
-    public CommonTransaction createTransaction( @Nonnull String extId )
+    public CommonTransaction initGetTransaction( @Nonnull String extId )
     {
         Criteria<CommonTransaction> criteria = Criteria.of( CommonTransaction.class );
         criteria.equal( "extId", extId );

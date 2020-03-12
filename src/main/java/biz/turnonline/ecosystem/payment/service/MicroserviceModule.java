@@ -41,8 +41,12 @@ import biz.turnonline.ecosystem.steward.facade.AccountStewardAdapterModule;
 import biz.turnonline.ecosystem.steward.facade.AccountStewardClientModule;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
@@ -50,12 +54,14 @@ import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
 import net.sf.jsr107cache.Cache;
 import org.ctoolkit.restapi.client.ApiCredential;
+import org.ctoolkit.restapi.client.PubSub;
 import org.ctoolkit.restapi.client.adapter.BeanMapperConfig;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeAppEngineModule;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeDefaultOrikaModule;
 import org.ctoolkit.restapi.client.appengine.JCacheProvider;
 import org.ctoolkit.restapi.client.firebase.GoogleApiFirebaseModule;
 import org.ctoolkit.restapi.client.provider.TokenProvider;
+import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.ctoolkit.services.guice.CtoolkitServicesAppEngineModule;
 import org.ctoolkit.services.storage.CtoolkitServicesStorageModule;
 import org.ctoolkit.services.storage.guice.EntityRegistrar;
@@ -64,6 +70,8 @@ import org.ctoolkit.services.task.CtoolkitServicesTaskModule;
 import org.ctoolkit.services.task.Task;
 
 import javax.inject.Singleton;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 
 /**
  * The application injection configuration.
@@ -117,15 +125,35 @@ public class MicroserviceModule
         Names.bindProperties( binder(), config );
     }
 
-    @Provides
-    @Singleton
-    ObjectMapper provideObjectMapper()
+    private ObjectMapper baseObjectMapper()
     {
         JsonFactory factory = new JsonFactory();
         factory.enable( JsonParser.Feature.ALLOW_COMMENTS );
 
+        SimpleModule module = new SimpleModule();
+        module.addSerializer( Long.class, new JsonLongSerializer() );
+
         ObjectMapper mapper = new ObjectMapper( factory );
         mapper.setSerializationInclusion( JsonInclude.Include.NON_NULL );
+        mapper.registerModule( module );
+
+        return mapper;
+    }
+
+    @Provides
+    @Singleton
+    ObjectMapper provideJsonObjectMapper()
+    {
+        return baseObjectMapper();
+    }
+
+    @Provides
+    @Singleton
+    @PubSub
+    ObjectMapper provideJsonObjectMapperPubSub()
+    {
+        ObjectMapper mapper = baseObjectMapper();
+        mapper.setDateFormat( new SimpleDateFormat( PubsubCommand.PUB_SUB_DATE_FORMAT ) );
 
         return mapper;
     }
@@ -147,6 +175,22 @@ public class MicroserviceModule
             factory.register( CommonTransaction.class );
             factory.register( TransactionInvoice.class );
             factory.register( TransactionBill.class );
+        }
+    }
+
+    /**
+     * The {@link Long} value published via Google Endpoints is being serialized as {@link String}
+     * in order to be compatible with JavaScript. To make Google Endpoints Client and its model
+     * compatible with Google Pub/Sub we need to serialize published messages
+     * with {@link Long} as {@link String} as well.
+     */
+    private static class JsonLongSerializer
+            extends JsonSerializer<Long>
+    {
+        @Override
+        public void serialize( Long value, JsonGenerator generator, SerializerProvider serializers ) throws IOException
+        {
+            generator.writeString( value.toString() );
         }
     }
 }

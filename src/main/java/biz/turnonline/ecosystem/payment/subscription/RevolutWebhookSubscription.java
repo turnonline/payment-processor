@@ -82,11 +82,6 @@ public class RevolutWebhookSubscription
 
     private void process( HttpServletRequest request, HttpServletResponse response ) throws IOException
     {
-        String referer = request.getHeader( "referer" );
-        LOGGER.info( "Referer " + referer );
-        LOGGER.info( "RemoteAddr " + request.getRemoteAddr() );
-        LOGGER.info( "LocalAddr " + request.getLocalAddr() );
-
         Enumeration<String> parameterNames = request.getParameterNames();
         while ( parameterNames.hasMoreElements() )
         {
