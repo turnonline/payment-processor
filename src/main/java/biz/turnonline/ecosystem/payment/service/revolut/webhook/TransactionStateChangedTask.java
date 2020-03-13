@@ -93,7 +93,9 @@ public class TransactionStateChangedTask
             return;
         }
 
-        CommonTransaction transaction = config.initGetTransaction( id.toString() );
+        // if transaction not found an exception will be thrown in order to handle retry
+        // (because of eventual consistency)
+        CommonTransaction transaction = config.searchTransaction( id.toString() );
         TransactionState state = transactionFromBank.getState();
 
         if ( state == null || !state.getValue().equals( incoming.getNewState() ) )

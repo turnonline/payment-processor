@@ -245,11 +245,21 @@ public interface PaymentConfig
     CommonTransaction initGetTransactionDraft( @Nonnull IncomingInvoice invoice );
 
     /**
-     * Creates (in memory only) a new instance of the {@link TransactionBill} for the external Id.
+     * Creates a new record of the {@link TransactionBill} for the external Id.
      * To be idempotent, first searches for transaction with specified identification, if found it will be returned.
      *
      * @param extId the external identification of the transaction
      * @return the transaction
+     * @see #searchTransaction(String)
      */
     CommonTransaction initGetTransaction( @Nonnull String extId );
+
+    /**
+     * Searches a transaction for specified external Id.
+     *
+     * @param extId the external identification of the transaction
+     * @return the transaction or {@code null} if not found
+     * @throws TransactionNotFound if transaction not found
+     */
+    CommonTransaction searchTransaction( @Nonnull String extId );
 }

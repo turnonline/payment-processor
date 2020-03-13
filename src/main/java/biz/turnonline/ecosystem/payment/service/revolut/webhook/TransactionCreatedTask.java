@@ -96,7 +96,9 @@ public class TransactionCreatedTask
 
         TransactionLeg leg = legs.get( 0 );
 
-        CommonTransaction transaction = config.initGetTransaction( id );
+        // if transaction not found an exception will be thrown in order to handle retry
+        // (because of eventual consistency)
+        CommonTransaction transaction = config.searchTransaction( id );
         transaction.bankCode( REVOLUT_BANK_CODE )
                 .currency( leg.getCurrency() )
                 .balance( leg.getBalance() )

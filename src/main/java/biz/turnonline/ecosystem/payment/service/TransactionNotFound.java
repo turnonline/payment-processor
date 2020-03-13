@@ -18,23 +18,32 @@
 
 package biz.turnonline.ecosystem.payment.service;
 
-import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
-
-import javax.annotation.Nonnull;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Only for testing purpose.
+ * Thrown if transaction not found.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-class TransactionBillTest
-        extends TransactionBill
+public class TransactionNotFound
+        extends RuntimeException
 {
     private static final long serialVersionUID = 1L;
 
-    TransactionBillTest( @Nonnull String extId, Long transactionId )
+    private final String id;
+
+    public TransactionNotFound( String id )
     {
-        super( extId );
-        super.setId( transactionId );
+        this.id = checkNotNull( id, "Id can't be null" );
+    }
+
+    /**
+     * Returns the identification of the transaction that has not been found.
+     *
+     * @return the Id
+     */
+    public String getId()
+    {
+        return id;
     }
 }

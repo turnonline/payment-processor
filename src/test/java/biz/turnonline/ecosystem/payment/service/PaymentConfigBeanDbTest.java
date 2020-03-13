@@ -647,7 +647,7 @@ public class PaymentConfigBeanDbTest
 
         assertWithMessage( "Transaction for external expense key" )
                 .that( transaction.entityKey() )
-                .isNull();
+                .isNotNull();
 
         transaction.save();
 

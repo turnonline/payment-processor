@@ -16,22 +16,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package biz.turnonline.ecosystem.payment.service;
+package biz.turnonline.ecosystem.payment.subscription;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
+
+import javax.annotation.Nonnull;
 
 /**
  * Only for testing purpose.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-class MockedJsonProcessingException
-        extends JsonProcessingException
+class TransactionBillTest
+        extends TransactionBill
 {
     private static final long serialVersionUID = 1L;
 
-    MockedJsonProcessingException()
+    TransactionBillTest( @Nonnull String extId, Long transactionId )
     {
-        super( "JSON processing failure" );
+        super( extId );
+        super.setId( transactionId );
     }
 }

@@ -1,4 +1,23 @@
 {
     "event": "TransactionUnknown",
-    "timestamp": "2020-03-06T11:11:17.925965Z"
+    "timestamp": "2020-03-06T11:11:17.925965Z",
+    "data": {
+        "id": "0dfaec58-6043-11ea-bc55-0242ac130003",
+        "type": "refund",
+        "state": "completed",
+        "created_at": "2019-06-06T11:43:45.040769Z",
+        "updated_at": "2019-06-06T11:43:45.040769Z",
+        "completed_at": "2019-06-06T11:43:45.048483Z",
+        "related_transaction_id": "2b9062e2-7209-468a-b93d-f2a3a2965309",
+        "legs": [
+            {
+                "leg_id": "a9e28a1a-216d-43d3-a7e5-b136ee89d28a",
+                "account_id": "fb661529-44eb-4da5-8ebf-bdad9e1f2fc0",
+                "amount": 15,
+                "currency": "EUR",
+                "description": "Refund for Fee",
+                "balance": 30
+            }
+        ]
+    }
 }

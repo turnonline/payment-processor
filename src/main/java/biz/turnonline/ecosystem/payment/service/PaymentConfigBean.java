@@ -478,6 +478,25 @@ class PaymentConfigBean
     @Override
     public CommonTransaction initGetTransaction( @Nonnull String extId )
     {
+        CommonTransaction transaction;
+        try
+        {
+            transaction = searchTransaction( extId );
+        }
+        catch ( TransactionNotFound e )
+        {
+            // If the transaction record not found, the invoice hasn't been issued
+            // and the incoming transaction represents an expenses paid outside of the service.
+            transaction = new TransactionBill( extId );
+            transaction.save();
+        }
+
+        return transaction;
+    }
+
+    @Override
+    public CommonTransaction searchTransaction( @Nonnull String extId )
+    {
         Criteria<CommonTransaction> criteria = Criteria.of( CommonTransaction.class );
         criteria.equal( "extId", extId );
         List<CommonTransaction> transactions = datastore.list( criteria );
@@ -495,9 +514,7 @@ class PaymentConfigBean
         }
         else
         {
-            // If the transaction record does not exist yet, the invoice hasn't been issued
-            // and the incoming transaction represents an expenses paid outside of the service.
-            transaction = new TransactionBill( extId );
+            throw new TransactionNotFound( extId );
         }
 
         return transaction;

@@ -150,7 +150,7 @@ public class MicroserviceModule
     @Provides
     @Singleton
     @PubSub
-    ObjectMapper provideJsonObjectMapperPubSub()
+    public ObjectMapper provideJsonObjectMapperPubSub()
     {
         ObjectMapper mapper = baseObjectMapper();
         mapper.setDateFormat( new SimpleDateFormat( PubsubCommand.PUB_SUB_DATE_FORMAT ) );

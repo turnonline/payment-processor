@@ -16,9 +16,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package biz.turnonline.ecosystem.payment.service;
+package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
+import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.fasterxml.jackson.core.JsonProcessingException;
