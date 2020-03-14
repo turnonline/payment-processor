@@ -36,6 +36,7 @@ import java.time.OffsetDateTime;
 
 import static biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionCreatedFlowTest.TRANSACTION_EXT_ID;
 import static biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionCreatedFlowTest.toJson;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 /**
  * {@link TransactionStateChangedTask} unit testing.
@@ -67,6 +68,7 @@ public class TransactionStateChangedTaskTest
         tested.setFacade( facade );
 
         transaction.failure( false );
+        int originsSize = transaction.getOrigins().size();
 
         Transaction t = new Transaction();
         t.setState( TransactionState.fromValue( tested.workWith().getData().getNewState() ) );
@@ -83,6 +85,138 @@ public class TransactionStateChangedTaskTest
         };
 
         tested.execute();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( CommonTransaction.State.COMPLETED );
+
+        assertWithMessage( "Transaction failure" )
+                .that( transaction.isFailure() )
+                .isFalse();
+
+        assertWithMessage( "Transaction status changed, origins" )
+                .that( transaction.getOrigins() )
+                .hasSize( originsSize + 1 );
+    }
+
+    @Test
+    public void successful_Declined()
+    {
+        TransactionStateChangedTask tested;
+        tested = new TransactionStateChangedTask( toJson( "transaction-state-changed-declined.json" ) );
+        tested.setConfig( config );
+        tested.setFacade( facade );
+
+        transaction.failure( false );
+        int originsSize = transaction.getOrigins().size();
+
+        Transaction t = new Transaction();
+        t.setState( TransactionState.fromValue( tested.workWith().getData().getNewState() ) );
+
+        new Expectations( transaction )
+        {
+            {
+                // mocking of the transaction from remote bank system
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+
+                transaction.save();
+            }
+        };
+
+        tested.execute();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( CommonTransaction.State.DECLINED );
+
+        assertWithMessage( "Transaction failure" )
+                .that( transaction.isFailure() )
+                .isTrue();
+
+        assertWithMessage( "Transaction status changed, origins" )
+                .that( transaction.getOrigins() )
+                .hasSize( originsSize + 1 );
+    }
+
+    @Test
+    public void successful_Failed()
+    {
+        TransactionStateChangedTask tested;
+        tested = new TransactionStateChangedTask( toJson( "transaction-state-changed-failed.json" ) );
+        tested.setConfig( config );
+        tested.setFacade( facade );
+
+        transaction.failure( false );
+        int originsSize = transaction.getOrigins().size();
+
+        Transaction t = new Transaction();
+        t.setState( TransactionState.fromValue( tested.workWith().getData().getNewState() ) );
+
+        new Expectations( transaction )
+        {
+            {
+                // mocking of the transaction from remote bank system
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+
+                transaction.save();
+            }
+        };
+
+        tested.execute();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( CommonTransaction.State.FAILED );
+
+        assertWithMessage( "Transaction failure" )
+                .that( transaction.isFailure() )
+                .isTrue();
+
+        assertWithMessage( "Transaction status changed, origins" )
+                .that( transaction.getOrigins() )
+                .hasSize( originsSize + 1 );
+    }
+
+    @Test
+    public void successful_Reverted()
+    {
+        TransactionStateChangedTask tested;
+        tested = new TransactionStateChangedTask( toJson( "transaction-state-changed-reverted.json" ) );
+        tested.setConfig( config );
+        tested.setFacade( facade );
+
+        transaction.failure( false );
+        int originsSize = transaction.getOrigins().size();
+
+        Transaction t = new Transaction();
+        t.setState( TransactionState.fromValue( tested.workWith().getData().getNewState() ) );
+
+        new Expectations( transaction )
+        {
+            {
+                // mocking of the transaction from remote bank system
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+
+                transaction.save();
+            }
+        };
+
+        tested.execute();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( CommonTransaction.State.REVERTED );
+
+        assertWithMessage( "Transaction failure" )
+                .that( transaction.isFailure() )
+                .isTrue();
+
+        assertWithMessage( "Transaction status changed, origins" )
+                .that( transaction.getOrigins() )
+                .hasSize( originsSize + 1 );
     }
 
     @Test
@@ -113,8 +247,13 @@ public class TransactionStateChangedTaskTest
         tested.execute();
     }
 
+    /**
+     * The transaction taken directly from the bank system based on the incoming Id
+     * has a different status as stated in incoming ('completed'). That must be ignored,
+     * value from the bank takes precedence.
+     */
     @Test
-    public void unsuccessful_TransactionFailed()
+    public void unsuccessful_TransactionFromBankFailed()
     {
         TransactionStateChangedTask tested;
         tested = new TransactionStateChangedTask( toJson( "transaction-state-changed.json" ) );
