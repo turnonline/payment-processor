@@ -77,7 +77,7 @@ public abstract class CommonTransaction
 
     private String reference;
 
-    private List<Object> origins;
+    private List<Object> origins = new ArrayList<>();
 
     @Index
     private String extId;
@@ -179,7 +179,18 @@ public abstract class CommonTransaction
     }
 
     /**
-     * Returns {@code true} if transaction has failed.
+     * Returns {@code false} for the following statuses
+     * <ul>
+     *     <li>{@link State#CREATED}</li>
+     *     <li>{@link State#PENDING}</li>
+     *     <li>{@link State#COMPLETED}</li>
+     * </ul>
+     * {@code true} for the following statuses
+     * <ul>
+     *     <li>{@link State#DECLINED}</li>
+     *     <li>{@link State#FAILED}</li>
+     *     <li>{@link State#REVERTED}</li>
+     * </ul>
      */
     public boolean isFailure()
     {
@@ -280,11 +291,6 @@ public abstract class CommonTransaction
     public void addOrigin( @Nonnull Object origin )
     {
         checkNotNull( origin, "Origin incoming transaction can't be null" );
-        if ( this.origins == null )
-        {
-            this.origins = new ArrayList<>();
-        }
-
         this.origins.add( origin );
     }
 
@@ -371,7 +377,9 @@ public abstract class CommonTransaction
 
         DECLINED( "declined" ),
 
-        FAILED( "failed" );
+        FAILED( "failed" ),
+
+        REVERTED( "reverted" );
 
         private String value;
 

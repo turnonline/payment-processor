@@ -35,6 +35,7 @@ import javax.inject.Inject;
 import java.util.UUID;
 
 import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State.COMPLETED;
+import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State.fromValue;
 
 /**
  * Async {@link TransactionStateChanged} event processor.
@@ -100,17 +101,26 @@ public class TransactionStateChangedTask
 
         if ( state == null || !state.getValue().equals( incoming.getNewState() ) )
         {
-            LOGGER.error( "Mismatched state, incoming " + resource );
+            LOGGER.error( "Mismatched state, expected '" + state + "', incoming " + resource );
             return;
         }
 
-        if ( TransactionState.COMPLETED.getValue().equals( incoming.getNewState() )
+        if ( TransactionState.COMPLETED == state
                 && transaction.getCompletedAt() == null
                 && !transaction.isFailure() )
         {
             // update only if transaction is not yet marked as completed
             transaction.completedAt( resource.getTimestamp() );
             transaction.status( COMPLETED );
+            transaction.addOrigin( json() );
+            transaction.save();
+        }
+        else if ( TransactionState.DECLINED == state
+                || TransactionState.FAILED == state
+                || TransactionState.REVERTED == state )
+        {
+            transaction.status( fromValue( state.getValue() ) );
+            transaction.failure( true );
             transaction.addOrigin( json() );
             transaction.save();
         }
