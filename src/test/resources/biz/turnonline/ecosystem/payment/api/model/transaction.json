@@ -1,0 +1,21 @@
+{
+    "amount": 35.0,
+    "balance": 20.0,
+    "completedAt": "2020-03-06T09:11:37.960098Z",
+    "credit": false,
+    "currency": "EUR",
+    "key": "123xyz",
+    "reference": "Payment for online service",
+    "status": "COMPLETED",
+    "type": "TRANSFER",
+    "bankAccount": {
+        "id": 123,
+        "bank": {
+            "code": "REVO"
+        }
+    },
+    "bill": {
+        "invoiceId": 123,
+        "orderId": 456
+    }
+}

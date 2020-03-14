@@ -29,9 +29,11 @@ import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.payment.service.model.PaymentLocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
 import biz.turnonline.ecosystem.payment.service.model.TransactionInvoice;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutDebtorBankAccountsInit;
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
@@ -86,6 +88,8 @@ class PaymentConfigBean
 
     private final RevolutCredentialAdministration revolut;
 
+    private final String PROJECT_ID;
+
     @Inject
     PaymentConfigBean( EntityExecutor datastore,
                        CodeBook codeBook,
@@ -96,6 +100,7 @@ class PaymentConfigBean
         this.codeBook = codeBook;
         this.executor = executor;
         this.revolut = revolut;
+        PROJECT_ID = SystemProperty.applicationId.get();
     }
 
     @Override
@@ -111,6 +116,11 @@ class PaymentConfigBean
         if ( bankCode == null )
         {
             throw new BankCodeNotFound( bank );
+        }
+
+        if ( datastore.count( Criteria.of( PaymentLocalAccount.class ) ) == 0 )
+        {
+            new PaymentLocalAccount( owner, PROJECT_ID ).save();
         }
 
         if ( REVOLUT_BANK_CODE.equals( bankCode.getCode() ) )
@@ -144,6 +154,13 @@ class PaymentConfigBean
             String key = "errors.validation.bankAccount.bankCode.onboard.unsupported";
             throw ApiValidationException.prepare( key, bank );
         }
+    }
+
+    @Override
+    public LocalAccount getLocalAccount()
+    {
+        PaymentLocalAccount pla = ofy().load().type( PaymentLocalAccount.class ).id( PROJECT_ID ).now();
+        return pla == null ? null : pla.get();
     }
 
     @Override
@@ -438,7 +455,7 @@ class PaymentConfigBean
     }
 
     @Override
-    public CommonTransaction createTransactionDraft( @Nonnull IncomingInvoice invoice )
+    public CommonTransaction initGetTransactionDraft( @Nonnull IncomingInvoice invoice )
     {
         checkNotNull( invoice, "Incoming invoice cannot be null" );
 
@@ -470,7 +487,26 @@ class PaymentConfigBean
     }
 
     @Override
-    public CommonTransaction createTransaction( @Nonnull String extId )
+    public CommonTransaction initGetTransaction( @Nonnull String extId )
+    {
+        CommonTransaction transaction;
+        try
+        {
+            transaction = searchTransaction( extId );
+        }
+        catch ( TransactionNotFound e )
+        {
+            // If the transaction record not found, the invoice hasn't been issued
+            // and the incoming transaction represents an expenses paid outside of the service.
+            transaction = new TransactionBill( extId );
+            transaction.save();
+        }
+
+        return transaction;
+    }
+
+    @Override
+    public CommonTransaction searchTransaction( @Nonnull String extId )
     {
         Criteria<CommonTransaction> criteria = Criteria.of( CommonTransaction.class );
         criteria.equal( "extId", extId );
@@ -489,9 +525,7 @@ class PaymentConfigBean
         }
         else
         {
-            // If the transaction record does not exist yet, the invoice hasn't been issued
-            // and the incoming transaction represents an expenses paid outside of the service.
-            transaction = new TransactionBill( extId );
+            throw new TransactionNotFound( extId );
         }
 
         return transaction;

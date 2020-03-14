@@ -22,7 +22,6 @@ import biz.turnonline.ecosystem.payment.service.BackendServiceTestCase;
 import biz.turnonline.ecosystem.revolut.business.facade.RevolutBusinessProvider;
 import com.google.api.gax.rpc.NotFoundException;
 import com.google.api.gax.rpc.StatusCode;
-import com.google.appengine.api.utils.SystemProperty;
 import com.google.cloud.secretmanager.v1beta1.AccessSecretVersionRequest;
 import com.google.cloud.secretmanager.v1beta1.AddSecretVersionRequest;
 import com.google.cloud.secretmanager.v1beta1.CreateSecretRequest;
@@ -49,11 +48,6 @@ public class RevolutCredentialAdministrationDbTest
     public static final String REFRESH_TOKEN = "oa_sand_GhcvXvB..";
 
     private static final String CLIENT_ID = "client_X123cyx";
-
-    static
-    {
-        SystemProperty.applicationId.set( "b2x-app" );
-    }
 
     @Tested
     private RevolutCredentialAdministration tested;

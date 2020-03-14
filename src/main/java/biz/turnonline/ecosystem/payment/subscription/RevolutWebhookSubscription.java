@@ -18,6 +18,8 @@
 
 package biz.turnonline.ecosystem.payment.subscription;
 
+import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionCreatedTask;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChanged;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChangedTask;
@@ -60,10 +62,13 @@ public class RevolutWebhookSubscription
 
     private final TaskExecutor executor;
 
+    private final PaymentConfig config;
+
     @Inject
-    public RevolutWebhookSubscription( TaskExecutor executor )
+    public RevolutWebhookSubscription( TaskExecutor executor, PaymentConfig config )
     {
         this.executor = executor;
+        this.config = config;
     }
 
     @Override
@@ -82,18 +87,6 @@ public class RevolutWebhookSubscription
 
     private void process( HttpServletRequest request, HttpServletResponse response ) throws IOException
     {
-        String referer = request.getHeader( "referer" );
-        LOGGER.info( "Referer " + referer );
-        LOGGER.info( "RemoteAddr " + request.getRemoteAddr() );
-        LOGGER.info( "LocalAddr " + request.getLocalAddr() );
-
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while ( parameterNames.hasMoreElements() )
-        {
-            String param = parameterNames.nextElement();
-            LOGGER.info( "Request parameter [" + param + " - " + request.getParameter( param ) + "]" );
-        }
-
         Enumeration<String> headerNames = request.getHeaderNames();
         String name;
         String value;
@@ -116,36 +109,34 @@ public class RevolutWebhookSubscription
         JsonObject jsonObject = element.getAsJsonObject();
         JsonElement jsonEvent = jsonObject.get( "event" );
         String event = jsonEvent == null ? "" : jsonEvent.getAsString();
+        JsonElement dataElement = jsonObject.get( "data" );
+        JsonElement idElement = dataElement == null ? null : dataElement.getAsJsonObject().get( "id" );
+        String id = idElement == null ? null : idElement.getAsString();
+
+        if ( Strings.isNullOrEmpty( id ) )
+        {
+            response.setStatus( HttpServletResponse.SC_BAD_REQUEST );
+            return;
+        }
+
+        CommonTransaction transaction = config.initGetTransaction( id );
 
         switch ( event )
         {
             case "TransactionCreated":
             {
-                JsonElement dataElement = jsonObject.get( "data" );
-                String json = dataElement == null ? null : dataElement.toString();
-                if ( !Strings.isNullOrEmpty( json ) )
-                {
-                    executor.schedule( new TransactionCreatedTask( json ) );
-                    LOGGER.info( event + " task scheduled" );
-                }
-                else
-                {
-                    LOGGER.warn( "Event has unexpected structure " + jsonObject );
-                }
+                TransactionCreatedTask task = new TransactionCreatedTask( dataElement.toString() );
+                task.addNext( new TransactionPublisherTask( transaction.entityKey() ) );
+                executor.schedule( task );
+                LOGGER.info( event + " task scheduled" );
                 break;
             }
             case "TransactionStateChanged":
             {
-                JsonElement dataElement = jsonObject.get( "data" );
-                if ( dataElement != null )
-                {
-                    executor.schedule( new TransactionStateChangedTask( jsonObject.toString() ) );
-                    LOGGER.info( event + " task scheduled" );
-                }
-                else
-                {
-                    LOGGER.warn( "Event has unexpected structure " + jsonObject );
-                }
+                TransactionStateChangedTask task = new TransactionStateChangedTask( jsonObject.toString() );
+                task.addNext( new TransactionPublisherTask( transaction.entityKey() ) );
+                executor.schedule( task );
+                LOGGER.info( event + " task scheduled" );
                 break;
             }
             default:

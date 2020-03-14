@@ -199,7 +199,7 @@ class ProductBillingChangesSubscription
                     case REVOLUT_BANK_CODE:
                     {
                         // prepares an empty transaction to be completed later (idempotent call)
-                        CommonTransaction tDraft = config.createTransactionDraft( invoice );
+                        CommonTransaction tDraft = config.initGetTransactionDraft( invoice );
 
                         // incoming invoice has been successfully de-serialized, schedule processing
                         Key<LocalAccount> accountKey = account.entityKey();

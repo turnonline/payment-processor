@@ -42,6 +42,7 @@ public interface PaymentConfig
 {
     String TRUST_PAY_BANK_CODE = "9952";
     String REVOLUT_BANK_CODE = "REVO";
+    String TRANSACTION_TOPIC = "transactions";
 
     /**
      * Enables API access to bank account.
@@ -60,6 +61,15 @@ public interface PaymentConfig
     Certificate enableApiAccess( @Nonnull LocalAccount owner,
                                  @Nonnull String bank,
                                  @Nonnull Certificate certificate );
+
+    /**
+     * Returns the account associated with this service.
+     * <p>
+     * It's a design concept. It's a single account associated with the payment service.
+     *
+     * @return the local account
+     */
+    LocalAccount getLocalAccount();
 
     /**
      * Returns the bank account for given ID owned by the specified owner.
@@ -232,14 +242,24 @@ public interface PaymentConfig
      * @param invoice the invoice as a source of the transaction identification
      * @return the newly created transaction
      */
-    CommonTransaction createTransactionDraft( @Nonnull IncomingInvoice invoice );
+    CommonTransaction initGetTransactionDraft( @Nonnull IncomingInvoice invoice );
 
     /**
-     * Creates (in memory only) a new instance of the {@link TransactionBill} for the external Id.
+     * Creates a new record of the {@link TransactionBill} for the external Id.
      * To be idempotent, first searches for transaction with specified identification, if found it will be returned.
      *
      * @param extId the external identification of the transaction
      * @return the transaction
+     * @see #searchTransaction(String)
      */
-    CommonTransaction createTransaction( @Nonnull String extId );
+    CommonTransaction initGetTransaction( @Nonnull String extId );
+
+    /**
+     * Searches a transaction for specified external Id.
+     *
+     * @param extId the external identification of the transaction
+     * @return the transaction or {@code null} if not found
+     * @throws TransactionNotFound if transaction not found
+     */
+    CommonTransaction searchTransaction( @Nonnull String extId );
 }

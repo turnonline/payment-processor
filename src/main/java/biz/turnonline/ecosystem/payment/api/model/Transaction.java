@@ -15,7 +15,6 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
 package biz.turnonline.ecosystem.payment.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,32 +24,51 @@ import java.util.Objects;
 
 /**
  * Transaction that represents either a credit or debit operation.
- **/
+ */
 public class Transaction
 {
+    @JsonProperty( "amount" )
     private Double amount;
 
-    private boolean credit;
+    @JsonProperty( "balance" )
+    private Double balance;
 
-    private String currency;
+    @JsonProperty( "bankAccount" )
+    private BankAccount bankAccount;
 
-    private String type;
+    @JsonProperty( "bill" )
+    private Bill bill;
 
-    private String key;
-
-    private String reference;
-
+    @JsonProperty( "completedAt" )
     private Date completedAt;
 
-    /**
-     * The transaction amount absolute value.
-     **/
+    @JsonProperty( "credit" )
+    private Boolean credit;
+
+    @JsonProperty( "currency" )
+    private String currency;
+
+    @JsonProperty( "reference" )
+    private String reference;
+
+    @JsonProperty( "key" )
+    private String key;
+
+    @JsonProperty( "status" )
+    private String status;
+
+    @JsonProperty( "type" )
+    private String type;
+
     public Transaction amount( Double amount )
     {
         this.amount = amount;
         return this;
     }
 
+    /**
+     * The transaction amount absolute value.
+     **/
     @JsonProperty( "amount" )
     public Double getAmount()
     {
@@ -62,115 +80,75 @@ public class Transaction
         this.amount = amount;
     }
 
+    public Transaction balance( Double balance )
+    {
+        this.balance = balance;
+        return this;
+    }
+
     /**
-     * The boolean indicating whether the payment has positive or negative amount; true - credit, false - debit.
+     * The balance after the transaction.
      **/
-    public Transaction credit( boolean credit )
+    @JsonProperty( "balance" )
+    public Double getBalance()
     {
-        this.credit = credit;
+        return balance;
+    }
+
+    public void setBalance( Double balance )
+    {
+        this.balance = balance;
+    }
+
+    public Transaction bankAccount( BankAccount bankAccount )
+    {
+        this.bankAccount = bankAccount;
         return this;
     }
 
-    @JsonProperty( "credit" )
-    public boolean getCredit()
-    {
-        return credit;
-    }
-
-    public void setCredit( boolean credit )
-    {
-        this.credit = credit;
-    }
-
     /**
-     * The payment currency alphabetic code based on the ISO 4217.
+     * The bank account associated with this transaction.
      **/
-    public Transaction currency( String currency )
+    @JsonProperty( "bankAccount" )
+    public BankAccount getBankAccount()
     {
-        this.currency = currency;
+        return bankAccount;
+    }
+
+    public void setBankAccount( BankAccount bankAccount )
+    {
+        this.bankAccount = bankAccount;
+    }
+
+    public Transaction bill( Bill bill )
+    {
+        this.bill = bill;
         return this;
     }
 
-    @JsonProperty( "currency" )
-    public String getCurrency()
-    {
-        return currency;
-    }
-
-    public void setCurrency( String currency )
-    {
-        this.currency = currency;
-    }
-
     /**
-     * The payment type that has been used to make this payment.
+     * The bill or invoice document settled by this transaction.
      **/
-    public Transaction type( String type )
+    @JsonProperty( "bill" )
+    public Bill getBill()
     {
-        this.type = type;
-        return this;
+        return bill;
     }
 
-    @JsonProperty( "type" )
-    public String getType()
+    public void setBill( Bill bill )
     {
-        return type;
+        this.bill = bill;
     }
 
-    public void setType( String type )
-    {
-        this.type = type;
-    }
-
-    /**
-     * The unique payment identification related to the associated invoice or bill.
-     **/
-    public Transaction key( String key )
-    {
-        this.key = key;
-        return this;
-    }
-
-    @JsonProperty( "key" )
-    public String getKey()
-    {
-        return key;
-    }
-
-    public void setKey( String key )
-    {
-        this.key = key;
-    }
-
-    /**
-     * A user provided payment reference.
-     */
-    public Transaction reference( String reference )
-    {
-        this.reference = reference;
-        return this;
-    }
-
-    @JsonProperty( "reference" )
-    public String getReference()
-    {
-        return reference;
-    }
-
-    public void setReference( String reference )
-    {
-        this.reference = reference;
-    }
-
-    /**
-     * The date when the transaction was completed.
-     */
     public Transaction completedAt( Date completedAt )
     {
         this.completedAt = completedAt;
         return this;
     }
 
+    /**
+     * The date when the transaction was completed.
+     **/
     @JsonProperty( "completedAt" )
     public Date getCompletedAt()
     {
@@ -182,23 +160,151 @@ public class Transaction
         this.completedAt = completedAt;
     }
 
+    public Transaction credit( Boolean credit )
+    {
+        this.credit = credit;
+        return this;
+    }
+
+    /**
+     * The boolean indicating whether the payment has positive or negative amount; true - credit, false - debit.
+     **/
+    @JsonProperty( "credit" )
+    public Boolean isCredit()
+    {
+        return credit;
+    }
+
+    public void setCredit( Boolean credit )
+    {
+        this.credit = credit;
+    }
+
+    public Transaction currency( String currency )
+    {
+        this.currency = currency;
+        return this;
+    }
+
+    /**
+     * The payment currency alphabetic code based on the ISO 4217.
+     **/
+    @JsonProperty( "currency" )
+    public String getCurrency()
+    {
+        return currency;
+    }
+
+    public void setCurrency( String currency )
+    {
+        this.currency = currency;
+    }
+
+    public Transaction reference( String reference )
+    {
+        this.reference = reference;
+        return this;
+    }
+
+    /**
+     * A user provided payment reference.
+     **/
+    @JsonProperty( "reference" )
+    public String getReference()
+    {
+        return reference;
+    }
+
+    public void setReference( String reference )
+    {
+        this.reference = reference;
+    }
+
+    public Transaction key( String key )
+    {
+        this.key = key;
+        return this;
+    }
+
+    /**
+     * The unique payment identification related to the associated bill.
+     **/
+    @JsonProperty( "key" )
+    public String getKey()
+    {
+        return key;
+    }
+
+    public void setKey( String key )
+    {
+        this.key = key;
+    }
+
+    public Transaction status( String status )
+    {
+        this.status = status;
+        return this;
+    }
+
+    /**
+     * The transaction status.
+     */
+    @JsonProperty( "status" )
+    public String getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus( String status )
+    {
+        this.status = status;
+    }
+
+    public Transaction type( String type )
+    {
+        this.type = type;
+        return this;
+    }
+
+    /**
+     * The payment type that has been used to make this payment.
+     **/
+    @JsonProperty( "type" )
+    public String getType()
+    {
+        return type;
+    }
+
+    public void setType( String type )
+    {
+        this.type = type;
+    }
+
     @Override
     public boolean equals( Object o )
     {
-        if ( this == o ) return true;
-        if ( !( o instanceof Transaction ) ) return false;
-        Transaction that = ( Transaction ) o;
-        return credit == that.credit &&
-                Objects.equals( amount, that.amount ) &&
-                Objects.equals( currency, that.currency ) &&
-                Objects.equals( type, that.type ) &&
-                Objects.equals( key, that.key );
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+        Transaction transaction = ( Transaction ) o;
+        return Objects.equals( this.amount, transaction.amount ) &&
+                Objects.equals( this.bill, transaction.bill ) &&
+                Objects.equals( this.credit, transaction.credit ) &&
+                Objects.equals( this.currency, transaction.currency ) &&
+                Objects.equals( this.key, transaction.key ) &&
+                Objects.equals( this.status, transaction.status ) &&
+                Objects.equals( this.type, transaction.type );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( amount, credit, currency, type, key );
+        return Objects.hash( amount, bill, credit, currency, key, status, type );
     }
 
     @Override
@@ -206,12 +312,16 @@ public class Transaction
     {
         return "class Transaction {\n" +
                 "    amount: " + toIndentedString( amount ) + "\n" +
+                "    balance: " + toIndentedString( balance ) + "\n" +
+                "    bankAccount: " + toIndentedString( bankAccount ) + "\n" +
+                "    bill: " + toIndentedString( bill ) + "\n" +
+                "    completedAt: " + toIndentedString( completedAt ) + "\n" +
                 "    credit: " + toIndentedString( credit ) + "\n" +
                 "    currency: " + toIndentedString( currency ) + "\n" +
-                "    form: " + toIndentedString( type ) + "\n" +
-                "    key: " + toIndentedString( key ) + "\n" +
                 "    reference: " + toIndentedString( reference ) + "\n" +
-                "    completedAt: " + toIndentedString( completedAt ) + "\n" +
+                "    key: " + toIndentedString( key ) + "\n" +
+                "    status: " + toIndentedString( status ) + "\n" +
+                "    type: " + toIndentedString( type ) + "\n" +
                 "}";
     }
 

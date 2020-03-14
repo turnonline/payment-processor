@@ -96,7 +96,9 @@ public class TransactionCreatedTask
 
         TransactionLeg leg = legs.get( 0 );
 
-        CommonTransaction transaction = config.createTransaction( id );
+        // if transaction not found an exception will be thrown in order to handle retry
+        // (because of eventual consistency)
+        CommonTransaction transaction = config.searchTransaction( id );
         transaction.bankCode( REVOLUT_BANK_CODE )
                 .currency( leg.getCurrency() )
                 .balance( leg.getBalance() )
@@ -108,7 +110,7 @@ public class TransactionCreatedTask
             CompanyBankAccount bankAccount = config.getBankAccount( accountId.toString() );
             if ( bankAccount != null )
             {
-                transaction.accountId( bankAccount.getId() );
+                transaction.bankAccountKey( bankAccount.entityKey() );
             }
             else
             {
@@ -126,6 +128,11 @@ public class TransactionCreatedTask
         else
         {
             transaction.failure( true );
+        }
+
+        if ( state != null )
+        {
+            transaction.status( CommonTransaction.State.fromValue( transactionFromBank.getState().getValue() ) );
         }
 
         Double amount = leg.getAmount();
@@ -162,7 +169,7 @@ public class TransactionCreatedTask
             transaction.type( FormOfPayment.REFUND );
         }
 
-        transaction.addOrigin( transactionFromBank );
+        transaction.addOrigin( json() );
         transaction.save();
     }
 

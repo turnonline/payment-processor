@@ -55,6 +55,9 @@ import java.util.Date;
 import java.util.stream.Collectors;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State.COMPLETED;
+import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State.FAILED;
+import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State.PENDING;
 import static biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType.CARD_PAYMENT;
 import static biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType.REFUND;
 import static biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType.TRANSFER;
@@ -76,6 +79,10 @@ public class TransactionCreatedFlowTest
 
     static final String BANK_ACCOUNT_EXT_ID = "bdab1c20-8d8c-430d-b967-87ac01af060c";
 
+    static ObjectMapper mapper = new ObjectMapper()
+            .disable( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES )
+            .registerModule( new JavaTimeModule() );
+
     private TransactionCreatedTask created;
 
     @Tested
@@ -90,11 +97,6 @@ public class TransactionCreatedFlowTest
 
     @Injectable
     private RestFacade facade;
-
-    static ObjectMapper mapper = new ObjectMapper()
-            .disable( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES )
-            .registerModule( new JavaTimeModule() );
-
 
     static String toJson( String fileName )
     {
@@ -116,6 +118,9 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_CARD_PAYMENT() throws JsonProcessingException
     {
+        // in the real use case transaction is being created by subscription webhook
+        config.initGetTransaction( TRANSACTION_EXT_ID );
+
         String json = toJsonCreated( CARD_PAYMENT.getValue() );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -150,7 +155,7 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( 2.0 );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
+                .that( transaction.getBankAccountKey() )
                 .isNull();
 
         assertWithMessage( "Balance after transaction" )
@@ -164,6 +169,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isFalse();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( PENDING );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -188,6 +197,10 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getCompletedAt() )
                 .isNotNull();
 
+        assertWithMessage( "Transaction status changed" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
+
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )
                 .hasSize( 2 );
@@ -198,12 +211,16 @@ public class TransactionCreatedFlowTest
     }
 
     /**
-     * Example of transaction for card payment, the incoming.
+     * Example of transaction for card payment, the incoming. Some kind of hack, data payload is different (except id)
+     * comparing the transaction from the bank.
      * The {@link Transaction} from the bank takes precedence, only the ID is being used from the incoming transaction.
      */
     @Test
     public void successful_CARD_PAYMENT_OverTRANSFER() throws JsonProcessingException
     {
+        // in the real use case transaction is being created by subscription webhook
+        config.initGetTransaction( TRANSACTION_EXT_ID );
+
         String json = toJsonCreated( TRANSFER.getValue() );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -231,11 +248,83 @@ public class TransactionCreatedFlowTest
     }
 
     /**
+     * Example of transaction for card payment with cross currency.
+     * The {@link Transaction} from the bank takes precedence, only the ID is being used from the incoming transaction.
+     */
+    @Test
+    public void successful_CARD_PAYMENT_CrossCurrency() throws JsonProcessingException
+    {
+        // in the real use case transaction is being created by subscription webhook
+        config.initGetTransaction( TRANSACTION_EXT_ID );
+
+        String json = toJsonCreated( CARD_PAYMENT.getValue() + "-cross-currency" );
+        created = new TransactionCreatedTask( json );
+        created.setConfig( config );
+        created.setFacade( facade );
+
+        // mocking of the transaction from remote bank system
+        Transaction t = mapper.readValue( json, Transaction.class );
+
+        new Expectations()
+        {
+            {
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+            }
+        };
+
+        // test call
+        created.execute();
+
+        CommonTransaction transaction = ofy().load().type( CommonTransaction.class ).first().now();
+        verifyTransactionBasics( transaction );
+
+        assertWithMessage( "Transaction reference" )
+                .that( transaction.getReference() )
+                .isNull();
+
+        assertWithMessage( "Transaction amount" )
+                .that( transaction.getAmount() )
+                .isEqualTo( 0.9 );
+
+        assertWithMessage( "Transaction related account Id" )
+                .that( transaction.getBankAccountKey() )
+                .isNull();
+
+        assertWithMessage( "Balance after transaction" )
+                .that( transaction.getBalance() )
+                .isNull();
+
+        assertWithMessage( "Transaction pending" )
+                .that( transaction.getCompletedAt() )
+                .isNull();
+
+        assertWithMessage( "Transaction credit" )
+                .that( transaction.isCredit() )
+                .isFalse();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( PENDING );
+
+        assertWithMessage( "Transaction type" )
+                .that( transaction.getType() )
+                .isEqualTo( FormOfPayment.CARD_PAYMENT );
+
+        assertWithMessage( "Transaction failure" )
+                .that( transaction.isFailure() )
+                .isFalse();
+    }
+
+    /**
      * Example of transaction for internal transfer between your accounts:
      */
     @Test
     public void successful_TRANSFER_Internal() throws JsonProcessingException
     {
+        // in the real use case transaction is being created by subscription webhook
+        config.initGetTransaction( TRANSACTION_EXT_ID );
+
         String json = toJsonCreated( TRANSFER.getValue() + "-internal" );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -270,7 +359,7 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( 123.11 );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
+                .that( transaction.getBankAccountKey() )
                 .isNull();
 
         assertWithMessage( "Balance after transaction" )
@@ -284,6 +373,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isFalse();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -305,6 +398,10 @@ public class TransactionCreatedFlowTest
                 .that( count )
                 .isEqualTo( 1 );
 
+        assertWithMessage( "Transaction status changed" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
+
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )
                 .hasSize( 1 );
@@ -320,6 +417,9 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_TRANSFER_External() throws JsonProcessingException
     {
+        // in the real use case transaction is being created by subscription webhook
+        config.initGetTransaction( TRANSACTION_EXT_ID );
+
         String json = toJsonCreated( TRANSFER.getValue() );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -354,7 +454,7 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( 0.0 );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
+                .that( transaction.getBankAccountKey() )
                 .isNull();
 
         assertWithMessage( "Balance after transaction" )
@@ -368,6 +468,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isTrue();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -389,6 +493,10 @@ public class TransactionCreatedFlowTest
                 .that( count )
                 .isEqualTo( 1 );
 
+        assertWithMessage( "Transaction status changed" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
+
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )
                 .hasSize( 1 );
@@ -404,6 +512,9 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_TRANSFER_ExternalCrossCurrency() throws JsonProcessingException
     {
+        // in the real use case transaction is being created by subscription webhook
+        config.initGetTransaction( TRANSACTION_EXT_ID );
+
         String json = toJsonCreated( TRANSFER.getValue() + "-cross-currency" );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -438,7 +549,7 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( 123.11 );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
+                .that( transaction.getBankAccountKey() )
                 .isNull();
 
         assertWithMessage( "Balance after transaction" )
@@ -452,6 +563,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isFalse();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -472,6 +587,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 1 );
+
+        assertWithMessage( "Transaction status changed" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )
@@ -499,7 +618,8 @@ public class TransactionCreatedFlowTest
         primaryBankAccount.setExternalId( BANK_ACCOUNT_EXT_ID );
         primaryBankAccount.save();
 
-        long companyBankAccountID = primaryBankAccount.getId();
+        // in the real use case transaction is being created by subscription webhook
+        config.initGetTransaction( TRANSACTION_EXT_ID );
 
         String json = toJsonCreated( TRANSFER.getValue() + "-non-revolut" );
         created = new TransactionCreatedTask( json );
@@ -531,8 +651,8 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( "Payment for Blows & Wistles Co." );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
-                .isEqualTo( companyBankAccountID );
+                .that( transaction.getBankAccountKey() )
+                .isEqualTo( primaryBankAccount.entityKey() );
 
         assertWithMessage( "Transaction amount" )
                 .that( transaction.getAmount() )
@@ -549,6 +669,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isFalse();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( PENDING );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -570,6 +694,10 @@ public class TransactionCreatedFlowTest
                 .that( count )
                 .isEqualTo( 1 );
 
+        assertWithMessage( "Transaction status changed" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
+
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )
                 .hasSize( 2 );
@@ -586,6 +714,9 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_TRANSFER_Failed() throws JsonProcessingException
     {
+        // in the real use case transaction is being created by subscription webhook
+        config.initGetTransaction( TRANSACTION_EXT_ID );
+
         String json = toJsonCreated( TRANSFER.getValue() + "-failed" );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -620,7 +751,7 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( 99.22 );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
+                .that( transaction.getBankAccountKey() )
                 .isNull();
 
         assertWithMessage( "Balance after transaction" )
@@ -634,6 +765,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isFalse();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( FAILED );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -655,6 +790,10 @@ public class TransactionCreatedFlowTest
                 .that( count )
                 .isEqualTo( 1 );
 
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( FAILED );
+
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )
                 .hasSize( 1 );
@@ -671,6 +810,9 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_REFUND() throws JsonProcessingException
     {
+        // in the real use case transaction is being created by subscription webhook
+        config.initGetTransaction( TRANSACTION_EXT_ID );
+
         String json = toJsonCreated( REFUND.getValue() );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -705,7 +847,7 @@ public class TransactionCreatedFlowTest
                 .isEqualTo( 15.00 );
 
         assertWithMessage( "Transaction related account Id" )
-                .that( transaction.getAccountId() )
+                .that( transaction.getBankAccountKey() )
                 .isNull();
 
         assertWithMessage( "Balance after transaction" )
@@ -719,6 +861,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction credit" )
                 .that( transaction.isCredit() )
                 .isTrue();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
@@ -739,6 +885,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 1 );
+
+        assertWithMessage( "Transaction status changed" )
+                .that( transaction.getStatus() )
+                .isEqualTo( COMPLETED );
 
         assertWithMessage( "Transaction status changed, origins" )
                 .that( transaction.getOrigins() )

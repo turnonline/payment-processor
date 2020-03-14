@@ -18,6 +18,7 @@
 
 package biz.turnonline.ecosystem.payment.subscription;
 
+import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionCreatedTask;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChanged;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChangedTask;
@@ -54,6 +55,9 @@ public class RevolutWebhookSubscriptionTest
     @Injectable
     private TaskExecutor executor;
 
+    @Injectable
+    private PaymentConfig config;
+
     @Mocked
     private HttpServletRequest request;
 
@@ -83,9 +87,17 @@ public class RevolutWebhookSubscriptionTest
                         .that( task )
                         .isNotNull();
 
+                assertWithMessage( "Number of scheduled tasks" )
+                        .that( task.countTasks() )
+                        .isEqualTo( 2 );
+
                 assertWithMessage( "Type of the event task" )
                         .that( task )
                         .isInstanceOf( TransactionCreatedTask.class );
+
+                assertWithMessage( "Publisher task" )
+                        .that( task.next() )
+                        .isInstanceOf( TransactionPublisherTask.class );
 
                 TransactionCreatedTask tt = ( TransactionCreatedTask ) task;
                 Transaction event = tt.workWith();
@@ -172,9 +184,17 @@ public class RevolutWebhookSubscriptionTest
                         .that( task )
                         .isNotNull();
 
+                assertWithMessage( "Number of scheduled tasks" )
+                        .that( task.countTasks() )
+                        .isEqualTo( 2 );
+
                 assertWithMessage( "Type of the event task" )
                         .that( task )
                         .isInstanceOf( TransactionStateChangedTask.class );
+
+                assertWithMessage( "Publisher task" )
+                        .that( task.next() )
+                        .isInstanceOf( TransactionPublisherTask.class );
 
                 TransactionStateChangedTask tt = ( TransactionStateChangedTask ) task;
                 TransactionStateChanged event = tt.workWith();

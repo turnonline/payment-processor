@@ -1,0 +1,83 @@
+<!--
+  ~ Copyright (c) 2020 TurnOnline.biz s.r.o. All Rights Reserved.
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation; either
+  ~ version 2.1 of the License, or (at your option) any later version.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  -->
+
+<changeset author="medvegy@turnonline.biz" comment="Transaction init test data.">
+    <entities>
+        <entity kind="PP_Transaction" id="680">
+            <property indexed="false" name="^d" type="string" value="Bill"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Bill"/>
+            <property indexed="true" name="billId" type="long" value="246809"/>
+            <property name="accountKey" type="reference" value="PP_BankAccount:579"/>
+            <property indexed="true" name="bankCode" type="string" value="REVO"/>
+            <property indexed="true" name="completedAt" type="date" value="1581751510000"/>
+            <property name="amount" type="double" value="59.0"/>
+            <property name="balance" type="double" value="41.0"/>
+            <property name="currency" type="string" value="EUR"/>
+            <property indexed="true" name="credit" type="boolean" value="false"/>
+            <property indexed="true" name="failure" type="boolean" value="false"/>
+            <property indexed="true" name="type" type="string" value="CARD_PAYMENT"/>
+            <property indexed="true" name="status" type="string" value="COMPLETED"/>
+            <property name="reference" type="string" value="Payment for service"/>
+            <property indexed="true" name="key" type="string" value="123xyz"/>
+            <property indexed="true" name="extId" type="string" value="7fa8816a-1fe5-4fc7-9e86-fd659b753167"/>
+            <property indexed="false" name="createdDate" type="date" value="1581492310000"/>
+            <property indexed="true" name="modificationDate" type="date" value="1508565600000"/>
+            <property name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_Transaction" id="681">
+            <property indexed="false" name="^d" type="string" value="Invoice"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Invoice"/>
+            <property indexed="true" name="invoiceId" type="long" value="366806"/>
+            <property indexed="true" name="orderId" type="long" value="476807"/>
+            <property name="accountKey" type="reference" value="PP_BankAccount:579"/>
+            <property indexed="true" name="bankCode" type="string" value="REVO"/>
+            <property indexed="true" name="completedAt" type="date" value="1581751510000"/>
+            <property name="amount" type="double" value="69.0"/>
+            <property name="balance" type="double" value="31.0"/>
+            <property name="currency" type="string" value="EUR"/>
+            <property indexed="true" name="credit" type="boolean" value="false"/>
+            <property indexed="true" name="failure" type="boolean" value="false"/>
+            <property indexed="true" name="type" type="string" value="TRANSFER"/>
+            <property indexed="true" name="status" type="string" value="COMPLETED"/>
+            <property name="reference" type="string" value="Payment for online service"/>
+            <property indexed="true" name="key" type="string" value="123xyz"/>
+            <property indexed="true" name="extId" type="string" value="33869cb7-de3f-433e-a148-4170fe042beb"/>
+            <property indexed="false" name="createdDate" type="date" value="1581492310000"/>
+            <property indexed="true" name="modificationDate" type="date" value="1508565600000"/>
+            <property name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_BankAccount" id="579">
+            <property indexed="false" name="^d" type="string" value="Company"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
+            <property indexed="true" name="name" type="string" value="Revolut Business Bank Account"/>
+            <property name="branch" type="string" value="009969"/>
+            <property name="currency" type="string" value="EUR"/>
+            <property indexed="true" name="iban" type="string" value="GB05REVO37687428278420"/>
+            <property indexed="true" name="bankCode" type="string" value="REVO"/>
+            <property name="primary" type="boolean" value="true"/>
+            <property name="bic" type="string" value="REVOGB21"/>
+            <property indexed="true" name="country" type="string" value="GB"/>
+            <property indexed="false" name="createdDate" type="date" value="1578813910000"/>
+            <property indexed="true" name="modificationDate" type="date" value="1578813910000"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+    </entities>
+</changeset>

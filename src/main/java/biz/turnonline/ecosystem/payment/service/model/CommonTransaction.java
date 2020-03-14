@@ -19,6 +19,7 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
 import com.google.common.base.MoreObjects;
+import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Index;
 import org.ctoolkit.services.datastore.objectify.EntityLongIdentity;
@@ -43,9 +44,9 @@ public abstract class CommonTransaction
         extends EntityLongIdentity
         implements IndexModificationDate
 {
-    private static final long serialVersionUID = -4345791753726496666L;
+    private static final long serialVersionUID = -4753436815702218013L;
 
-    private Long accountId;
+    private Key<CompanyBankAccount> accountKey;
 
     private Double balance;
 
@@ -69,6 +70,9 @@ public abstract class CommonTransaction
     private boolean failure = true;
 
     @Index
+    private State status;
+
+    @Index
     private FormOfPayment type;
 
     private String reference;
@@ -79,19 +83,20 @@ public abstract class CommonTransaction
     private String extId;
 
     /**
-     * Either a debtor or creditor bank account identification.
-     *
-     * @return the account Id
+     * Sets the bank account key associated with this transaction.
      */
-    public CommonTransaction accountId( Long accountId )
+    public CommonTransaction bankAccountKey( Key<CompanyBankAccount> accountKey )
     {
-        this.accountId = accountId;
+        this.accountKey = checkNotNull( accountKey );
         return this;
     }
 
-    public Long getAccountId()
+    /**
+     * Key of the bank account associated with this transaction.
+     */
+    public Key<CompanyBankAccount> getBankAccountKey()
     {
-        return accountId;
+        return accountKey;
     }
 
     /**
@@ -193,6 +198,20 @@ public abstract class CommonTransaction
     public String getCurrency()
     {
         return currency;
+    }
+
+    /**
+     * The transaction status.
+     */
+    public CommonTransaction status( State status )
+    {
+        this.status = status;
+        return this;
+    }
+
+    public State getStatus()
+    {
+        return status;
     }
 
     /**
@@ -336,9 +355,53 @@ public abstract class CommonTransaction
                 .add( "credit", credit )
                 .add( "type", type )
                 .add( "reference", reference )
+                .add( "status", status )
                 .add( "extId", extId )
                 .add( "origins", origins )
                 .toString();
+    }
+
+    public enum State
+    {
+        CREATED( "created" ),
+
+        PENDING( "pending" ),
+
+        COMPLETED( "completed" ),
+
+        DECLINED( "declined" ),
+
+        FAILED( "failed" );
+
+        private String value;
+
+        State( String value )
+        {
+            this.value = value;
+        }
+
+        public static State fromValue( String value )
+        {
+            for ( State b : State.values() )
+            {
+                if ( b.value.equals( value ) )
+                {
+                    return b;
+                }
+            }
+            return null;
+        }
+
+        public String getValue()
+        {
+            return value;
+        }
+
+        @Override
+        public String toString()
+        {
+            return String.valueOf( value );
+        }
     }
 }
 

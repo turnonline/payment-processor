@@ -41,14 +41,22 @@ public class PaymentBeanMapperConfig
 
     private final BankAccountFactory bankAccountFactory;
 
+    private final TransactionBillMapper transactionBillMapper;
+
+    private final TransactionInvoiceMapper transactionInvoiceMapper;
+
     @Inject
     public PaymentBeanMapperConfig( BankCodeMapper bankCodeMapper,
                                     BankAccountMapper bankAccountMapper,
-                                    BankAccountFactory bankAccountFactory )
+                                    BankAccountFactory bankAccountFactory,
+                                    TransactionBillMapper transactionBillMapper,
+                                    TransactionInvoiceMapper transactionInvoiceMapper )
     {
         this.bankCodeMapper = bankCodeMapper;
         this.bankAccountMapper = bankAccountMapper;
         this.bankAccountFactory = bankAccountFactory;
+        this.transactionBillMapper = transactionBillMapper;
+        this.transactionInvoiceMapper = transactionInvoiceMapper;
     }
 
     @Override
@@ -58,5 +66,7 @@ public class PaymentBeanMapperConfig
         factory.registerMapper( bankAccountMapper );
 
         factory.registerObjectFactory( bankAccountFactory, TypeFactory.valueOf( CompanyBankAccount.class ) );
+        factory.getConverterFactory().registerConverter( transactionBillMapper );
+        factory.getConverterFactory().registerConverter( transactionInvoiceMapper );
     }
 }
