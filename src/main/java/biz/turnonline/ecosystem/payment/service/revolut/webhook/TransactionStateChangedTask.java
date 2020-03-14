@@ -111,7 +111,7 @@ public class TransactionStateChangedTask
             // update only if transaction is not yet marked as completed
             transaction.completedAt( resource.getTimestamp() );
             transaction.status( COMPLETED );
-            transaction.addOrigin( incoming );
+            transaction.addOrigin( json() );
             transaction.save();
         }
     }

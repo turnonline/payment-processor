@@ -161,7 +161,7 @@
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-revolut-business-client</artifactId>
-            <version>1.0-20200220.090015-6</version>
+            <version>1.0-20200314.082710-7</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>

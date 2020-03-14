@@ -87,13 +87,6 @@ public class RevolutWebhookSubscription
 
     private void process( HttpServletRequest request, HttpServletResponse response ) throws IOException
     {
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while ( parameterNames.hasMoreElements() )
-        {
-            String param = parameterNames.nextElement();
-            LOGGER.info( "Request parameter [" + param + " - " + request.getParameter( param ) + "]" );
-        }
-
         Enumeration<String> headerNames = request.getHeaderNames();
         String name;
         String value;

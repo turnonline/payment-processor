@@ -79,6 +79,10 @@ public class TransactionCreatedFlowTest
 
     static final String BANK_ACCOUNT_EXT_ID = "bdab1c20-8d8c-430d-b967-87ac01af060c";
 
+    static ObjectMapper mapper = new ObjectMapper()
+            .disable( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES )
+            .registerModule( new JavaTimeModule() );
+
     private TransactionCreatedTask created;
 
     @Tested
@@ -93,11 +97,6 @@ public class TransactionCreatedFlowTest
 
     @Injectable
     private RestFacade facade;
-
-    static ObjectMapper mapper = new ObjectMapper()
-            .disable( DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES )
-            .registerModule( new JavaTimeModule() );
-
 
     static String toJson( String fileName )
     {
@@ -212,7 +211,8 @@ public class TransactionCreatedFlowTest
     }
 
     /**
-     * Example of transaction for card payment, the incoming.
+     * Example of transaction for card payment, the incoming. Some kind of hack, data payload is different (except id)
+     * comparing the transaction from the bank.
      * The {@link Transaction} from the bank takes precedence, only the ID is being used from the incoming transaction.
      */
     @Test
@@ -245,6 +245,75 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
                 .isEqualTo( FormOfPayment.CARD_PAYMENT );
+    }
+
+    /**
+     * Example of transaction for card payment with cross currency.
+     * The {@link Transaction} from the bank takes precedence, only the ID is being used from the incoming transaction.
+     */
+    @Test
+    public void successful_CARD_PAYMENT_CrossCurrency() throws JsonProcessingException
+    {
+        // in the real use case transaction is being created by subscription webhook
+        config.initGetTransaction( TRANSACTION_EXT_ID );
+
+        String json = toJsonCreated( CARD_PAYMENT.getValue() + "-cross-currency" );
+        created = new TransactionCreatedTask( json );
+        created.setConfig( config );
+        created.setFacade( facade );
+
+        // mocking of the transaction from remote bank system
+        Transaction t = mapper.readValue( json, Transaction.class );
+
+        new Expectations()
+        {
+            {
+                facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
+                result = t;
+            }
+        };
+
+        // test call
+        created.execute();
+
+        CommonTransaction transaction = ofy().load().type( CommonTransaction.class ).first().now();
+        verifyTransactionBasics( transaction );
+
+        assertWithMessage( "Transaction reference" )
+                .that( transaction.getReference() )
+                .isNull();
+
+        assertWithMessage( "Transaction amount" )
+                .that( transaction.getAmount() )
+                .isEqualTo( 0.9 );
+
+        assertWithMessage( "Transaction related account Id" )
+                .that( transaction.getBankAccountKey() )
+                .isNull();
+
+        assertWithMessage( "Balance after transaction" )
+                .that( transaction.getBalance() )
+                .isNull();
+
+        assertWithMessage( "Transaction pending" )
+                .that( transaction.getCompletedAt() )
+                .isNull();
+
+        assertWithMessage( "Transaction credit" )
+                .that( transaction.isCredit() )
+                .isFalse();
+
+        assertWithMessage( "Transaction status" )
+                .that( transaction.getStatus() )
+                .isEqualTo( PENDING );
+
+        assertWithMessage( "Transaction type" )
+                .that( transaction.getType() )
+                .isEqualTo( FormOfPayment.CARD_PAYMENT );
+
+        assertWithMessage( "Transaction failure" )
+                .that( transaction.isFailure() )
+                .isFalse();
     }
 
     /**

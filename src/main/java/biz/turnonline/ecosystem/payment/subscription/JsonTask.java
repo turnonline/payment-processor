@@ -91,6 +91,16 @@ public abstract class JsonTask<T>
     }
 
     /**
+     * Returns the origin JSON as it was taken from the incoming notification.
+     *
+     * @return the origin JSON
+     */
+    protected String json()
+    {
+        return json;
+    }
+
+    /**
      * The client implementation to be executed asynchronously.
      *
      * @param resource the de-serialized instance

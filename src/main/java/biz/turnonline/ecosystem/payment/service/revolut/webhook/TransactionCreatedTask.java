@@ -169,7 +169,7 @@ public class TransactionCreatedTask
             transaction.type( FormOfPayment.REFUND );
         }
 
-        transaction.addOrigin( transactionFromBank );
+        transaction.addOrigin( json() );
         transaction.save();
     }
 
