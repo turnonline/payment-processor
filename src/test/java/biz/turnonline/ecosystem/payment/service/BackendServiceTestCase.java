@@ -59,6 +59,12 @@ public class BackendServiceTestCase
 {
     private final static Logger logger = LoggerFactory.getLogger( BackendServiceTestCase.class );
 
+    static
+    {
+        SystemProperty.environment.set( "Development" );
+        SystemProperty.applicationId.set( "b2x-app" );
+    }
+
     private LocalTaskQueueTestConfig.TaskCountDownLatch latch = new LocalTaskQueueTestConfig.TaskCountDownLatch( 1 );
 
     private LocalObjectifyHelper ofyHelper;
@@ -146,7 +152,6 @@ public class BackendServiceTestCase
     @BeforeSuite
     public void start() throws IOException, InterruptedException
     {
-        SystemProperty.environment.set( "Development" );
         ofyHelper.start();
     }
 
