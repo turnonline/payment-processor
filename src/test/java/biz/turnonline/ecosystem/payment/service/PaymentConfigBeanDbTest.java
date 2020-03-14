@@ -30,6 +30,7 @@ import biz.turnonline.ecosystem.payment.service.model.PaymentGate;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutDebtorBankAccountsInit;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.appengine.api.taskqueue.TaskHandle;
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.inject.Injector;
 import mockit.Mock;
 import mockit.MockUp;
@@ -66,6 +67,11 @@ public class PaymentConfigBeanDbTest
     private static final String CLIENT_ID = "client_Y6zhUcyAa..";
 
     private static final String BANK_ACCOUNT_EXT_ID = "9967e306-af32-4663-923b-09b5dff13c3c";
+
+    static
+    {
+        SystemProperty.applicationId.set( "b2x-app" );
+    }
 
     @Inject
     private PaymentConfig bean;
@@ -110,6 +116,11 @@ public class PaymentConfigBeanDbTest
     @Test
     public <T extends TaskExecutor> void enableApiAccess_RevolutTaskScheduled()
     {
+        // precondition check
+        assertWithMessage( "Local Account should not be configured yet, thus" )
+                .that( bean.getLocalAccount() )
+                .isNull();
+
         AtomicReference<Task<?>> scheduledTask = new AtomicReference<>();
 
         // scheduled tasks mocked
@@ -130,6 +141,11 @@ public class PaymentConfigBeanDbTest
         certificate.setKeyName( privateKeyName );
 
         Certificate result = bean.enableApiAccess( lAccount, REVOLUT_BANK_CODE.toLowerCase(), certificate );
+        ofy().clear();
+
+        assertWithMessage( "Local Account should be already configured, thus" )
+                .that( bean.getLocalAccount() )
+                .isNotNull();
 
         assertWithMessage( "Updated certificate" )
                 .that( result )

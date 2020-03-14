@@ -71,7 +71,7 @@ public class RevolutDebtorBankAccountsInit
         super.setEntityKey( checkNotNull( accountKey, "LocalAccount key can't be null" ) );
     }
 
-    private static boolean inclPublicActive( Account account )
+    private static boolean inclActive( Account account )
     {
         if ( account.getState() == Account.StateEnum.ACTIVE )
         {
@@ -103,7 +103,7 @@ public class RevolutDebtorBankAccountsInit
         String currency;
 
         for ( Account next : accounts.stream()
-                .filter( RevolutDebtorBankAccountsInit::inclPublicActive )
+                .filter( RevolutDebtorBankAccountsInit::inclActive )
                 .collect( Collectors.toList() ) )
         {
             String accountId = next.getId().toString();
