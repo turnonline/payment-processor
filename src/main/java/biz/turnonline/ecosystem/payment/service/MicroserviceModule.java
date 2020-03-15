@@ -62,7 +62,9 @@ import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeDefaultOrikaModul
 import org.ctoolkit.restapi.client.appengine.JCacheProvider;
 import org.ctoolkit.restapi.client.firebase.GoogleApiFirebaseModule;
 import org.ctoolkit.restapi.client.provider.TokenProvider;
+import org.ctoolkit.restapi.client.pubsub.GoogleApiPubSubModule;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
+import org.ctoolkit.restapi.client.pubsub.adaptee.PubSubAdapteesModule;
 import org.ctoolkit.services.guice.CtoolkitServicesAppEngineModule;
 import org.ctoolkit.services.storage.CtoolkitServicesStorageModule;
 import org.ctoolkit.services.storage.guice.EntityRegistrar;
@@ -96,6 +98,8 @@ public class MicroserviceModule
         install( new AccountStewardAdapterModule() );
         install( new GoogleApiFirebaseModule() );
         install( new SubscriptionsModule() );
+        install( new GoogleApiPubSubModule() );
+        install( new PubSubAdapteesModule() );
         install( new RevolutBusinessClientModule() );
         install( new RevolutBusinessAdapterModule() );
 
