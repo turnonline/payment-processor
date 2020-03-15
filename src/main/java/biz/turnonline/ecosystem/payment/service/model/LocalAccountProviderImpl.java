@@ -57,9 +57,8 @@ public class LocalAccountProviderImpl
         checkNotNull( builder, "Builder can't be null" );
         checkNotNull( builder.getEmail(), "Account email can't be null" );
         checkNotNull( builder.getIdentityId(), "Account Identity ID is mandatory" );
-        checkNotNull( builder.getAudience(), "Account audience can't be null" );
 
-        LocalAccount localAccount = get( builder.getEmail(), builder.getAudience() );
+        LocalAccount localAccount = get( builder.getEmail() );
 
         if ( localAccount == null )
         {
@@ -88,16 +87,14 @@ public class LocalAccountProviderImpl
     }
 
     @Override
-    public LocalAccount get( @Nonnull String email, @Nonnull String audience )
+    public LocalAccount get( @Nonnull String email )
     {
         checkNotNull( email, "Account email can't be null" );
-        checkNotNull( audience, "Account audience can't be null" );
 
         return ofy()
                 .load()
                 .type( LocalAccount.class )
                 .filter( "email", email )
-                .filter( "audience", audience )
                 .first()
                 .now();
     }

@@ -78,9 +78,6 @@ public class LocalAccount
     @Index
     private String identityId;
 
-    @Index
-    private String audience;
-
     private String domicile;
 
     private String zone;
@@ -96,13 +93,12 @@ public class LocalAccount
     /**
      * Constructs local account. If no Account ID set then can't be saved.
      *
-     * @param builder mandatory properties are: email, identityId, audience
+     * @param builder mandatory properties are: email, identityId
      */
     LocalAccount( @Nonnull LocalAccountProvider.Builder builder )
     {
         checkNotNull( builder, "Builder can't be null" );
         this.email = checkNotNull( builder.getEmail(), "Account email is mandatory" );
-        this.audience = checkNotNull( builder.getAudience(), "Account audience is mandatory" );
         this.identityId = checkNotNull( builder.getIdentityId(), "Account Identity ID is mandatory" );
         super.setId( builder.getAccountId() );
     }
@@ -113,7 +109,6 @@ public class LocalAccount
 
         super.setId( checkNotNull( account.getId(), "Account ID is mandatory" ) );
         this.email = checkNotNull( account.getEmail(), "Account email is mandatory" );
-        this.audience = checkNotNull( account.getAudience(), "Account audience is mandatory" );
         this.identityId = checkNotNull( account.getIdentityId(), "Account Identity ID is mandatory" );
         this.tAccount = account;
         init( account );
@@ -172,16 +167,6 @@ public class LocalAccount
     void setEmail( @Nonnull String email )
     {
         this.email = checkNotNull( email, "Login email can't be null" );
-    }
-
-    /**
-     * The audience unique identification. The user identified by login email address
-     * within one audience is a different user within another audience even with the same login email.
-     * Those users have different Account.IDs.
-     **/
-    public String getAudience()
-    {
-        return audience;
     }
 
     /**
@@ -403,7 +388,6 @@ public class LocalAccount
                 .add( "id", getId() )
                 .add( "email", email )
                 .add( "identityId", identityId )
-                .add( "audience", audience )
                 .add( "domicile", domicile )
                 .add( "zone", zone )
                 .add( "locale", locale )

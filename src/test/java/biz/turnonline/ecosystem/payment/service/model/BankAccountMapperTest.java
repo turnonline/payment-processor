@@ -54,8 +54,7 @@ public class BankAccountMapperTest
 
     private LocalAccount account = new LocalAccount( new LocalAccountProvider.Builder()
             .email( "my.account@turnonline.biz" )
-            .identityId( "64HGtr6ks" )
-            .audience( "turn-online" ) );
+            .identityId( "64HGtr6ks" ) );
 
     @Mocked
     private BankCode bankCode;

@@ -119,7 +119,7 @@ public class MicroserviceModule
 
         bind( new TypeLiteral<TokenProvider<LocalAccount>>()
         {
-        } ).to( ClosedServerToServerTokenOfAccount.class );
+        } ).to( ServerToEcosystemCallConfig.class );
 
         // single declaration to request static injection for all Task related injection
         requestStaticInjection( Task.class );
