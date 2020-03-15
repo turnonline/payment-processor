@@ -38,7 +38,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
-import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_AUDIENCE;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_ID;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_UNIQUE_ID;
@@ -82,8 +81,7 @@ public class AccountStewardChangesSubscription
                 ENCODED_UNIQUE_KEY,
                 ACCOUNT_UNIQUE_ID,
                 ACCOUNT_EMAIL,
-                ACCOUNT_IDENTITY_ID,
-                ACCOUNT_AUDIENCE
+                ACCOUNT_IDENTITY_ID
         };
 
         if ( !command.validate( mandatory ) )
@@ -115,8 +113,7 @@ public class AccountStewardChangesSubscription
         LocalAccount localAccount = lap.initGet( new LocalAccountProvider.Builder()
                 .accountId( command.getAccountId() )
                 .email( command.getAccountEmail() )
-                .identityId( command.getAccountIdentityId() )
-                .audience( command.getAccountAudience() ) );
+                .identityId( command.getAccountIdentityId() ) );
 
         DateTime publishDateTime = command.getPublishDateTime();
         DateTime last = delete && publishDateTime != null

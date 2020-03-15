@@ -27,7 +27,6 @@ import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.common.net.HttpHeaders;
-import org.ctoolkit.services.endpoints.AudienceUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,17 +117,15 @@ class EndpointsCommon
     {
         authorize( authUser );
 
-        AudienceUser audienceUser = ( AudienceUser ) authUser;
-        String authEmail = audienceUser.getEmail();
+        String authEmail = authUser.getEmail();
         LocalAccount account = null;
         boolean notFound = false;
 
         try
         {
             account = lap.initGet( new LocalAccountProvider.Builder()
-                    .email( audienceUser.getEmail() )
-                    .identityId( audienceUser.getId() )
-                    .audience( audienceUser.getAudience() ) );
+                    .email( authUser.getEmail() )
+                    .identityId( authUser.getId() ) );
 
             request.setAttribute( Account.class.getName(), account );
         }
@@ -138,7 +135,7 @@ class EndpointsCommon
         }
         catch ( Exception e )
         {
-            logger.error( "Account retrieval has failed for " + audienceUser, e );
+            logger.error( "Account retrieval has failed for " + authUser, e );
             throw new InternalServerErrorException( tryAgainLaterMessage() );
         }
 

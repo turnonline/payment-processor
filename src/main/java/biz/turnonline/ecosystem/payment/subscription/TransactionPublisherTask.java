@@ -42,7 +42,6 @@ import javax.inject.Inject;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.TRANSACTION_TOPIC;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_AUDIENCE;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_ID;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_UNIQUE_ID;
@@ -78,7 +77,7 @@ class TransactionPublisherTask
 
     TransactionPublisherTask( @Nonnull Key<CommonTransaction> entityKey )
     {
-        super( "PubSub-Completed" );
+        super( "PubSub-Transaction" );
         setEntityKey( checkNotNull( entityKey, "The transaction key can't be null" ) );
     }
 
@@ -120,11 +119,6 @@ class TransactionPublisherTask
             LOGGER.error( "Invalid account has been found (missing Identity ID) " + lAccount );
             return;
         }
-        if ( Strings.isNullOrEmpty( lAccount.getAudience() ) )
-        {
-            LOGGER.error( "Invalid account has been found (missing Audience) " + lAccount );
-            return;
-        }
 
         Transaction api = mapper.map( transaction, Transaction.class );
         byte[] jsonContent;
@@ -152,8 +146,7 @@ class TransactionPublisherTask
                 .addAttribute( DATA_TYPE, dataType )
                 .addAttribute( ACCOUNT_EMAIL, lAccount.getEmail() )
                 .addAttribute( ACCOUNT_UNIQUE_ID, String.valueOf( lAccount.getId() ) )
-                .addAttribute( ACCOUNT_IDENTITY_ID, lAccount.getIdentityId() )
-                .addAttribute( ACCOUNT_AUDIENCE, lAccount.getAudience() );
+                .addAttribute( ACCOUNT_IDENTITY_ID, lAccount.getIdentityId() );
 
         TopicMessage message = builder.build();
 

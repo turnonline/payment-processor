@@ -34,13 +34,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public interface LocalAccountProvider
 {
     /**
-     * Returns the local lightweight account entity instance identified by email and its audience.
+     * Returns the local lightweight account entity instance identified by email.
      *
-     * @param email    the login email address of the account
-     * @param audience the account audience unique identification
+     * @param email the login email address of the account
      * @return the local lightweight account instance
      */
-    LocalAccount get( @Nonnull String email, @Nonnull String audience );
+    LocalAccount get( @Nonnull String email );
 
     /**
      * Returns the associated local lightweight account entity instance. It might act as an owner of an entities.
@@ -61,8 +60,6 @@ public interface LocalAccountProvider
         private String identityId;
 
         private String email;
-
-        private String audience;
 
         /**
          * Returns the account unique identification within TurnOnline.biz Ecosystem.
@@ -86,14 +83,6 @@ public interface LocalAccountProvider
         public String getEmail()
         {
             return email;
-        }
-
-        /**
-         * Returns the account unique audience.
-         */
-        public String getAudience()
-        {
-            return audience;
         }
 
         /**
@@ -123,23 +112,13 @@ public interface LocalAccountProvider
             return this;
         }
 
-        /**
-         * Sets the account audience unique identification.
-         */
-        public Builder audience( @Nonnull String audience )
-        {
-            this.audience = checkNotNull( audience, "Audience is mandatory" );
-            return this;
-        }
-
         @Override
         public String toString()
         {
             MoreObjects.ToStringHelper string = MoreObjects.toStringHelper( "Builder" );
             string.add( "Account ID", accountId )
                     .add( "email", email )
-                    .add( "identityId", identityId )
-                    .add( "audience", audience );
+                    .add( "identityId", identityId );
 
             return string.toString();
         }

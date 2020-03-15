@@ -75,8 +75,6 @@ public class TransactionPublisherTaskTest
 
     private static final String ACCOUNT_IDENTITY_ID = "64HGtr6ks";
 
-    private static final String ACCOUNT_AUDIENCE = GOOGLE_CLOUD_PROJECT;
-
     private static final String EXPECTED_TOPIC = "projects/" + GOOGLE_CLOUD_PROJECT + "/topics/" + TRANSACTION_TOPIC;
 
     private static final String EXPECTED_ID = String.valueOf( TRANSACTION_ID );
@@ -126,8 +124,7 @@ public class TransactionPublisherTaskTest
         account = new LocalAccount( new Account()
                 .setId( ACCOUNT_ID )
                 .setEmail( EXPECTED_EMAIL )
-                .setIdentityId( ACCOUNT_IDENTITY_ID )
-                .setAudience( ACCOUNT_AUDIENCE ) );
+                .setIdentityId( ACCOUNT_IDENTITY_ID ) );
 
         transaction = new TransactionBillTest( "7fa8816a-1fe5-4fc7-9e86-fd659b753167", TRANSACTION_ID )
                 .bankAccountKey( accountKey )
@@ -182,13 +179,12 @@ public class TransactionPublisherTaskTest
                 assertThat( messages ).hasSize( 1 );
 
                 Map<String, String> attributes = messages.get( 0 ).getAttributes();
-                assertThat( attributes ).hasSize( 6 );
+                assertThat( attributes ).hasSize( 5 );
                 assertThat( attributes.get( "Entity_ID" ) ).isEqualTo( EXPECTED_ID );
                 assertThat( attributes.get( "DataType" ) ).isEqualTo( EXPECTED_DATA_TYPE );
                 assertThat( attributes.get( "AccountEmail" ) ).isEqualTo( EXPECTED_EMAIL );
                 assertThat( attributes.get( "AccountUnique_ID" ) ).isEqualTo( EXPECTED_ACCOUNT_ID );
                 assertThat( attributes.get( "AccountIdentity_ID" ) ).isEqualTo( ACCOUNT_IDENTITY_ID );
-                assertThat( attributes.get( "AccountAudience" ) ).isEqualTo( ACCOUNT_AUDIENCE );
 
                 PubsubMessage psb = messages.get( 0 );
                 Map<String, Object> map = mapOf( psb.decodeData(), api.getClass() );
@@ -309,8 +305,7 @@ public class TransactionPublisherTaskTest
                 result = new LocalAccount( new Account()
                         .setId( ACCOUNT_ID )
                         .setEmail( "" )
-                        .setIdentityId( ACCOUNT_IDENTITY_ID )
-                        .setAudience( ACCOUNT_AUDIENCE ) );
+                        .setIdentityId( ACCOUNT_IDENTITY_ID ) );
             }
         };
 
@@ -337,36 +332,7 @@ public class TransactionPublisherTaskTest
                 result = new LocalAccount( new Account()
                         .setId( ACCOUNT_ID )
                         .setEmail( EXPECTED_EMAIL )
-                        .setIdentityId( "" )
-                        .setAudience( ACCOUNT_AUDIENCE ) );
-            }
-        };
-
-        tested.execute();
-
-        new Verifications()
-        {
-            {
-                facade.insert( any );
-                times = 0;
-            }
-        };
-    }
-
-    @Test
-    public void unsuccessful_AccountAudienceMissing()
-    {
-        expectationsTransaction();
-
-        new Expectations()
-        {
-            {
-                config.getLocalAccount();
-                result = new LocalAccount( new Account()
-                        .setId( ACCOUNT_ID )
-                        .setEmail( EXPECTED_EMAIL )
-                        .setIdentityId( ACCOUNT_IDENTITY_ID )
-                        .setAudience( "" ) );
+                        .setIdentityId( "" ) );
             }
         };
 

@@ -50,7 +50,6 @@ import java.util.List;
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.TRUST_PAY_BANK_CODE;
 import static biz.turnonline.ecosystem.payment.service.model.FormOfPayment.TRANSFER;
-import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_AUDIENCE;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_ID;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_UNIQUE_ID;
@@ -109,8 +108,7 @@ class ProductBillingChangesSubscription
                 ENCODED_UNIQUE_KEY,
                 ACCOUNT_IDENTITY_ID,
                 ACCOUNT_UNIQUE_ID,
-                ACCOUNT_EMAIL,
-                ACCOUNT_AUDIENCE
+                ACCOUNT_EMAIL
         };
         if ( !command.validate( mandatory ) )
         {
@@ -140,7 +138,6 @@ class ProductBillingChangesSubscription
         LocalAccountProvider.Builder builder = new LocalAccountProvider.Builder()
                 .email( accountEmail )
                 .identityId( command.getAccountIdentityId() )
-                .audience( accountAudience )
                 .accountId( accountId );
 
         try

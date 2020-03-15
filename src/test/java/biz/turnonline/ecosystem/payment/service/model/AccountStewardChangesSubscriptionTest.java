@@ -37,7 +37,6 @@ import java.util.Locale;
 
 import static biz.turnonline.ecosystem.payment.service.model.LocalAccount.DEFAULT_ZONE;
 import static com.google.common.truth.Truth.assertThat;
-import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_AUDIENCE;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_ID;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_UNIQUE_ID;
@@ -57,8 +56,6 @@ public class AccountStewardChangesSubscriptionTest
 
     private static final String IDENTITY_ID = "34ghW4jL9";
 
-    private static final String AUDIENCE = "turn-online";
-
     private static final Long ACCOUNT_ID = 1233219L;
 
     @Tested
@@ -76,8 +73,7 @@ public class AccountStewardChangesSubscriptionTest
         LocalAccount localAccount = new LocalAccount( new LocalAccountProvider.Builder()
                 .accountId( ACCOUNT_ID )
                 .email( EMAIL )
-                .identityId( IDENTITY_ID )
-                .audience( AUDIENCE ) );
+                .identityId( IDENTITY_ID ) );
 
         localAccount.setLocale( "en" );
         localAccount.setDomicile( "SK" );
@@ -124,8 +120,7 @@ public class AccountStewardChangesSubscriptionTest
         LocalAccount localAccount = new LocalAccount( new LocalAccountProvider.Builder()
                 .accountId( ACCOUNT_ID )
                 .email( EMAIL )
-                .identityId( IDENTITY_ID )
-                .audience( AUDIENCE ) );
+                .identityId( IDENTITY_ID ) );
         localAccount.setZoneId( DEFAULT_ZONE );
 
         new Expectations( localAccount, tested )
@@ -169,8 +164,7 @@ public class AccountStewardChangesSubscriptionTest
         LocalAccount localAccount = new LocalAccount( new LocalAccountProvider.Builder()
                 .accountId( ACCOUNT_ID )
                 .email( EMAIL )
-                .identityId( IDENTITY_ID )
-                .audience( AUDIENCE ) );
+                .identityId( IDENTITY_ID ) );
         localAccount.setLocale( "de" );
         localAccount.setZoneId( DEFAULT_ZONE );
 
@@ -278,8 +272,7 @@ public class AccountStewardChangesSubscriptionTest
                 .addMessage( bytes, ACCOUNT_UNIQUE_ID, id )
                 .addAttribute( DATA_TYPE, dataType )
                 .addAttribute( ACCOUNT_IDENTITY_ID, IDENTITY_ID )
-                .addAttribute( ENCODED_UNIQUE_KEY, id )
-                .addAttribute( ACCOUNT_AUDIENCE, AUDIENCE );
+                .addAttribute( ENCODED_UNIQUE_KEY, id );
 
         return builder;
     }

@@ -49,7 +49,6 @@ import java.util.List;
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
-import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_AUDIENCE;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_ID;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_UNIQUE_ID;
@@ -500,7 +499,6 @@ public class ProductBillingChangesSubscriptionTest
                 .addMessage( bytes )
                 .addAttribute( ACCOUNT_IDENTITY_ID, IDENTITY_ID )
                 .addAttribute( ACCOUNT_EMAIL, EMAIL )
-                .addAttribute( ACCOUNT_AUDIENCE, "turn-online-2b" )
                 .addAttribute( ACCOUNT_UNIQUE_ID, String.valueOf( ACCOUNT_ID ) )
                 .addAttribute( ENTITY_DELETION, String.valueOf( deletion ) );
 
