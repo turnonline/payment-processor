@@ -62,5 +62,5 @@ public class PaymentsApiProfile
 
     static final String API_NAME = "payment";
 
-    public static final String PROJECT_ID = "turnon-t1";
+    public static final String PROJECT_ID = "turn-online-eu";
 }
