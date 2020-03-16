@@ -1,0 +1,36 @@
+<!--
+  ~ Copyright (c) 2020 TurnOnline.biz s.r.o. All Rights Reserved.
+  ~
+  ~ This library is free software; you can redistribute it and/or
+  ~ modify it under the terms of the GNU Lesser General Public
+  ~ License as published by the Free Software Foundation; either
+  ~ version 2.1 of the License, or (at your option) any later version.
+  ~
+  ~ This library is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  ~ Lesser General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public
+  ~ License along with this library; if not, write to the Free Software
+  ~ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+  -->
+
+<changeset author="medvegy@turnonline.biz" comment="Local account init test data.">
+    <entities>
+        <entity kind="PP_PaymentAccount" name="b2x-app">
+            <property indexed="true" name="account" type="reference" value="PP_LocalAccount:468"/>
+        </entity>
+        <entity kind="PP_LocalAccount" id="468">
+            <property indexed="true" name="email" type="string" value="my.account@turnonline.biz"/>
+            <property indexed="true" name="identityId" type="string" value="021548554211"/>
+            <property indexed="true" name="audience" type="string" value="turn-online"/>
+            <property indexed="false" name="locale" type="string" value="en"/>
+            <property indexed="false" name="zone" type="string" value="Europe/Paris"/>
+            <property indexed="false" name="domicile" type="string" value="SK"/>
+            <property indexed="false" name="createdDate" type="date" value="1524715215000"/>
+            <property indexed="false" name="modificationDate" type="date" value="1525925215000"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+    </entities>
+</changeset>

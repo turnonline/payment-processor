@@ -23,13 +23,11 @@ import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
-import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
 import biz.turnonline.ecosystem.payment.subscription.MockedInputStream;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionState;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType;
-import biz.turnonline.ecosystem.steward.model.Account;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -607,13 +605,14 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_TRANSFER_ExternalNonRevolut() throws JsonProcessingException
     {
-        LocalAccount account = new LocalAccount( genericJsonFromFile( "account.json", Account.class ) );
-
         // import test bank accounts
         ImportTask task = new ImportTask( "/testdataset/changeset_00001.xml" );
         task.run();
 
-        CompanyBankAccount primaryBankAccount = config.getPrimaryBankAccount( account, null );
+        task = new ImportTask( "/testdataset/changeset_local-account.xml" );
+        task.run();
+
+        CompanyBankAccount primaryBankAccount = config.getPrimaryBankAccount( null );
         // set bank account external Id taken from transaction-created-transfer-non-revolut.json
         primaryBankAccount.setExternalId( BANK_ACCOUNT_EXT_ID );
         primaryBankAccount.save();

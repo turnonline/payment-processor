@@ -121,7 +121,7 @@ public class RevolutBeneficiarySyncTaskTest
         new Expectations( bankAccount )
         {
             {
-                config.insertBeneficiary( account, IBAN, BIC, CURRENCY );
+                config.insertBeneficiary( IBAN, BIC, CURRENCY );
                 result = bankAccount;
 
                 // ExternalId needs to be saved
@@ -187,7 +187,7 @@ public class RevolutBeneficiarySyncTaskTest
         new Expectations( bankAccount )
         {
             {
-                config.insertBeneficiary( account, IBAN, BIC, CURRENCY );
+                config.insertBeneficiary( IBAN, BIC, CURRENCY );
                 result = bankAccount;
 
                 // ExternalId needs to be saved
@@ -238,7 +238,7 @@ public class RevolutBeneficiarySyncTaskTest
         new Expectations( bankAccount, cba, tested )
         {
             {
-                config.insertBeneficiary( account, IBAN, BIC, debtorCurrency );
+                config.insertBeneficiary( IBAN, BIC, debtorCurrency );
                 result = bankAccount;
 
                 // ExternalId needs to be saved
@@ -366,7 +366,7 @@ public class RevolutBeneficiarySyncTaskTest
         new Expectations()
         {
             {
-                config.insertBeneficiary( account, IBAN, BIC, CURRENCY );
+                config.insertBeneficiary( IBAN, BIC, CURRENCY );
                 result = new IllegalArgumentException( "Invalid IBAN" );
             }
         };
@@ -394,7 +394,7 @@ public class RevolutBeneficiarySyncTaskTest
         new Expectations( bankAccount )
         {
             {
-                config.insertBeneficiary( account, IBAN, BIC, CURRENCY );
+                config.insertBeneficiary( IBAN, BIC, CURRENCY );
                 result = bankAccount;
             }
         };

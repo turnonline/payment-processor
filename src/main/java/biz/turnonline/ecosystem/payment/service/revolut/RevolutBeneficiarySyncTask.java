@@ -132,7 +132,7 @@ public class RevolutBeneficiarySyncTask
         BeneficiaryBankAccount bankAccount;
         try
         {
-            bankAccount = config.insertBeneficiary( owner, iban, beneficiary.getBic(), currency );
+            bankAccount = config.insertBeneficiary( iban, beneficiary.getBic(), currency );
         }
         catch ( IllegalArgumentException e )
         {

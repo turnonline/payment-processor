@@ -97,7 +97,7 @@ public class RevolutDebtorBankAccountsInit
             return;
         }
 
-        List<CompanyBankAccount> existing = config.getBankAccounts( owner, REVOLUT_BANK_CODE );
+        List<CompanyBankAccount> existing = config.getBankAccounts( REVOLUT_BANK_CODE );
         List<CompanyBankAccount> bankAccounts = new ArrayList<>();
         CompanyBankAccount bankAccount;
         String currency;
@@ -124,7 +124,6 @@ public class RevolutDebtorBankAccountsInit
                     bankAccount.setBic( detail.getBic() );
                     bankAccount.setCurrency( currency );
                     bankAccount.setExternalId( accountId );
-                    bankAccount.setOwner( owner );
                     bankAccounts.add( bankAccount );
 
                     break;

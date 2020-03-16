@@ -23,7 +23,6 @@ import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.BankCodeNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
-import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.steward.model.Account;
@@ -31,21 +30,25 @@ import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
+import com.google.common.net.HttpHeaders;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
 import mockit.Tested;
+import mockit.Verifications;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static com.google.common.truth.Truth.assertThat;
+import static com.google.common.truth.Truth.assertWithMessage;
 
 /**
  * {@link BankAccountEndpoint} unit testing, mainly negative scenarios.
@@ -93,35 +96,44 @@ public class BankAccountEndpointTest
     @Test
     public void insertBankAccount() throws Exception
     {
+        Locale locale = Locale.ENGLISH;
         new Expectations()
         {
             {
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.insert( account, dbBankAccount );
+                dbBankAccount.save();
+
+                common.getAcceptLanguage( request );
+                result = locale;
+
+                mapper.map( bankAccount, CompanyBankAccount.class, ( MappingContext ) any );
             }
         };
 
         BankAccount result = endpoint.insertBankAccount( bankAccount, request, authUser );
         assertThat( result ).isNotNull();
-    }
 
-    @Test( expectedExceptions = BadRequestException.class )
-    public void insertBankAccount_ValidationFailure() throws Exception
-    {
-        new Expectations()
+        new Verifications()
         {
             {
-                common.checkAccount( authUser, request );
-                result = account;
+                MappingContext context;
+                mapper.map( dbBankAccount, BankAccount.class, context = withCapture() );
 
-                config.insert( account, dbBankAccount );
-                result = new ApiValidationException( "Validation failure" );
+                assertWithMessage( "Mapping context Backend to API" )
+                        .that( context )
+                        .isNotNull();
+
+                assertWithMessage( "Mapping context ACCEPT_LANGUAGE property" )
+                        .that( context.getProperty( HttpHeaders.ACCEPT_LANGUAGE ) )
+                        .isEqualTo( locale );
+
+                assertWithMessage( "Mapping context local account property" )
+                        .that( context.getProperty( LocalAccount.class ) )
+                        .isEqualTo( account );
             }
         };
-
-        endpoint.insertBankAccount( bankAccount, request, authUser );
     }
 
     @Test( expectedExceptions = BadRequestException.class )
@@ -133,26 +145,8 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                mapper.map( bankAccount, CompanyBankAccount.class,
-                        ( MappingContext ) any );
+                mapper.map( bankAccount, CompanyBankAccount.class, ( MappingContext ) any );
                 result = new ApiValidationException( "Validation failure" );
-            }
-        };
-
-        endpoint.insertBankAccount( bankAccount, request, authUser );
-    }
-
-    @Test( expectedExceptions = InternalServerErrorException.class )
-    public void insertBankAccount_BusinessFlowFailure() throws Exception
-    {
-        new Expectations()
-        {
-            {
-                common.checkAccount( authUser, request );
-                result = account;
-
-                config.insert( account, dbBankAccount );
-                result = new IllegalArgumentException();
             }
         };
 
@@ -168,7 +162,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.insert( account, dbBankAccount );
+                dbBankAccount.save();
                 result = new RuntimeException();
             }
         };
@@ -185,7 +179,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                mapper.map( dbBankAccount, BankAccount.class );
+                mapper.map( dbBankAccount, BankAccount.class, ( MappingContext ) any );
                 result = new RuntimeException();
             }
         };
@@ -198,6 +192,7 @@ public class BankAccountEndpointTest
     {
         List<BankAccount> bankAccounts = new ArrayList<>();
         bankAccounts.add( bankAccount );
+        Locale locale = Locale.ENGLISH;
 
         new Expectations()
         {
@@ -205,18 +200,41 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getBankAccounts( account, 5, 15, null, null );
+                config.getBankAccounts( 5, 15, null, null );
 
                 //noinspection unchecked
-                mapper.mapAsList( ( List<CompanyBankAccount> ) any,
-                        BankAccount.class, ( MappingContext ) any );
+                mapper.mapAsList( ( List<CompanyBankAccount> ) any, BankAccount.class, ( MappingContext ) any );
                 result = bankAccounts;
+
+                common.getAcceptLanguage( request );
+                result = locale;
             }
         };
 
         List<BankAccount> result = endpoint.searchBankAccounts( 5, 15, null, null, false, request, authUser );
         assertThat( result ).isNotNull();
         assertThat( result ).hasSize( 1 );
+
+        new Verifications()
+        {
+            {
+                MappingContext context;
+                //noinspection unchecked
+                mapper.mapAsList( ( List<CompanyBankAccount> ) any, BankAccount.class, context = withCapture() );
+
+                assertWithMessage( "Mapping context Backend to API" )
+                        .that( context )
+                        .isNotNull();
+
+                assertWithMessage( "Mapping context ACCEPT_LANGUAGE property" )
+                        .that( context.getProperty( HttpHeaders.ACCEPT_LANGUAGE ) )
+                        .isEqualTo( locale );
+
+                assertWithMessage( "Mapping context local account property" )
+                        .that( context.getProperty( LocalAccount.class ) )
+                        .isEqualTo( account );
+            }
+        };
     }
 
     @Test( expectedExceptions = InternalServerErrorException.class )
@@ -228,7 +246,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getBankAccounts( account, anyInt, anyInt, null, null );
+                config.getBankAccounts( anyInt, anyInt, null, null );
                 result = new RuntimeException();
             }
         };
@@ -246,8 +264,7 @@ public class BankAccountEndpointTest
                 result = account;
 
                 //noinspection unchecked
-                mapper.mapAsList( ( List<CompanyBankAccount> ) any,
-                        BankAccount.class, ( MappingContext ) any );
+                mapper.mapAsList( ( List<CompanyBankAccount> ) any, BankAccount.class, ( MappingContext ) any );
                 result = new RuntimeException();
             }
         };
@@ -259,22 +276,47 @@ public class BankAccountEndpointTest
     public void getBankAccount() throws Exception
     {
         long accountId = 199L;
+        Locale locale = Locale.ENGLISH;
+
         new Expectations()
         {
             {
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getBankAccount( account, accountId );
+                config.getBankAccount( accountId );
                 result = dbBankAccount;
 
-                mapper.map( dbBankAccount, BankAccount.class );
+                mapper.map( dbBankAccount, BankAccount.class, ( MappingContext ) any );
                 result = bankAccount;
+
+                common.getAcceptLanguage( request );
+                result = locale;
             }
         };
 
         BankAccount result = endpoint.getBankAccount( accountId, request, authUser );
         assertThat( result ).isNotNull();
+
+        new Verifications()
+        {
+            {
+                MappingContext context;
+                mapper.map( dbBankAccount, BankAccount.class, context = withCapture() );
+
+                assertWithMessage( "Mapping context Backend to API" )
+                        .that( context )
+                        .isNotNull();
+
+                assertWithMessage( "Mapping context ACCEPT_LANGUAGE property" )
+                        .that( context.getProperty( HttpHeaders.ACCEPT_LANGUAGE ) )
+                        .isEqualTo( locale );
+
+                assertWithMessage( "Mapping context local account property" )
+                        .that( context.getProperty( LocalAccount.class ) )
+                        .isEqualTo( account );
+            }
+        };
     }
 
     @Test( expectedExceptions = NotFoundException.class )
@@ -287,26 +329,8 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getBankAccount( account, accountId );
+                config.getBankAccount( accountId );
                 result = new BankAccountNotFound( accountId );
-            }
-        };
-
-        endpoint.getBankAccount( accountId, request, authUser );
-    }
-
-    @Test( expectedExceptions = NotFoundException.class )
-    public void getBankAccount_WrongOwner() throws Exception
-    {
-        long accountId = 19;
-        new Expectations()
-        {
-            {
-                common.checkAccount( authUser, request );
-                result = account;
-
-                config.getBankAccount( account, accountId );
-                result = new WrongEntityOwner();
             }
         };
 
@@ -322,7 +346,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getBankAccount( account, anyLong );
+                config.getBankAccount( anyLong );
                 result = new RuntimeException();
             }
         };
@@ -334,21 +358,46 @@ public class BankAccountEndpointTest
     public void updateBankAccount() throws Exception
     {
         long accountId = 219;
+        Locale locale = Locale.ENGLISH;
+
         new Expectations()
         {
             {
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getBankAccount( account, accountId );
+                config.getBankAccount( accountId );
                 result = dbBankAccount;
 
-                config.update( account, dbBankAccount );
+                dbBankAccount.save();
+
+                common.getAcceptLanguage( request );
+                result = locale;
             }
         };
 
         BankAccount result = endpoint.updateBankAccount( accountId, bankAccount, request, authUser );
         assertThat( result ).isNotNull();
+
+        new Verifications()
+        {
+            {
+                MappingContext context;
+                mapper.map( dbBankAccount, BankAccount.class, context = withCapture() );
+
+                assertWithMessage( "Mapping context Backend to API" )
+                        .that( context )
+                        .isNotNull();
+
+                assertWithMessage( "Mapping context ACCEPT_LANGUAGE property" )
+                        .that( context.getProperty( HttpHeaders.ACCEPT_LANGUAGE ) )
+                        .isEqualTo( locale );
+
+                assertWithMessage( "Mapping context local account property" )
+                        .that( context.getProperty( LocalAccount.class ) )
+                        .isEqualTo( account );
+            }
+        };
     }
 
     @Test( expectedExceptions = NotFoundException.class )
@@ -361,26 +410,8 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getBankAccount( account, accountId );
+                config.getBankAccount( accountId );
                 result = new BankAccountNotFound( accountId );
-            }
-        };
-
-        endpoint.updateBankAccount( accountId, bankAccount, request, authUser );
-    }
-
-    @Test( expectedExceptions = NotFoundException.class )
-    public void updateBankAccount_WrongOwner() throws Exception
-    {
-        long accountId = 239;
-        new Expectations()
-        {
-            {
-                common.checkAccount( authUser, request );
-                result = account;
-
-                config.getBankAccount( account, accountId );
-                result = new WrongEntityOwner();
             }
         };
 
@@ -397,7 +428,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getBankAccount( account, accountId );
+                config.getBankAccount( accountId );
                 result = new RuntimeException();
             }
         };
@@ -414,7 +445,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.update( account, dbBankAccount );
+                dbBankAccount.save();
                 result = new RuntimeException();
             }
         };
@@ -450,7 +481,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                mapper.map( dbBankAccount, BankAccount.class );
+                mapper.map( dbBankAccount, BankAccount.class, ( MappingContext ) any );
                 result = new RuntimeException();
             }
         };
@@ -468,7 +499,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.update( account, dbBankAccount );
+                dbBankAccount.save();
                 result = new IllegalArgumentException();
             }
         };
@@ -486,7 +517,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.deleteBankAccount( account, accountId );
+                config.deleteBankAccount( accountId );
             }
         };
 
@@ -503,26 +534,8 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.deleteBankAccount( account, accountId );
+                config.deleteBankAccount( accountId );
                 result = new BankAccountNotFound( accountId );
-            }
-        };
-
-        endpoint.deleteBankAccount( accountId, request, authUser );
-    }
-
-    @Test( expectedExceptions = NotFoundException.class )
-    public void deleteBankAccount_WrongOwner() throws Exception
-    {
-        long accountId = 289;
-        new Expectations()
-        {
-            {
-                common.checkAccount( authUser, request );
-                result = account;
-
-                config.deleteBankAccount( account, accountId );
-                result = new WrongEntityOwner();
             }
         };
 
@@ -539,7 +552,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.deleteBankAccount( account, accountId );
+                config.deleteBankAccount( accountId );
                 result = new RuntimeException();
             }
         };
@@ -557,7 +570,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.deleteBankAccount( account, accountId );
+                config.deleteBankAccount( accountId );
                 result = new ApiValidationException( "Validation failure" );
             }
         };
@@ -569,18 +582,43 @@ public class BankAccountEndpointTest
     public void getPrimaryBankAccount() throws Exception
     {
         String country = "SK";
+        Locale locale = Locale.ENGLISH;
+
         new Expectations()
         {
             {
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getPrimaryBankAccount( account, country );
+                config.getPrimaryBankAccount( country );
                 result = dbBankAccount;
+
+                common.getAcceptLanguage( request );
+                result = locale;
             }
         };
 
         assertThat( endpoint.getPrimaryBankAccount( country, request, authUser ) ).isNotNull();
+
+        new Verifications()
+        {
+            {
+                MappingContext context;
+                mapper.map( dbBankAccount, BankAccount.class, context = withCapture() );
+
+                assertWithMessage( "Mapping context Backend to API" )
+                        .that( context )
+                        .isNotNull();
+
+                assertWithMessage( "Mapping context ACCEPT_LANGUAGE property" )
+                        .that( context.getProperty( HttpHeaders.ACCEPT_LANGUAGE ) )
+                        .isEqualTo( locale );
+
+                assertWithMessage( "Mapping context local account property" )
+                        .that( context.getProperty( LocalAccount.class ) )
+                        .isEqualTo( account );
+            }
+        };
     }
 
     @Test( expectedExceptions = NotFoundException.class )
@@ -592,7 +630,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getPrimaryBankAccount( account, anyString );
+                config.getPrimaryBankAccount( anyString );
                 result = new BankAccountNotFound( -1L );
             }
         };
@@ -609,7 +647,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.getPrimaryBankAccount( account, anyString );
+                config.getPrimaryBankAccount( anyString );
                 result = new RuntimeException();
             }
         };
@@ -626,7 +664,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                mapper.map( dbBankAccount, BankAccount.class );
+                mapper.map( dbBankAccount, BankAccount.class, ( MappingContext ) any );
                 result = new RuntimeException();
             }
         };
@@ -638,18 +676,43 @@ public class BankAccountEndpointTest
     public void markBankAccountAsPrimary() throws Exception
     {
         long accountId = 560L;
+        Locale locale = Locale.ENGLISH;
+
         new Expectations()
         {
             {
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.markBankAccountAsPrimary( account, accountId );
+                config.markBankAccountAsPrimary( accountId );
                 result = dbBankAccount;
+
+                common.getAcceptLanguage( request );
+                result = locale;
             }
         };
 
         assertThat( endpoint.markBankAccountAsPrimary( accountId, request, authUser ) ).isNotNull();
+
+        new Verifications()
+        {
+            {
+                MappingContext context;
+                mapper.map( dbBankAccount, BankAccount.class, context = withCapture() );
+
+                assertWithMessage( "Mapping context Backend to API" )
+                        .that( context )
+                        .isNotNull();
+
+                assertWithMessage( "Mapping context ACCEPT_LANGUAGE property" )
+                        .that( context.getProperty( HttpHeaders.ACCEPT_LANGUAGE ) )
+                        .isEqualTo( locale );
+
+                assertWithMessage( "Mapping context local account property" )
+                        .that( context.getProperty( LocalAccount.class ) )
+                        .isEqualTo( account );
+            }
+        };
     }
 
     @Test( expectedExceptions = BadRequestException.class )
@@ -661,25 +724,8 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.markBankAccountAsPrimary( account, anyLong );
+                config.markBankAccountAsPrimary( anyLong );
                 result = new ApiValidationException( "Validation failure" );
-            }
-        };
-
-        endpoint.markBankAccountAsPrimary( 2L, request, authUser );
-    }
-
-    @Test( expectedExceptions = NotFoundException.class )
-    public void markBankAccountAsPrimary_WrongOwner() throws Exception
-    {
-        new Expectations()
-        {
-            {
-                common.checkAccount( authUser, request );
-                result = account;
-
-                config.markBankAccountAsPrimary( account, anyLong );
-                result = new WrongEntityOwner();
             }
         };
 
@@ -695,7 +741,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.markBankAccountAsPrimary( account, anyLong );
+                config.markBankAccountAsPrimary( anyLong );
                 result = new BankAccountNotFound( 2L );
             }
         };
@@ -712,7 +758,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                config.markBankAccountAsPrimary( account, anyLong );
+                config.markBankAccountAsPrimary( anyLong );
                 result = new RuntimeException();
             }
         };
@@ -729,7 +775,7 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                mapper.map( dbBankAccount, BankAccount.class );
+                mapper.map( dbBankAccount, BankAccount.class, ( MappingContext ) any );
                 result = new RuntimeException();
             }
         };

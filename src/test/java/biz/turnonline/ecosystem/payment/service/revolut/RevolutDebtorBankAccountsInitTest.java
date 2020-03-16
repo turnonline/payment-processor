@@ -293,7 +293,7 @@ public class RevolutDebtorBankAccountsInitTest
                 tested.workWith();
                 result = account;
 
-                config.getBankAccounts( account, REVOLUT_BANK_CODE );
+                config.getBankAccounts( REVOLUT_BANK_CODE );
                 result = existing;
 
                 tested.save( ( List<CompanyBankAccount> ) any );

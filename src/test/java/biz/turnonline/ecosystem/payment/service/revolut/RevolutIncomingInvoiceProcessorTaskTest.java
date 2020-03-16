@@ -198,7 +198,7 @@ public class RevolutIncomingInvoiceProcessorTaskTest
                 tested.getDebtorBankAccount();
                 result = debtorBank;
 
-                config.getBeneficiary( account, invoice.getPayment().getBankAccount().getIban() );
+                config.getBeneficiary( invoice.getPayment().getBankAccount().getIban() );
                 result = beneficiary;
 
                 beneficiary.getExternalId( REVOLUT_BANK_CODE );
@@ -363,7 +363,7 @@ public class RevolutIncomingInvoiceProcessorTaskTest
                 tested.getDebtorBankAccount();
                 result = debtorBank;
 
-                config.getBeneficiary( account, anyString );
+                config.getBeneficiary( anyString );
                 result = null;
             }
         };

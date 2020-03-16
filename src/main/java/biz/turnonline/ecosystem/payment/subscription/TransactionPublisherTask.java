@@ -19,6 +19,7 @@
 package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
+import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
@@ -73,7 +74,7 @@ class TransactionPublisherTask
     private transient MapperFacade mapper;
 
     @Inject
-    private transient PaymentConfig config;
+    private transient LocalAccountProvider lap;
 
     TransactionPublisherTask( @Nonnull Key<CommonTransaction> entityKey )
     {
@@ -95,7 +96,7 @@ class TransactionPublisherTask
             return;
         }
 
-        LocalAccount lAccount = config.getLocalAccount();
+        LocalAccount lAccount = lap.get();
         if ( lAccount == null )
         {
             LOGGER.error( "Local account has not been configured yet." );

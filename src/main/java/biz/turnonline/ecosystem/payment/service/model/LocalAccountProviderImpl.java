@@ -20,6 +20,7 @@ package biz.turnonline.ecosystem.payment.service.model;
 
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.steward.model.Account;
+import com.google.appengine.api.utils.SystemProperty;
 import com.google.common.base.Stopwatch;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.slf4j.Logger;
@@ -84,6 +85,14 @@ public class LocalAccountProviderImpl
         }
 
         return localAccount;
+    }
+
+    @Override
+    public LocalAccount get()
+    {
+        String projectId = SystemProperty.applicationId.get();
+        PaymentLocalAccount pla = ofy().load().type( PaymentLocalAccount.class ).id( projectId ).now();
+        return pla == null ? null : pla.get();
     }
 
     @Override

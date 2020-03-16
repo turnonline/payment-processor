@@ -304,7 +304,7 @@ public class ProductBillingChangesSubscriptionTest
         new Expectations()
         {
             {
-                config.getDebtorBankAccount( ( LocalAccount ) any, ( InvoicePayment ) any );
+                config.getDebtorBankAccount( ( InvoicePayment ) any );
                 result = null;
             }
         };
