@@ -34,6 +34,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public interface LocalAccountProvider
 {
     /**
+     * Returns the account associated with this service.
+     * <p>
+     * It's a design concept. It's a single account associated with the payment service.
+     *
+     * @return the local account
+     */
+    LocalAccount get();
+
+    /**
      * Returns the local lightweight account entity instance identified by email.
      *
      * @param email the login email address of the account

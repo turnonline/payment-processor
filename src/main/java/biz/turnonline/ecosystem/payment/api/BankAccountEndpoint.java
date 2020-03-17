@@ -23,7 +23,6 @@ import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.BankCodeNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
-import biz.turnonline.ecosystem.payment.service.WrongEntityOwner;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.api.server.spi.auth.common.User;
@@ -88,19 +87,20 @@ public class BankAccountEndpoint
             throws Exception
     {
         LocalAccount account = common.checkAccount( authUser, request );
+        Locale language = common.getAcceptLanguage( request );
 
         BankAccount result;
         try
         {
             MappingContext context = new MappingContext( new HashMap<>() );
+            context.setProperty( HttpHeaders.ACCEPT_LANGUAGE, language );
             context.setProperty( LocalAccount.class, account );
 
             CompanyBankAccount dbBankAccount;
-            dbBankAccount = mapper.map( bankAccount, CompanyBankAccount.class,
-                    context );
+            dbBankAccount = mapper.map( bankAccount, CompanyBankAccount.class, context );
+            dbBankAccount.save();
 
-            config.insert( account, dbBankAccount );
-            result = mapper.map( dbBankAccount, BankAccount.class );
+            result = mapper.map( dbBankAccount, BankAccount.class, context );
         }
         catch ( ApiValidationException e )
         {
@@ -110,15 +110,6 @@ public class BankAccountEndpoint
                     .add( "bankAccount", bankAccount )
                     .toString(), e );
             throw new BadRequestException( e.getMessage() );
-        }
-        catch ( IllegalArgumentException e )
-        {
-            LOGGER.error( "BankAccount business flow has failed: "
-                    + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getId() )
-                    .add( "bankAccount", bankAccount )
-                    .toString(), e );
-            throw new InternalServerErrorException( tryAgainLaterMessage() );
         }
         catch ( Exception e )
         {
@@ -152,15 +143,16 @@ public class BankAccountEndpoint
             List<CompanyBankAccount> bankAccounts;
             if ( alternative )
             {
-                bankAccounts = config.getAlternativeBankAccounts( account, offset, limit, language, country );
+                bankAccounts = config.getAlternativeBankAccounts( offset, limit, language, country );
             }
             else
             {
-                bankAccounts = config.getBankAccounts( account, offset, limit, country, bankCode );
+                bankAccounts = config.getBankAccounts( offset, limit, country, bankCode );
             }
 
             MappingContext context = new MappingContext( new HashMap<>() );
             context.setProperty( HttpHeaders.ACCEPT_LANGUAGE, language );
+            context.setProperty( LocalAccount.class, account );
             result = mapper.mapAsList( bankAccounts, BankAccount.class, context );
         }
         catch ( Exception e )
@@ -189,17 +181,18 @@ public class BankAccountEndpoint
             throws Exception
     {
         LocalAccount account = common.checkAccount( authUser, request );
+        Locale language = common.getAcceptLanguage( request );
         BankAccount result;
 
         try
         {
             CompanyBankAccount bankAccount;
-            bankAccount = config.getBankAccount( account, accountId );
-            result = mapper.map( bankAccount, BankAccount.class );
-        }
-        catch ( WrongEntityOwner e )
-        {
-            throw new NotFoundException( bankAccountNotFoundMessage( accountId ) );
+            bankAccount = config.getBankAccount( accountId );
+
+            MappingContext context = new MappingContext( new HashMap<>() );
+            context.setProperty( HttpHeaders.ACCEPT_LANGUAGE, language );
+            context.setProperty( LocalAccount.class, account );
+            result = mapper.map( bankAccount, BankAccount.class, context );
         }
         catch ( BankAccountNotFound e )
         {
@@ -229,19 +222,21 @@ public class BankAccountEndpoint
             throws Exception
     {
         LocalAccount account = common.checkAccount( authUser, request );
+        Locale language = common.getAcceptLanguage( request );
         BankAccount result;
 
         try
         {
             CompanyBankAccount dbBankAccount;
-            dbBankAccount = config.getBankAccount( account, accountId );
+            dbBankAccount = config.getBankAccount( accountId );
 
             MappingContext context = new MappingContext( new HashMap<>() );
+            context.setProperty( HttpHeaders.ACCEPT_LANGUAGE, language );
             context.setProperty( LocalAccount.class, account );
             mapper.map( bankAccount, dbBankAccount, context );
 
-            config.update( account, dbBankAccount );
-            result = mapper.map( dbBankAccount, BankAccount.class );
+            dbBankAccount.save();
+            result = mapper.map( dbBankAccount, BankAccount.class, context );
         }
         catch ( ApiValidationException e )
         {
@@ -253,10 +248,6 @@ public class BankAccountEndpoint
                     .toString(), e );
 
             throw new BadRequestException( e.getMessage() );
-        }
-        catch ( WrongEntityOwner e )
-        {
-            throw new NotFoundException( bankAccountNotFoundMessage( accountId ) );
         }
         catch ( BankAccountNotFound e )
         {
@@ -298,7 +289,7 @@ public class BankAccountEndpoint
 
         try
         {
-            config.deleteBankAccount( account, accountId );
+            config.deleteBankAccount( accountId );
         }
         catch ( ApiValidationException e )
         {
@@ -309,10 +300,6 @@ public class BankAccountEndpoint
                     .toString(), e );
 
             throw new BadRequestException( e.getMessage() );
-        }
-        catch ( WrongEntityOwner e )
-        {
-            throw new NotFoundException( bankAccountNotFoundMessage( accountId ) );
         }
         catch ( BankAccountNotFound e )
         {
@@ -339,13 +326,18 @@ public class BankAccountEndpoint
             throws Exception
     {
         LocalAccount account = common.checkAccount( authUser, request );
+        Locale language = common.getAcceptLanguage( request );
         BankAccount result;
 
         try
         {
             CompanyBankAccount primary;
-            primary = config.getPrimaryBankAccount( account, country );
-            result = mapper.map( primary, BankAccount.class );
+            primary = config.getPrimaryBankAccount( country );
+
+            MappingContext context = new MappingContext( new HashMap<>() );
+            context.setProperty( HttpHeaders.ACCEPT_LANGUAGE, language );
+            context.setProperty( LocalAccount.class, account );
+            result = mapper.map( primary, BankAccount.class, context );
         }
         catch ( BankAccountNotFound e )
         {
@@ -374,13 +366,18 @@ public class BankAccountEndpoint
             throws Exception
     {
         LocalAccount account = common.checkAccount( authUser, request );
+        Locale language = common.getAcceptLanguage( request );
         BankAccount result;
 
         try
         {
             CompanyBankAccount primary;
-            primary = config.markBankAccountAsPrimary( account, accountId );
-            result = mapper.map( primary, BankAccount.class );
+            primary = config.markBankAccountAsPrimary( accountId );
+
+            MappingContext context = new MappingContext( new HashMap<>() );
+            context.setProperty( HttpHeaders.ACCEPT_LANGUAGE, language );
+            context.setProperty( LocalAccount.class, account );
+            result = mapper.map( primary, BankAccount.class, context );
         }
         catch ( ApiValidationException e )
         {
@@ -391,10 +388,6 @@ public class BankAccountEndpoint
                     .toString(), e );
 
             throw new BadRequestException( e.getMessage() );
-        }
-        catch ( WrongEntityOwner e )
-        {
-            throw new NotFoundException( bankAccountNotFoundMessage( accountId ) );
         }
         catch ( BankAccountNotFound e )
         {

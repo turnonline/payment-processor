@@ -72,6 +72,10 @@ public class BankAccountUseCaseTest
         // import bank code code-book
         ImportTask task = new ImportTask( "/dataset/changeset_00001.xml" );
         task.run();
+
+        // import test bank accounts
+        task = new ImportTask( "/testdataset/changeset_local-account.xml" );
+        task.run();
     }
 
     @Test

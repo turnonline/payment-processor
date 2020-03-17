@@ -76,10 +76,17 @@ class BankAccountMapper
         if ( bankCode != null )
         {
             Locale locale = ( Locale ) context.getProperty( HttpHeaders.ACCEPT_LANGUAGE );
+            LocalAccount account = ( LocalAccount ) context.getProperty( LocalAccount.class );
+            if ( account == null )
+            {
+                String message = "Authenticated account is mandatory, expected as a MappingContext property with key: "
+                        + LocalAccount.class;
+                throw new IllegalArgumentException( message );
+            }
 
             Bank bank = new Bank();
             bank.setCode( bankCode );
-            bank.setLabel( source.getLocalizedLabel( locale ) );
+            bank.setLabel( source.getLocalizedLabel( locale, account ) );
             bank.setCountry( source.getCountry() );
 
             bankAccount.setBank( bank );

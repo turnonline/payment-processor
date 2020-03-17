@@ -19,8 +19,8 @@
 package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
+import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.MicroserviceModule;
-import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
@@ -102,7 +102,7 @@ public class TransactionPublisherTaskTest
     private MapperFacade mapper;
 
     @Injectable
-    private PaymentConfig config;
+    private LocalAccountProvider lap;
 
     @Mocked
     private Key<CompanyBankAccount> accountKey;
@@ -148,7 +148,7 @@ public class TransactionPublisherTaskTest
         new Expectations()
         {
             {
-                config.getLocalAccount();
+                lap.get();
                 result = account;
 
                 mapper.map( transaction, Transaction.class );
@@ -250,7 +250,7 @@ public class TransactionPublisherTaskTest
         new Expectations()
         {
             {
-                config.getLocalAccount();
+                lap.get();
                 result = null;
             }
         };
@@ -277,7 +277,7 @@ public class TransactionPublisherTaskTest
                 account.getId();
                 result = null;
 
-                config.getLocalAccount();
+                lap.get();
                 result = account;
             }
         };
@@ -301,7 +301,7 @@ public class TransactionPublisherTaskTest
         new Expectations()
         {
             {
-                config.getLocalAccount();
+                lap.get();
                 result = new LocalAccount( new Account()
                         .setId( ACCOUNT_ID )
                         .setEmail( "" )
@@ -328,7 +328,7 @@ public class TransactionPublisherTaskTest
         new Expectations()
         {
             {
-                config.getLocalAccount();
+                lap.get();
                 result = new LocalAccount( new Account()
                         .setId( ACCOUNT_ID )
                         .setEmail( EXPECTED_EMAIL )
@@ -358,7 +358,7 @@ public class TransactionPublisherTaskTest
         new Expectations()
         {
             {
-                config.getLocalAccount();
+                lap.get();
                 result = account;
 
                 mapper.map( transaction, Transaction.class );
@@ -383,7 +383,7 @@ public class TransactionPublisherTaskTest
         new Expectations( jsonMapper )
         {
             {
-                config.getLocalAccount();
+                lap.get();
                 result = account;
 
                 mapper.map( transaction, Transaction.class );

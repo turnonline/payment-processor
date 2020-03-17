@@ -175,6 +175,9 @@ public class BankAccountMapperTest
         new Expectations( backend )
         {
             {
+                context.getProperty( LocalAccount.class );
+                result = account;
+
                 backend.getId();
                 result = id;
 
@@ -196,7 +199,7 @@ public class BankAccountMapperTest
                 backend.getBankCode();
                 result = code;
 
-                backend.getLocalizedLabel( ( Locale ) any );
+                backend.getLocalizedLabel( ( Locale ) any, account );
                 result = "Tatra banka, a.s.";
 
                 backend.getCountry();

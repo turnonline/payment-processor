@@ -24,7 +24,6 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Ordering;
-import com.googlecode.objectify.Ref;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.IgnoreSave;
 import com.googlecode.objectify.annotation.Index;
@@ -34,7 +33,6 @@ import nl.garvelink.iban.IBAN;
 import nl.garvelink.iban.IBANFields;
 import nl.garvelink.iban.Modulo97;
 import org.ctoolkit.services.datastore.objectify.EntityLongIdentity;
-import org.ctoolkit.services.storage.HasOwner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,16 +55,13 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 @Entity( name = "PP_BankAccount" )
 public abstract class BankAccount
         extends EntityLongIdentity
-        implements Comparable<BankAccount>, HasOwner<LocalAccount>
+        implements Comparable<BankAccount>
 {
     private static final Logger logger = LoggerFactory.getLogger( BankAccount.class );
 
-    private static final long serialVersionUID = 3735811829765087171L;
+    private static final long serialVersionUID = -1593408359592897363L;
 
     private final CodeBook codeBook;
-
-    @Index
-    private Ref<LocalAccount> owner;
 
     @Index
     private String name;
@@ -100,14 +95,8 @@ public abstract class BankAccount
      *
      * @return the bank account description
      */
-    public String getLocalizedLabel( @Nullable Locale locale )
+    public String getLocalizedLabel( @Nullable Locale locale, @Nonnull LocalAccount owner )
     {
-        LocalAccount owner = getOwner();
-        if ( owner == null )
-        {
-            throw new IllegalArgumentException();
-        }
-
         Map<String, BankCode> codes = codeBook.getBankCodes( owner, locale, country );
 
         BankCode bankCode = codes.get( this.getBankCode() );
@@ -328,22 +317,20 @@ public abstract class BankAccount
         if ( this == o ) return true;
         if ( !( o instanceof BankAccount ) ) return false;
         BankAccount that = ( BankAccount ) o;
-        return Objects.equals( owner, that.owner ) &&
-                Objects.equals( iban, that.iban ) &&
+        return Objects.equals( iban, that.iban ) &&
                 Objects.equals( currency, that.currency );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( owner, iban, currency );
+        return Objects.hash( iban, currency );
     }
 
     @Override
     public String toString()
     {
         return MoreObjects.toStringHelper( getKind() )
-                .add( "owner", owner )
                 .add( "name", name )
                 .add( "branch", branch )
                 .add( "bankCode", bankCode )
@@ -375,18 +362,5 @@ public abstract class BankAccount
     public void delete()
     {
         ofy().transact( () -> ofy().defer().delete().entity( this ) );
-    }
-
-    @Override
-    public LocalAccount getOwner()
-    {
-        return fromRef( owner, null );
-    }
-
-    @Override
-    public void setOwner( @Nonnull LocalAccount owner )
-    {
-        checkNotNull( owner );
-        this.owner = Ref.create( owner );
     }
 }

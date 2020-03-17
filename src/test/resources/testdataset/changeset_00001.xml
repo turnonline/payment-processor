@@ -24,7 +24,6 @@
         <entity kind="PP_BankAccount">
             <property indexed="false" name="^d" type="string" value="Company"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Tatrabanka"/>
             <property name="branch" type="string" value=""/>
             <property indexed="true" name="iban" type="string" value="SK2711001936954420095443"/>
@@ -40,7 +39,6 @@
         <entity kind="PP_BankAccount">
             <property indexed="false" name="^d" type="string" value="Company"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="CardPay"/>
             <property name="branch" type="string" value=""/>
             <property indexed="true" name="iban" type="string" value="SK0311115709007995167365"/>
@@ -56,7 +54,6 @@
         <entity kind="PP_BankAccount">
             <property indexed="false" name="^d" type="string" value="Company"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Sporopoay"/>
             <property name="branch" type="string" value=""/>
             <property indexed="true" name="iban" type="string" value="SK6609008529134886539010"/>
@@ -72,7 +69,6 @@
         <entity kind="PP_BankAccount">
             <property indexed="false" name="^d" type="string" value="Company"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="EPlatbyVUB"/>
             <property name="branch" type="string" value=""/>
             <property indexed="true" name="iban" type="string" value="SK3702005771190028932408"/>
@@ -88,7 +84,6 @@
         <entity kind="PP_BankAccount">
             <property indexed="false" name="^d" type="string" value="Company"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Trustpay"/>
             <property name="branch" type="string" value=""/>
             <property indexed="true" name="iban" type="string" value="SK1999529985863410603550"/>
@@ -104,7 +99,6 @@
         <entity kind="PP_BankAccount">
             <property indexed="false" name="^d" type="string" value="Beneficiary"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="Beneficiary"/>
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
             <property indexed="true" name="name" type="string" value="Revolut Personal Bank Account"/>
             <property name="branch" type="string" value="009969"/>
             <property indexed="true" name="iban" type="string" value="GB05REVO37687428278420"/>
@@ -118,7 +112,6 @@
         <entity kind="PP_BankAccount" id="9999">
             <property indexed="false" name="^d" type="string" value="Company"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
-            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:998877"/>
             <property indexed="true" name="name" type="string" value="Primárny účet"/>
             <property name="branch" type="string" value=""/>
             <property indexed="true" name="iban" type="string" value="SK0509009774621357177405"/>

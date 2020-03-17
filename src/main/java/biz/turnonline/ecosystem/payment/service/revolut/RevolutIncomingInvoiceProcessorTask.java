@@ -141,7 +141,7 @@ public class RevolutIncomingInvoiceProcessorTask
             return;
         }
 
-        BeneficiaryBankAccount beneficiary = config.getBeneficiary( debtor, creditorIban );
+        BeneficiaryBankAccount beneficiary = config.getBeneficiary( creditorIban );
         if ( beneficiary == null )
         {
             LOGGER.warn( "Incoming invoice identified by '"

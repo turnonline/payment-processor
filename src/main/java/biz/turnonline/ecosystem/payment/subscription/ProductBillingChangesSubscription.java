@@ -168,7 +168,7 @@ class ProductBillingChangesSubscription
                 CompanyBankAccount debtorBank;
                 if ( invoice.getPayment() != null )
                 {
-                    debtorBank = config.getDebtorBankAccount( account, payment );
+                    debtorBank = config.getDebtorBankAccount( payment );
                     if ( debtorBank == null || !debtorBank.isDebtorReady() )
                     {
                         LOGGER.warn( "Debtor '" + account.getId() + "' bank account is not ready yet to be debited" );
