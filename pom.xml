@@ -110,7 +110,9 @@
                                 <goal>generate</goal>
                             </goals>
                             <configuration>
-                                <inputSpec>src/main/api/swagger2.json</inputSpec>
+                                <inputSpec>
+                                    https://raw.githubusercontent.com/turnonline/payment-processor-client/master/src/main/resources/swagger2.json
+                                </inputSpec>
                                 <generateApis>false</generateApis>
                                 <generateSupportingFiles>false</generateSupportingFiles>
                                 <modelPackage>biz.turnonline.ecosystem.payment.api.model</modelPackage>

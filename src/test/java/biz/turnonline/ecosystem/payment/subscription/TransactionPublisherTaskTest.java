@@ -189,14 +189,14 @@ public class TransactionPublisherTaskTest
                 PubsubMessage psb = messages.get( 0 );
                 Map<String, Object> map = mapOf( psb.decodeData(), api.getClass() );
                 Map<String, Object> properties = new Helper().flatMap( map, null );
-                assertThat( properties ).hasSize( 22 );
+                assertThat( properties ).hasSize( 14 );
 
                 assertWithMessage( "Transaction amount" )
                         .that( properties.get( "amount" ) )
                         .isNotNull();
 
-                assertWithMessage( "Transaction bank account Id" )
-                        .that( properties.get( "bankAccount.id" ) )
+                assertWithMessage( "Transaction bank account IBAN" )
+                        .that( properties.get( "bankAccount.iban" ) )
                         .isNotNull();
 
                 assertWithMessage( "Transaction bill invoice Id" )
@@ -212,7 +212,7 @@ public class TransactionPublisherTaskTest
                         .isEqualTo( "TRANSFER" );
 
                 assertWithMessage( "Transaction type" )
-                        .that( properties.get( "bankAccount.bank.code" ) )
+                        .that( properties.get( "bankAccount.code" ) )
                         .isEqualTo( "REVO" );
             }
         };

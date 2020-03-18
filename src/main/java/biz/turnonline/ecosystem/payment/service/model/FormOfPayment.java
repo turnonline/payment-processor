@@ -26,7 +26,6 @@ package biz.turnonline.ecosystem.payment.service.model;
 public enum FormOfPayment
 {
     CARD_PAYMENT,
-    CASH,
     REFUND,
     TRANSFER;
 

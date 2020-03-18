@@ -18,8 +18,8 @@
 
 package biz.turnonline.ecosystem.payment.service.model;
 
-import biz.turnonline.ecosystem.payment.api.model.Bank;
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
+import biz.turnonline.ecosystem.payment.api.model.TransactionBank;
 import biz.turnonline.ecosystem.payment.service.BackendServiceTestCase;
 import ma.glasnost.orika.MapperFacade;
 import org.ctoolkit.agent.service.impl.ImportTask;
@@ -217,13 +217,13 @@ public class TransactionMapperItTest
                 .that( transaction.getBankAccount() )
                 .isNotNull();
 
-        Bank bank = transaction.getBankAccount().getBank();
-        assertWithMessage( "Transaction bank account, bank code" )
+        TransactionBank bank = transaction.getBankAccount();
+        assertWithMessage( "Transaction bank code" )
                 .that( bank == null ? null : bank.getCode() )
                 .isEqualTo( "REVO" );
 
-        assertWithMessage( "Transaction bank account Id" )
-                .that( transaction.getBankAccount().getId() )
+        assertWithMessage( "Transaction IBAN" )
+                .that( transaction.getBankAccount().getIban() )
                 .isNotNull();
     }
 }

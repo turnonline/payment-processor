@@ -46,7 +46,7 @@ public class BankCode
     }
 
     /**
-     * The bank code is a numeric code assigned by a central bank to concrete bank.
+     * The bank identified by a bank code
      **/
     @JsonProperty( "code" )
     @NotNull

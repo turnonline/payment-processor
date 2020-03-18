@@ -18,10 +18,8 @@
 
 package biz.turnonline.ecosystem.payment.service.model;
 
-import biz.turnonline.ecosystem.payment.api.model.Bank;
-import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
-import com.googlecode.objectify.Key;
+import biz.turnonline.ecosystem.payment.api.model.TransactionBank;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.metadata.Type;
@@ -55,27 +53,25 @@ abstract class TransactionMapper<T extends CommonTransaction>
         FormOfPayment type = source.getType();
         transaction.setType( type == null ? null : type.name() );
 
-        Key<CompanyBankAccount> key = source.getBankAccountKey();
-        if ( key != null )
+        CompanyBankAccount bankAccount = source.loadBankAccount();
+        if ( bankAccount != null )
         {
-            BankAccount bankAccount = new BankAccount();
-            bankAccount.setId( key.getId() );
-            transaction.setBankAccount( bankAccount );
+            TransactionBank bank = new TransactionBank();
+            bank.setIban( bankAccount.getIbanString() );
+            transaction.setBankAccount( bank );
         }
 
         String bankCode = source.getBankCode();
         if ( bankCode != null )
         {
-            BankAccount bankAccount = transaction.getBankAccount();
-            if ( bankAccount == null )
+            TransactionBank bank = transaction.getBankAccount();
+            if ( bank == null )
             {
-                bankAccount = new BankAccount();
-                transaction.setBankAccount( bankAccount );
+                bank = new TransactionBank();
+                transaction.setBankAccount( bank );
             }
 
-            Bank code = new Bank();
-            code.setCode( bankCode );
-            bankAccount.setBank( code );
+            bank.setCode( bankCode );
         }
 
         return transaction;
