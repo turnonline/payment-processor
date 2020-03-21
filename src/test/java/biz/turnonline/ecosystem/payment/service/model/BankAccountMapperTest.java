@@ -97,6 +97,48 @@ public class BankAccountMapperTest
     }
 
     @Test( expectedExceptions = ApiValidationException.class )
+    public void mapApiToBackend_MissingMandatoryIban()
+    {
+        BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
+        //  make sure API IBAN is null
+        api.setIban( null );
+
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
+
+        tested.mapBtoA( api, backend, context );
+    }
+
+    /**
+     * The IBAN is already stored in backend, it's valid to be not provided by API
+     * -> no validation exception will be thrown.
+     */
+    @Test
+    public void mapApiToBackend_IbanAlreadyInBackend()
+    {
+        new Expectations()
+        {
+            {
+                context.getProperty( LocalAccount.class );
+                result = account;
+
+                codeBook.getBankCode( account, anyString, ( Locale ) any, anyString );
+                result = bankCode;
+            }
+        };
+
+        BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
+        //  make sure API IBAN is null
+        api.setIban( null );
+
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
+        backend.setIban( "GB05REVO37687428278420" );
+
+        tested.mapBtoA( api, backend, context );
+    }
+
+    @Test( expectedExceptions = ApiValidationException.class )
     public void mapApiToBackend_CurrencyValidationFailure()
     {
         BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
@@ -293,7 +335,7 @@ public class BankAccountMapperTest
     }
 
     @Test
-    public void mapApiToBackend_SetPrimaryBankAccount()
+    public void mapApiToBackend_IgnoreSetPrimaryBankAccount()
     {
         BankAccount source = getFromFile( "bank-account-3.json", BankAccount.class );
         source.setPrimary( true );
@@ -313,6 +355,6 @@ public class BankAccountMapperTest
         tested.mapBtoA( source, backend, context );
         assertWithMessage( "Primary bank account" )
                 .that( backend.isPrimary() )
-                .isTrue();
+                .isFalse();
     }
 }

@@ -19,7 +19,6 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
-import biz.turnonline.ecosystem.payment.api.Defaults;
 import biz.turnonline.ecosystem.payment.api.model.Bank;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
 import com.google.common.net.HttpHeaders;
@@ -119,8 +118,11 @@ class BankAccountMapper
         sValue = Optional.ofNullable( source.getBic() );
         sValue.ifPresent( backend::setBic );
 
-        Defaults<Boolean, Boolean> primary = Defaults.of( source.isPrimary(), backend.isPrimary(), false );
-        primary.ifPresentOrDefault( backend::setPrimary );
+        if ( backend.getIBAN() == null )
+        {
+            String key = "errors.validation.mandatory.property.missing";
+            throw ApiValidationException.prepare( key, "iban" );
+        }
 
         String code = backend.getBankCode();
         if ( code == null )
