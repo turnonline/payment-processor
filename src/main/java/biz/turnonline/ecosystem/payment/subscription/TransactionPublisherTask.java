@@ -18,57 +18,42 @@
 
 package biz.turnonline.ecosystem.payment.subscription;
 
+import biz.turnonline.ecosystem.payment.api.model.Bill;
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
+import biz.turnonline.ecosystem.payment.api.model.TransactionBank;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
-import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.services.pubsub.model.PublishResponse;
-import com.google.cloud.ServiceOptions;
+import com.google.api.client.util.DateTime;
 import com.google.common.base.Stopwatch;
-import com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
 import ma.glasnost.orika.MapperFacade;
-import org.ctoolkit.restapi.client.PubSub;
 import org.ctoolkit.restapi.client.RestFacade;
-import org.ctoolkit.restapi.client.pubsub.TopicMessage;
 import org.ctoolkit.services.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.util.Date;
 
-import static biz.turnonline.ecosystem.payment.service.PaymentConfig.TRANSACTION_TOPIC;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
-import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_ID;
-import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_UNIQUE_ID;
-import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.DATA_TYPE;
-import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ENTITY_ID;
 
 /**
- * Dedicated task to publish {@link Transaction} changes via Pub/Sub topic {@link PaymentConfig#TRANSACTION_TOPIC}.
+ * Dedicated task to push {@link biz.turnonline.ecosystem.billing.model.Transaction}
+ * events to TurnOnline.biz Ecosystem Product Billing service.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 class TransactionPublisherTask
         extends Task<CommonTransaction>
 {
-    private static final long serialVersionUID = 8492365572681403771L;
-
-    private static final String PUB_DATA_TYPE = "Transaction";
+    private static final long serialVersionUID = 5105482532174825094L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger( TransactionPublisherTask.class );
 
     @Inject
     private transient RestFacade facade;
-
-    @Inject
-    @PubSub
-    private transient ObjectMapper jsonMapper;
 
     @Inject
     private transient MapperFacade mapper;
@@ -78,7 +63,7 @@ class TransactionPublisherTask
 
     TransactionPublisherTask( @Nonnull Key<CommonTransaction> entityKey )
     {
-        super( "PubSub-Transaction" );
+        super( "Push-" );
         setEntityKey( checkNotNull( entityKey, "The transaction key can't be null" ) );
     }
 
@@ -103,60 +88,55 @@ class TransactionPublisherTask
             return;
         }
 
-        if ( lAccount.getId() == null )
-        {
-            LOGGER.error( "Invalid account has been found (missing ID) " + lAccount );
-            return;
-        }
-
-        if ( Strings.isNullOrEmpty( lAccount.getEmail() ) )
-        {
-            LOGGER.error( "Invalid account has been found (missing Email) " + lAccount );
-            return;
-        }
-
-        if ( Strings.isNullOrEmpty( lAccount.getIdentityId() ) )
-        {
-            LOGGER.error( "Invalid account has been found (missing Identity ID) " + lAccount );
-            return;
-        }
-
         Transaction api = mapper.map( transaction, Transaction.class );
-        byte[] jsonContent;
+        biz.turnonline.ecosystem.billing.model.Transaction pbt;
+        pbt = new biz.turnonline.ecosystem.billing.model.Transaction();
 
-        try
+        pbt.setAmount( api.getAmount() );
+        pbt.setBalance( api.getBalance() );
+        pbt.setCredit( api.isCredit() );
+        pbt.setCurrency( api.getCurrency() );
+        pbt.setReference( api.getReference() );
+        pbt.setKey( api.getKey() );
+        pbt.setStatus( api.getStatus() );
+        pbt.setType( api.getType() );
+
+        Date completedAt = api.getCompletedAt();
+        pbt.setCompletedAt( completedAt == null ? null : new DateTime( completedAt ) );
+
+        TransactionBank bankAccount = api.getBankAccount();
+        if ( bankAccount != null )
         {
-            jsonContent = jsonMapper.writeValueAsBytes( api );
+            biz.turnonline.ecosystem.billing.model.TransactionBank bank;
+            bank = new biz.turnonline.ecosystem.billing.model.TransactionBank();
+            bank.setCode( bankAccount.getCode() );
+            bank.setIban( bankAccount.getIban() );
+
+            pbt.setBankAccount( bank );
         }
-        catch ( JsonProcessingException e )
+
+        Bill apiBill = api.getBill();
+        if ( apiBill != null )
         {
-            // Re-try does not make sense, this type of error looks like a development error.
-            LOGGER.error( "JSON processing has failed.", e );
-            LOGGER.error( String.valueOf( api ) );
-            return;
+            biz.turnonline.ecosystem.billing.model.Bill bill;
+            bill = new biz.turnonline.ecosystem.billing.model.Bill();
+            bill.setId( apiBill.getId() );
+            bill.setOrderId( apiBill.getOrderId() );
+            bill.setInvoiceId( apiBill.getInvoiceId() );
+
+            pbt.setBill( bill );
         }
 
-        Long uniqueId = checkNotNull( transaction.getId(), "Transaction expected to be already persisted" );
-        String dataType = PUB_DATA_TYPE;
-        String projectId = ServiceOptions.getDefaultProjectId();
-
-        TopicMessage.Builder builder = TopicMessage.newBuilder()
-                .setProjectId( projectId )
-                .setTopicId( TRANSACTION_TOPIC )
-                .addMessage( jsonContent, ENTITY_ID, String.valueOf( uniqueId ) )
-                .addAttribute( DATA_TYPE, dataType )
-                .addAttribute( ACCOUNT_EMAIL, lAccount.getEmail() )
-                .addAttribute( ACCOUNT_UNIQUE_ID, String.valueOf( lAccount.getId() ) )
-                .addAttribute( ACCOUNT_IDENTITY_ID, lAccount.getIdentityId() );
-
-        TopicMessage message = builder.build();
-
-        // Once published, returns a server-assigned message id (unique within the topic)
-        PublishResponse response = facade.insert( message ).answerBy( PublishResponse.class ).finish();
-        LOGGER.info( dataType + " has been published via topic '" + message.getTopic()
-                + "' with message ID: " + response.getMessageIds() );
+        // transaction from product-billing service to be pushed
+        facade.insert( pbt )
+                .onBehalfOf( lAccount )
+                .finish();
 
         stopwatch.stop();
-        LOGGER.info( getTaskName() + " final duration " + stopwatch );
+        LOGGER.info( Transaction.class.getSimpleName()
+                + " has been pushed to product-service. "
+                + getTaskName()
+                + " final duration "
+                + stopwatch );
     }
 }
