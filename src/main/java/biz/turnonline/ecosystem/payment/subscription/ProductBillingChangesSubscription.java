@@ -66,8 +66,8 @@ import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ENTITY_ID;
  * </ul>
  * Payment (bank transfer) will be scheduled only if one of the condition is being matched:
  * <ul>
- *     <li>{@link InvoicePayment#getMethod()} is TRANSFER</li>
- *     <li>{@link InvoicePayment#getMethod()} is {@code null}, meaning not configured at all,
+ *     <li>{@link InvoicePayment#getType()} ()} is TRANSFER</li>
+ *     <li>{@link InvoicePayment#getType()} is {@code null}, meaning not configured at all,
  *     but rest of the payment properties are valid for bank transfer</li>
  * </ul>
  *
@@ -181,13 +181,13 @@ class ProductBillingChangesSubscription
                     return;
                 }
 
-                String method = payment.getMethod();
-                if ( !Strings.isNullOrEmpty( method ) && !TRANSFER.name().equals( method ) )
+                String paymentType = payment.getType();
+                if ( !Strings.isNullOrEmpty( paymentType ) && !TRANSFER.name().equals( paymentType ) )
                 {
                     LOGGER.warn( "Incoming invoice identified by '"
                             + uniqueKey
-                            + "' is not eligible to make a payment for payment method: "
-                            + method );
+                            + "' is not eligible to make a payment for payment type: "
+                            + paymentType );
                     return;
                 }
 

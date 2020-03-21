@@ -37,7 +37,6 @@ import java.util.Optional;
  * following properties are being ignored as they are managed solely by the backend service.
  * <ul>
  * <li>id</li>k
- * <li>formatted</li>
  * <li>bank.label</li>
  * </ul>
  * In order to make property 'bank.label' locale sensitive for direction Backend to API,
@@ -99,51 +98,6 @@ class BankAccountMapper
                          MappingContext context )
     {
         Optional<String> sValue;
-        Bank bank = source.getBank();
-
-        if ( bank != null )
-        {
-            String code = bank.getCode();
-            if ( code == null )
-            {
-                String key = "errors.validation.mandatory.property.missing";
-                throw ApiValidationException.prepare( key, "bank.code" );
-            }
-
-            LocalAccount account = ( LocalAccount ) context.getProperty( LocalAccount.class );
-            if ( account == null )
-            {
-                String message = "Authenticated account is mandatory, expected as a MappingContext property with key: "
-                        + LocalAccount.class;
-                throw new IllegalArgumentException( message );
-            }
-
-            String country = bank.getCountry();
-            BankCode bankCode = codeBook.getBankCode( account, code, null, country );
-            if ( bankCode == null )
-            {
-                if ( country == null )
-                {
-                    String key = "errors.validation.bankAccount.bankCode";
-                    throw ApiValidationException.prepare( key, code );
-                }
-                else
-                {
-                    String key = "errors.validation.bankAccount.bankCode.country";
-                    throw ApiValidationException.prepare( key, code, country );
-                }
-            }
-
-            backend.setBankCode( bankCode.getCode() );
-
-            Optional<String> countryValue = Optional.ofNullable( country );
-            countryValue.ifPresent( backend::setCountry );
-
-            if ( !countryValue.isPresent() )
-            {
-                backend.setCountry( bankCode.getCountry() );
-            }
-        }
 
         try
         {
@@ -158,9 +112,7 @@ class BankAccountMapper
         sValue = Optional.ofNullable( source.getName() );
         sValue.ifPresent( backend::setName );
 
-        sValue = Optional.ofNullable( source.getBranch() );
-        sValue.ifPresent( backend::setBranch );
-
+        // A non null IBAN will set bankCode, branch and country
         sValue = Optional.ofNullable( source.getIban() );
         sValue.ifPresent( backend::setIban );
 
@@ -169,5 +121,36 @@ class BankAccountMapper
 
         Defaults<Boolean, Boolean> primary = Defaults.of( source.isPrimary(), backend.isPrimary(), false );
         primary.ifPresentOrDefault( backend::setPrimary );
+
+        String code = backend.getBankCode();
+        if ( code == null )
+        {
+            String key = "errors.validation.mandatory.property.missing.iban";
+            throw ApiValidationException.prepare( key );
+        }
+
+        LocalAccount account = ( LocalAccount ) context.getProperty( LocalAccount.class );
+        if ( account == null )
+        {
+            String message = "Authenticated account is mandatory, expected as a MappingContext property with key: "
+                    + LocalAccount.class;
+            throw new IllegalArgumentException( message );
+        }
+
+        String country = backend.getCountry();
+        BankCode bankCode = codeBook.getBankCode( account, code, null, country );
+        if ( bankCode == null )
+        {
+            if ( country == null )
+            {
+                String key = "errors.validation.bankAccount.bankCode.unsupported";
+                throw ApiValidationException.prepare( key, code );
+            }
+            else
+            {
+                String key = "errors.validation.bankAccount.bankCode.country.unsupported";
+                throw ApiValidationException.prepare( key, code, country );
+            }
+        }
     }
 }
