@@ -356,7 +356,8 @@
     </dependencies>
 
     <properties>
-        <endpoints.project.name>payment.turnonline.cloud</endpoints.project.name>
+        <!--suppress UnresolvedMavenProperty -->
+        <endpoints.project.name>${env.ENDPOINTS_SERVICE_NAME}</endpoints.project.name>
         <appengine.maven.plugin.version>1.3.2</appengine.maven.plugin.version>
         <endpoints.framework.plugin.version>2.0.1</endpoints.framework.plugin.version>
         <maven-war-plugin.version>3.1.0</maven-war-plugin.version>
