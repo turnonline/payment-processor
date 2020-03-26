@@ -7,9 +7,8 @@ steps:
     env:
       - 'ENDPOINTS_SERVICE_NAME=${_ENDPOINTS_SERVICE_DOMAIN}'
       - 'PROJECT=${PROJECT_ID}'
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: /bin/bash
-    args: ['-c','cat target/generated-sources/java-templates/biz/turnonline/ecosystem/payment/api/PaymentsApiProfile.java']
+  - name: gcr.io/cloud-builders/gsutil
+    args: ['cat','target/generated-sources/java-templates/biz/turnonline/ecosystem/payment/api/PaymentsApiProfile.java']
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: /bin/bash
     args: ['-c', 'gcloud beta secrets versions access latest --secret=payment-processor-config > config.properties']

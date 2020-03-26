@@ -61,7 +61,8 @@
                 <artifactId>endpoints-framework-maven-plugin</artifactId>
                 <version>${endpoints.framework.plugin.version}</version>
                 <configuration>
-                    <hostname>${endpoints.project.name}</hostname>
+                    <!--suppress UnresolvedMavenProperty -->
+                    <hostname>${env.ENDPOINTS_SERVICE_NAME}</hostname>
                     <basePath>/api</basePath>
                     <serviceClasses>
                         <!--list all your endpoints classes here as cannot be inferred from the web.xml (guice) -->
@@ -148,14 +149,14 @@
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-microservice-bom</artifactId>
-                <version>1.9.78-20200214.073640-2</version>
+                <version>1.9.78</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-library-bom</artifactId>
-                <version>13-20200123.052512-1</version>
+                <version>13</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -171,12 +172,12 @@
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-product-billing-client</artifactId>
-            <version>0.22-20200320.185726-3</version>
+            <version>0.22</version>
         </dependency>
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-revolut-business-client</artifactId>
-            <version>1.0-20200314.082710-7</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>com.google.cloud</groupId>
@@ -369,8 +370,6 @@
     </dependencies>
 
     <properties>
-        <!--suppress UnresolvedMavenProperty -->
-        <endpoints.project.name>${env.ENDPOINTS_SERVICE_NAME}</endpoints.project.name>
         <appengine.maven.plugin.version>1.3.2</appengine.maven.plugin.version>
         <endpoints.framework.plugin.version>2.0.1</endpoints.framework.plugin.version>
         <maven-war-plugin.version>3.1.0</maven-war-plugin.version>

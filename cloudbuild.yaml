@@ -1,3 +1,6 @@
+# REPLACE_ME_BY_ENDPOINTS_SERVICE_DOMAIN in appengine-web.xml provided by TeamCity build (binary pushed to storage)
+# see service build parameters in TeamCity:
+# https://build.turnonline.biz/admin/editBuildParams.html?id=buildType:PaymentProcessor
 steps:
   - name: gcr.io/cloud-builders/gsutil
     args: ['cp','-n','gs://turn-online-eu_cloudbuild/*/**-${COMMIT_SHA}.tar.gz','.']
@@ -8,10 +11,9 @@ steps:
     args: ['-c','tar xzvf artifact.tar.gz']
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: /bin/bash
-    args: ['-c','sed -i s/payment.turnonline.cloud/${_ENDPOINTS_SERVICE_DOMAIN}/ turnonline-${REPO_NAME}/WEB-INF/appengine-web.xml']
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: /bin/bash
-    args: ['-c','cat turnonline-${REPO_NAME}/WEB-INF/appengine-web.xml']
+    args: ['-c','sed -i s/REPLACE_ME_BY_ENDPOINTS_SERVICE_DOMAIN/${_ENDPOINTS_SERVICE_DOMAIN}/ turnonline-${REPO_NAME}/WEB-INF/appengine-web.xml']
+  - name: gcr.io/cloud-builders/gsutil
+    args: ['cat','turnonline-${REPO_NAME}/WEB-INF/appengine-web.xml']
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: /bin/bash
     args: ['-c', 'gcloud beta secrets versions access latest --secret=${REPO_NAME}-config > config.properties']
