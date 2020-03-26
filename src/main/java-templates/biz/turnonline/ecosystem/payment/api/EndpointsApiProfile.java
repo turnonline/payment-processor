@@ -25,8 +25,8 @@ import com.google.api.server.spi.config.ApiIssuerAudience;
 import com.google.api.server.spi.config.ApiNamespace;
 import org.ctoolkit.services.endpoints.ClosedServerToServerAuthenticator;
 
-import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.CURRENT_VERSION;
-import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.PROJECT_ID;
+import static biz.turnonline.ecosystem.payment.api.EndpointsApiProfile.CURRENT_VERSION;
+import static biz.turnonline.ecosystem.payment.api.EndpointsApiProfile.PROJECT_ID;
 
 /**
  * The endpoint profile, the base class as a configuration of the REST API and generated client.
@@ -56,11 +56,11 @@ import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.PROJECT_ID
                 @ApiIssuerAudience( name = "firebase", audiences = PROJECT_ID )
         }
 )
-public class PaymentsApiProfile
+public class EndpointsApiProfile
 {
+    public static final String PROJECT_ID = "${env.GCP_ID}";
+
     static final String CURRENT_VERSION = "v1";
 
     static final String API_NAME = "payment";
-
-    public static final String PROJECT_ID = "${env.PROJECT}";
 }

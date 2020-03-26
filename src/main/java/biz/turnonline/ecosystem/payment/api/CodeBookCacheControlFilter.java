@@ -22,8 +22,8 @@ import org.ctoolkit.services.endpoints.CacheControlFilter;
 
 import javax.inject.Singleton;
 
-import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.API_NAME;
-import static biz.turnonline.ecosystem.payment.api.PaymentsApiProfile.CURRENT_VERSION;
+import static biz.turnonline.ecosystem.payment.api.EndpointsApiProfile.API_NAME;
+import static biz.turnonline.ecosystem.payment.api.EndpointsApiProfile.CURRENT_VERSION;
 
 
 /**

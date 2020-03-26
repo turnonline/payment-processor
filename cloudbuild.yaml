@@ -1,24 +1,22 @@
-# REPLACE_ME_BY_ENDPOINTS_SERVICE_DOMAIN in appengine-web.xml provided by TeamCity build (binary pushed to storage)
-# see service build parameters in TeamCity:
-# https://build.turnonline.biz/admin/editBuildParams.html?id=buildType:PaymentProcessor
 steps:
+  - name: gcr.io/cloud-builders/git
+    args: ['clone', 'https://github.com/turnonline/${REPO_NAME}.git']
+  - name: gcr.io/cloud-builders/mvn
+    entrypoint: 'mvn'
+    args: ['package','-DskipTests']
+    env:
+      - 'ENDPOINTS_SERVICE_NAME=${_ENDPOINTS_SERVICE_DOMAIN}'
+      - 'GCP_ID=${PROJECT_ID}'
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: /bin/bash
+    args: ['-c','cat target/generated-sources/java-templates/biz/turnonline/ecosystem/payment/api/EndpointsApiProfile.java']
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: /bin/bash
+    args: ['-c','cat target/turnonline-payment-processor/WEB-INF/appengine-web.xml']
+  - name: gcr.io/cloud-builders/gcloud
+    entrypoint: /bin/bash
+    args: ['-c', 'gcloud beta secrets versions access latest --secret=payment-processor-config > config.properties']
   - name: gcr.io/cloud-builders/gsutil
-    args: ['cp','-n','gs://turn-online-eu_cloudbuild/*/**-${COMMIT_SHA}.tar.gz','.']
-  - name: gcr.io/cloud-builders/gsutil
-    args: ['mv','*-${COMMIT_SHA}.tar.gz','artifact.tar.gz']
+    args: ['mv','config.properties','target/turnonline-payment-processor/WEB-INF/classes/config.properties']
   - name: gcr.io/cloud-builders/gcloud
-    entrypoint: /bin/bash
-    args: ['-c','tar xzvf artifact.tar.gz']
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: /bin/bash
-    args: ['-c','sed -i s/REPLACE_ME_BY_ENDPOINTS_SERVICE_DOMAIN/${_ENDPOINTS_SERVICE_DOMAIN}/ turnonline-${REPO_NAME}/WEB-INF/appengine-web.xml']
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: /bin/bash
-    args: ['-c','cat turnonline-${REPO_NAME}/WEB-INF/appengine-web.xml']
-  - name: gcr.io/cloud-builders/gcloud
-    entrypoint: /bin/bash
-    args: ['-c', 'gcloud beta secrets versions access latest --secret=${REPO_NAME}-config > config.properties']
-  - name: gcr.io/cloud-builders/gsutil
-    args: ['mv','config.properties','turnonline-${REPO_NAME}/WEB-INF/classes/config.properties']
-  - name: gcr.io/cloud-builders/gcloud
-    args: ['app', 'deploy','turnonline-${REPO_NAME}']
+    args: ['app', 'deploy','target/turnonline-payment-processor']

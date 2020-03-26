@@ -49,7 +49,7 @@ import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.tryAgainLater
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 @Api
-@ApiReference( PaymentsApiProfile.class )
+@ApiReference( EndpointsApiProfile.class )
 public class CodeBookEndpoint
 {
     private static final Logger logger = LoggerFactory.getLogger( CodeBookEndpoint.class );
