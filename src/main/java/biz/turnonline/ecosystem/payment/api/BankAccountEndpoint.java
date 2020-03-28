@@ -20,9 +20,11 @@ package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
+import biz.turnonline.ecosystem.payment.api.model.Transaction;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.BankCodeNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.api.server.spi.auth.common.User;
@@ -452,6 +454,73 @@ public class BankAccountEndpoint
                     .add( "Account", account.getId() )
                     .add( "bank_code", bankCode )
                     .addValue( certificate )
+                    .toString(), e );
+
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+
+        return result;
+    }
+
+    @ApiMethod( name = "transactions.list", path = "transactions", httpMethod = ApiMethod.HttpMethod.GET )
+    public List<Transaction> filterTransactions( @DefaultValue( "0" ) @Nullable @Named( "offset" ) Integer offset,
+                                                 @DefaultValue( "20" ) @Nullable @Named( "limit" ) Integer limit,
+                                                 @DefaultValue( "both" ) @Nullable @Named( "operation" ) String operation,
+                                                 @Nullable @Named( "accountId" ) Long accountId,
+                                                 @Nullable @Named( "invoiceId" ) Long invoiceId,
+                                                 @Nullable @Named( "orderId" ) Long orderId,
+                                                 @Nullable @Named( "type" ) String type,
+                                                 HttpServletRequest request,
+                                                 User authUser )
+            throws Exception
+    {
+        LocalAccount account = common.checkAccount( authUser, request );
+        List<Transaction> result;
+
+        try
+        {
+            PaymentConfig.Filter filter = new PaymentConfig.Filter()
+                    .offset( offset )
+                    .limit( limit )
+                    .accountId( accountId )
+                    .operation( operation )
+                    .invoiceId( invoiceId )
+                    .orderId( orderId )
+                    .type( type );
+
+            List<CommonTransaction> transactions;
+            transactions = config.filterTransactions( filter );
+
+            result = mapper.mapAsList( transactions, Transaction.class );
+        }
+        catch ( ApiValidationException e )
+        {
+            LOGGER.warn( "Transaction query params are invalid: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getId() )
+                    .add( "Bank account ID", accountId )
+                    .add( "operation", operation )
+                    .add( "invoiceId", invoiceId )
+                    .add( "orderId", orderId )
+                    .add( "type", type )
+                    .add( "offset", offset )
+                    .add( "limit", limit )
+                    .toString(), e );
+
+            throw new BadRequestException( e.getMessage() );
+        }
+        catch ( Exception e )
+        {
+            LOGGER.error( "Transaction list retrieval has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getId() )
+                    .add( "Bank account ID", accountId )
+                    .add( "credit", operation )
+                    .add( "invoiceId", invoiceId )
+                    .add( "orderId", orderId )
+                    .add( "type", type )
+                    .add( "offset", offset )
+                    .add( "limit", limit )
                     .toString(), e );
 
             throw new InternalServerErrorException( tryAgainLaterMessage() );

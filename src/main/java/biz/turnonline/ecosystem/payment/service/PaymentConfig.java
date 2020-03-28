@@ -25,6 +25,7 @@ import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
 
@@ -42,7 +43,6 @@ public interface PaymentConfig
 {
     String TRUST_PAY_BANK_CODE = "9952";
     String REVOLUT_BANK_CODE = "REVO";
-    String TRANSACTION_TOPIC = "transactions";
 
     /**
      * Enables API access to bank account.
@@ -96,7 +96,7 @@ public interface PaymentConfig
     /**
      * Returns the list of bank accounts that belongs to specified bank and owner.
      *
-     * @param bank  the bank code to filter out bank accounts only for this bank
+     * @param bank the bank code to filter out bank accounts only for this bank
      * @return the list of filtered bank accounts
      */
     List<CompanyBankAccount> getBankAccounts( @Nonnull String bank );
@@ -104,7 +104,7 @@ public interface PaymentConfig
     /**
      * Deletes the bank account specified by given ID. Only non primary bank account is being allowed to be deleted.
      *
-     * @param id    the identification of the bank account to be deleted
+     * @param id the identification of the bank account to be deleted
      * @return the deleted bank account
      * @throws BankAccountNotFound    if bank account is not found
      * @throws ApiValidationException if specified bank account is being marked as primary
@@ -114,7 +114,7 @@ public interface PaymentConfig
     /**
      * Marks the specified bank account as primary credit bank account and rest will be de-marked.
      *
-     * @param id    the identification of the bank account to be marked as primary credit account
+     * @param id the identification of the bank account to be marked as primary credit account
      * @return the credit bank account that has been marked as primary
      * @throws BankAccountNotFound    if bank account is not found
      * @throws ApiValidationException if specified bank account can't be marked as primary
@@ -175,7 +175,7 @@ public interface PaymentConfig
     /**
      * Returns the beneficiary bank account for specified IBAN.
      *
-     * @param iban  the iban (can be formatted)
+     * @param iban the iban (can be formatted)
      * @return the beneficiary bank account or {@code null} if not found
      * @throws IllegalArgumentException if the IBAN is malformed or otherwise fails validation.
      */
@@ -184,7 +184,7 @@ public interface PaymentConfig
     /**
      * Checks whether the beneficiary bank account for specified IBAN already exists.
      *
-     * @param iban  the iban (can be formatted)
+     * @param iban the iban (can be formatted)
      * @return true if bank account record already exist
      * @throws IllegalArgumentException if the IBAN is malformed or otherwise fails validation.
      */
@@ -218,4 +218,145 @@ public interface PaymentConfig
      * @throws TransactionNotFound if transaction not found
      */
     CommonTransaction searchTransaction( @Nonnull String extId );
+
+    /**
+     * Searches for a transactions based on the filter criteria.
+     *
+     * @param filter convenient filter criteria builder
+     * @return list of transactions that meets the filter criteria
+     * @throws ApiValidationException if some of the filter criteria has an invalid value
+     */
+    List<CommonTransaction> filterTransactions( @Nonnull Filter filter );
+
+    enum Operation
+    {
+        CREDIT,
+        DEBIT,
+        BOTH
+    }
+
+    class Filter
+    {
+        private Long accountId;
+
+        private String operation;
+
+        private Long invoiceId;
+
+        private Long orderId;
+
+        private String type;
+
+        private Integer offset;
+
+        private Integer limit;
+
+        public Long getAccountId()
+        {
+            return accountId;
+        }
+
+        /**
+         * Identification of the bank account for which to filter transactions.
+         */
+        public Filter accountId( Long accountId )
+        {
+            this.accountId = accountId;
+            return this;
+        }
+
+        public String getOperation()
+        {
+            return operation;
+        }
+
+        /**
+         * Type of the bank operation to be included in results.
+         * <p>
+         * Allowed values, case insensitive:
+         * <ul>
+         *     <li>CREDIT</li>
+         *     <li>DEBIT</li>
+         *     <li>BOTH</li>
+         * </ul>
+         */
+        public Filter operation( String operation )
+        {
+            this.operation = operation;
+            return this;
+        }
+
+        public Long getInvoiceId()
+        {
+            return invoiceId;
+        }
+
+        /**
+         * Identification of the invoice to search settled transactions.
+         * Order Id is being required for successful match.
+         */
+        public Filter invoiceId( Long invoiceId )
+        {
+            this.invoiceId = invoiceId;
+            return this;
+        }
+
+        public Long getOrderId()
+        {
+            return orderId;
+        }
+
+        /**
+         * Identification of the order to search for transactions. If invoice Id is not provided,
+         * a transactions of all associated invoices will be in the results.
+         */
+        public Filter orderId( Long orderId )
+        {
+            this.orderId = orderId;
+            return this;
+        }
+
+        public String getType()
+        {
+            return type;
+        }
+
+        /**
+         * Payment type of the transactions to filter in results.
+         * Allowed values are based on {@link FormOfPayment}, case insensitive.
+         */
+        public Filter type( String type )
+        {
+            this.type = type;
+            return this;
+        }
+
+        public Integer getOffset()
+        {
+            return offset;
+        }
+
+        /**
+         * The position of the first transaction to retrieve.
+         */
+        public Filter offset( Integer offset )
+        {
+            this.offset = offset;
+            return this;
+        }
+
+        public Integer getLimit()
+        {
+            return limit;
+        }
+
+        /**
+         * The maximum number of transactions to retrieve.
+         */
+        public Filter limit( Integer limit )
+        {
+            this.limit = limit;
+            return this;
+        }
+    }
 }

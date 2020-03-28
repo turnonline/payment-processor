@@ -20,10 +20,13 @@ package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
+import biz.turnonline.ecosystem.payment.api.model.Transaction;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.BankCodeNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.server.spi.auth.common.User;
@@ -55,6 +58,7 @@ import static com.google.common.truth.Truth.assertWithMessage;
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
+@SuppressWarnings( {"unchecked", "ConstantConditions"} )
 public class BankAccountEndpointTest
 {
     @Tested
@@ -202,7 +206,6 @@ public class BankAccountEndpointTest
 
                 config.getBankAccounts( 5, 15, null, null );
 
-                //noinspection unchecked
                 mapper.mapAsList( ( List<CompanyBankAccount> ) any, BankAccount.class, ( MappingContext ) any );
                 result = bankAccounts;
 
@@ -219,7 +222,6 @@ public class BankAccountEndpointTest
         {
             {
                 MappingContext context;
-                //noinspection unchecked
                 mapper.mapAsList( ( List<CompanyBankAccount> ) any, BankAccount.class, context = withCapture() );
 
                 assertWithMessage( "Mapping context Backend to API" )
@@ -263,7 +265,6 @@ public class BankAccountEndpointTest
                 common.checkAccount( authUser, request );
                 result = account;
 
-                //noinspection unchecked
                 mapper.mapAsList( ( List<CompanyBankAccount> ) any, BankAccount.class, ( MappingContext ) any );
                 result = new RuntimeException();
             }
@@ -852,5 +853,161 @@ public class BankAccountEndpointTest
         };
 
         endpoint.enableApiAccess( REVOLUT_BANK_CODE, certificate, request, authUser );
+    }
+
+    @Test
+    public void filterTransactions() throws Exception
+    {
+        List<Transaction> transactions = new ArrayList<>();
+        transactions.add( new Transaction() );
+
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+                result = account;
+
+                config.filterTransactions( ( PaymentConfig.Filter ) any );
+
+                mapper.mapAsList( ( List<CommonTransaction> ) any, Transaction.class );
+                result = transactions;
+            }
+        };
+
+        int offset = 5;
+        int limit = 15;
+        long accountId = 246753L;
+        Long invoiceId = 635442412L;
+        Long orderId = 975467243L;
+        String type = FormOfPayment.TRANSFER.name();
+        String credit = "credit";
+
+        List<Transaction> result = endpoint.filterTransactions( offset,
+                limit,
+                credit,
+                accountId,
+                invoiceId,
+                orderId,
+                type,
+                request,
+                authUser );
+
+        assertThat( result ).isNotNull();
+        assertThat( result ).hasSize( 1 );
+
+        new Verifications()
+        {
+            {
+                PaymentConfig.Filter filter;
+                config.filterTransactions( filter = withCapture() );
+
+                assertWithMessage( "Transaction filter" )
+                        .that( filter )
+                        .isNotNull();
+
+                assertWithMessage( "Transaction filter offset" )
+                        .that( filter.getOffset() )
+                        .isEqualTo( offset );
+
+                assertWithMessage( "Transaction filter limit" )
+                        .that( filter.getLimit() )
+                        .isEqualTo( limit );
+
+                assertWithMessage( "Transaction filter account Id" )
+                        .that( filter.getAccountId() )
+                        .isEqualTo( accountId );
+
+                assertWithMessage( "Transaction filter credit" )
+                        .that( filter.getOperation() )
+                        .isEqualTo( credit );
+
+                assertWithMessage( "Transaction filter invoice Id" )
+                        .that( filter.getInvoiceId() )
+                        .isEqualTo( invoiceId );
+
+                assertWithMessage( "Transaction filter order Id" )
+                        .that( filter.getOrderId() )
+                        .isEqualTo( orderId );
+
+                assertWithMessage( "Transaction filter type" )
+                        .that( filter.getType() )
+                        .isEqualTo( type );
+            }
+        };
+    }
+
+    @Test( expectedExceptions = BadRequestException.class )
+    public void filterTransactions_ApiValidationFailure() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+                result = account;
+
+                config.filterTransactions( ( PaymentConfig.Filter ) any );
+                result = new ApiValidationException( "Validation failure" );
+            }
+        };
+
+        endpoint.filterTransactions( 0,
+                5,
+                null,
+                null,
+                null,
+                null,
+                null,
+                request,
+                authUser );
+    }
+
+    @Test( expectedExceptions = InternalServerErrorException.class )
+    public void filterTransactions_BackendServiceError() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+                result = account;
+
+                config.filterTransactions( ( PaymentConfig.Filter ) any );
+                result = new RuntimeException( "Backend service error" );
+            }
+        };
+
+        endpoint.filterTransactions( 0,
+                5,
+                null,
+                null,
+                null,
+                null,
+                null,
+                request,
+                authUser );
+    }
+
+    @Test( expectedExceptions = InternalServerErrorException.class )
+    public void filterTransactions_BackendMappingError() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+                result = account;
+
+                mapper.mapAsList( ( List<CommonTransaction> ) any, Transaction.class );
+                result = new RuntimeException( "Mapping failure" );
+            }
+        };
+
+        endpoint.filterTransactions( 0,
+                5,
+                null,
+                null,
+                null,
+                null,
+                null,
+                request,
+                authUser );
     }
 }

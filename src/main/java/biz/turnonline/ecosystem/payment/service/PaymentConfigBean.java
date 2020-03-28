@@ -28,6 +28,7 @@ import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.PaymentLocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
@@ -63,6 +64,10 @@ import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.Operation.BOTH;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.Operation.CREDIT;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.Operation.DEBIT;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.Operation.valueOf;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -490,6 +495,93 @@ class PaymentConfigBean
         }
 
         return transaction;
+    }
+
+    @Override
+    public List<CommonTransaction> filterTransactions( @Nonnull Filter filter )
+    {
+        Integer offset = filter.getOffset();
+        Integer limit = filter.getLimit();
+
+        if ( offset != null && offset < 0 )
+        {
+            throw ApiValidationException.prepare( "errors.validation.query.offset.invalid", offset );
+        }
+        if ( limit != null && limit < 0 )
+        {
+            throw ApiValidationException.prepare( "errors.validation.query.limit.invalid", limit );
+        }
+
+        Criteria<CommonTransaction> criteria = Criteria.of( CommonTransaction.class );
+
+        try
+        {
+            String op = Strings.isNullOrEmpty( filter.getOperation() ) ? BOTH.name() : filter.getOperation();
+            Operation operation = valueOf( op.toUpperCase() );
+
+            if ( CREDIT == operation )
+            {
+                criteria.equal( "credit", true );
+            }
+            else if ( DEBIT == operation )
+            {
+                criteria.equal( "credit", false );
+            }
+        }
+        catch ( IllegalArgumentException e )
+        {
+            String key = "errors.validation.query.operation.invalid";
+            throw ApiValidationException.prepare( key, filter.getOperation() );
+        }
+
+        Long accountId = filter.getAccountId();
+        if ( accountId != null )
+        {
+            criteria.reference( "accountKey", CompanyBankAccount.class, accountId );
+        }
+
+        Long orderId = filter.getOrderId();
+        Long invoiceId = filter.getInvoiceId();
+
+        if ( orderId != null )
+        {
+            criteria.equal( "orderId", orderId );
+            if ( invoiceId != null )
+            {
+                criteria.equal( "invoiceId", invoiceId );
+            }
+        }
+
+        if ( offset != null )
+        {
+            criteria.offset( offset );
+        }
+
+        String type = Strings.isNullOrEmpty( filter.getType() ) ? null : filter.getType();
+        FormOfPayment paymentType = null;
+        if ( type != null )
+        {
+            try
+            {
+                paymentType = FormOfPayment.valueOf( type.toUpperCase() );
+            }
+            catch ( IllegalArgumentException e )
+            {
+                throw ApiValidationException.prepare( "errors.validation.query.paymentType.invalid", type );
+            }
+        }
+
+        if ( paymentType != null )
+        {
+            criteria.equal( "type", paymentType );
+        }
+
+        criteria.limit( limit == null ? 20 : limit );
+
+        List<CommonTransaction> list = datastore.list( criteria );
+        LOGGER.info( list.size() + " transactions has found." );
+
+        return list;
     }
 
     private Criteria<BeneficiaryBankAccount> beneficiaryQuery( @Nonnull String iban )
