@@ -215,6 +215,12 @@ public abstract class BankAccount
 
     /**
      * Validates the given IBAN and sets the value if pass.
+     * A valid IBAN will set following properties too, not needed to be set separately
+     * <ul>
+     *     <li>{@link #getBankCode()}</li>
+     *     <li>{@link #getBranch()}</li>
+     *     <li>{@link #getCountry()}</li>
+     * </ul>
      *
      * @param input the IBAN to be set
      * @throws IllegalArgumentException if IBAN validation fails

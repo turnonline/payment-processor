@@ -36,6 +36,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import static com.googlecode.objectify.ObjectifyService.ofy;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
@@ -110,10 +111,20 @@ public class AccountStewardChangesSubscription
                 + data.length() + " and unique key: '" + uniqueKey + "'" + ( delete ? " to be deleted" : "" ) );
 
         Account account = command.fromData( Account.class );
-        LocalAccount localAccount = lap.initGet( new LocalAccountProvider.Builder()
-                .accountId( command.getAccountId() )
-                .email( command.getAccountEmail() )
-                .identityId( command.getAccountIdentityId() ) );
+        LocalAccount associatedAccount = lap.get();
+        LocalAccount localAccount;
+
+        if ( associatedAccount != null && Objects.equals( associatedAccount.getId(), account.getId() ) )
+        {
+            localAccount = associatedAccount;
+        }
+        else
+        {
+            LOGGER.info( "Uninterested account identified by ID '" + account.getId() + "'" );
+            LOGGER.info( "Associated account ID '" + ( associatedAccount == null ? null : associatedAccount.getId() ) + "'" );
+            return;
+        }
+
 
         DateTime publishDateTime = command.getPublishDateTime();
         DateTime last = delete && publishDateTime != null

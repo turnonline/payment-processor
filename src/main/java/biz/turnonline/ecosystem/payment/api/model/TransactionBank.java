@@ -22,27 +22,24 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 /**
- * Bank
+ * The bank account associated with this transaction.
  */
-public class Bank
+public class TransactionBank
 {
     @JsonProperty( "code" )
-    private String code = null;
+    private String code;
 
-    @JsonProperty( "label" )
-    private String label = null;
+    @JsonProperty( "iban" )
+    private String iban;
 
-    @JsonProperty( "country" )
-    private String country = null;
-
-    public Bank code( String code )
+    public TransactionBank code( String code )
     {
         this.code = code;
         return this;
     }
 
     /**
-     * The bank identified by a bank code, taken from the code-book.
+     * The bank identified by a bank code.
      **/
     @JsonProperty( "code" )
     public String getCode()
@@ -55,69 +52,54 @@ public class Bank
         this.code = code;
     }
 
-    public Bank label( String label )
+    public TransactionBank iban( String iban )
     {
-        this.label = label;
+        this.iban = iban;
         return this;
     }
 
     /**
-     * The localized name of the bank, taken from the code-book and based on either default or specified language.   The value will be managed by the service once Accept-Language header will be provided while bank account getting.
+     * The international bank account number.
      **/
-    @JsonProperty( "label" )
-    public String getLabel()
+    @JsonProperty( "iban" )
+    public String getIban()
     {
-        return label;
+        return iban;
     }
 
-    public void setLabel( String label )
+    public void setIban( String iban )
     {
-        this.label = label;
-    }
-
-    public Bank country( String country )
-    {
-        this.country = country;
-        return this;
-    }
-
-    /**
-     * The country of the bank where bank account has been opened. The missing value will be taken from the codebook if that combination is being found. The ISO 3166 alpha-2 country code. It’s case insensitive.  Note: Currently supported only SK and CZ.
-     **/
-    @JsonProperty( "country" )
-    public String getCountry()
-    {
-        return country;
-    }
-
-    public void setCountry( String country )
-    {
-        this.country = country;
+        this.iban = iban;
     }
 
     @Override
     public boolean equals( Object o )
     {
-        if ( this == o ) return true;
-        if ( !( o instanceof Bank ) ) return false;
-        Bank bank = ( Bank ) o;
-        return Objects.equals( code, bank.code ) &&
-                Objects.equals( country, bank.country );
+        if ( this == o )
+        {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() )
+        {
+            return false;
+        }
+        TransactionBank transactionBank = ( TransactionBank ) o;
+        return Objects.equals( this.code, transactionBank.code ) &&
+                Objects.equals( this.iban, transactionBank.iban );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( code, country );
+        return Objects.hash( code, iban );
     }
 
     @Override
     public String toString()
     {
-        return "class Bank {\n" +
+        return "class TransactionBank {\n" +
                 "    code: " + toIndentedString( code ) + "\n" +
-                "    label: " + toIndentedString( label ) + "\n" +
-                "    country: " + toIndentedString( country ) + "\n" +
+                "    iban: " + toIndentedString( iban ) + "\n" +
                 "}";
     }
 

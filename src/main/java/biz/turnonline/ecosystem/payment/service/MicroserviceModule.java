@@ -18,6 +18,9 @@
 
 package biz.turnonline.ecosystem.payment.service;
 
+import biz.turnonline.ecosystem.billing.facade.ProductBillingClientModule;
+import biz.turnonline.ecosystem.billing.facade.adaptee.TransactionAdaptee;
+import biz.turnonline.ecosystem.billing.model.Transaction;
 import biz.turnonline.ecosystem.payment.oauth.RevolutCertMetadata;
 import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
@@ -56,6 +59,7 @@ import com.google.inject.name.Names;
 import net.sf.jsr107cache.Cache;
 import org.ctoolkit.restapi.client.ApiCredential;
 import org.ctoolkit.restapi.client.PubSub;
+import org.ctoolkit.restapi.client.adaptee.InsertExecutorAdaptee;
 import org.ctoolkit.restapi.client.adapter.BeanMapperConfig;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeAppEngineModule;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeDefaultOrikaModule;
@@ -102,6 +106,7 @@ public class MicroserviceModule
         install( new PubSubAdapteesModule() );
         install( new RevolutBusinessClientModule() );
         install( new RevolutBusinessAdapterModule() );
+        install( new ProductBillingClientModule() );
 
         bind( PaymentConfig.class ).to( PaymentConfigBean.class );
         bind( CodeBook.class ).to( CodeBookBean.class );
@@ -120,6 +125,11 @@ public class MicroserviceModule
         bind( new TypeLiteral<TokenProvider<LocalAccount>>()
         {
         } ).to( ServerToEcosystemCallConfig.class );
+
+        // Transaction for Ecosystem Product Billing service
+        bind( new TypeLiteral<InsertExecutorAdaptee<Transaction>>()
+        {
+        } ).to( TransactionAdaptee.class );
 
         // single declaration to request static injection for all Task related injection
         requestStaticInjection( Task.class );

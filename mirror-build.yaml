@@ -1,6 +1,6 @@
 steps:
-  - name: gcr.io/cloud-builders/git
-    args: ['clone', 'https://github.com/turnonline/${REPO_NAME}.git']
+  - name: gcr.io/cloud-builders/gcloud
+    args: ['source', 'repos','clone','${REPO_NAME}']
   - name: gcr.io/cloud-builders/mvn
     entrypoint: 'mvn'
     args: ['package','-DskipTests']

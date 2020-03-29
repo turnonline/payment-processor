@@ -82,6 +82,11 @@ public abstract class CommonTransaction
     @Index
     private String extId;
 
+    public CompanyBankAccount loadBankAccount()
+    {
+        return accountKey == null ? null : ofy().load().key( accountKey ).now();
+    }
+
     /**
      * Sets the bank account key associated with this transaction.
      */

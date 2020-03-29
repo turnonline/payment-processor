@@ -21,7 +21,7 @@
         <entity kind="PP_Transaction" id="680">
             <property indexed="false" name="^d" type="string" value="Bill"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="Bill"/>
-            <property indexed="true" name="billId" type="long" value="246809"/>
+            <property indexed="true" name="bill" type="long" value="246809"/>
             <property name="accountKey" type="reference" value="PP_BankAccount:579"/>
             <property indexed="true" name="bankCode" type="string" value="REVO"/>
             <property indexed="true" name="completedAt" type="date" value="1581751510000"/>
@@ -36,7 +36,7 @@
             <property indexed="true" name="key" type="string" value="123xyz"/>
             <property indexed="true" name="extId" type="string" value="7fa8816a-1fe5-4fc7-9e86-fd659b753167"/>
             <property indexed="false" name="createdDate" type="date" value="1581492310000"/>
-            <property indexed="true" name="modificationDate" type="date" value="1508565600000"/>
+            <property indexed="true" name="modificationDate" type="date" value="1581492310000"/>
             <property name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
@@ -56,10 +56,135 @@
             <property indexed="true" name="type" type="string" value="TRANSFER"/>
             <property indexed="true" name="status" type="string" value="COMPLETED"/>
             <property name="reference" type="string" value="Payment for online service"/>
-            <property indexed="true" name="key" type="string" value="123xyz"/>
+            <property indexed="true" name="key" type="string" value="Gdhf6h6BV"/>
             <property indexed="true" name="extId" type="string" value="33869cb7-de3f-433e-a148-4170fe042beb"/>
             <property indexed="false" name="createdDate" type="date" value="1581492310000"/>
-            <property indexed="true" name="modificationDate" type="date" value="1508565600000"/>
+            <property indexed="true" name="modificationDate" type="date" value="1581492310000"/>
+            <property name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_Transaction">
+            <property indexed="false" name="^d" type="string" value="Invoice"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Invoice"/>
+            <property indexed="true" name="invoiceId" type="long" value="43546568"/>
+            <property indexed="true" name="orderId" type="long" value="476807"/>
+            <property name="accountKey" type="reference" value="PP_BankAccount:579"/>
+            <property indexed="true" name="bankCode" type="string" value="REVO"/>
+            <property indexed="true" name="completedAt" type="date" value="1581837910000"/>
+            <property name="amount" type="double" value="119.0"/>
+            <property name="balance" type="double" value="20.0"/>
+            <property name="currency" type="string" value="EUR"/>
+            <property indexed="true" name="credit" type="boolean" value="false"/>
+            <property indexed="true" name="failure" type="boolean" value="false"/>
+            <property indexed="true" name="type" type="string" value="TRANSFER"/>
+            <property indexed="true" name="status" type="string" value="COMPLETED"/>
+            <property name="reference" type="string" value="SaaS service"/>
+            <property indexed="true" name="key" type="string" value="Tbvx4r5t"/>
+            <property indexed="true" name="extId" type="string" value="46b7dd5c-679d-4455-86df-fbd54cb85f8f"/>
+            <property indexed="false" name="createdDate" type="date" value="1581837910000"/>
+            <property indexed="true" name="modificationDate" type="date" value="1581837910000"/>
+            <property name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_Transaction">
+            <property indexed="false" name="^d" type="string" value="Bill"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Bill"/>
+            <property indexed="true" name="bill" type="long" value="52437482"/>
+            <property name="accountKey" type="reference" value="PP_BankAccount:579"/>
+            <property indexed="true" name="bankCode" type="string" value="REVO"/>
+            <property name="amount" type="double" value="1.0"/>
+            <property name="currency" type="string" value="EUR"/>
+            <property indexed="true" name="credit" type="boolean" value="true"/>
+            <property indexed="true" name="failure" type="boolean" value="true"/>
+            <property indexed="true" name="type" type="string" value="CARD_PAYMENT"/>
+            <property indexed="true" name="status" type="string" value="REVERTED"/>
+            <property name="reference" type="string" value="Auth request"/>
+            <property indexed="true" name="extId" type="string" value="823c78a9-78a0-4ccc-8d44-e549e0d5f18c"/>
+            <property indexed="false" name="createdDate" type="date" value="1581355820000"/>
+            <property indexed="true" name="modificationDate" type="date" value="1581355820000"/>
+            <property name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_Transaction">
+            <property indexed="false" name="^d" type="string" value="Invoice"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Invoice"/>
+            <property name="accountKey" type="reference" value="PP_BankAccount:579"/>
+            <property indexed="true" name="bankCode" type="string" value="REVO"/>
+            <property indexed="true" name="completedAt" type="date" value="1575960934000"/>
+            <property name="amount" type="double" value="100.0"/>
+            <property name="balance" type="double" value="120.0"/>
+            <property name="currency" type="string" value="EUR"/>
+            <property indexed="true" name="credit" type="boolean" value="true"/>
+            <property indexed="true" name="failure" type="boolean" value="false"/>
+            <property indexed="true" name="type" type="string" value="TRANSFER"/>
+            <property indexed="true" name="status" type="string" value="COMPLETED"/>
+            <property name="reference" type="string" value="Payment as income"/>
+            <property indexed="true" name="key" type="string" value="X64JKmn7"/>
+            <property indexed="true" name="extId" type="string" value="2d099912-babc-4d85-98e9-ffa58ee506ed"/>
+            <property indexed="false" name="createdDate" type="date" value="1575959110000"/>
+            <property indexed="true" name="modificationDate" type="date" value="1575959110000"/>
+            <property name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_Transaction">
+            <property indexed="false" name="^d" type="string" value="Bill"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Bill"/>
+            <property indexed="true" name="bill" type="long" value="546576"/>
+            <property name="accountKey" type="reference" value="PP_BankAccount:689"/>
+            <property indexed="true" name="bankCode" type="string" value="7500"/>
+            <property indexed="true" name="completedAt" type="date" value="1582183820000"/>
+            <property name="amount" type="double" value="39.0"/>
+            <property name="currency" type="string" value="EUR"/>
+            <property indexed="true" name="credit" type="boolean" value="false"/>
+            <property indexed="true" name="failure" type="boolean" value="false"/>
+            <property indexed="true" name="type" type="string" value="CARD_PAYMENT"/>
+            <property indexed="true" name="status" type="string" value="COMPLETED"/>
+            <property name="reference" type="string" value="SaaS service"/>
+            <property indexed="true" name="key" type="string" value="8uTG234"/>
+            <property indexed="true" name="extId" type="string" value="e5c27536-067f-444c-a6f2-29cfab7e4347"/>
+            <property indexed="false" name="createdDate" type="date" value="1582183820000"/>
+            <property indexed="true" name="modificationDate" type="date" value="1582183820000"/>
+            <property name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_Transaction">
+            <property indexed="false" name="^d" type="string" value="Invoice"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Invoice"/>
+            <property indexed="true" name="invoiceId" type="long" value="43546568"/>
+            <property indexed="true" name="orderId" type="long" value="476807"/>
+            <property name="accountKey" type="reference" value="PP_BankAccount:689"/>
+            <property indexed="true" name="bankCode" type="string" value="7500"/>
+            <property indexed="true" name="completedAt" type="date" value="1583820010000"/>
+            <property name="amount" type="double" value="119.0"/>
+            <property name="currency" type="string" value="EUR"/>
+            <property indexed="true" name="credit" type="boolean" value="true"/>
+            <property indexed="true" name="failure" type="boolean" value="false"/>
+            <property indexed="true" name="type" type="string" value="REFUND"/>
+            <property indexed="true" name="status" type="string" value="COMPLETED"/>
+            <property name="reference" type="string" value="SaaS service cancelled"/>
+            <property indexed="true" name="extId" type="string" value="8f15fcf3-b3dc-4823-a2a3-cfe9fccbd9db"/>
+            <property indexed="false" name="createdDate" type="date" value="1583820010000"/>
+            <property indexed="true" name="modificationDate" type="date" value="1583820010000"/>
+            <property name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_Transaction">
+            <property indexed="false" name="^d" type="string" value="Bill"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Bill"/>
+            <property name="accountKey" type="reference" value="PP_BankAccount:689"/>
+            <property indexed="true" name="bankCode" type="string" value="7500"/>
+            <property indexed="true" name="completedAt" type="date" value="1586685610000"/>
+            <property name="amount" type="double" value="480.0"/>
+            <property name="balance" type="double" value="1200.0"/>
+            <property name="currency" type="string" value="EUR"/>
+            <property indexed="true" name="credit" type="boolean" value="true"/>
+            <property indexed="true" name="failure" type="boolean" value="false"/>
+            <property indexed="true" name="type" type="string" value="TRANSFER"/>
+            <property indexed="true" name="status" type="string" value="COMPLETED"/>
+            <property name="reference" type="string" value="Payment for extra service"/>
+            <property indexed="true" name="extId" type="string" value="f9d93a2a-e103-4187-8503-dcd375828564"/>
+            <property indexed="false" name="createdDate" type="date" value="1586685610000"/>
+            <property indexed="true" name="modificationDate" type="date" value="1586685610000"/>
             <property name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
@@ -78,6 +203,22 @@
             <property indexed="false" name="createdDate" type="date" value="1578813910000"/>
             <property indexed="true" name="modificationDate" type="date" value="1578813910000"/>
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <entity kind="PP_BankAccount" id="689">
+            <property indexed="false" name="^d" type="string" value="Company"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
+            <property indexed="true" name="owner" type="reference" value="PP_LocalAccount:27635491"/>
+            <property indexed="true" name="name" type="string" value="Secondary Business Bank Account"/>
+            <property name="currency" type="string" value="EUR"/>
+            <property indexed="true" name="iban" type="string" value="SK8975000000000012345671"/>
+            <property indexed="true" name="bankCode" type="string" value="7500"/>
+            <property name="primary" type="boolean" value="false"/>
+            <property name="bic" type="string" value="CEKOSKBX"/>
+            <property indexed="true" name="country" type="string" value="SK"/>
+            <property indexed="false" name="createdDate" type="date" value="1547277910000"/>
+            <property indexed="true" name="modificationDate" type="date" value="1578813910000"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1547543119000"/>
         </entity>
     </entities>
 </changeset>

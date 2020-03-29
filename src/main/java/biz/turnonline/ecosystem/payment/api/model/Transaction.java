@@ -34,7 +34,7 @@ public class Transaction
     private Double balance;
 
     @JsonProperty( "bankAccount" )
-    private BankAccount bankAccount;
+    private TransactionBank bankAccount;
 
     @JsonProperty( "bill" )
     private Bill bill;
@@ -100,7 +100,7 @@ public class Transaction
         this.balance = balance;
     }
 
-    public Transaction bankAccount( BankAccount bankAccount )
+    public Transaction bankAccount( TransactionBank bankAccount )
     {
         this.bankAccount = bankAccount;
         return this;
@@ -110,12 +110,12 @@ public class Transaction
      * The bank account associated with this transaction.
      **/
     @JsonProperty( "bankAccount" )
-    public BankAccount getBankAccount()
+    public TransactionBank getBankAccount()
     {
         return bankAccount;
     }
 
-    public void setBankAccount( BankAccount bankAccount )
+    public void setBankAccount( TransactionBank bankAccount )
     {
         this.bankAccount = bankAccount;
     }
@@ -147,7 +147,7 @@ public class Transaction
     }
 
     /**
-     * The date when the transaction was completed.
+     * The date when the transaction was completed (status COMPLETED).
      **/
     @JsonProperty( "completedAt" )
     public Date getCompletedAt()
@@ -248,7 +248,7 @@ public class Transaction
 
     /**
      * The transaction status.
-     */
+     **/
     @JsonProperty( "status" )
     public String getStatus()
     {

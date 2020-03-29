@@ -25,8 +25,10 @@ import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.PaymentGate;
+import biz.turnonline.ecosystem.payment.service.model.TransactionInvoice;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutDebtorBankAccountsInit;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.appengine.api.taskqueue.TaskHandle;
@@ -57,6 +59,8 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class PaymentConfigBeanDbTest
         extends BackendServiceTestCase
 {
+    private static final Long ACCOUNT_ID = 579L;
+
     private static final String REVOLUT_IBAN = "GB67REVO38133712681951";
 
     private static final String REVOLUT_BIC = "REVOGB21";
@@ -626,6 +630,315 @@ public class PaymentConfigBeanDbTest
         assertWithMessage( "Number of Transaction record in datastore" )
                 .that( count )
                 .isEqualTo( 1 );
+    }
+
+    @Test
+    public void filterTransactions_All()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        List<CommonTransaction> transactions = bean.filterTransactions( new PaymentConfig.Filter() );
+
+        assertWithMessage( "Number of all transactions" )
+                .that( transactions )
+                .hasSize( 8 );
+    }
+
+    @Test
+    public void filterTransactions_Paging()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        PaymentConfig.Filter filter = new PaymentConfig.Filter().offset( 2 ).limit( 3 );
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        assertWithMessage( "Transaction list offset with size" )
+                .that( transactions )
+                .hasSize( 3 );
+    }
+
+    @Test
+    public void filterTransactions_ByInvoice()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        long orderId = 476807L;
+        long invoiceId = 366806L;
+
+        PaymentConfig.Filter filter = new PaymentConfig.Filter()
+                .orderId( orderId )
+                .invoiceId( invoiceId );
+
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        assertWithMessage( "Number of invoice transactions" )
+                .that( transactions )
+                .hasSize( 1 );
+
+        // another verification
+        TransactionInvoice t = ( TransactionInvoice ) transactions.get( 0 );
+        assertThat( t.getOrderId() ).isEqualTo( orderId );
+        assertThat( t.getInvoiceId() ).isEqualTo( invoiceId );
+    }
+
+    @Test
+    public void filterTransactions_ByOrder()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        Long orderId = 476807L;
+        PaymentConfig.Filter filter = new PaymentConfig.Filter().orderId( orderId );
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        int expectedSize = 3;
+        assertWithMessage( "Number of order transactions" )
+                .that( transactions )
+                .hasSize( expectedSize );
+
+        // another verification
+        long counted = transactions
+                .stream()
+                .filter( t -> orderId.equals( ( ( TransactionInvoice ) t ).getOrderId() ) )
+                .count();
+
+        assertThat( counted ).isEqualTo( expectedSize );
+    }
+
+    @Test
+    public void filterTransactions_ByOrderDebit()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        Long orderId = 476807L;
+        PaymentConfig.Filter filter = new PaymentConfig.Filter()
+                .orderId( orderId )
+                .operation( "debit" );
+
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        int expectedSize = 2;
+        assertWithMessage( "Number of order debit transactions" )
+                .that( transactions )
+                .hasSize( expectedSize );
+
+        // another verification
+        long counted = transactions
+                .stream()
+                .filter( t -> orderId.equals( ( ( TransactionInvoice ) t ).getOrderId() ) && !t.isCredit() )
+                .count();
+
+        assertThat( counted ).isEqualTo( expectedSize );
+    }
+
+    @Test
+    public void filterTransactions_ByOrderForAnotherAccount()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        Long orderId = 476807L;
+        Long secondAccountId = 689L;
+        PaymentConfig.Filter filter = new PaymentConfig.Filter()
+                .orderId( orderId )
+                .accountId( secondAccountId );
+
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        int expectedSize = 1;
+        assertWithMessage( "Number of order transactions for another account" )
+                .that( transactions )
+                .hasSize( expectedSize );
+
+        // another verification
+        long counted = transactions
+                .stream()
+                .filter( t -> orderId.equals( ( ( TransactionInvoice ) t ).getOrderId() )
+                        && secondAccountId.equals( t.getBankAccountKey().getId() ) )
+                .count();
+
+        assertThat( counted ).isEqualTo( expectedSize );
+    }
+
+    @Test
+    public void filterTransactions_ByPrimaryBankAccount()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        PaymentConfig.Filter filter = new PaymentConfig.Filter().accountId( ACCOUNT_ID );
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        int expectedSize = 5;
+        assertWithMessage( "Number of transactions for primary bank account" )
+                .that( transactions )
+                .hasSize( expectedSize );
+
+        // another verification
+        long counted = transactions
+                .stream()
+                .filter( t -> ACCOUNT_ID.equals( t.getBankAccountKey().getId() ) )
+                .count();
+
+        assertThat( counted ).isEqualTo( expectedSize );
+    }
+
+    @Test
+    public void filterTransactions_BySecondaryBankAccount()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        Long secondAccountId = 689L;
+        PaymentConfig.Filter filter = new PaymentConfig.Filter().accountId( secondAccountId );
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        int expectedSize = 3;
+        assertWithMessage( "Number of transactions for secondary bank account" )
+                .that( transactions )
+                .hasSize( expectedSize );
+
+        // another verification
+        long counted = transactions
+                .stream()
+                .filter( t -> secondAccountId.equals( t.getBankAccountKey().getId() ) )
+                .count();
+
+        assertThat( counted ).isEqualTo( expectedSize );
+    }
+
+    @Test
+    public void filterTransactions_Credit()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        PaymentConfig.Filter filter = new PaymentConfig.Filter().operation( "creDIT" );
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        int expectedSize = 4;
+        assertWithMessage( "Number of credit transactions" )
+                .that( transactions )
+                .hasSize( expectedSize );
+
+        // another verification
+        long counted = transactions.stream().filter( CommonTransaction::isCredit ).count();
+        assertThat( counted ).isEqualTo( expectedSize );
+    }
+
+    @Test
+    public void filterTransactions_Debit()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        PaymentConfig.Filter filter = new PaymentConfig.Filter().operation( "DEbit" );
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        int expectedSize = 4;
+        assertWithMessage( "Number of debit transactions" )
+                .that( transactions )
+                .hasSize( expectedSize );
+
+        // another verification
+        long counted = transactions.stream().filter( t -> !t.isCredit() ).count();
+        assertThat( counted ).isEqualTo( expectedSize );
+    }
+
+    @Test
+    public void filterTransactions_ByPaymentType()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        // TRANSFER filter
+        PaymentConfig.Filter filter = new PaymentConfig.Filter().type( "transfer" );
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        assertWithMessage( "Number of TRANSFER transactions" )
+                .that( transactions )
+                .hasSize( 4 );
+
+        // TRANSFER account Id and debit filter
+        filter = new PaymentConfig.Filter()
+                .accountId( ACCOUNT_ID )
+                .operation( "DEBIT" )
+                .type( FormOfPayment.TRANSFER.name() );
+        transactions = bean.filterTransactions( filter );
+
+        assertWithMessage( "Number of debit TRANSFER transactions for single account" )
+                .that( transactions )
+                .hasSize( 2 );
+
+        // REFUND account Id and credit filter
+        filter = new PaymentConfig.Filter()
+                .accountId( 689L )
+                .operation( "CREDIT" )
+                .type( FormOfPayment.REFUND.name() );
+        transactions = bean.filterTransactions( filter );
+
+        assertWithMessage( "Number of credit REFUND transactions for single account" )
+                .that( transactions )
+                .hasSize( 1 );
+    }
+
+    @Test
+    public void filterTransactions_AllFilterCriteria()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        long orderId = 476807L;
+        long invoiceId = 43546568L;
+        PaymentConfig.Filter filter = new PaymentConfig.Filter()
+                .accountId( ACCOUNT_ID )
+                .operation( "DEBIT" )
+                .orderId( orderId )
+                .invoiceId( invoiceId )
+                .type( FormOfPayment.TRANSFER.name() )
+                .limit( 2 );
+
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        assertWithMessage( "Number of transactions with complex filter" )
+                .that( transactions )
+                .hasSize( 1 );
+
+        // another verification
+        TransactionInvoice t = ( TransactionInvoice ) transactions.get( 0 );
+        assertThat( t.getOrderId() ).isEqualTo( orderId );
+        assertThat( t.getInvoiceId() ).isEqualTo( invoiceId );
+        assertThat( t.getBankAccountKey().getId() ).isEqualTo( ACCOUNT_ID );
+        assertThat( t.isCredit() ).isFalse();
+        assertThat( t.getType() ).isEqualTo( FormOfPayment.TRANSFER );
+    }
+
+    @Test( expectedExceptions = ApiValidationException.class )
+    public void filterTransactions_InvalidOffset()
+    {
+        bean.filterTransactions( new PaymentConfig.Filter().offset( -1 ) );
+    }
+
+    @Test( expectedExceptions = ApiValidationException.class )
+    public void filterTransactions_InvalidLimit()
+    {
+        bean.filterTransactions( new PaymentConfig.Filter().limit( -1 ) );
+    }
+
+    @Test( expectedExceptions = ApiValidationException.class )
+    public void filterTransactions_InvalidOperation()
+    {
+        bean.filterTransactions( new PaymentConfig.Filter().operation( "INVALID_BOTH" ) );
+    }
+
+    @Test( expectedExceptions = ApiValidationException.class )
+    public void filterTransactions_InvalidPaymentType()
+    {
+        bean.filterTransactions( new PaymentConfig.Filter().type( "INVALID_TRANSFER" ) );
     }
 
     private int countBeneficiaries()

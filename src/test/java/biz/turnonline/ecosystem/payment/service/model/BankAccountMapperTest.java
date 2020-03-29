@@ -63,7 +63,6 @@ public class BankAccountMapperTest
     public void mapApiToBackend()
     {
         String code = "1100";
-        String country = "SK";
 
         new Expectations()
         {
@@ -73,12 +72,6 @@ public class BankAccountMapperTest
 
                 codeBook.getBankCode( account, code, ( Locale ) any, anyString );
                 result = bankCode;
-
-                bankCode.getCode();
-                result = code;
-
-                bankCode.getCountry();
-                result = country;
             }
         };
 
@@ -104,23 +97,50 @@ public class BankAccountMapperTest
     }
 
     @Test( expectedExceptions = ApiValidationException.class )
-    public void mapApiToBackend_CurrencyValidationFailure()
+    public void mapApiToBackend_MissingMandatoryIban()
     {
-        String code = "1100";
+        BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
+        //  make sure API IBAN is null
+        api.setIban( null );
+
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
+
+        tested.mapBtoA( api, backend, context );
+    }
+
+    /**
+     * The IBAN is already stored in backend, it's valid to be not provided by API
+     * -> no validation exception will be thrown.
+     */
+    @Test
+    public void mapApiToBackend_IbanAlreadyInBackend()
+    {
         new Expectations()
         {
             {
                 context.getProperty( LocalAccount.class );
                 result = account;
 
-                codeBook.getBankCode( account, code, ( Locale ) any, anyString );
+                codeBook.getBankCode( account, anyString, ( Locale ) any, anyString );
                 result = bankCode;
-
-                bankCode.getCode();
-                result = code;
             }
         };
 
+        BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
+        //  make sure API IBAN is null
+        api.setIban( null );
+
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
+        backend.setIban( "GB05REVO37687428278420" );
+
+        tested.mapBtoA( api, backend, context );
+    }
+
+    @Test( expectedExceptions = ApiValidationException.class )
+    public void mapApiToBackend_CurrencyValidationFailure()
+    {
         BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
         api.setCurrency( "EUR_INV" );
 
@@ -161,6 +181,42 @@ public class BankAccountMapperTest
 
         CompanyBankAccount backend;
         backend = new CompanyBankAccount( codeBook );
+
+        new Expectations( backend )
+        {
+            {
+                // mocking of the use case the backend::setIban will cause no bank code has been set
+                backend.getBankCode();
+                result = null;
+            }
+        };
+
+        tested.mapBtoA( api, backend, context );
+    }
+
+    @Test( expectedExceptions = ApiValidationException.class )
+    public void mapApiToBackend_CountryIsMissing()
+    {
+        BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
+        api.getBank().setCode( null );
+
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
+
+        new Expectations( backend )
+        {
+            {
+                context.getProperty( LocalAccount.class );
+                result = account;
+
+                codeBook.getBankCode( account, anyString, ( Locale ) any, anyString );
+                result = null;
+
+                // mocking of the use case the backend::setIban will cause no country has been set
+                backend.getCountry();
+                result = null;
+            }
+        };
 
         tested.mapBtoA( api, backend, context );
     }
@@ -222,13 +278,32 @@ public class BankAccountMapperTest
         assertThat( api.getBank().getCountry() ).isNotNull();
     }
 
-    @Test
-    public void mapApiToBackend_DefaultPrimaryBankAccount()
+    @Test( expectedExceptions = IllegalArgumentException.class )
+    public void mapApiToBackend_MandatoryAccountMissing()
     {
-        BankAccount source = new BankAccount();
+        BankAccount source = getFromFile( "bank-account-3.json", BankAccount.class );
 
         CompanyBankAccount backend;
         backend = new CompanyBankAccount( codeBook );
+
+        tested.mapBtoA( source, backend, context );
+    }
+
+    @Test
+    public void mapApiToBackend_DefaultPrimaryBankAccount()
+    {
+        BankAccount source = getFromFile( "bank-account-3.json", BankAccount.class );
+
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
+
+        new Expectations()
+        {
+            {
+                context.getProperty( LocalAccount.class );
+                result = account;
+            }
+        };
 
         tested.mapBtoA( source, backend, context );
         assertWithMessage( "Default primary bank account" )
@@ -239,11 +314,19 @@ public class BankAccountMapperTest
     @Test
     public void mapApiToBackend_PreservePrimaryBankAccount()
     {
-        BankAccount source = new BankAccount();
+        BankAccount source = getFromFile( "bank-account-3.json", BankAccount.class );
 
         CompanyBankAccount backend;
         backend = new CompanyBankAccount( codeBook );
         backend.setPrimary( true );
+
+        new Expectations()
+        {
+            {
+                context.getProperty( LocalAccount.class );
+                result = account;
+            }
+        };
 
         tested.mapBtoA( source, backend, context );
         assertWithMessage( "Primary bank account" )
@@ -252,18 +335,26 @@ public class BankAccountMapperTest
     }
 
     @Test
-    public void mapApiToBackend_SetPrimaryBankAccount()
+    public void mapApiToBackend_IgnoreSetPrimaryBankAccount()
     {
-        BankAccount source = new BankAccount();
+        BankAccount source = getFromFile( "bank-account-3.json", BankAccount.class );
         source.setPrimary( true );
 
         CompanyBankAccount backend;
         backend = new CompanyBankAccount( codeBook );
         backend.setPrimary( false );
 
+        new Expectations()
+        {
+            {
+                context.getProperty( LocalAccount.class );
+                result = account;
+            }
+        };
+
         tested.mapBtoA( source, backend, context );
         assertWithMessage( "Primary bank account" )
                 .that( backend.isPrimary() )
-                .isTrue();
+                .isFalse();
     }
 }

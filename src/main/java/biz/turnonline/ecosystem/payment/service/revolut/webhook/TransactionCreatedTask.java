@@ -164,7 +164,8 @@ public class TransactionCreatedTask
         {
             transaction.type( FormOfPayment.TRANSFER );
         }
-        else if ( TransactionType.REFUND.equals( transactionFromBank.getType() ) )
+        else if ( TransactionType.CARD_REFUND.equals( transactionFromBank.getType() )
+                || TransactionType.REFUND.equals( transactionFromBank.getType() ) )
         {
             transaction.type( FormOfPayment.REFUND );
         }

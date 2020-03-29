@@ -9,10 +9,8 @@
     "status": "COMPLETED",
     "type": "TRANSFER",
     "bankAccount": {
-        "id": 123,
-        "bank": {
-            "code": "REVO"
-        }
+        "iban": "GB05 REVO 3768 7428 278420",
+        "code": "REVO"
     },
     "bill": {
         "invoiceId": 123,

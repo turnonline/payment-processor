@@ -22,25 +22,18 @@ import biz.turnonline.ecosystem.payment.api.model.Transaction;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.MicroserviceModule;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
-import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.steward.model.Account;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.services.pubsub.model.PublishResponse;
-import com.google.api.services.pubsub.model.PubsubMessage;
-import com.google.common.collect.Lists;
 import com.googlecode.objectify.Key;
 import ma.glasnost.orika.MapperFacade;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
-import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
 import org.ctoolkit.restapi.client.RestFacade;
-import org.ctoolkit.restapi.client.pubsub.TopicMessage;
 import org.ctoolkit.services.storage.PropertiesHashCode;
 import org.ctoolkit.services.storage.PropertiesHasher;
 import org.ctoolkit.services.task.Task;
@@ -48,14 +41,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.time.OffsetDateTime;
-import java.util.List;
 import java.util.Map;
 
 import static biz.turnonline.ecosystem.payment.service.BackendServiceTestCase.getFromFile;
-import static biz.turnonline.ecosystem.payment.service.PaymentConfig.TRANSACTION_TOPIC;
-import static biz.turnonline.ecosystem.payment.service.model.FormOfPayment.CARD_PAYMENT;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
@@ -75,15 +63,7 @@ public class TransactionPublisherTaskTest
 
     private static final String ACCOUNT_IDENTITY_ID = "64HGtr6ks";
 
-    private static final String EXPECTED_TOPIC = "projects/" + GOOGLE_CLOUD_PROJECT + "/topics/" + TRANSACTION_TOPIC;
-
-    private static final String EXPECTED_ID = String.valueOf( TRANSACTION_ID );
-
-    private static final String EXPECTED_ACCOUNT_ID = String.valueOf( ACCOUNT_ID );
-
-    private static final String EXPECTED_DATA_TYPE = "Transaction";
-
-    private static final String EXPECTED_EMAIL = "my.account@turnonline.biz";
+    private static final String ACCOUNT_EMAIL = "my.account@turnonline.biz";
 
     @Tested
     private TransactionPublisherTask tested;
@@ -104,9 +84,6 @@ public class TransactionPublisherTaskTest
     @Injectable
     private LocalAccountProvider lap;
 
-    @Mocked
-    private Key<CompanyBankAccount> accountKey;
-
     private LocalAccount account;
 
     private Transaction api;
@@ -123,25 +100,14 @@ public class TransactionPublisherTaskTest
 
         account = new LocalAccount( new Account()
                 .setId( ACCOUNT_ID )
-                .setEmail( EXPECTED_EMAIL )
+                .setEmail( ACCOUNT_EMAIL )
                 .setIdentityId( ACCOUNT_IDENTITY_ID ) );
 
-        transaction = new TransactionBillTest( "7fa8816a-1fe5-4fc7-9e86-fd659b753167", TRANSACTION_ID )
-                .bankAccountKey( accountKey )
-                .bankCode( "REVO" )
-                .completedAt( OffsetDateTime.now() )
-                .amount( 59.0 )
-                .currency( "EUR" )
-                .credit( false )
-                .failure( false )
-                .type( CARD_PAYMENT )
-                .status( CommonTransaction.State.COMPLETED )
-                .reference( "Payment for online service" );
-
+        transaction = new TransactionBillTest( "7fa8816a-1fe5-4fc7-9e86-fd659b753167", TRANSACTION_ID );
     }
 
     @Test
-    public void successful() throws IOException
+    public void successful()
     {
         expectationsTransaction();
 
@@ -154,14 +120,7 @@ public class TransactionPublisherTaskTest
                 mapper.map( transaction, Transaction.class );
                 result = api;
 
-                entityKey.getId();
-                result = TRANSACTION_ID;
-
-                entityKey.getKind();
-                result = "PP_Transaction";
-
-                facade.insert( any ).answerBy( PublishResponse.class ).finish();
-                result = new PublishResponse().setMessageIds( Lists.newArrayList( "7531" ) );
+                facade.insert( any ).onBehalfOf( account ).finish();
             }
         };
 
@@ -170,33 +129,20 @@ public class TransactionPublisherTaskTest
         new Verifications()
         {
             {
-                TopicMessage message;
+                biz.turnonline.ecosystem.billing.model.Transaction message;
                 facade.insert( message = withCapture() );
                 assertThat( message ).isNotNull();
-                assertThat( message.getTopic() ).isEqualTo( EXPECTED_TOPIC );
 
-                List<PubsubMessage> messages = message.getMessages();
-                assertThat( messages ).hasSize( 1 );
-
-                Map<String, String> attributes = messages.get( 0 ).getAttributes();
-                assertThat( attributes ).hasSize( 5 );
-                assertThat( attributes.get( "Entity_ID" ) ).isEqualTo( EXPECTED_ID );
-                assertThat( attributes.get( "DataType" ) ).isEqualTo( EXPECTED_DATA_TYPE );
-                assertThat( attributes.get( "AccountEmail" ) ).isEqualTo( EXPECTED_EMAIL );
-                assertThat( attributes.get( "AccountUnique_ID" ) ).isEqualTo( EXPECTED_ACCOUNT_ID );
-                assertThat( attributes.get( "AccountIdentity_ID" ) ).isEqualTo( ACCOUNT_IDENTITY_ID );
-
-                PubsubMessage psb = messages.get( 0 );
-                Map<String, Object> map = mapOf( psb.decodeData(), api.getClass() );
+                Map<String, Object> map = mapOf( message );
                 Map<String, Object> properties = new Helper().flatMap( map, null );
-                assertThat( properties ).hasSize( 22 );
+                assertThat( properties ).hasSize( 15 );
 
                 assertWithMessage( "Transaction amount" )
                         .that( properties.get( "amount" ) )
-                        .isNotNull();
+                        .isEqualTo( 35.0 );
 
-                assertWithMessage( "Transaction bank account Id" )
-                        .that( properties.get( "bankAccount.id" ) )
+                assertWithMessage( "Transaction bank account IBAN" )
+                        .that( properties.get( "bankAccount.iban" ) )
                         .isNotNull();
 
                 assertWithMessage( "Transaction bill invoice Id" )
@@ -212,7 +158,7 @@ public class TransactionPublisherTaskTest
                         .isEqualTo( "TRANSFER" );
 
                 assertWithMessage( "Transaction type" )
-                        .that( properties.get( "bankAccount.bank.code" ) )
+                        .that( properties.get( "bankAccount.code" ) )
                         .isEqualTo( "REVO" );
             }
         };
@@ -266,87 +212,6 @@ public class TransactionPublisherTaskTest
         };
     }
 
-    @Test
-    public void unsuccessful_AccountIdMissing()
-    {
-        expectationsTransaction();
-
-        new Expectations( account )
-        {
-            {
-                account.getId();
-                result = null;
-
-                lap.get();
-                result = account;
-            }
-        };
-
-        tested.execute();
-
-        new Verifications()
-        {
-            {
-                facade.insert( any );
-                times = 0;
-            }
-        };
-    }
-
-    @Test
-    public void unsuccessful_AccountEmailMissing()
-    {
-        expectationsTransaction();
-
-        new Expectations()
-        {
-            {
-                lap.get();
-                result = new LocalAccount( new Account()
-                        .setId( ACCOUNT_ID )
-                        .setEmail( "" )
-                        .setIdentityId( ACCOUNT_IDENTITY_ID ) );
-            }
-        };
-
-        tested.execute();
-
-        new Verifications()
-        {
-            {
-                facade.insert( any );
-                times = 0;
-            }
-        };
-    }
-
-    @Test
-    public void unsuccessful_AccountIdentityIdMissing()
-    {
-        expectationsTransaction();
-
-        new Expectations()
-        {
-            {
-                lap.get();
-                result = new LocalAccount( new Account()
-                        .setId( ACCOUNT_ID )
-                        .setEmail( EXPECTED_EMAIL )
-                        .setIdentityId( "" ) );
-            }
-        };
-
-        tested.execute();
-
-        new Verifications()
-        {
-            {
-                facade.insert( any );
-                times = 0;
-            }
-        };
-    }
-
     /**
      * On exception task will retry
      */
@@ -358,9 +223,6 @@ public class TransactionPublisherTaskTest
         new Expectations()
         {
             {
-                lap.get();
-                result = account;
-
                 mapper.map( transaction, Transaction.class );
                 result = new RuntimeException( "temporal failure" );
 
@@ -370,39 +232,6 @@ public class TransactionPublisherTaskTest
         };
 
         tested.execute();
-    }
-
-    /**
-     * This JSON related exception represents a development error, do not re-try
-     */
-    @Test
-    public void unsuccessful_JsonMapperFailure() throws JsonProcessingException
-    {
-        expectationsTransaction();
-
-        new Expectations( jsonMapper )
-        {
-            {
-                lap.get();
-                result = account;
-
-                mapper.map( transaction, Transaction.class );
-                result = api;
-
-                jsonMapper.writeValueAsBytes( api );
-                result = new MockedJsonProcessingException();
-            }
-        };
-
-        tested.execute();
-
-        new Verifications()
-        {
-            {
-                facade.insert( any );
-                times = 0;
-            }
-        };
     }
 
     private void expectationsTransaction()
@@ -417,12 +246,9 @@ public class TransactionPublisherTaskTest
         };
     }
 
-    private Map<String, Object> mapOf( byte[] data, Class<?> valueType )
-            throws IOException
+    private Map<String, Object> mapOf( biz.turnonline.ecosystem.billing.model.Transaction input )
     {
         ObjectMapper mapper = new ObjectMapper();
-
-        Object input = mapper.readValue( data, valueType );
         return mapper.convertValue( input, new PropertiesHasher.MapType() );
     }
 
