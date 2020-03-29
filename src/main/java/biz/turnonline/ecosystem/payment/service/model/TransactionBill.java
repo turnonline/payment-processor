@@ -34,10 +34,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class TransactionBill
         extends CommonTransaction
 {
-    private static final long serialVersionUID = -5485341182934635057L;
+    private static final long serialVersionUID = -290298009607479569L;
 
     @Index
-    private Long billId;
+    private Long bill;
 
     /**
      * Needed if instantiated by objectify.
@@ -59,16 +59,16 @@ public class TransactionBill
      */
     public Long getBillId()
     {
-        return billId;
+        return bill;
     }
 
     /**
      * The bill identified by ID to be associated with this transaction.
      *
-     * @param billId the bill ID to be set
+     * @param id the bill ID to be set
      */
-    public void setBillId( Long billId )
+    public void setBillId( Long id )
     {
-        this.billId = billId;
+        this.bill = id;
     }
 }

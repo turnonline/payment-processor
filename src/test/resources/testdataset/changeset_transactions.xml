@@ -21,7 +21,7 @@
         <entity kind="PP_Transaction" id="680">
             <property indexed="false" name="^d" type="string" value="Bill"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="Bill"/>
-            <property indexed="true" name="billId" type="long" value="246809"/>
+            <property indexed="true" name="bill" type="long" value="246809"/>
             <property name="accountKey" type="reference" value="PP_BankAccount:579"/>
             <property indexed="true" name="bankCode" type="string" value="REVO"/>
             <property indexed="true" name="completedAt" type="date" value="1581751510000"/>
@@ -89,7 +89,7 @@
         <entity kind="PP_Transaction">
             <property indexed="false" name="^d" type="string" value="Bill"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="Bill"/>
-            <property indexed="true" name="billId" type="long" value="52437482"/>
+            <property indexed="true" name="bill" type="long" value="52437482"/>
             <property name="accountKey" type="reference" value="PP_BankAccount:579"/>
             <property indexed="true" name="bankCode" type="string" value="REVO"/>
             <property name="amount" type="double" value="1.0"/>
@@ -129,7 +129,7 @@
         <entity kind="PP_Transaction">
             <property indexed="false" name="^d" type="string" value="Bill"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="Bill"/>
-            <property indexed="true" name="billId" type="long" value="546576"/>
+            <property indexed="true" name="bill" type="long" value="546576"/>
             <property name="accountKey" type="reference" value="PP_BankAccount:689"/>
             <property indexed="true" name="bankCode" type="string" value="7500"/>
             <property indexed="true" name="completedAt" type="date" value="1582183820000"/>
