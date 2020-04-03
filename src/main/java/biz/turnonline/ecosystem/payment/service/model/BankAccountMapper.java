@@ -140,7 +140,7 @@ class BankAccountMapper
         }
 
         String country = backend.getCountry();
-        BankCode bankCode = codeBook.getBankCode( account, code, null, country );
+        BankCode bankCode = codeBook.getBankCode( code, null, country );
         if ( bankCode == null )
         {
             if ( country == null )

@@ -20,7 +20,6 @@ package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.payment.api.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
-import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -76,14 +75,14 @@ public class CodeBookEndpoint
                                                  User authUser )
             throws Exception
     {
-        LocalAccount account = common.checkAccount( authUser, request );
+        common.authorize( authUser );
         Locale language = common.getAcceptLanguage( request );
         List<BankCode> bankCodes;
 
         try
         {
             Map<String, biz.turnonline.ecosystem.payment.service.model.BankCode> dbBankCodes;
-            dbBankCodes = service.getBankCodes( account, language, country );
+            dbBankCodes = service.getBankCodes( language, country );
 
             bankCodes = mapper.mapAsList( dbBankCodes.values(), BankCode.class );
         }
@@ -91,7 +90,7 @@ public class CodeBookEndpoint
         {
             logger.error( "BankCode code-book list retrieval has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getId() )
+                    .add( "User", authUser.getId() )
                     .add( "country", country )
                     .toString(), e );
 
@@ -108,20 +107,21 @@ public class CodeBookEndpoint
                                          User authUser )
             throws Exception
     {
-        LocalAccount account = common.checkAccount( authUser, request );
+        common.authorize( authUser );
+
         Locale language = common.getAcceptLanguage( request );
         BankCode bankCode;
         biz.turnonline.ecosystem.payment.service.model.BankCode dbBankCode;
 
         try
         {
-            dbBankCode = service.getBankCode( account, code, language, country );
+            dbBankCode = service.getBankCode( code, language, country );
         }
         catch ( Exception e )
         {
             logger.error( "BankCode code-book single record retrieval has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getId() )
+                    .add( "User", authUser.getId() )
                     .add( "country", country )
                     .toString(), e );
 
@@ -141,7 +141,7 @@ public class CodeBookEndpoint
         {
             logger.error( "BankCode code-book mapping has failed: "
                     + MoreObjects.toStringHelper( "Input" )
-                    .add( "Account", account.getId() )
+                    .add( "User", authUser.getId() )
                     .add( "country", country )
                     .toString(), e );
 

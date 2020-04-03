@@ -117,7 +117,7 @@ class PaymentConfigBean
         checkNotNull( bank, TEMPLATE, "Bank code" );
         checkNotNull( certificate, TEMPLATE, "Certificate" );
 
-        BankCode bankCode = codeBook.getBankCode( owner, bank.toUpperCase(), null, null );
+        BankCode bankCode = codeBook.getBankCode( bank.toUpperCase(), null, null );
         if ( bankCode == null )
         {
             throw new BankCodeNotFound( bank );

@@ -20,8 +20,6 @@ package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.payment.api.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
-import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
@@ -30,7 +28,6 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
 import mockit.Tested;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,20 +61,8 @@ public class CodeBookEndpointTest
     @Mocked
     private User authUser;
 
-    private LocalAccount account;
-
     @Mocked
     private biz.turnonline.ecosystem.payment.service.model.BankCode dbBankCode;
-
-    @BeforeMethod
-    public void before()
-    {
-        account = new LocalAccount( new Account()
-                .setId( 1735L )
-                .setEmail( "my.account@turnonline.biz" )
-                .setIdentityId( "64HGtr6ks" )
-                .setAudience( "turn-online" ) );
-    }
 
     @Test
     public void listCodebookBankCodes() throws Exception
@@ -85,12 +70,10 @@ public class CodeBookEndpointTest
         new Expectations()
         {
             {
-                common.checkAccount( authUser, request );
-                result = account;
-
+                common.authorize( authUser );
                 common.getAcceptLanguage( request );
 
-                service.getBankCodes( account, ( Locale ) any, "SK" );
+                service.getBankCodes( ( Locale ) any, "SK" );
                 //noinspection unchecked,ConstantConditions
                 mapper.mapAsList( ( List<biz.turnonline.ecosystem.payment.service.model.BankCode> ) any, BankCode.class );
             }
@@ -106,11 +89,8 @@ public class CodeBookEndpointTest
         new Expectations()
         {
             {
-                common.checkAccount( authUser, request );
-                result = account;
-
-                //noinspection ConstantConditions
-                service.getBankCodes( ( LocalAccount ) any, ( Locale ) any, anyString );
+                common.authorize( authUser );
+                service.getBankCodes( ( Locale ) any, anyString );
                 result = new RuntimeException();
             }
         };
@@ -124,11 +104,8 @@ public class CodeBookEndpointTest
         new Expectations()
         {
             {
-                common.checkAccount( authUser, request );
-                result = account;
-
-                //noinspection unchecked
-                mapper.mapAsList( ( List ) any, BankCode.class );
+                common.authorize( authUser );
+                mapper.mapAsList( ( List<?> ) any, BankCode.class );
                 result = new RuntimeException();
             }
         };
@@ -143,15 +120,13 @@ public class CodeBookEndpointTest
         new Expectations()
         {
             {
-                common.checkAccount( authUser, request );
-                result = account;
-
+                common.authorize( authUser );
                 common.getAcceptLanguage( request );
 
                 common.getAcceptLanguage( request );
                 result = locale;
 
-                service.getBankCode( account, "0900", locale, "SK" );
+                service.getBankCode( "0900", locale, "SK" );
                 mapper.map( dbBankCode, BankCode.class );
             }
         };
@@ -166,8 +141,7 @@ public class CodeBookEndpointTest
         new Expectations()
         {
             {
-                //noinspection ConstantConditions
-                service.getBankCode( ( LocalAccount ) any, anyString, ( Locale ) any, anyString );
+                service.getBankCode( anyString, ( Locale ) any, anyString );
                 result = null;
             }
         };
@@ -181,8 +155,7 @@ public class CodeBookEndpointTest
         new Expectations()
         {
             {
-                common.checkAccount( authUser, request );
-                result = account;
+                common.authorize( authUser );
 
                 mapper.map( dbBankCode, BankCode.class );
                 result = new RuntimeException();
@@ -198,11 +171,9 @@ public class CodeBookEndpointTest
         new Expectations()
         {
             {
-                common.checkAccount( authUser, request );
-                result = account;
+                common.authorize( authUser );
 
-                //noinspection ConstantConditions
-                service.getBankCode( ( LocalAccount ) any, anyString, ( Locale ) any, anyString );
+                service.getBankCode( anyString, ( Locale ) any, anyString );
                 result = new RuntimeException();
             }
         };

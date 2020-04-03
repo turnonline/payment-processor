@@ -70,7 +70,7 @@ public class BankAccountMapperTest
                 context.getProperty( LocalAccount.class );
                 result = account;
 
-                codeBook.getBankCode( account, code, ( Locale ) any, anyString );
+                codeBook.getBankCode( code, ( Locale ) any, anyString );
                 result = bankCode;
             }
         };
@@ -122,7 +122,7 @@ public class BankAccountMapperTest
                 context.getProperty( LocalAccount.class );
                 result = account;
 
-                codeBook.getBankCode( account, anyString, ( Locale ) any, anyString );
+                codeBook.getBankCode( anyString, ( Locale ) any, anyString );
                 result = bankCode;
             }
         };
@@ -160,7 +160,7 @@ public class BankAccountMapperTest
                 context.getProperty( LocalAccount.class );
                 result = account;
 
-                codeBook.getBankCode( account, code, ( Locale ) any, anyString );
+                codeBook.getBankCode( code, ( Locale ) any, anyString );
                 result = null;
             }
         };
@@ -209,7 +209,7 @@ public class BankAccountMapperTest
                 context.getProperty( LocalAccount.class );
                 result = account;
 
-                codeBook.getBankCode( account, anyString, ( Locale ) any, anyString );
+                codeBook.getBankCode( anyString, ( Locale ) any, anyString );
                 result = null;
 
                 // mocking of the use case the backend::setIban will cause no country has been set
