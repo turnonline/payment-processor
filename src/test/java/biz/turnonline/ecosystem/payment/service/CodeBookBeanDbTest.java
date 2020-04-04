@@ -61,7 +61,7 @@ public class CodeBookBeanDbTest
         // en-SK
         Map<String, BankCode> bankCodes = tested.getBankCodes( DEFAULT_LOCALE, DEFAULT_DOMICILE );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 36 );
+        assertThat( bankCodes ).hasSize( 35 );
 
         BankCode bankCode = bankCodes.get( "0200" );
         assertThat( bankCode ).isNotNull();
@@ -71,17 +71,17 @@ public class CodeBookBeanDbTest
         // cached value retrieval
         bankCodes = tested.getBankCodes( DEFAULT_LOCALE, DEFAULT_DOMICILE );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 36 );
+        assertThat( bankCodes ).hasSize( 35 );
 
         // default locale and domicile taken from the account
         bankCodes = tested.getBankCodes( null, null );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 36 );
+        assertThat( bankCodes ).hasSize( 35 );
 
         // cs-SK
         bankCodes = tested.getBankCodes( new Locale( "cs" ), "SK" );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 36 );
+        assertThat( bankCodes ).hasSize( 35 );
 
         bankCode = bankCodes.get( "0200" );
         assertThat( bankCode ).isNotNull();
@@ -91,7 +91,7 @@ public class CodeBookBeanDbTest
         // sk-SK
         bankCodes = tested.getBankCodes( new Locale( "sk" ), "SK" );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 36 );
+        assertThat( bankCodes ).hasSize( 35 );
 
         bankCode = bankCodes.get( "0200" );
         assertThat( bankCode ).isNotNull();
@@ -101,7 +101,7 @@ public class CodeBookBeanDbTest
         // en-CZ
         bankCodes = tested.getBankCodes( new Locale( "en" ), "CZ" );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 53 );
+        assertThat( bankCodes ).hasSize( 52 );
 
         bankCode = bankCodes.get( "0100" );
         assertThat( bankCode ).isNotNull();
@@ -111,7 +111,7 @@ public class CodeBookBeanDbTest
         // cs-CZ
         bankCodes = tested.getBankCodes( new Locale( "cs" ), "CZ" );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 53 );
+        assertThat( bankCodes ).hasSize( 52 );
 
         bankCode = bankCodes.get( "0100" );
         assertThat( bankCode ).isNotNull();
@@ -121,7 +121,7 @@ public class CodeBookBeanDbTest
         // sk-CZ
         bankCodes = tested.getBankCodes( new Locale( "sk" ), "CZ" );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 53 );
+        assertThat( bankCodes ).hasSize( 52 );
 
         bankCode = bankCodes.get( "0100" );
         assertThat( bankCode ).isNotNull();
