@@ -33,7 +33,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * <p>
  * <strong>Project ID</strong>
  * </p>
- * Identification of this account is based on: {@code SystemProperty.applicationId.get()} known as project Id.
+ * Identification of this account is based on: {@code ServiceOptions.getDefaultProjectId()} known as project Id.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */

@@ -20,7 +20,7 @@ package biz.turnonline.ecosystem.payment.oauth;
 
 import biz.turnonline.ecosystem.revolut.business.oauth.RevolutCredential;
 import com.google.api.gax.rpc.NotFoundException;
-import com.google.appengine.api.utils.SystemProperty;
+import com.google.cloud.ServiceOptions;
 import com.google.cloud.secretmanager.v1beta1.AccessSecretVersionRequest;
 import com.google.cloud.secretmanager.v1beta1.AccessSecretVersionResponse;
 import com.google.cloud.secretmanager.v1beta1.AddSecretVersionRequest;
@@ -93,7 +93,7 @@ public class RevolutCredentialAdministration
         String error = "Environment variable " + serviceNameKey + " is null, it's mandatory";
 
         ISSUER = checkNotNull( System.getenv( serviceNameKey ), error );
-        PROJECT_ID = SystemProperty.applicationId.get();
+        PROJECT_ID = ServiceOptions.getDefaultProjectId();
         cache = new ConcurrentHashMap<>();
     }
 
