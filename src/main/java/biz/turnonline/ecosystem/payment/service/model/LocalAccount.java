@@ -18,7 +18,6 @@
 
 package biz.turnonline.ecosystem.payment.service.model;
 
-import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.NoRetryException;
 import biz.turnonline.ecosystem.steward.facade.Domicile;
 import biz.turnonline.ecosystem.steward.model.Account;
@@ -90,25 +89,12 @@ public class LocalAccount
         this.facade = facade;
     }
 
-    /**
-     * Constructs local account. If no Account ID set then can't be saved.
-     *
-     * @param builder mandatory properties are: email, identityId
-     */
-    LocalAccount( @Nonnull LocalAccountProvider.Builder builder )
-    {
-        checkNotNull( builder, "Builder can't be null" );
-        this.email = checkNotNull( builder.getEmail(), "Account email is mandatory" );
-        this.identityId = checkNotNull( builder.getIdentityId(), "Account Identity ID is mandatory" );
-        super.setId( builder.getAccountId() );
-    }
-
     public LocalAccount( @Nonnull Account account )
     {
         checkNotNull( account, "Account is mandatory" );
 
-        super.setId( checkNotNull( account.getId(), "Account ID is mandatory" ) );
-        this.email = checkNotNull( account.getEmail(), "Account email is mandatory" );
+        super.setId( account.getId() );
+        this.email = account.getEmail();
         this.identityId = checkNotNull( account.getIdentityId(), "Account Identity ID is mandatory" );
         this.tAccount = account;
         init( account );
@@ -170,7 +156,7 @@ public class LocalAccount
     }
 
     /**
-     * Retrieves remote account identified by {@link #getEmail()}.
+     * Retrieves remote account identified by {@link #getIdentityId()} ()}.
      * Authentication against microservice is via service account.
      *
      * @return the account or {@code null} if not found
@@ -185,7 +171,7 @@ public class LocalAccount
         try
         {
             tAccount = facade.get( Account.class )
-                    .identifiedBy( String.valueOf( getId() ) )
+                    .identifiedBy( getIdentityId() )
                     .onBehalfOf( this )
                     .finish();
         }

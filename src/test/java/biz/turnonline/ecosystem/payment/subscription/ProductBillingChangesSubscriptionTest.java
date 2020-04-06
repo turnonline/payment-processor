@@ -36,7 +36,7 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
-import org.ctoolkit.restapi.client.NotFoundException;
+import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.ctoolkit.restapi.client.pubsub.TopicMessage;
 import org.ctoolkit.services.task.Task;
 import org.ctoolkit.services.task.TaskExecutor;
@@ -100,8 +100,8 @@ public class ProductBillingChangesSubscriptionTest
         new Expectations()
         {
             {
-                lap.initGet( ( LocalAccountProvider.Builder ) any );
-                result = new NotFoundException( "Local account not found" );
+                lap.check( ( PubsubCommand ) any );
+                result = null;
             }
         };
 

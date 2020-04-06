@@ -21,7 +21,7 @@ package biz.turnonline.ecosystem.payment.service.model;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
-import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
+import biz.turnonline.ecosystem.steward.model.Account;
 import ma.glasnost.orika.MappingContext;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -52,9 +52,10 @@ public class BankAccountMapperTest
     @Mocked
     private MappingContext context;
 
-    private LocalAccount account = new LocalAccount( new LocalAccountProvider.Builder()
-            .email( "my.account@turnonline.biz" )
-            .identityId( "64HGtr6ks" ) );
+    private LocalAccount account = new LocalAccount( new Account()
+            .setId( 53542L )
+            .setEmail( "my.account@turnonline.biz" )
+            .setIdentityId( "64HGtr6ks" ) );
 
     @Mocked
     private BankCode bankCode;

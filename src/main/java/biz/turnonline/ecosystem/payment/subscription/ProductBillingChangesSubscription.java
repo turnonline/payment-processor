@@ -33,7 +33,6 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
 import com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
-import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.ctoolkit.restapi.client.pubsub.PubsubMessageListener;
 import org.ctoolkit.services.task.Task;
@@ -66,6 +65,7 @@ import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ENTITY_ID;
  * </ul>
  * Payment (bank transfer) will be scheduled only if one of the condition is being matched:
  * <ul>
+ *     <li>Pub/Sub account matches the local account associated with this service (single tenant concept)</li>
  *     <li>{@link InvoicePayment#getType()} ()} is TRANSFER</li>
  *     <li>{@link InvoicePayment#getType()} is {@code null}, meaning not configured at all,
  *     but rest of the payment properties are valid for bank transfer</li>
@@ -122,9 +122,6 @@ class ProductBillingChangesSubscription
         List<String> uniqueKey = command.getUniqueKey();
         String dataType = command.getDataType();
         boolean delete = command.isDelete();
-        String accountEmail = command.getAccountEmail();
-        String accountAudience = command.getAccountAudience();
-        Long accountId = command.getAccountId();
 
         DateTime publishTime = command.getPublishDateTime();
         String data = message.getData();
@@ -134,19 +131,14 @@ class ProductBillingChangesSubscription
                 + " with length: "
                 + data.length() + " and unique key: '" + uniqueKey + "'" + ( delete ? " to be deleted" : "" ) );
 
-        LocalAccount account;
-        LocalAccountProvider.Builder builder = new LocalAccountProvider.Builder()
-                .email( accountEmail )
-                .identityId( command.getAccountIdentityId() )
-                .accountId( accountId );
-
-        try
+        LocalAccount debtor = lap.check( command );
+        if ( debtor == null )
         {
-            account = lap.initGet( builder );
-        }
-        catch ( NotFoundException e )
-        {
-            LOGGER.warn( "Processing of the message has been retired for: " + builder );
+            String identityId = command.getAccountIdentityId();
+            LOGGER.warn( "Processing of the message '"
+                    + data
+                    + "' has been retired for account identified by: "
+                    + identityId );
             return;
         }
 
@@ -157,7 +149,7 @@ class ProductBillingChangesSubscription
                 IncomingInvoice invoice = command.fromData( IncomingInvoice.class );
                 DateTime last = delete && publishTime != null ? publishTime : invoice.getModificationDate();
 
-                Timestamp timestamp = Timestamp.of( dataType, uniqueKey, account, last );
+                Timestamp timestamp = Timestamp.of( dataType, uniqueKey, debtor, last );
                 if ( timestamp.isObsolete() )
                 {
                     LOGGER.info( "Incoming Invoice changes are obsolete, nothing to do " + timestamp.getName() );
@@ -171,7 +163,7 @@ class ProductBillingChangesSubscription
                     debtorBank = config.getDebtorBankAccount( payment );
                     if ( debtorBank == null || !debtorBank.isDebtorReady() )
                     {
-                        LOGGER.warn( "Debtor '" + account.getId() + "' bank account is not ready yet to be debited" );
+                        LOGGER.warn( "Debtor '" + debtor.getId() + "' bank account is not ready yet to be debited" );
                         return;
                     }
                 }
@@ -199,11 +191,11 @@ class ProductBillingChangesSubscription
                         CommonTransaction tDraft = config.initGetTransactionDraft( invoice );
 
                         // incoming invoice has been successfully de-serialized, schedule processing
-                        Key<LocalAccount> accountKey = account.entityKey();
+                        Key<LocalAccount> debtorKey = debtor.entityKey();
                         Key<CompanyBankAccount> debtorBankKey = debtorBank.entityKey();
 
-                        Task<IncomingInvoice> tasks = new RevolutBeneficiarySyncTask( accountKey, data, debtorBankKey );
-                        tasks.addNext( new RevolutIncomingInvoiceProcessorTask( accountKey, data, delete, debtorBankKey, tDraft ) );
+                        Task<IncomingInvoice> tasks = new RevolutBeneficiarySyncTask( debtorKey, data, debtorBankKey );
+                        tasks.addNext( new RevolutIncomingInvoiceProcessorTask( debtorKey, data, delete, debtorBankKey, tDraft ) );
 
                         executor.schedule( tasks );
                         timestamp.done();
@@ -223,7 +215,7 @@ class ProductBillingChangesSubscription
                 PurchaseOrder order = command.fromData( PurchaseOrder.class );
                 DateTime last = delete && publishTime != null ? publishTime : order.getModificationDate();
 
-                Timestamp timestamp = Timestamp.of( dataType, uniqueKey, account, last );
+                Timestamp timestamp = Timestamp.of( dataType, uniqueKey, debtor, last );
                 if ( timestamp.isObsolete() )
                 {
                     LOGGER.info( "Incoming Order changes are obsolete, nothing to do " + timestamp.getName() );
@@ -231,7 +223,7 @@ class ProductBillingChangesSubscription
                 }
 
                 // purchase order has been successfully de-serialized, schedule processing
-                executor.schedule( new PurchaseOrderProcessorTask( account.entityKey(), data, delete ) );
+                executor.schedule( new PurchaseOrderProcessorTask( debtor.entityKey(), data, delete ) );
                 timestamp.done();
                 break;
             }

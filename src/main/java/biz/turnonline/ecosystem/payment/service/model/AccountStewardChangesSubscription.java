@@ -111,7 +111,7 @@ public class AccountStewardChangesSubscription
                 + data.length() + " and unique key: '" + uniqueKey + "'" + ( delete ? " to be deleted" : "" ) );
 
         Account account = command.fromData( Account.class );
-        LocalAccount associatedAccount = lap.get();
+        LocalAccount associatedAccount = lap.check( command );
         LocalAccount localAccount;
 
         if ( associatedAccount != null && Objects.equals( associatedAccount.getId(), account.getId() ) )

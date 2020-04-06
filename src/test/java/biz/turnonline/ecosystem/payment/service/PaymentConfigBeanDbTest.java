@@ -37,19 +37,28 @@ import mockit.Mock;
 import mockit.MockUp;
 import nl.garvelink.iban.IBAN;
 import org.ctoolkit.agent.service.impl.ImportTask;
+import org.ctoolkit.restapi.client.adaptee.GetExecutorAdaptee;
+import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.ctoolkit.services.task.Task;
 import org.ctoolkit.services.task.TaskExecutor;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static com.googlecode.objectify.ObjectifyService.ofy;
+import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_ID;
+import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_UNIQUE_ID;
 
 /**
  * {@link PaymentConfigBean} unit testing incl. tests against emulated (local) App Engine datastore.
@@ -83,6 +92,8 @@ public class PaymentConfigBeanDbTest
     @Inject
     private Injector injector;
 
+    private Account account;
+
     private LocalAccount lAccount;
 
     private IncomingInvoice invoice;
@@ -92,9 +103,8 @@ public class PaymentConfigBeanDbTest
     {
         invoice = genericJsonFromFile( "incoming-invoice.pubsub.json", IncomingInvoice.class );
 
-        Account account = genericJsonFromFile( "account.json", Account.class );
+        account = genericJsonFromFile( "account.json", Account.class );
         lAccount = new LocalAccount( account );
-        lAccount.save();
 
         Account another = genericJsonFromFile( "account.json", Account.class );
         another.setId( 998877L );
@@ -111,10 +121,75 @@ public class PaymentConfigBeanDbTest
     }
 
     @Test
-    public <T extends TaskExecutor> void enableApiAccess_RevolutTaskScheduled()
+    public <T extends GetExecutorAdaptee<?>> void localAccount_Check()
     {
         // precondition check
-        assertWithMessage( "Local Account should not be configured yet, thus" )
+        int count = ofy().load().type( LocalAccount.class ).count();
+        assertWithMessage( "Local account not be configured yet" )
+                .that( count == 0 )
+                .isTrue();
+
+        AtomicReference<Boolean> remoteCall = new AtomicReference<>();
+        remoteCall.set( Boolean.FALSE );
+
+        new MockUp<T>()
+        {
+            @Mock
+            Object executeGet( @Nonnull Object request,
+                               @Nullable Map<String, Object> parameters,
+                               @Nullable Locale locale )
+            {
+                remoteCall.set( Boolean.TRUE );
+                return account;
+            }
+        };
+
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put( ACCOUNT_IDENTITY_ID, lAccount.getIdentityId() );
+
+        LocalAccount checked = lap.check( new PubsubCommand( attributes, null, null, null ) );
+        assertWithMessage( "Local account just created" )
+                .that( checked )
+                .isNotNull();
+
+        count = ofy().load().type( LocalAccount.class ).count();
+        assertWithMessage( "Local account already stored" )
+                .that( count == 1 )
+                .isTrue();
+
+        assertWithMessage( "Remote Account retrieval" )
+                .that( remoteCall.get() )
+                .isTrue();
+
+        // trying to get non default account
+        attributes.put( ACCOUNT_UNIQUE_ID, String.valueOf( lAccount.getId() + 1 ) );
+        checked = lap.check( new PubsubCommand( attributes, null, null, null ) );
+        assertWithMessage( "Local account with non default ID" )
+                .that( checked )
+                .isNull();
+    }
+
+    @Test
+    public <T extends TaskExecutor, E extends GetExecutorAdaptee<?>> void enableApiAccess_RevolutTaskScheduled()
+    {
+        new MockUp<E>()
+        {
+            @Mock
+            Object executeGet( @Nonnull Object request,
+                               @Nullable Map<String, Object> parameters,
+                               @Nullable Locale locale )
+            {
+                return account;
+            }
+        };
+
+        Map<String, String> attributes = new HashMap<>();
+        attributes.put( ACCOUNT_IDENTITY_ID, lAccount.getIdentityId() );
+
+        LocalAccount checked = lap.check( new PubsubCommand( attributes, null, null, null ) );
+
+        // precondition check
+        assertWithMessage( "Local Account should not be configured yet" )
                 .that( lap.get() )
                 .isNull();
 
@@ -137,7 +212,7 @@ public class PaymentConfigBeanDbTest
         certificate.setClientId( CLIENT_ID );
         certificate.setKeyName( privateKeyName );
 
-        Certificate result = bean.enableApiAccess( lAccount, REVOLUT_BANK_CODE.toLowerCase(), certificate );
+        Certificate result = bean.enableApiAccess( checked, REVOLUT_BANK_CODE.toLowerCase(), certificate );
         ofy().clear();
 
         assertWithMessage( "Local Account should be already configured, thus" )
@@ -174,12 +249,13 @@ public class PaymentConfigBeanDbTest
 
         assertWithMessage( "Task's account entity key" )
                 .that( scheduledTask.get().getEntityKey() )
-                .isEqualTo( lAccount.entityKey() );
+                .isEqualTo( checked.entityKey() );
     }
 
     @Test
     public <T extends TaskExecutor> void enableApiAccess_RevolutAccessAuthorised()
     {
+        lAccount.save();
         AtomicReference<Task<?>> scheduledTask = new AtomicReference<>();
 
         // scheduled tasks mocked

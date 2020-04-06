@@ -23,12 +23,14 @@ import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.cloud.ServiceOptions;
 import com.google.common.base.Stopwatch;
 import org.ctoolkit.restapi.client.RestFacade;
+import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Objects;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -53,17 +55,19 @@ public class LocalAccountProviderImpl
     }
 
     @Override
-    public LocalAccount initGet( @Nonnull Builder builder )
+    public LocalAccount check( @Nonnull PubsubCommand command )
     {
-        checkNotNull( builder, "Builder can't be null" );
-        checkNotNull( builder.getEmail(), "Account email can't be null" );
-        checkNotNull( builder.getIdentityId(), "Account Identity ID is mandatory" );
+        checkNotNull( command, "PubsubCommand can't be null" );
 
-        LocalAccount localAccount = get( builder.getEmail() );
-
-        if ( localAccount == null )
+        LocalAccount localAccount;
+        if ( ofy().load().type( LocalAccount.class ).count() == 0 )
         {
             Stopwatch stopwatch = Stopwatch.createStarted();
+            Account builder = new Account()
+                    .setEmail( command.getAccountEmail() )
+                    .setIdentityId( command.getAccountIdentityId() )
+                    .setId( command.getAccountId() );
+
             LocalAccount temp = new LocalAccount( builder );
 
             Account remote = facade.get( Account.class )
@@ -76,15 +80,19 @@ public class LocalAccountProviderImpl
             stopwatch.stop();
             logger.info( "Local account just has been created (" + stopwatch + "): " + localAccount );
         }
-
-        if ( !builder.getIdentityId().equals( localAccount.getIdentityId() ) )
+        else
         {
-            logger.error( "IdentityId mismatch. Current " + LocalAccount.class.getSimpleName() + " '"
-                    + localAccount.getIdentityId() + "' does not match to the authenticated account: " + builder );
-            throw new IllegalArgumentException( "Identity mismatch." );
+            localAccount = get();
         }
 
+        if ( localAccount == null
+                || !Objects.equals( localAccount.getIdentityId(), command.getAccountIdentityId() ) )
+        {
+            logger.warn( "Account '" + command.getAccountIdentityId() + "' is not associated with this service" );
+            return null;
+        }
         return localAccount;
+
     }
 
     @Override
@@ -93,18 +101,5 @@ public class LocalAccountProviderImpl
         String projectId = ServiceOptions.getDefaultProjectId();
         PaymentLocalAccount pla = ofy().load().type( PaymentLocalAccount.class ).id( projectId ).now();
         return pla == null ? null : pla.get();
-    }
-
-    @Override
-    public LocalAccount get( @Nonnull String email )
-    {
-        checkNotNull( email, "Account email can't be null" );
-
-        return ofy()
-                .load()
-                .type( LocalAccount.class )
-                .filter( "email", email )
-                .first()
-                .now();
     }
 }

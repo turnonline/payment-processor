@@ -27,6 +27,7 @@ import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.api.server.spi.response.UnauthorizedException;
 import com.google.common.net.HttpHeaders;
+import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,7 +35,12 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+
+import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
+import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_ID;
 
 /**
  * The common services to handle REST API endpoints requests.
@@ -118,20 +124,15 @@ class EndpointsCommon
         authorize( authUser );
 
         String authEmail = authUser.getEmail();
-        LocalAccount account = null;
-        boolean notFound = false;
+        LocalAccount account;
 
         try
         {
-            account = lap.initGet( new LocalAccountProvider.Builder()
-                    .email( authUser.getEmail() )
-                    .identityId( authUser.getId() ) );
+            Map<String, String> attributes = new HashMap<>();
+            attributes.put( ACCOUNT_EMAIL, authUser.getEmail() );
+            attributes.put( ACCOUNT_IDENTITY_ID, authUser.getId() );
 
-            request.setAttribute( Account.class.getName(), account );
-        }
-        catch ( org.ctoolkit.restapi.client.NotFoundException e )
-        {
-            notFound = true;
+            account = lap.check( new PubsubCommand( attributes, null, null, null ) );
         }
         catch ( Exception e )
         {
@@ -139,11 +140,12 @@ class EndpointsCommon
             throw new InternalServerErrorException( tryAgainLaterMessage() );
         }
 
-        if ( notFound )
+        if ( account == null )
         {
             throw new NotFoundException( accountNotFoundMessage( authEmail ) );
         }
 
+        request.setAttribute( Account.class.getName(), account );
         return account;
     }
 
