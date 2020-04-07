@@ -34,7 +34,7 @@ import biz.turnonline.ecosystem.payment.service.model.PaymentLocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
 import biz.turnonline.ecosystem.payment.service.model.TransactionInvoice;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutDebtorBankAccountsInit;
-import com.google.appengine.api.utils.SystemProperty;
+import com.google.cloud.ServiceOptions;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
@@ -117,7 +117,7 @@ class PaymentConfigBean
         checkNotNull( bank, TEMPLATE, "Bank code" );
         checkNotNull( certificate, TEMPLATE, "Certificate" );
 
-        BankCode bankCode = codeBook.getBankCode( owner, bank.toUpperCase(), null, null );
+        BankCode bankCode = codeBook.getBankCode( bank.toUpperCase(), null, null );
         if ( bankCode == null )
         {
             throw new BankCodeNotFound( bank );
@@ -125,7 +125,7 @@ class PaymentConfigBean
 
         if ( datastore.count( Criteria.of( PaymentLocalAccount.class ) ) == 0 )
         {
-            new PaymentLocalAccount( owner, SystemProperty.applicationId.get() ).save();
+            new PaymentLocalAccount( owner, ServiceOptions.getDefaultProjectId() ).save();
         }
 
         if ( REVOLUT_BANK_CODE.equals( bankCode.getCode() ) )

@@ -57,19 +57,21 @@ import java.util.concurrent.TimeoutException;
 )
 public class BackendServiceTestCase
 {
+    public static final String GOOGLE_CLOUD_PROJECT = "b2x-app";
+
     private final static Logger logger = LoggerFactory.getLogger( BackendServiceTestCase.class );
 
     static
     {
         SystemProperty.environment.set( "Development" );
-        SystemProperty.applicationId.set( "b2x-app" );
+        SystemProperty.applicationId.set( GOOGLE_CLOUD_PROJECT );
     }
+
+    protected LocalServiceTestHelper helper;
 
     private LocalTaskQueueTestConfig.TaskCountDownLatch latch = new LocalTaskQueueTestConfig.TaskCountDownLatch( 1 );
 
     private LocalObjectifyHelper ofyHelper;
-
-    protected LocalServiceTestHelper helper;
 
     public static <T> T getFromFile( String json, Class<T> valueType )
     {

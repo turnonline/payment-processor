@@ -19,8 +19,6 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
-import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import biz.turnonline.ecosystem.steward.model.Account;
 import org.ctoolkit.agent.service.impl.ImportTask;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -46,15 +44,14 @@ public class CodeBookBeanDbTest
     @Inject
     private CodeBook tested;
 
-    private LocalAccount account;
-
     @BeforeMethod
     public void before()
     {
-        account = new LocalAccount( genericJsonFromFile( "account.json", Account.class ) );
-
         // import bank code code-book
         ImportTask task = new ImportTask( "/dataset/changeset_00001.xml" );
+        task.run();
+
+        task = new ImportTask( "/testdataset/changeset_local-account.xml" );
         task.run();
     }
 
@@ -62,9 +59,9 @@ public class CodeBookBeanDbTest
     public void getBankCodes()
     {
         // en-SK
-        Map<String, BankCode> bankCodes = tested.getBankCodes( account, DEFAULT_LOCALE, DEFAULT_DOMICILE );
+        Map<String, BankCode> bankCodes = tested.getBankCodes( DEFAULT_LOCALE, DEFAULT_DOMICILE );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 36 );
+        assertThat( bankCodes ).hasSize( 35 );
 
         BankCode bankCode = bankCodes.get( "0200" );
         assertThat( bankCode ).isNotNull();
@@ -72,19 +69,19 @@ public class CodeBookBeanDbTest
         assertThat( bankCode.getCountry() ).isEqualTo( DEFAULT_DOMICILE );
 
         // cached value retrieval
-        bankCodes = tested.getBankCodes( account, DEFAULT_LOCALE, DEFAULT_DOMICILE );
+        bankCodes = tested.getBankCodes( DEFAULT_LOCALE, DEFAULT_DOMICILE );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 36 );
+        assertThat( bankCodes ).hasSize( 35 );
 
         // default locale and domicile taken from the account
-        bankCodes = tested.getBankCodes( account, null, null );
+        bankCodes = tested.getBankCodes( null, null );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 36 );
+        assertThat( bankCodes ).hasSize( 35 );
 
         // cs-SK
-        bankCodes = tested.getBankCodes( account, new Locale( "cs" ), "SK" );
+        bankCodes = tested.getBankCodes( new Locale( "cs" ), "SK" );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 36 );
+        assertThat( bankCodes ).hasSize( 35 );
 
         bankCode = bankCodes.get( "0200" );
         assertThat( bankCode ).isNotNull();
@@ -92,9 +89,9 @@ public class CodeBookBeanDbTest
         assertThat( bankCode.getCountry() ).isEqualTo( "SK" );
 
         // sk-SK
-        bankCodes = tested.getBankCodes( account, new Locale( "sk" ), "SK" );
+        bankCodes = tested.getBankCodes( new Locale( "sk" ), "SK" );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 36 );
+        assertThat( bankCodes ).hasSize( 35 );
 
         bankCode = bankCodes.get( "0200" );
         assertThat( bankCode ).isNotNull();
@@ -102,9 +99,9 @@ public class CodeBookBeanDbTest
         assertThat( bankCode.getCountry() ).isEqualTo( "SK" );
 
         // en-CZ
-        bankCodes = tested.getBankCodes( account, new Locale( "en" ), "CZ" );
+        bankCodes = tested.getBankCodes( new Locale( "en" ), "CZ" );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 53 );
+        assertThat( bankCodes ).hasSize( 52 );
 
         bankCode = bankCodes.get( "0100" );
         assertThat( bankCode ).isNotNull();
@@ -112,9 +109,9 @@ public class CodeBookBeanDbTest
         assertThat( bankCode.getCountry() ).isEqualTo( "CZ" );
 
         // cs-CZ
-        bankCodes = tested.getBankCodes( account, new Locale( "cs" ), "CZ" );
+        bankCodes = tested.getBankCodes( new Locale( "cs" ), "CZ" );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 53 );
+        assertThat( bankCodes ).hasSize( 52 );
 
         bankCode = bankCodes.get( "0100" );
         assertThat( bankCode ).isNotNull();
@@ -122,9 +119,9 @@ public class CodeBookBeanDbTest
         assertThat( bankCode.getCountry() ).isEqualTo( "CZ" );
 
         // sk-CZ
-        bankCodes = tested.getBankCodes( account, new Locale( "sk" ), "CZ" );
+        bankCodes = tested.getBankCodes( new Locale( "sk" ), "CZ" );
         assertThat( bankCodes ).isNotNull();
-        assertThat( bankCodes ).hasSize( 53 );
+        assertThat( bankCodes ).hasSize( 52 );
 
         bankCode = bankCodes.get( "0100" );
         assertThat( bankCode ).isNotNull();
@@ -135,13 +132,13 @@ public class CodeBookBeanDbTest
     @Test
     public void singleBankCodeRetrieval()
     {
-        BankCode bankCode = tested.getBankCode( account, "1111", new Locale( "en" ), "SK" );
+        BankCode bankCode = tested.getBankCode( "1111", new Locale( "en" ), "SK" );
         assertThat( bankCode ).isNotNull();
         assertThat( bankCode.getLocale() ).isEqualTo( "en" );
         assertThat( bankCode.getCountry() ).isEqualTo( "SK" );
 
         // testing caching
-        BankCode cached = tested.getBankCode( account, "1111", new Locale( "en" ), "SK" );
+        BankCode cached = tested.getBankCode( "1111", new Locale( "en" ), "SK" );
         assertThat( cached ).isNotNull();
         assertThat( cached.getLocale() ).isEqualTo( "en" );
         assertThat( cached.getCountry() ).isEqualTo( "SK" );
@@ -150,7 +147,7 @@ public class CodeBookBeanDbTest
     @Test
     public void singleBankCodeRetrieval_WithDefaultLocaleDomicile()
     {
-        BankCode bankCode = tested.getBankCode( account, "5600", null, null );
+        BankCode bankCode = tested.getBankCode( "5600", null, null );
         assertThat( bankCode ).isNotNull();
         // account locale is 'en'
         assertThat( bankCode.getLocale() ).isEqualTo( "en" );
@@ -158,7 +155,7 @@ public class CodeBookBeanDbTest
         assertThat( bankCode.getCountry() ).isEqualTo( "SK" );
 
         // testing caching
-        BankCode cached = tested.getBankCode( account, "5600", null, null );
+        BankCode cached = tested.getBankCode( "5600", null, null );
         assertThat( cached ).isNotNull();
         assertThat( cached.getLocale() ).isEqualTo( "en" );
         assertThat( cached.getCountry() ).isEqualTo( "SK" );
@@ -167,7 +164,7 @@ public class CodeBookBeanDbTest
     @Test
     public void singleBankCodeRetrieval_NotFound()
     {
-        BankCode bankCode = tested.getBankCode( account, "0987", null, null );
+        BankCode bankCode = tested.getBankCode( "0987", null, null );
         assertThat( bankCode ).isNull();
     }
 }

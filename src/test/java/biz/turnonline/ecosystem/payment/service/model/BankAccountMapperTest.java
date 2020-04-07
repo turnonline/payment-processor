@@ -21,7 +21,7 @@ package biz.turnonline.ecosystem.payment.service.model;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
-import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
+import biz.turnonline.ecosystem.steward.model.Account;
 import ma.glasnost.orika.MappingContext;
 import mockit.Expectations;
 import mockit.Injectable;
@@ -52,9 +52,10 @@ public class BankAccountMapperTest
     @Mocked
     private MappingContext context;
 
-    private LocalAccount account = new LocalAccount( new LocalAccountProvider.Builder()
-            .email( "my.account@turnonline.biz" )
-            .identityId( "64HGtr6ks" ) );
+    private LocalAccount account = new LocalAccount( new Account()
+            .setId( 53542L )
+            .setEmail( "my.account@turnonline.biz" )
+            .setIdentityId( "64HGtr6ks" ) );
 
     @Mocked
     private BankCode bankCode;
@@ -67,10 +68,7 @@ public class BankAccountMapperTest
         new Expectations()
         {
             {
-                context.getProperty( LocalAccount.class );
-                result = account;
-
-                codeBook.getBankCode( account, code, ( Locale ) any, anyString );
+                codeBook.getBankCode( code, ( Locale ) any, anyString );
                 result = bankCode;
             }
         };
@@ -119,10 +117,7 @@ public class BankAccountMapperTest
         new Expectations()
         {
             {
-                context.getProperty( LocalAccount.class );
-                result = account;
-
-                codeBook.getBankCode( account, anyString, ( Locale ) any, anyString );
+                codeBook.getBankCode( anyString, ( Locale ) any, anyString );
                 result = bankCode;
             }
         };
@@ -157,10 +152,7 @@ public class BankAccountMapperTest
         new Expectations()
         {
             {
-                context.getProperty( LocalAccount.class );
-                result = account;
-
-                codeBook.getBankCode( account, code, ( Locale ) any, anyString );
+                codeBook.getBankCode( code, ( Locale ) any, anyString );
                 result = null;
             }
         };
@@ -206,10 +198,7 @@ public class BankAccountMapperTest
         new Expectations( backend )
         {
             {
-                context.getProperty( LocalAccount.class );
-                result = account;
-
-                codeBook.getBankCode( account, anyString, ( Locale ) any, anyString );
+                codeBook.getBankCode( anyString, ( Locale ) any, anyString );
                 result = null;
 
                 // mocking of the use case the backend::setIban will cause no country has been set
@@ -278,17 +267,6 @@ public class BankAccountMapperTest
         assertThat( api.getBank().getCountry() ).isNotNull();
     }
 
-    @Test( expectedExceptions = IllegalArgumentException.class )
-    public void mapApiToBackend_MandatoryAccountMissing()
-    {
-        BankAccount source = getFromFile( "bank-account-3.json", BankAccount.class );
-
-        CompanyBankAccount backend;
-        backend = new CompanyBankAccount( codeBook );
-
-        tested.mapBtoA( source, backend, context );
-    }
-
     @Test
     public void mapApiToBackend_DefaultPrimaryBankAccount()
     {
@@ -296,14 +274,6 @@ public class BankAccountMapperTest
 
         CompanyBankAccount backend;
         backend = new CompanyBankAccount( codeBook );
-
-        new Expectations()
-        {
-            {
-                context.getProperty( LocalAccount.class );
-                result = account;
-            }
-        };
 
         tested.mapBtoA( source, backend, context );
         assertWithMessage( "Default primary bank account" )
@@ -320,14 +290,6 @@ public class BankAccountMapperTest
         backend = new CompanyBankAccount( codeBook );
         backend.setPrimary( true );
 
-        new Expectations()
-        {
-            {
-                context.getProperty( LocalAccount.class );
-                result = account;
-            }
-        };
-
         tested.mapBtoA( source, backend, context );
         assertWithMessage( "Primary bank account" )
                 .that( backend.isPrimary() )
@@ -343,14 +305,6 @@ public class BankAccountMapperTest
         CompanyBankAccount backend;
         backend = new CompanyBankAccount( codeBook );
         backend.setPrimary( false );
-
-        new Expectations()
-        {
-            {
-                context.getProperty( LocalAccount.class );
-                result = account;
-            }
-        };
 
         tested.mapBtoA( source, backend, context );
         assertWithMessage( "Primary bank account" )

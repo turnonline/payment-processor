@@ -48,6 +48,7 @@ import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ENCODED_UNIQUE_KE
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
+@SuppressWarnings( "ConstantConditions" )
 public class AccountStewardChangesSubscriptionTest
 {
     private static final String EMAIL = "my.account@turnonline.biz";
@@ -70,10 +71,10 @@ public class AccountStewardChangesSubscriptionTest
     @Test
     public void onMessage_ValidPubsubMessage_NoChange() throws Exception
     {
-        LocalAccount localAccount = new LocalAccount( new LocalAccountProvider.Builder()
-                .accountId( ACCOUNT_ID )
-                .email( EMAIL )
-                .identityId( IDENTITY_ID ) );
+        LocalAccount localAccount = new LocalAccount( new Account()
+                .setId( ACCOUNT_ID )
+                .setEmail( EMAIL )
+                .setIdentityId( IDENTITY_ID ) );
 
         localAccount.setLocale( "en" );
         localAccount.setDomicile( "SK" );
@@ -82,7 +83,7 @@ public class AccountStewardChangesSubscriptionTest
         new Expectations( tested )
         {
             {
-                lap.get();
+                lap.check( ( PubsubCommand ) any );
                 result = localAccount;
 
                 tested.updateAccount( localAccount, timestamp );
@@ -104,10 +105,10 @@ public class AccountStewardChangesSubscriptionTest
     public void onMessage_ValidPubsubMessage_UninterestedAccount() throws Exception
     {
         // mock account ID to be different as coming via Pub/Sub
-        LocalAccount localAccount = new LocalAccount( new LocalAccountProvider.Builder()
-                .accountId( ACCOUNT_ID )
-                .email( EMAIL )
-                .identityId( IDENTITY_ID ) );
+        LocalAccount localAccount = new LocalAccount( new Account()
+                .setId( ACCOUNT_ID )
+                .setEmail( EMAIL )
+                .setIdentityId( IDENTITY_ID ) );
 
         localAccount.setLocale( "en" );
         localAccount.setDomicile( "SK" );
@@ -116,7 +117,7 @@ public class AccountStewardChangesSubscriptionTest
         new Expectations( tested )
         {
             {
-                lap.get();
+                lap.check( ( PubsubCommand ) any );
                 result = localAccount;
 
                 //noinspection ConstantConditions
@@ -138,16 +139,16 @@ public class AccountStewardChangesSubscriptionTest
     @Test
     public void onMessage_ValidPubsubMessage_EmailChanged() throws Exception
     {
-        LocalAccount localAccount = new LocalAccount( new LocalAccountProvider.Builder()
-                .accountId( ACCOUNT_ID )
-                .email( EMAIL )
-                .identityId( IDENTITY_ID ) );
+        LocalAccount localAccount = new LocalAccount( new Account()
+                .setId( ACCOUNT_ID )
+                .setEmail( EMAIL )
+                .setIdentityId( IDENTITY_ID ) );
         localAccount.setZoneId( DEFAULT_ZONE );
 
         new Expectations( localAccount, tested )
         {
             {
-                lap.get();
+                lap.check( ( PubsubCommand ) any );
                 result = localAccount;
 
                 tested.updateAccount( localAccount, timestamp );
@@ -168,17 +169,17 @@ public class AccountStewardChangesSubscriptionTest
     @Test
     public void onMessage_ValidPubsubMessage_LocaleChanged() throws Exception
     {
-        LocalAccount localAccount = new LocalAccount( new LocalAccountProvider.Builder()
-                .accountId( ACCOUNT_ID )
-                .email( EMAIL )
-                .identityId( IDENTITY_ID ) );
+        LocalAccount localAccount = new LocalAccount( new Account()
+                .setId( ACCOUNT_ID )
+                .setEmail( EMAIL )
+                .setIdentityId( IDENTITY_ID ) );
         localAccount.setLocale( "de" );
         localAccount.setZoneId( DEFAULT_ZONE );
 
         new Expectations( localAccount, tested )
         {
             {
-                lap.get();
+                lap.check( ( PubsubCommand ) any );
                 result = localAccount;
 
                 tested.updateAccount( localAccount, timestamp );
@@ -199,16 +200,16 @@ public class AccountStewardChangesSubscriptionTest
     @Test
     public void onMessage_ValidPubsubMessage_ZoneIdChanged() throws Exception
     {
-        LocalAccount localAccount = new LocalAccount( new LocalAccountProvider.Builder()
-                .accountId( ACCOUNT_ID )
-                .email( EMAIL )
-                .identityId( IDENTITY_ID ) );
+        LocalAccount localAccount = new LocalAccount( new Account()
+                .setId( ACCOUNT_ID )
+                .setEmail( EMAIL )
+                .setIdentityId( IDENTITY_ID ) );
         localAccount.setZoneId( DEFAULT_ZONE );
 
         new Expectations( localAccount, tested )
         {
             {
-                lap.get();
+                lap.check( ( PubsubCommand ) any );
                 result = localAccount;
 
                 tested.updateAccount( localAccount, timestamp );
@@ -236,11 +237,7 @@ public class AccountStewardChangesSubscriptionTest
         new Verifications()
         {
             {
-                lap.get();
-                times = 0;
-
-                //noinspection ConstantConditions
-                lap.initGet( ( LocalAccountProvider.Builder ) any );
+                lap.check( ( PubsubCommand ) any );
                 times = 0;
             }
         };
@@ -255,11 +252,7 @@ public class AccountStewardChangesSubscriptionTest
         new Verifications()
         {
             {
-                lap.get();
-                times = 0;
-
-                //noinspection ConstantConditions
-                lap.initGet( ( LocalAccountProvider.Builder ) any );
+                lap.check( ( PubsubCommand ) any );
                 times = 0;
             }
         };

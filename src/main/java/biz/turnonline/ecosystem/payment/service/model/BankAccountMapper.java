@@ -131,16 +131,8 @@ class BankAccountMapper
             throw ApiValidationException.prepare( key );
         }
 
-        LocalAccount account = ( LocalAccount ) context.getProperty( LocalAccount.class );
-        if ( account == null )
-        {
-            String message = "Authenticated account is mandatory, expected as a MappingContext property with key: "
-                    + LocalAccount.class;
-            throw new IllegalArgumentException( message );
-        }
-
         String country = backend.getCountry();
-        BankCode bankCode = codeBook.getBankCode( account, code, null, country );
+        BankCode bankCode = codeBook.getBankCode( code, null, country );
         if ( bankCode == null )
         {
             if ( country == null )

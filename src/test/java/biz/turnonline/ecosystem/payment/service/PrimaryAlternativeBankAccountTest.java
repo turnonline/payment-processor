@@ -459,7 +459,7 @@ public class PrimaryAlternativeBankAccountTest
                 account.getDomicile();
                 result = Domicile.SK;
 
-                codeBook.getBankCodes( account, ( Locale ) any, anyString );
+                codeBook.getBankCodes( ( Locale ) any, anyString );
                 result = getCodeBookMap();
             }
         };
@@ -477,7 +477,7 @@ public class PrimaryAlternativeBankAccountTest
                 result = Domicile.CZ;
 
                 //noinspection ConstantConditions
-                codeBook.getBankCodes( ( LocalAccount ) any, ( Locale ) any, anyString );
+                codeBook.getBankCodes( ( Locale ) any, anyString );
                 result = getCodeBookMap();
             }
         };

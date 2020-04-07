@@ -55,8 +55,6 @@ import static com.google.common.truth.Truth.assertWithMessage;
 @SuppressWarnings( "ConstantConditions" )
 public class TransactionPublisherTaskTest
 {
-    private static final String GOOGLE_CLOUD_PROJECT = "test-t2b";
-
     private static final Long TRANSACTION_ID = 2468L;
 
     private static final Long ACCOUNT_ID = 1735L;
@@ -93,7 +91,6 @@ public class TransactionPublisherTaskTest
     @BeforeMethod
     public void before()
     {
-        System.setProperty( "GOOGLE_CLOUD_PROJECT", GOOGLE_CLOUD_PROJECT );
         jsonMapper = new MicroserviceModule().provideJsonObjectMapperPubSub();
 
         api = getFromFile( "transaction.json", Transaction.class );

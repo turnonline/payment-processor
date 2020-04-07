@@ -95,6 +95,7 @@
                     <environmentVariables>
                         <!-- Expected by unit tests -->
                         <ENDPOINTS_SERVICE_NAME>payment.service.cloud</ENDPOINTS_SERVICE_NAME>
+                        <GOOGLE_CLOUD_PROJECT>b2x-app</GOOGLE_CLOUD_PROJECT>
                     </environmentVariables>
                 </configuration>
             </plugin>

@@ -19,12 +19,9 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import com.google.common.base.MoreObjects;
-import org.ctoolkit.restapi.client.NotFoundException;
+import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 
 import javax.annotation.Nonnull;
-
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * The dedicated provider to handle local and remote account.
@@ -36,100 +33,20 @@ public interface LocalAccountProvider
     /**
      * Returns the account associated with this service.
      * <p>
-     * It's a design concept. It's a single account associated with the payment service.
+     * It's a design concept. It's a single account (tenant) associated with the payment service.
      *
-     * @return the local account
+     * @return the account associated with the service
      */
     LocalAccount get();
 
     /**
-     * Returns the local lightweight account entity instance identified by email.
-     *
-     * @param email the login email address of the account
-     * @return the local lightweight account instance
-     */
-    LocalAccount get( @Nonnull String email );
-
-    /**
-     * Returns the associated local lightweight account entity instance. It might act as an owner of an entities.
+     * Returns the account associated with this service if matches the account coming via Pub/Sub.
+     * If not found or does not match it will returns {@code null}.
      * <p>
-     * {@link LocalAccount} instance accessed for the first time, then it will be stored in datastore
-     * with updated values taken from the remote account.
+     * A new local account will be created for incoming in case there is no local account record yet.
+     * It's a design concept. It's a single account (tenant) associated with the payment service.
      *
-     * @param builder all builder properties are mandatory
-     * @return the local lightweight account
-     * @throws NotFoundException if remote account has not been found
+     * @return the account associated with the service
      */
-    LocalAccount initGet( @Nonnull Builder builder );
-
-    class Builder
-    {
-        private Long accountId;
-
-        private String identityId;
-
-        private String email;
-
-        /**
-         * Returns the account unique identification within TurnOnline.biz Ecosystem.
-         */
-        public Long getAccountId()
-        {
-            return accountId;
-        }
-
-        /**
-         * Returns the user account unique identification within login provider system.
-         */
-        public String getIdentityId()
-        {
-            return identityId;
-        }
-
-        /**
-         * Returns the login email address of the account.
-         */
-        public String getEmail()
-        {
-            return email;
-        }
-
-        /**
-         * Sets the account unique identification within TurnOnline.biz Ecosystem.
-         */
-        public Builder accountId( @Nonnull Long accountId )
-        {
-            this.accountId = accountId;
-            return this;
-        }
-
-        /**
-         * Sets the user account unique identification within login provider system.
-         */
-        public Builder identityId( @Nonnull String identityId )
-        {
-            this.identityId = checkNotNull( identityId, "Identity ID is mandatory" );
-            return this;
-        }
-
-        /**
-         * Sets the login email address of the account
-         */
-        public Builder email( @Nonnull String email )
-        {
-            this.email = checkNotNull( email, "Email is mandatory" );
-            return this;
-        }
-
-        @Override
-        public String toString()
-        {
-            MoreObjects.ToStringHelper string = MoreObjects.toStringHelper( "Builder" );
-            string.add( "Account ID", accountId )
-                    .add( "email", email )
-                    .add( "identityId", identityId );
-
-            return string.toString();
-        }
-    }
+    LocalAccount check( @Nonnull PubsubCommand command );
 }

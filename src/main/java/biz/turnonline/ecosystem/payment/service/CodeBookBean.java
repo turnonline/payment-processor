@@ -32,6 +32,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static biz.turnonline.ecosystem.payment.service.MicroserviceModule.API_PREFIX;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.model.LocalAccount.DEFAULT_DOMICILE;
+import static biz.turnonline.ecosystem.payment.service.model.LocalAccount.DEFAULT_LOCALE;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -48,21 +51,20 @@ class CodeBookBean
 
     private final Cache cache;
 
+    private final LocalAccountProvider lap;
+
     @Inject
-    CodeBookBean( Cache cache )
+    CodeBookBean( Cache cache, LocalAccountProvider lap )
     {
         this.cache = cache;
+        this.lap = lap;
     }
 
     @Override
-    public Map<String, BankCode> getBankCodes( @Nonnull LocalAccount account,
-                                               @Nullable Locale locale,
-                                               @Nullable String country )
+    public Map<String, BankCode> getBankCodes( @Nullable Locale locale, @Nullable String country )
     {
-        checkNotNull( account );
-
-        locale = account.getLocale( locale );
-        country = country == null ? account.getDomicile().name() : country;
+        locale = getLocale( locale );
+        country = getDomicile( country );
 
         String key = cacheKey( locale, country, null );
         if ( cache.containsKey( key ) )
@@ -94,16 +96,20 @@ class CodeBookBean
     }
 
     @Override
-    public BankCode getBankCode( @Nonnull LocalAccount account,
-                                 @Nonnull String code,
-                                 @Nullable Locale locale,
-                                 @Nullable String country )
+    public BankCode getBankCode( @Nonnull String code, @Nullable Locale locale, @Nullable String country )
     {
-        checkNotNull( account );
         checkNotNull( code );
 
-        locale = account.getLocale( locale );
-        country = country == null ? account.getDomicile().name() : country;
+        locale = getLocale( locale );
+        if ( country == null && REVOLUT_BANK_CODE.equals( code ) )
+        {
+            country = "GB";
+        }
+        else
+        {
+            country = getDomicile( country );
+        }
+
         String key = cacheKey( locale, country, code );
 
         if ( cache.containsKey( key ) )
@@ -141,5 +147,35 @@ class CodeBookBean
         builder.append( domicile );
 
         return builder.toString();
+    }
+
+    private Locale getLocale( @Nullable Locale locale )
+    {
+        if ( locale != null )
+        {
+            return locale;
+        }
+
+        LocalAccount localAccount = lap.get();
+        if ( localAccount == null )
+        {
+            return DEFAULT_LOCALE;
+        }
+        return localAccount.getLocale();
+    }
+
+    private String getDomicile( String country )
+    {
+        if ( country != null )
+        {
+            return country;
+        }
+
+        LocalAccount localAccount = lap.get();
+        if ( localAccount == null )
+        {
+            return DEFAULT_DOMICILE;
+        }
+        return localAccount.getDomicile().name();
     }
 }

@@ -18,16 +18,36 @@
 
 <changeset author="medvegy@turnonline.biz" comment="Init BankCode code book.">
     <entities>
-        <!--SK country-->
+        <!--Revolut Bank-->
         <entity kind="PP_CodeBook">
             <property indexed="false" name="^d" type="string" value="BankCode"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
             <property indexed="false" name="label" type="string" value="Revolut"/>
             <property indexed="true" name="code" type="string" value="REVO"/>
             <property indexed="true" name="locale" type="string" value="sk"/>
-            <property indexed="true" name="country" type="string" value="SK"/>
+            <property indexed="true" name="country" type="string" value="GB"/>
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
+        <entity kind="PP_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Revolut"/>
+            <property indexed="true" name="code" type="string" value="REVO"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="country" type="string" value="GB"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="PP_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Revolut"/>
+            <property indexed="true" name="code" type="string" value="REVO"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="country" type="string" value="GB"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
+        <!--SK country-->
         <entity kind="PP_CodeBook">
             <property indexed="false" name="^d" type="string" value="BankCode"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
@@ -339,15 +359,6 @@
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
-        <entity kind="PP_CodeBook">
-            <property indexed="false" name="^d" type="string" value="BankCode"/>
-            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
-            <property indexed="false" name="label" type="string" value="Revolut"/>
-            <property indexed="true" name="code" type="string" value="REVO"/>
-            <property indexed="true" name="locale" type="string" value="en"/>
-            <property indexed="true" name="country" type="string" value="SK"/>
-            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
-        </entity>
         <entity kind="PP_CodeBook">
             <property indexed="false" name="^d" type="string" value="BankCode"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
@@ -660,15 +671,6 @@
         </entity>
 
         <!--CZ country-->
-        <entity kind="PP_CodeBook">
-            <property indexed="false" name="^d" type="string" value="BankCode"/>
-            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
-            <property indexed="false" name="label" type="string" value="Revolut"/>
-            <property indexed="true" name="code" type="string" value="REVO"/>
-            <property indexed="true" name="locale" type="string" value="en"/>
-            <property indexed="true" name="country" type="string" value="CZ"/>
-            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
-        </entity>
         <entity kind="PP_CodeBook">
             <property indexed="false" name="^d" type="string" value="BankCode"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
@@ -1132,15 +1134,6 @@
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
-        <entity kind="PP_CodeBook">
-            <property indexed="false" name="^d" type="string" value="BankCode"/>
-            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
-            <property indexed="false" name="label" type="string" value="Revolut"/>
-            <property indexed="true" name="code" type="string" value="REVO"/>
-            <property indexed="true" name="locale" type="string" value="cs"/>
-            <property indexed="true" name="country" type="string" value="CZ"/>
-            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
-        </entity>
         <entity kind="PP_CodeBook">
             <property indexed="false" name="^d" type="string" value="BankCode"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
@@ -1608,15 +1601,6 @@
         <entity kind="PP_CodeBook">
             <property indexed="false" name="^d" type="string" value="BankCode"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
-            <property indexed="false" name="label" type="string" value="Revolut"/>
-            <property indexed="true" name="code" type="string" value="REVO"/>
-            <property indexed="true" name="locale" type="string" value="cs"/>
-            <property indexed="true" name="country" type="string" value="SK"/>
-            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
-        </entity>
-        <entity kind="PP_CodeBook">
-            <property indexed="false" name="^d" type="string" value="BankCode"/>
-            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
             <property indexed="false" name="label" type="string" value="Všeobecná úverová banka, a.s."/>
             <property indexed="true" name="code" type="string" value="0200"/>
             <property indexed="true" name="locale" type="string" value="cs"/>
@@ -1925,15 +1909,6 @@
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
         <!--CZ country-->
-        <entity kind="PP_CodeBook">
-            <property indexed="false" name="^d" type="string" value="BankCode"/>
-            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
-            <property indexed="false" name="label" type="string" value="Revolut"/>
-            <property indexed="true" name="code" type="string" value="REVO"/>
-            <property indexed="true" name="locale" type="string" value="sk"/>
-            <property indexed="true" name="country" type="string" value="CZ"/>
-            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
-        </entity>
         <entity kind="PP_CodeBook">
             <property indexed="false" name="^d" type="string" value="BankCode"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>

@@ -97,7 +97,7 @@ public abstract class BankAccount
      */
     public String getLocalizedLabel( @Nullable Locale locale, @Nonnull LocalAccount owner )
     {
-        Map<String, BankCode> codes = codeBook.getBankCodes( owner, locale, country );
+        Map<String, BankCode> codes = codeBook.getBankCodes( locale, country );
 
         BankCode bankCode = codes.get( this.getBankCode() );
         if ( bankCode == null )
