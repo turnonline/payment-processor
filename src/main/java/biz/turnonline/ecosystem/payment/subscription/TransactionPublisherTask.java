@@ -63,7 +63,7 @@ class TransactionPublisherTask
 
     TransactionPublisherTask( @Nonnull Key<CommonTransaction> entityKey )
     {
-        super( "Push-" );
+        super( "Push" );
         setEntityKey( checkNotNull( entityKey, "The transaction key can't be null" ) );
     }
 
