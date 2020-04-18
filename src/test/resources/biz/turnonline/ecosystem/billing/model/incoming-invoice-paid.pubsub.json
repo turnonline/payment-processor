@@ -1,0 +1,75 @@
+{
+    "createdDate": "2020-01-10T15:34:07.019Z",
+    "creditor": {
+        "account": "51385463860",
+        "businessName": "My CtoolkiT business, Ltd ",
+        "city": "Bratislava",
+        "companyId": "35123123",
+        "contact": {
+            "email": "frederic.public@ctoolkit.org",
+            "name": "Frederic Public",
+            "phone": "+421 905 007 001",
+            "website": "https://www.turnonline.biz"
+        },
+        "country": "SK",
+        "latitude": 48.1574429,
+        "legalForm": "ltd",
+        "logoServingUrl": "https://lh3.googleusercontent.com/h_oO9DMTbQrj1AFeiiO9",
+        "longitude": 17.1656705,
+        "postcode": "821 04",
+        "street": "Jašíkova 2",
+        "taxId": "2022125123",
+        "vatId": "SK2022123123",
+        "vatPayer": true
+    },
+    "currency": "EUR",
+    "dateOfIssue": "2020-01-10T15:33:34.469Z",
+    "dateOfTaxable": "2020-01-09T23:00:00.000Z",
+    "id": "571714185671",
+    "modificationDate": "2020-01-10T15:34:09.033Z",
+    "orderId": "565941286574",
+    "payment": {
+        "bankAccount": {
+            "bic": "REVOGB21",
+            "currency": "EUR",
+            "iban": "GB05REVO37687428278420"
+        },
+        "totalAmount": 0.0,
+        "dueDate": "2020-02-20T22:59:59.000Z",
+        "key": "100022020",
+        "variableSymbol": "100022020"
+    },
+    "pin": "sTBPpPWS7Qjs",
+    "pricing": {
+        "items": [
+            {
+                "id": "575471188180",
+                "parentKey": "Order:565941286574::Invoice:571714185671",
+                "itemName": "Bebe seminar",
+                "inline": "Bebe seminar",
+                "itemType": "BillingItem",
+                "checkedIn": true,
+                "priceExclVat": 29.0,
+                "amount": 1.0,
+                "unit": "ITEM",
+                "vat": "STANDARD",
+                "valueAddedTax": 20.0,
+                "finalPrice": 34.8,
+                "finalPriceExclVat": 29.0,
+                "finalVatBase": 29.0,
+                "finalValueAddedTax": 20.0,
+                "finalVat": "STANDARD",
+                "currency": "EUR",
+                "discountApplied": false,
+                "discountDefined": false,
+                "discountCodeDefined": false
+            }
+        ],
+        "rounding": "HUNDREDTHS",
+        "totalPrice": 34.8,
+        "totalPriceExclVat": 29.0,
+        "totalVatBase": 29.0
+    },
+    "servingUrl": "https://lh3.googleusercontent.com/M8PLSfuXWXfu7BxeX4VPK46gjiUi6Lu2F2c41prItwm9sXNCNTZorYkcYn-k_edXHJI2rNUOyi8JLnH_3iSPmxqhLg",
+    "type": "TAX_DOCUMENT"
+}
