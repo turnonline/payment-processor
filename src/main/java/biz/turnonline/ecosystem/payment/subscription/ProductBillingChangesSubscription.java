@@ -158,7 +158,7 @@ class ProductBillingChangesSubscription
 
                 InvoicePayment payment = invoice.getPayment();
                 CompanyBankAccount debtorBank;
-                if ( invoice.getPayment() != null )
+                if ( payment != null )
                 {
                     debtorBank = config.getDebtorBankAccount( payment );
                     if ( debtorBank == null || !debtorBank.isDebtorReady() )
@@ -170,6 +170,15 @@ class ProductBillingChangesSubscription
                 else
                 {
                     LOGGER.warn( "Incoming invoice identified by '" + uniqueKey + "' is missing payment" );
+                    return;
+                }
+
+                if ( payment.getTotalAmount() <= 0 )
+                {
+                    LOGGER.warn( "Incoming invoice identified by '"
+                            + uniqueKey
+                            + "' is already paid out, payment total amount "
+                            + payment.getTotalAmount() );
                     return;
                 }
 
