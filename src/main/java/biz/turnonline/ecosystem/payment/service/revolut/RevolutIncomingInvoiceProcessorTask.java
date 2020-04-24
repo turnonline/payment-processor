@@ -219,7 +219,8 @@ public class RevolutIncomingInvoiceProcessorTask
 
             if ( response.getId() != null )
             {
-                transaction.credit( true )
+                transaction.credit( false )
+                        .failure( false )
                         .amount( totalAmount )
                         .currency( debtorCurrency )
                         .key( key )

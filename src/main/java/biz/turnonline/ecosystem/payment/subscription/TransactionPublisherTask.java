@@ -134,7 +134,7 @@ class TransactionPublisherTask
 
         stopwatch.stop();
         LOGGER.info( Transaction.class.getSimpleName()
-                + " has been pushed to product-service. "
+                + " has been pushed to product-billing service. "
                 + getTaskName()
                 + " final duration "
                 + stopwatch );

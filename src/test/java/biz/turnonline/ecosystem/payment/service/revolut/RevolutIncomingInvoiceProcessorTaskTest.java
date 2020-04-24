@@ -23,6 +23,7 @@ import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftRequest;
@@ -208,6 +209,13 @@ public class RevolutIncomingInvoiceProcessorTaskTest
                 result = transaction;
 
                 transaction.save();
+                transaction.credit( false );
+                transaction.failure( false );
+                transaction.amount( 34.8 );
+                transaction.currency( DEBTOR_CURRENCY );
+                transaction.type( FormOfPayment.TRANSFER );
+                transaction.bankCode( REVOLUT_BANK_CODE );
+                transaction.externalId( PAYMENT_DRAFT_ID );
             }
         };
 
