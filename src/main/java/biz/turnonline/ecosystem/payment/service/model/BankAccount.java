@@ -227,7 +227,17 @@ public abstract class BankAccount
      */
     public void setIban( @Nonnull String input )
     {
-        if ( !Modulo97.verifyCheckDigits( input ) )
+        boolean valid;
+        try
+        {
+            valid = Modulo97.verifyCheckDigits( input );
+        }
+        catch ( Exception e )
+        {
+            throw new IllegalArgumentException( "Invalid IBAN (" + input + ") " + e.getMessage() );
+        }
+
+        if ( !valid )
         {
             throw new IllegalArgumentException( "Invalid IBAN: " + input );
         }
