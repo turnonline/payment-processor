@@ -173,6 +173,14 @@ class ProductBillingChangesSubscription
                     return;
                 }
 
+                if ( payment.getTotalAmount() == null )
+                {
+                    LOGGER.warn( "Incoming invoice identified by '"
+                            + uniqueKey
+                            + "' has undefined payment total amount " );
+                    return;
+                }
+
                 if ( payment.getTotalAmount() <= 0 )
                 {
                     LOGGER.warn( "Incoming invoice identified by '"
