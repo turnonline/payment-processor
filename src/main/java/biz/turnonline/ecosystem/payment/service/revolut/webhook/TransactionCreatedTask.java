@@ -160,7 +160,8 @@ public class TransactionCreatedTask
         {
             transaction.type( FormOfPayment.CARD_PAYMENT );
         }
-        else if ( TransactionType.TRANSFER.equals( transactionFromBank.getType() ) )
+        else if ( TransactionType.TRANSFER.equals( transactionFromBank.getType() )
+                || TransactionType.TOPUP.equals( transactionFromBank.getType() ) )
         {
             transaction.type( FormOfPayment.TRANSFER );
         }

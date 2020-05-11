@@ -109,6 +109,13 @@ public class RevolutBeneficiarySyncTask
             return;
         }
 
+        String bic = beneficiary.getBic();
+        if ( Strings.isNullOrEmpty( bic ) )
+        {
+            LOGGER.warn( "BIC/SWIFT is missing at bank account of incoming invoice '" + key( invoice ) + "'" );
+            return;
+        }
+
         String currency = beneficiary.getCurrency();
         if ( Strings.isNullOrEmpty( currency ) )
         {
@@ -132,7 +139,7 @@ public class RevolutBeneficiarySyncTask
         BeneficiaryBankAccount bankAccount;
         try
         {
-            bankAccount = config.insertBeneficiary( iban, beneficiary.getBic(), currency );
+            bankAccount = config.insertBeneficiary( iban, bic, currency );
         }
         catch ( IllegalArgumentException e )
         {
