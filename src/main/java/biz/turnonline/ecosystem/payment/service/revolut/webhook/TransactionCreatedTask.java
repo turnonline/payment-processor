@@ -119,16 +119,9 @@ public class TransactionCreatedTask
         }
 
         TransactionState state = transactionFromBank.getState();
-        if ( TransactionState.CREATED == state
-                || TransactionState.PENDING == state
-                || TransactionState.COMPLETED == state )
-        {
-            transaction.failure( false );
-        }
-        else
-        {
-            transaction.failure( true );
-        }
+        transaction.failure( TransactionState.CREATED != state
+                && TransactionState.PENDING != state
+                && TransactionState.COMPLETED != state );
 
         if ( state != null )
         {

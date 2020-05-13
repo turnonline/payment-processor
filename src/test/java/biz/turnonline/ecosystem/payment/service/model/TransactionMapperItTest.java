@@ -181,6 +181,10 @@ public class TransactionMapperItTest
                 .that( transaction.getAmount() )
                 .isNotNull();
 
+        assertWithMessage( "Transaction ID" )
+                .that( transaction.getTransactionId() )
+                .isNotNull();
+
         assertWithMessage( "Transaction balance" )
                 .that( transaction.getBalance() )
                 .isNotNull();
