@@ -42,7 +42,7 @@ public class Bank
     }
 
     /**
-     * The bank identified by a bank code, taken from the code-book.
+     * The bank identified by a bank code, taken from the code-book. Taken from valid IBAN while set.
      **/
     @JsonProperty( "code" )
     public String getCode()
@@ -82,7 +82,7 @@ public class Bank
     }
 
     /**
-     * The country of the bank where bank account has been opened. The missing value will be taken from the codebook if that combination is being found. The ISO 3166 alpha-2 country code. It’s case insensitive.  Note: Currently supported only SK and CZ.
+     * The country of the bank domicile, taken from valid IBAN while set. The ISO 3166 alpha-2 country code. It’s case insensitive.
      **/
     @JsonProperty( "country" )
     public String getCountry()

@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 /**
- * The bank account resource.
+ * The bank account (beneficiary).  A valid IBAN will set following properties too, not needed to be set separately: * bank code * branch * bank country
  */
 public class BankAccount
 {
@@ -57,7 +57,7 @@ public class BankAccount
     }
 
     /**
-     * The unique bank account identification.
+     * The unique bank account identification within service. Assigned by the service.
      **/
     @JsonProperty( "id" )
     public Long getId()
@@ -97,7 +97,7 @@ public class BankAccount
     }
 
     /**
-     * The bank branch identification.
+     * The bank branch, taken from valid IBAN while set.
      **/
     @JsonProperty( "branch" )
     public String getBranch()

@@ -22,77 +22,77 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 /**
- * The bill or invoice document settled by associated transaction.
+ * Identification of the bill (receipt) or invoice document settled by associated transaction. Valid invoice identification includes order identification too.
  */
 public class Bill
 {
-    @JsonProperty( "id" )
-    private Long id;
+    @JsonProperty( "receipt" )
+    private Long receipt;
 
-    @JsonProperty( "invoiceId" )
-    private Long invoiceId;
+    @JsonProperty( "invoice" )
+    private Long invoice;
 
-    @JsonProperty( "orderId" )
-    private Long orderId;
+    @JsonProperty( "order" )
+    private Long order;
 
-    public Bill id( Long id )
+    public Bill receipt( Long receipt )
     {
-        this.id = id;
+        this.receipt = receipt;
         return this;
     }
 
     /**
-     * The unique identification of the bill (cash register document).
+     * The unique identification of the bill (receipt) within Billing Processor service.
      **/
-    @JsonProperty( "id" )
-    public Long getId()
+    @JsonProperty( "receipt" )
+    public Long getReceipt()
     {
-        return id;
+        return receipt;
     }
 
-    public void setId( Long id )
+    public void setReceipt( Long receipt )
     {
-        this.id = id;
+        this.receipt = receipt;
     }
 
-    public Bill invoiceId( Long invoiceId )
+    public Bill invoice( Long invoice )
     {
-        this.invoiceId = invoiceId;
+        this.invoice = invoice;
         return this;
     }
 
     /**
      * The invoice identification, unique only for specified order.
      **/
-    @JsonProperty( "invoiceId" )
-    public Long getInvoiceId()
+    @JsonProperty( "invoice" )
+    public Long getInvoice()
     {
-        return invoiceId;
+        return invoice;
     }
 
-    public void setInvoiceId( Long invoiceId )
+    public void setInvoice( Long invoice )
     {
-        this.invoiceId = invoiceId;
+        this.invoice = invoice;
     }
 
-    public Bill orderId( Long orderId )
+    public Bill order( Long order )
     {
-        this.orderId = orderId;
+        this.order = order;
         return this;
     }
 
     /**
      * The unique identification of the order associated with the settled invoice.
      **/
-    @JsonProperty( "orderId" )
-    public Long getOrderId()
+    @JsonProperty( "order" )
+    public Long getOrder()
     {
-        return orderId;
+        return order;
     }
 
-    public void setOrderId( Long orderId )
+    public void setOrder( Long order )
     {
-        this.orderId = orderId;
+        this.order = order;
     }
 
     @Override
@@ -107,15 +107,15 @@ public class Bill
             return false;
         }
         Bill bill = ( Bill ) o;
-        return Objects.equals( this.id, bill.id ) &&
-                Objects.equals( this.invoiceId, bill.invoiceId ) &&
-                Objects.equals( this.orderId, bill.orderId );
+        return Objects.equals( this.receipt, bill.receipt ) &&
+                Objects.equals( this.invoice, bill.invoice ) &&
+                Objects.equals( this.order, bill.order );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( id, invoiceId, orderId );
+        return Objects.hash( receipt, invoice, order );
     }
 
 
@@ -123,9 +123,9 @@ public class Bill
     public String toString()
     {
         return "class Bill {\n" +
-                "    id: " + toIndentedString( id ) + "\n" +
-                "    invoiceId: " + toIndentedString( invoiceId ) + "\n" +
-                "    orderId: " + toIndentedString( orderId ) + "\n" +
+                "    receipt: " + toIndentedString( receipt ) + "\n" +
+                "    invoice: " + toIndentedString( invoice ) + "\n" +
+                "    order: " + toIndentedString( order ) + "\n" +
                 "}";
     }
 

@@ -23,7 +23,7 @@ import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
-import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
+import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 import biz.turnonline.ecosystem.payment.subscription.MockedInputStream;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionState;
@@ -185,7 +185,7 @@ public class TransactionCreatedFlowTest
         stateChanged.execute();
         ofy().clear();
 
-        int count = ofy().load().type( TransactionBill.class ).count();
+        int count = ofy().load().type( TransactionReceipt.class ).count();
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 1 );
@@ -390,7 +390,7 @@ public class TransactionCreatedFlowTest
         ofy().clear();
 
         transaction = ofy().load().type( CommonTransaction.class ).first().now();
-        int count = ofy().load().type( TransactionBill.class ).count();
+        int count = ofy().load().type( TransactionReceipt.class ).count();
 
         assertWithMessage( "Final number of transactions" )
                 .that( count )
@@ -485,7 +485,7 @@ public class TransactionCreatedFlowTest
         ofy().clear();
 
         transaction = ofy().load().type( CommonTransaction.class ).first().now();
-        int count = ofy().load().type( TransactionBill.class ).count();
+        int count = ofy().load().type( TransactionReceipt.class ).count();
 
         assertWithMessage( "Final number of transactions" )
                 .that( count )
@@ -580,7 +580,7 @@ public class TransactionCreatedFlowTest
         ofy().clear();
 
         transaction = ofy().load().type( CommonTransaction.class ).first().now();
-        int count = ofy().load().type( TransactionBill.class ).count();
+        int count = ofy().load().type( TransactionReceipt.class ).count();
 
         assertWithMessage( "Final number of transactions" )
                 .that( count )
@@ -687,7 +687,7 @@ public class TransactionCreatedFlowTest
         ofy().clear();
 
         transaction = ofy().load().type( CommonTransaction.class ).first().now();
-        int count = ofy().load().type( TransactionBill.class ).count();
+        int count = ofy().load().type( TransactionReceipt.class ).count();
 
         assertWithMessage( "Final number of transactions" )
                 .that( count )
@@ -783,7 +783,7 @@ public class TransactionCreatedFlowTest
         ofy().clear();
 
         transaction = ofy().load().type( CommonTransaction.class ).first().now();
-        int count = ofy().load().type( TransactionBill.class ).count();
+        int count = ofy().load().type( TransactionReceipt.class ).count();
 
         assertWithMessage( "Final number of transactions" )
                 .that( count )
@@ -879,7 +879,7 @@ public class TransactionCreatedFlowTest
         ofy().clear();
 
         transaction = ofy().load().type( CommonTransaction.class ).first().now();
-        int count = ofy().load().type( TransactionBill.class ).count();
+        int count = ofy().load().type( TransactionReceipt.class ).count();
 
         assertWithMessage( "Final number of transactions" )
                 .that( count )
@@ -916,7 +916,7 @@ public class TransactionCreatedFlowTest
         // test call
         created.execute();
 
-        int count = ofy().load().type( TransactionBill.class ).count();
+        int count = ofy().load().type( TransactionReceipt.class ).count();
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 0 );
@@ -940,7 +940,7 @@ public class TransactionCreatedFlowTest
         // test call
         created.execute();
 
-        int count = ofy().load().type( TransactionBill.class ).count();
+        int count = ofy().load().type( TransactionReceipt.class ).count();
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 0 );
@@ -964,7 +964,7 @@ public class TransactionCreatedFlowTest
         // test call
         created.execute();
 
-        int count = ofy().load().type( TransactionBill.class ).count();
+        int count = ofy().load().type( TransactionReceipt.class ).count();
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 0 );
@@ -995,7 +995,7 @@ public class TransactionCreatedFlowTest
         // test call
         created.execute();
 
-        int count = ofy().load().type( TransactionBill.class ).count();
+        int count = ofy().load().type( TransactionReceipt.class ).count();
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 0 );

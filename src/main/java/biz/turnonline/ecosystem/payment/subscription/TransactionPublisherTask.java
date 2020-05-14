@@ -120,9 +120,9 @@ class TransactionPublisherTask
         {
             biz.turnonline.ecosystem.billing.model.Bill bill;
             bill = new biz.turnonline.ecosystem.billing.model.Bill();
-            bill.setId( apiBill.getId() );
-            bill.setOrderId( apiBill.getOrderId() );
-            bill.setInvoiceId( apiBill.getInvoiceId() );
+            bill.setReceipt( apiBill.getReceipt() );
+            bill.setOrder( apiBill.getOrder() );
+            bill.setInvoice( apiBill.getInvoice() );
 
             pbt.setBill( bill );
         }

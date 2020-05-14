@@ -42,8 +42,8 @@ class TransactionInvoiceMapper
         Transaction transaction = super.convert( source, destinationType, mappingContext );
 
         Bill bill = new Bill();
-        bill.setOrderId( source.getOrderId() );
-        bill.setInvoiceId( source.getInvoiceId() );
+        bill.setOrder( source.getOrderId() );
+        bill.setInvoice( source.getInvoiceId() );
 
         if ( source.getOrderId() != null || source.getInvoiceId() != null )
         {

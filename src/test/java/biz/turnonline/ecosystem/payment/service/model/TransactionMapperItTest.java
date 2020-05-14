@@ -49,7 +49,7 @@ public class TransactionMapperItTest
     @Test
     public void convert_EmptyTransactionBill()
     {
-        Transaction transaction = mapper.map( new TransactionBill( TRANSACTION_EXT_ID ), Transaction.class );
+        Transaction transaction = mapper.map( new TransactionReceipt( TRANSACTION_EXT_ID ), Transaction.class );
         validateEmpty( transaction );
     }
 
@@ -60,22 +60,22 @@ public class TransactionMapperItTest
         ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
         task.run();
 
-        TransactionBill backend = ofy().load().type( TransactionBill.class ).id( 680L ).now();
+        TransactionReceipt backend = ofy().load().type( TransactionReceipt.class ).id( 680L ).now();
 
         // test call
         Transaction transaction = mapper.map( backend, Transaction.class );
         validateCommon( transaction );
 
-        assertWithMessage( "Transaction bill Id" )
-                .that( transaction.getBill().getId() )
+        assertWithMessage( "Transaction receipt Id" )
+                .that( transaction.getBill().getReceipt() )
                 .isNotNull();
 
         assertWithMessage( "Transaction order Id" )
-                .that( transaction.getBill().getOrderId() )
+                .that( transaction.getBill().getOrder() )
                 .isNull();
 
         assertWithMessage( "Transaction invoice Id" )
-                .that( transaction.getBill().getInvoiceId() )
+                .that( transaction.getBill().getInvoice() )
                 .isNull();
 
         assertWithMessage( "Transaction type" )
@@ -103,16 +103,16 @@ public class TransactionMapperItTest
         Transaction transaction = mapper.map( backend, Transaction.class );
         validateCommon( transaction );
 
-        assertWithMessage( "Transaction bill Id" )
-                .that( transaction.getBill().getId() )
+        assertWithMessage( "Transaction receipt Id" )
+                .that( transaction.getBill().getReceipt() )
                 .isNull();
 
         assertWithMessage( "Transaction order Id" )
-                .that( transaction.getBill().getOrderId() )
+                .that( transaction.getBill().getOrder() )
                 .isNotNull();
 
         assertWithMessage( "Transaction invoice Id" )
-                .that( transaction.getBill().getInvoiceId() )
+                .that( transaction.getBill().getInvoice() )
                 .isNotNull();
 
         assertWithMessage( "Transaction type" )

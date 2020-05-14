@@ -20,7 +20,7 @@ package biz.turnonline.ecosystem.payment.service.revolut.webhook;
 
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
-import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
+import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionState;
 import mockit.Expectations;
@@ -56,7 +56,7 @@ public class TransactionStateChangedTaskTest
     @BeforeMethod
     public void before()
     {
-        transaction = new TransactionBill( TRANSACTION_EXT_ID );
+        transaction = new TransactionReceipt( TRANSACTION_EXT_ID );
     }
 
     @Test
