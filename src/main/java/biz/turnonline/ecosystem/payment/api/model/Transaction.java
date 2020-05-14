@@ -48,14 +48,17 @@ public class Transaction
     @JsonProperty( "currency" )
     private String currency;
 
-    @JsonProperty( "reference" )
-    private String reference;
-
     @JsonProperty( "key" )
     private String key;
 
+    @JsonProperty( "reference" )
+    private String reference;
+
     @JsonProperty( "status" )
     private String status;
+
+    @JsonProperty( "transactionId" )
+    private Long transactionId;
 
     @JsonProperty( "type" )
     private String type;
@@ -127,7 +130,9 @@ public class Transaction
     }
 
     /**
-     * The bill or invoice document settled by this transaction.
+     * Identification of the bill (receipt) or invoice document settled by this transaction.
+     *
+     * @return bill
      **/
     @JsonProperty( "bill" )
     public Bill getBill()
@@ -200,26 +205,6 @@ public class Transaction
         this.currency = currency;
     }
 
-    public Transaction reference( String reference )
-    {
-        this.reference = reference;
-        return this;
-    }
-
-    /**
-     * A user provided payment reference.
-     **/
-    @JsonProperty( "reference" )
-    public String getReference()
-    {
-        return reference;
-    }
-
-    public void setReference( String reference )
-    {
-        this.reference = reference;
-    }
-
     public Transaction key( String key )
     {
         this.key = key;
@@ -240,6 +225,26 @@ public class Transaction
         this.key = key;
     }
 
+    public Transaction reference( String reference )
+    {
+        this.reference = reference;
+        return this;
+    }
+
+    /**
+     * A user provided payment reference.
+     **/
+    @JsonProperty( "reference" )
+    public String getReference()
+    {
+        return reference;
+    }
+
+    public void setReference( String reference )
+    {
+        this.reference = reference;
+    }
+
     public Transaction status( String status )
     {
         this.status = status;
@@ -258,6 +263,26 @@ public class Transaction
     public void setStatus( String status )
     {
         this.status = status;
+    }
+
+    public Transaction transactionId( Long transactionId )
+    {
+        this.transactionId = transactionId;
+        return this;
+    }
+
+    /**
+     * The identification of the transaction within payment processor service unique for single Ecosystem account.
+     **/
+    @JsonProperty( "transactionId" )
+    public Long getTransactionId()
+    {
+        return transactionId;
+    }
+
+    public void setTransactionId( Long transactionId )
+    {
+        this.transactionId = transactionId;
     }
 
     public Transaction type( String type )
@@ -292,19 +317,13 @@ public class Transaction
             return false;
         }
         Transaction transaction = ( Transaction ) o;
-        return Objects.equals( this.amount, transaction.amount ) &&
-                Objects.equals( this.bill, transaction.bill ) &&
-                Objects.equals( this.credit, transaction.credit ) &&
-                Objects.equals( this.currency, transaction.currency ) &&
-                Objects.equals( this.key, transaction.key ) &&
-                Objects.equals( this.status, transaction.status ) &&
-                Objects.equals( this.type, transaction.type );
+        return Objects.equals( this.transactionId, transaction.transactionId );
     }
 
     @Override
     public int hashCode()
     {
-        return Objects.hash( amount, bill, credit, currency, key, status, type );
+        return Objects.hash( transactionId );
     }
 
     @Override
@@ -318,9 +337,10 @@ public class Transaction
                 "    completedAt: " + toIndentedString( completedAt ) + "\n" +
                 "    credit: " + toIndentedString( credit ) + "\n" +
                 "    currency: " + toIndentedString( currency ) + "\n" +
-                "    reference: " + toIndentedString( reference ) + "\n" +
                 "    key: " + toIndentedString( key ) + "\n" +
+                "    reference: " + toIndentedString( reference ) + "\n" +
                 "    status: " + toIndentedString( status ) + "\n" +
+                "    transactionId: " + toIndentedString( transactionId ) + "\n" +
                 "    type: " + toIndentedString( type ) + "\n" +
                 "}";
     }

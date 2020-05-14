@@ -39,6 +39,7 @@ abstract class TransactionMapper<T extends CommonTransaction>
     {
         Transaction transaction = new Transaction();
 
+        transaction.setTransactionId( source.getId() );
         transaction.setAmount( source.getAmount() );
         transaction.setBalance( source.getBalance() );
         transaction.setCompletedAt( source.getCompletedAt() );

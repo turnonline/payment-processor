@@ -333,6 +333,21 @@ public class RevolutBeneficiarySyncTaskTest
     }
 
     @Test
+    public void execute_BicMissing()
+    {
+        invoice.getPayment().getBankAccount().setBic( null );
+        tested.execute( account, invoice );
+
+        new Verifications()
+        {
+            {
+                facade.insert( any );
+                times = 0;
+            }
+        };
+    }
+
+    @Test
     public void execute_CurrencyNull()
     {
         BeneficiaryBankAccount bankAccount = new BeneficiaryBankAccount( codeBook );

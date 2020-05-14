@@ -119,16 +119,9 @@ public class TransactionCreatedTask
         }
 
         TransactionState state = transactionFromBank.getState();
-        if ( TransactionState.CREATED == state
-                || TransactionState.PENDING == state
-                || TransactionState.COMPLETED == state )
-        {
-            transaction.failure( false );
-        }
-        else
-        {
-            transaction.failure( true );
-        }
+        transaction.failure( TransactionState.CREATED != state
+                && TransactionState.PENDING != state
+                && TransactionState.COMPLETED != state );
 
         if ( state != null )
         {
@@ -160,7 +153,8 @@ public class TransactionCreatedTask
         {
             transaction.type( FormOfPayment.CARD_PAYMENT );
         }
-        else if ( TransactionType.TRANSFER.equals( transactionFromBank.getType() ) )
+        else if ( TransactionType.TRANSFER.equals( transactionFromBank.getType() )
+                || TransactionType.TOPUP.equals( transactionFromBank.getType() ) )
         {
             transaction.type( FormOfPayment.TRANSFER );
         }
