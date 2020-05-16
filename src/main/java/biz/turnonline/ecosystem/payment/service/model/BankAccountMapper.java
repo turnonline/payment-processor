@@ -113,7 +113,15 @@ class BankAccountMapper
 
         // A non null IBAN will set bankCode, branch and country
         sValue = Optional.ofNullable( source.getIban() );
-        sValue.ifPresent( backend::setIban );
+        try
+        {
+            sValue.ifPresent( backend::setIban );
+        }
+        catch ( IllegalArgumentException e )
+        {
+            String key = "errors.validation.bankAccount.iban.invalid";
+            throw ApiValidationException.prepare( key, sValue.get() );
+        }
 
         sValue = Optional.ofNullable( source.getBic() );
         sValue.ifPresent( backend::setBic );
