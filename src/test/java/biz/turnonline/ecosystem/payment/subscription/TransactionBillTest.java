@@ -18,7 +18,7 @@
 
 package biz.turnonline.ecosystem.payment.subscription;
 
-import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
+import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 
 import javax.annotation.Nonnull;
 
@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 class TransactionBillTest
-        extends TransactionBill
+        extends TransactionReceipt
 {
     private static final long serialVersionUID = 1L;
 

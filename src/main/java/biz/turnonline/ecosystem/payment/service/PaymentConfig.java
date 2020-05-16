@@ -27,7 +27,7 @@ import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
+import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -201,7 +201,7 @@ public interface PaymentConfig
     CommonTransaction initGetTransactionDraft( @Nonnull IncomingInvoice invoice );
 
     /**
-     * Creates a new record of the {@link TransactionBill} for the external Id.
+     * Creates a new record of the {@link TransactionReceipt} for the external Id.
      * To be idempotent, first searches for transaction with specified identification, if found it will be returned.
      *
      * @param extId the external identification of the transaction

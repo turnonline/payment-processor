@@ -25,7 +25,7 @@ import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
-import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
+import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftRequest;
 import biz.turnonline.ecosystem.revolut.business.draft.model.CreatePaymentDraftResponse;
 import biz.turnonline.ecosystem.revolut.business.draft.model.PaymentReceiver;
@@ -130,7 +130,7 @@ public class RevolutIncomingInvoiceProcessorTaskTest
         debtorBank.setCurrency( DEBTOR_CURRENCY );
         debtorBank.setExternalId( DEBTOR_EXT_ID );
 
-        transaction = new TransactionBill( "any" );
+        transaction = new TransactionReceipt( "any" );
 
         new Expectations( transaction )
         {

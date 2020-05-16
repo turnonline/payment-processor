@@ -143,7 +143,7 @@ public class TransactionPublisherTaskTest
                         .isNotNull();
 
                 assertWithMessage( "Transaction bill invoice Id" )
-                        .that( properties.get( "bill.invoiceId" ) )
+                        .that( properties.get( "bill.invoice" ) )
                         .isNotNull();
 
                 assertWithMessage( "Transaction status" )

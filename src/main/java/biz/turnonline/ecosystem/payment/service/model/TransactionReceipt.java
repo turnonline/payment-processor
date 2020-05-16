@@ -26,49 +26,49 @@ import javax.annotation.Nonnull;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Transaction that represents a payment for a bill (statement of charges from cash register etc.).
+ * Transaction that represents a payment for a receipt (statement of charges from cash register etc.).
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-@Subclass( name = "Bill", index = true )
-public class TransactionBill
+@Subclass( name = "Receipt", index = true )
+public class TransactionReceipt
         extends CommonTransaction
 {
-    private static final long serialVersionUID = -290298009607479569L;
+    private static final long serialVersionUID = 2681601932633459968L;
 
     @Index
-    private Long bill;
+    private Long receipt;
 
     /**
      * Needed if instantiated by objectify.
      */
     @SuppressWarnings( "unused" )
-    TransactionBill()
+    TransactionReceipt()
     {
     }
 
-    public TransactionBill( @Nonnull String extId )
+    public TransactionReceipt( @Nonnull String extId )
     {
-        super.externalId( checkNotNull( extId, "The bill external ID can't be null" ) );
-    }
-
-    /**
-     * Returns the unique identification of the bill.
-     *
-     * @return the bill Id
-     */
-    public Long getBillId()
-    {
-        return bill;
+        super.externalId( checkNotNull( extId, "The receipt external ID can't be null" ) );
     }
 
     /**
-     * The bill identified by ID to be associated with this transaction.
+     * Returns the unique identification of the receipt within Billing Processor service.
      *
-     * @param id the bill ID to be set
+     * @return the receipt ID
      */
-    public void setBillId( Long id )
+    public Long getReceipt()
     {
-        this.bill = id;
+        return receipt;
+    }
+
+    /**
+     * Sets the receipt identified by ID within Billing Processor service to be associated with this transaction.
+     *
+     * @param id the receipt ID to be set
+     */
+    public void setReceipt( Long id )
+    {
+        this.receipt = id;
     }
 }

@@ -43,6 +43,11 @@ import static com.google.common.truth.Truth.assertWithMessage;
 @SuppressWarnings( "ResultOfMethodCallIgnored" )
 public class BankAccountMapperTest
 {
+    private final LocalAccount account = new LocalAccount( new Account()
+            .setId( 53542L )
+            .setEmail( "my.account@turnonline.biz" )
+            .setIdentityId( "64HGtr6ks" ) );
+
     @Tested
     private BankAccountMapper tested;
 
@@ -51,11 +56,6 @@ public class BankAccountMapperTest
 
     @Mocked
     private MappingContext context;
-
-    private LocalAccount account = new LocalAccount( new Account()
-            .setId( 53542L )
-            .setEmail( "my.account@turnonline.biz" )
-            .setIdentityId( "64HGtr6ks" ) );
 
     @Mocked
     private BankCode bankCode;
@@ -100,6 +100,19 @@ public class BankAccountMapperTest
         BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
         //  make sure API IBAN is null
         api.setIban( null );
+
+        CompanyBankAccount backend;
+        backend = new CompanyBankAccount( codeBook );
+
+        tested.mapBtoA( api, backend, context );
+    }
+
+    @Test( expectedExceptions = ApiValidationException.class )
+    public void mapApiToBackend_InvalidIban()
+    {
+        BankAccount api = getFromFile( "bank-account-1.json", BankAccount.class );
+        //  make sure API IBAN is null
+        api.setIban( "SK3111000000198742637541" );
 
         CompanyBankAccount backend;
         backend = new CompanyBankAccount( codeBook );

@@ -31,8 +31,8 @@ import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.PaymentLocalAccount;
-import biz.turnonline.ecosystem.payment.service.model.TransactionBill;
 import biz.turnonline.ecosystem.payment.service.model.TransactionInvoice;
+import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutDebtorBankAccountsInit;
 import com.google.cloud.ServiceOptions;
 import com.google.common.annotations.VisibleForTesting;
@@ -247,7 +247,6 @@ class PaymentConfigBean
     @Override
     public CompanyBankAccount deleteBankAccount( @Nonnull Long id )
     {
-        // TODO remove payment gate from account config; old: config.removePaymentGateway( bankAccount.getPaymentGate() );
         CompanyBankAccount bankAccount = getBankAccount( checkNotNull( id, TEMPLATE, "Bank account ID" ) );
 
         if ( bankAccount.isPrimary() )
@@ -464,7 +463,7 @@ class PaymentConfigBean
         {
             // If the transaction record not found, the invoice hasn't been issued
             // and the incoming transaction represents an expenses paid outside of the service.
-            transaction = new TransactionBill( extId );
+            transaction = new TransactionReceipt( extId );
             transaction.save();
         }
 
@@ -608,7 +607,7 @@ class PaymentConfigBean
     private static class BankAccountCountryPredicate
             implements Predicate<CompanyBankAccount>
     {
-        private String countryCode;
+        private final String countryCode;
 
         BankAccountCountryPredicate( String countryCode )
         {
@@ -627,7 +626,7 @@ class PaymentConfigBean
     {
         private static final long serialVersionUID = 1L;
 
-        private String country;
+        private final String country;
 
         BankAccountSellerSorting( @Nonnull String country )
         {

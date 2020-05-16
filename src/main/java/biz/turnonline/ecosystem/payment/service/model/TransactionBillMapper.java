@@ -26,25 +26,25 @@ import ma.glasnost.orika.metadata.Type;
 import javax.inject.Singleton;
 
 /**
- * Single direction base mapper from {@link TransactionBill} to {@link Transaction}.
+ * Single direction base mapper from {@link TransactionReceipt} to {@link Transaction}.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 @Singleton
 class TransactionBillMapper
-        extends TransactionMapper<TransactionBill>
+        extends TransactionMapper<TransactionReceipt>
 {
     @Override
-    public Transaction convert( TransactionBill source,
+    public Transaction convert( TransactionReceipt source,
                                 Type<? extends Transaction> destinationType,
                                 MappingContext mappingContext )
     {
         Transaction transaction = super.convert( source, destinationType, mappingContext );
 
         Bill bill = new Bill();
-        bill.setId( source.getBillId() );
+        bill.setReceipt( source.getReceipt() );
 
-        if ( source.getBillId() != null )
+        if ( source.getReceipt() != null )
         {
             transaction.setBill( bill );
         }

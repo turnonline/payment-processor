@@ -63,14 +63,20 @@ public class RevolutBeneficiarySyncTaskTest
     // value from the incoming-invoice.pubsub.json
     private static final String CURRENCY = "EUR";
 
+    @Injectable
+    private final String json = "{}";
+
+    private final LocalAccount account = new LocalAccount( new Account()
+            .setId( 1735L )
+            .setEmail( "my.account@turnonline.biz" )
+            .setIdentityId( "64HGtr6ks" )
+            .setAudience( "a1b" ) );
+
     @Tested
     private RevolutBeneficiarySyncTask tested;
 
     @Injectable
     private Key<LocalAccount> accountKey;
-
-    @Injectable
-    private String json = "{}";
 
     @Injectable
     private Key<CompanyBankAccount> debtorBankAccountKey;
@@ -88,12 +94,6 @@ public class RevolutBeneficiarySyncTaskTest
     private PayloadRequest<?> authBy;
 
     private IncomingInvoice invoice;
-
-    private LocalAccount account = new LocalAccount( new Account()
-            .setId( 1735L )
-            .setEmail( "my.account@turnonline.biz" )
-            .setIdentityId( "64HGtr6ks" )
-            .setAudience( "a1b" ) );
 
     @BeforeMethod
     public void before()
