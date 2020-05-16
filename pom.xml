@@ -173,7 +173,7 @@
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-product-billing-client</artifactId>
-            <version>0.23-20200514.044534-1</version>
+            <version>0.23</version>
         </dependency>
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
@@ -183,7 +183,7 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-secretmanager</artifactId>
-            <version>0.2.1</version>
+            <version>1.0.1</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
