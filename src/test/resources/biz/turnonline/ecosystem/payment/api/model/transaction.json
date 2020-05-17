@@ -1,10 +1,17 @@
 {
     "amount": 35.0,
     "balance": 20.0,
+    "billAmount": 31.29,
+    "billCurrency": "GBP",
     "completedAt": "2020-03-06T09:11:37.960098Z",
     "credit": false,
     "currency": "EUR",
     "key": "123xyz",
+    "merchant": {
+        "name": "Pty Ltd",
+        "city": "Killara",
+        "category": "7399"
+    },
     "reference": "Payment for online service",
     "status": "COMPLETED",
     "type": "TRANSFER",
