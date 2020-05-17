@@ -34,7 +34,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class TransactionReceipt
         extends CommonTransaction
 {
-    private static final long serialVersionUID = 2681601932633459968L;
+    private static final long serialVersionUID = 5129057271906568133L;
+
+    @Index
+    private String category;
+
+    private String city;
+
+    private String name;
 
     @Index
     private Long receipt;
@@ -50,6 +57,51 @@ public class TransactionReceipt
     public TransactionReceipt( @Nonnull String extId )
     {
         super.externalId( checkNotNull( extId, "The receipt external ID can't be null" ) );
+    }
+
+    /**
+     * Returns the merchant category (code).
+     *
+     * @return the merchant category
+     */
+    public String getCategory()
+    {
+        return category;
+    }
+
+    public void setCategory( String category )
+    {
+        this.category = category;
+    }
+
+    /**
+     * Returns the merchant city.
+     *
+     * @return the merchant city
+     */
+    public String getCity()
+    {
+        return city;
+    }
+
+    public void setCity( String city )
+    {
+        this.city = city;
+    }
+
+    /**
+     * Returns the merchant name.
+     *
+     * @return the merchant name
+     */
+    public String getMerchantName()
+    {
+        return name;
+    }
+
+    public void setMerchantName( String name )
+    {
+        this.name = name;
     }
 
     /**

@@ -180,6 +180,22 @@ public class TransactionCreatedFlowTest
                 .that( transaction.isFailure() )
                 .isFalse();
 
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
+
+        assertWithMessage( "Transaction merchant name" )
+                .that( ( ( TransactionReceipt ) transaction ).getMerchantName() )
+                .isEqualTo( "Best, Ltd." );
+
+        assertWithMessage( "Transaction merchant category" )
+                .that( ( ( TransactionReceipt ) transaction ).getCategory() )
+                .isEqualTo( "7523" );
+
+        assertWithMessage( "Transaction merchant city" )
+                .that( ( ( TransactionReceipt ) transaction ).getCity() )
+                .isEqualTo( "Bratislava" );
+
         Date modificationDate = transaction.getModificationDate();
 
         stateChanged.execute();
@@ -312,6 +328,22 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction failure" )
                 .that( transaction.isFailure() )
                 .isFalse();
+
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
+
+        assertWithMessage( "Transaction merchant name" )
+                .that( ( ( TransactionReceipt ) transaction ).getMerchantName() )
+                .isEqualTo( "Pty Ltd" );
+
+        assertWithMessage( "Transaction merchant category" )
+                .that( ( ( TransactionReceipt ) transaction ).getCategory() )
+                .isEqualTo( "7399" );
+
+        assertWithMessage( "Transaction merchant city" )
+                .that( ( ( TransactionReceipt ) transaction ).getCity() )
+                .isEqualTo( "Killara" );
     }
 
     /**
@@ -383,6 +415,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction failure" )
                 .that( transaction.isFailure() )
                 .isFalse();
+
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
 
         Date modificationDate = transaction.getModificationDate();
 
@@ -479,6 +515,10 @@ public class TransactionCreatedFlowTest
                 .that( transaction.isFailure() )
                 .isFalse();
 
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
+
         Date modificationDate = transaction.getModificationDate();
 
         stateChanged.execute();
@@ -573,6 +613,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction failure" )
                 .that( transaction.isFailure() )
                 .isFalse();
+
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
 
         Date modificationDate = transaction.getModificationDate();
 
@@ -681,6 +725,10 @@ public class TransactionCreatedFlowTest
                 .that( transaction.isFailure() )
                 .isFalse();
 
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
+
         Date modificationDate = transaction.getModificationDate();
 
         stateChanged.execute();
@@ -776,6 +824,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction failure" )
                 .that( transaction.isFailure() )
                 .isTrue();
+
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
 
         Date modificationDate = transaction.getModificationDate();
 

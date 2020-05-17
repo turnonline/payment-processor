@@ -51,6 +51,9 @@ public class Transaction
     @JsonProperty( "key" )
     private String key;
 
+    @JsonProperty( "merchant" )
+    private Merchant merchant;
+
     @JsonProperty( "reference" )
     private String reference;
 
@@ -223,6 +226,26 @@ public class Transaction
     public void setKey( String key )
     {
         this.key = key;
+    }
+
+    public Transaction merchant( Merchant merchant )
+    {
+        this.merchant = merchant;
+        return this;
+    }
+
+    /**
+     * The merchant details, available only for card payments.
+     **/
+    @JsonProperty( "merchant" )
+    public Merchant getMerchant()
+    {
+        return merchant;
+    }
+
+    public void setMerchant( Merchant merchant )
+    {
+        this.merchant = merchant;
     }
 
     public Transaction reference( String reference )

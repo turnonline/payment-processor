@@ -22,9 +22,11 @@ import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
+import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 import biz.turnonline.ecosystem.payment.subscription.JsonTask;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionLeg;
+import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionMerchant;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionState;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType;
 import com.google.common.base.Strings;
@@ -152,6 +154,7 @@ public class TransactionCreatedTask
         if ( TransactionType.CARD_PAYMENT.equals( transactionFromBank.getType() ) )
         {
             transaction.type( FormOfPayment.CARD_PAYMENT );
+            populateMerchantFrom( transaction, transactionFromBank );
         }
         else if ( TransactionType.TRANSFER.equals( transactionFromBank.getType() )
                 || TransactionType.TOPUP.equals( transactionFromBank.getType() ) )
@@ -162,10 +165,23 @@ public class TransactionCreatedTask
                 || TransactionType.REFUND.equals( transactionFromBank.getType() ) )
         {
             transaction.type( FormOfPayment.REFUND );
+            populateMerchantFrom( transaction, transactionFromBank );
         }
 
         transaction.addOrigin( json() );
         transaction.save();
+    }
+
+    private void populateMerchantFrom( @Nonnull CommonTransaction transaction, @Nonnull Transaction fromBank )
+    {
+        TransactionMerchant merchant = fromBank.getMerchant();
+        if ( merchant != null && transaction instanceof TransactionReceipt )
+        {
+            TransactionReceipt receipt = ( TransactionReceipt ) transaction;
+            receipt.setCategory( merchant.getCategoryCode() );
+            receipt.setCity( merchant.getCity() );
+            receipt.setMerchantName( merchant.getName() );
+        }
     }
 
     @Override
