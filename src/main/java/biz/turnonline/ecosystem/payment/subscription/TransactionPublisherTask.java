@@ -19,6 +19,7 @@
 package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.payment.api.model.Bill;
+import biz.turnonline.ecosystem.payment.api.model.Merchant;
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
 import biz.turnonline.ecosystem.payment.api.model.TransactionBank;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
@@ -38,6 +39,7 @@ import javax.inject.Inject;
 import java.util.Date;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * Dedicated task to push {@link biz.turnonline.ecosystem.billing.model.Transaction}
@@ -100,6 +102,8 @@ class TransactionPublisherTask
         pbt.setKey( api.getKey() );
         pbt.setStatus( api.getStatus() );
         pbt.setType( api.getType() );
+        pbt.setBillAmount( api.getBillAmount() );
+        pbt.setBillCurrency( api.getBillCurrency() );
 
         Date completedAt = api.getCompletedAt();
         pbt.setCompletedAt( completedAt == null ? null : new DateTime( completedAt ) );
@@ -126,6 +130,21 @@ class TransactionPublisherTask
 
             pbt.setBill( bill );
         }
+
+        Merchant merchant = api.getMerchant();
+
+        // checking whether there is at least one non null property
+        if ( merchant != null
+                && ( !isNullOrEmpty( merchant.getCategory() )
+                || !isNullOrEmpty( merchant.getCity() )
+                || !isNullOrEmpty( merchant.getName() ) ) )
+        {
+            pbt.setMerchant( new biz.turnonline.ecosystem.billing.model.Merchant()
+                    .setCategory( merchant.getCategory() )
+                    .setCity( merchant.getCity() )
+                    .setName( merchant.getName() ) );
+        }
+
 
         // transaction from product-billing service to be pushed
         facade.insert( pbt )

@@ -173,7 +173,7 @@
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-product-billing-client</artifactId>
-            <version>0.23</version>
+            <version>0.24-20200517.113256-1</version>
         </dependency>
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>

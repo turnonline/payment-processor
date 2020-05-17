@@ -34,7 +34,7 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 @Singleton
-class TransactionBillMapper
+class TransactionReceiptMapper
         extends TransactionMapper<TransactionReceipt>
 {
     @Override

@@ -39,12 +39,13 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 /**
  * Database representation of the transaction (either credit or debit).
  **/
+@SuppressWarnings( "FieldMayBeFinal" )
 @Entity( name = "PP_Transaction" )
 public abstract class CommonTransaction
         extends EntityLongIdentity
         implements IndexModificationDate
 {
-    private static final long serialVersionUID = -4753436815702218013L;
+    private static final long serialVersionUID = -2914968866257548L;
 
     private Key<CompanyBankAccount> accountKey;
 
@@ -52,6 +53,10 @@ public abstract class CommonTransaction
 
     @Index
     private String bankCode;
+
+    private Double billAmount;
+
+    private String billCurrency;
 
     @Index
     private Date completedAt;
@@ -144,6 +149,34 @@ public abstract class CommonTransaction
     public String getBankCode()
     {
         return bankCode;
+    }
+
+    /**
+     * The billing amount for cross-currency payments.
+     */
+    public CommonTransaction billAmount( Double billAmount )
+    {
+        this.billAmount = billAmount;
+        return this;
+    }
+
+    public Double getBillAmount()
+    {
+        return billAmount;
+    }
+
+    /**
+     * The billing currency for cross-currency payments.
+     */
+    public CommonTransaction billCurrency( String billCurrency )
+    {
+        this.billCurrency = billCurrency;
+        return this;
+    }
+
+    public String getBillCurrency()
+    {
+        return billCurrency;
     }
 
     /**
@@ -386,7 +419,7 @@ public abstract class CommonTransaction
 
         REVERTED( "reverted" );
 
-        private String value;
+        private final String value;
 
         State( String value )
         {

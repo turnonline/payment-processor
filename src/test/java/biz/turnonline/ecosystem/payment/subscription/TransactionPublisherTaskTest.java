@@ -100,7 +100,7 @@ public class TransactionPublisherTaskTest
                 .setEmail( ACCOUNT_EMAIL )
                 .setIdentityId( ACCOUNT_IDENTITY_ID ) );
 
-        transaction = new TransactionBillTest( "7fa8816a-1fe5-4fc7-9e86-fd659b753167", TRANSACTION_ID );
+        transaction = new TransactionReceiptTest( "7fa8816a-1fe5-4fc7-9e86-fd659b753167", TRANSACTION_ID );
     }
 
     @Test

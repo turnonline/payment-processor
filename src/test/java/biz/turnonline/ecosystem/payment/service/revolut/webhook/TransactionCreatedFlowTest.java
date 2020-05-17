@@ -77,6 +77,8 @@ public class TransactionCreatedFlowTest
 {
     public static final String TRANSACTION_EXT_ID = "0dfaec58-6043-11ea-bc55-0242ac130003";
 
+    public static final String TRANSACTION_CURRENCY = "EUR";
+
     static final String BANK_ACCOUNT_EXT_ID = "bdab1c20-8d8c-430d-b967-87ac01af060c";
 
     static ObjectMapper mapper = new ObjectMapper()
@@ -157,6 +159,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 2.0 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isNull();
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isNull();
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -164,6 +174,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isNull();
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction pending" )
                 .that( transaction.getCompletedAt() )
@@ -306,6 +320,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 0.9 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isEqualTo( 1.0 );
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isEqualTo( "USD" );
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -313,6 +335,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isNull();
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction pending" )
                 .that( transaction.getCompletedAt() )
@@ -393,6 +419,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 123.11 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isNull();
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isNull();
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -400,6 +434,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isEqualTo( 0.0 );
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction completed at" )
                 .that( transaction.getCompletedAt() )
@@ -492,6 +530,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 0.0 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isNull();
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isNull();
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -499,6 +545,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isEqualTo( 100 );
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction completed at" )
                 .that( transaction.getCompletedAt() )
@@ -591,6 +641,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 123.11 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isEqualTo( 108.51 );
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isEqualTo( "GBP" );
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -598,6 +656,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isEqualTo( 22.5 );
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction completed at" )
                 .that( transaction.getCompletedAt() )
@@ -706,9 +768,21 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 119.19 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isNull();
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isNull();
+
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isEqualTo( 10.0 );
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction pending" )
                 .that( transaction.getCompletedAt() )
@@ -802,6 +876,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 99.22 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isNull();
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isNull();
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -809,6 +891,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isNull();
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction pending" )
                 .that( transaction.getCompletedAt() )
@@ -902,6 +988,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 15.00 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isNull();
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isNull();
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -909,6 +1003,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isEqualTo( 30.00 );
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction completed at" )
                 .that( transaction.getCompletedAt() )

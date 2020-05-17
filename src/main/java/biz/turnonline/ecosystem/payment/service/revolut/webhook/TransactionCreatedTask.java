@@ -155,6 +155,12 @@ public class TransactionCreatedTask
             transaction.amount( 0.0 ).credit( true );
         }
 
+        Double billAmount = leg.getBillAmount();
+        if ( billAmount != null )
+        {
+            transaction.billAmount( Math.abs( billAmount ) ).billCurrency( leg.getBillCurrency() );
+        }
+
         if ( TransactionState.COMPLETED.equals( state ) )
         {
             transaction.completedAt( transactionFromBank.getUpdatedAt() );
