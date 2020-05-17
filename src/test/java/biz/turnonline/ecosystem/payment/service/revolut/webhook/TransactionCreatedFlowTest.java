@@ -36,12 +36,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mocked;
 import mockit.Tested;
 import org.ctoolkit.agent.service.impl.ImportTask;
 import org.ctoolkit.restapi.client.ClientErrorException;
 import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.ctoolkit.restapi.client.UnauthorizedException;
+import org.ctoolkit.services.task.Task;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -95,6 +97,9 @@ public class TransactionCreatedFlowTest
 
     @Injectable
     private RestFacade facade;
+
+    @Mocked
+    private Task<?> task;
 
     static String toJson( String fileName )
     {
@@ -954,6 +959,8 @@ public class TransactionCreatedFlowTest
     public void unsuccessful_TransactionNotFound()
     {
         created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() ) );
+        // adding next task to test whether will be cleared
+        created.addNext( task );
         created.setConfig( config );
         created.setFacade( facade );
 
@@ -972,12 +979,19 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 0 );
+
+        assertWithMessage( "Remaining number of tasks after failure" )
+                .that( created.countTasks() )
+                // 1 is the current one
+                .isEqualTo( 1 );
     }
 
     @Test
     public void unsuccessful_RevolutClientError()
     {
         created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() ) );
+        // adding next task to test whether will be cleared
+        created.addNext( task );
         created.setConfig( config );
         created.setFacade( facade );
 
@@ -996,12 +1010,19 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 0 );
+
+        assertWithMessage( "Remaining number of tasks after failure" )
+                .that( created.countTasks() )
+                // 1 is the current one
+                .isEqualTo( 1 );
     }
 
     @Test
     public void unsuccessful_RevolutUnauthorized()
     {
         created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() ) );
+        // adding next task to test whether will be cleared
+        created.addNext( task );
         created.setConfig( config );
         created.setFacade( facade );
 
@@ -1020,6 +1041,11 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 0 );
+
+        assertWithMessage( "Remaining number of tasks after failure" )
+                .that( created.countTasks() )
+                // 1 is the current one
+                .isEqualTo( 1 );
     }
 
     @Test
@@ -1027,6 +1053,8 @@ public class TransactionCreatedFlowTest
     {
         String json = toJsonCreated( "missing-legs" );
         created = new TransactionCreatedTask( json );
+        // adding next task to test whether will be cleared
+        created.addNext( task );
         created.setConfig( config );
         created.setFacade( facade );
 
@@ -1051,6 +1079,11 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 0 );
+
+        assertWithMessage( "Remaining number of tasks after failure" )
+                .that( created.countTasks() )
+                // 1 is the current one
+                .isEqualTo( 1 );
     }
 
     /**

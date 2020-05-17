@@ -48,6 +48,11 @@ import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BAN
  * Async task to process Revolut {@link Transaction}.
  * <p>
  * Incoming transaction Id is being only used to get {@link Transaction} from the bank.
+ * <p>
+ * <strong>Note</strong>
+ * </p>
+ * In case of the Transaction retrieval failure (not found, client error or unauthorized)
+ * or if the content is invalid, next task will be cleared and nothing will be executed.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
@@ -85,14 +90,18 @@ public class TransactionCreatedTask
         }
         catch ( ClientErrorException | NotFoundException | UnauthorizedException e )
         {
+            clear();
             LOGGER.error( "Unknown incoming transaction identified by transaction Id: " + id, e );
+            LOGGER.warn( "Next task cleared, nothing will be executed." );
             return;
         }
 
         List<TransactionLeg> legs = transactionFromBank.getLegs();
         if ( legs == null || legs.isEmpty() )
         {
+            clear();
             LOGGER.warn( "Invalid incoming transaction, it has leg; ID " + id );
+            LOGGER.warn( "Next task cleared, nothing will be executed." );
             return;
         }
 
@@ -157,7 +166,8 @@ public class TransactionCreatedTask
             populateMerchantFrom( transaction, transactionFromBank );
         }
         else if ( TransactionType.TRANSFER.equals( transactionFromBank.getType() )
-                || TransactionType.TOPUP.equals( transactionFromBank.getType() ) )
+                || TransactionType.TOPUP.equals( transactionFromBank.getType() )
+                || TransactionType.FEE.equals( transactionFromBank.getType() ) )
         {
             transaction.type( FormOfPayment.TRANSFER );
         }
