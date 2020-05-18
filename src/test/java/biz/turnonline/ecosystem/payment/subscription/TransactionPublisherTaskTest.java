@@ -100,7 +100,7 @@ public class TransactionPublisherTaskTest
                 .setEmail( ACCOUNT_EMAIL )
                 .setIdentityId( ACCOUNT_IDENTITY_ID ) );
 
-        transaction = new TransactionBillTest( "7fa8816a-1fe5-4fc7-9e86-fd659b753167", TRANSACTION_ID );
+        transaction = new TransactionReceiptTest( "7fa8816a-1fe5-4fc7-9e86-fd659b753167", TRANSACTION_ID );
     }
 
     @Test
@@ -132,11 +132,19 @@ public class TransactionPublisherTaskTest
 
                 Map<String, Object> map = mapOf( message );
                 Map<String, Object> properties = new Helper().flatMap( map, null );
-                assertThat( properties ).hasSize( 15 );
+                assertThat( properties ).hasSize( 20 );
 
                 assertWithMessage( "Transaction amount" )
                         .that( properties.get( "amount" ) )
                         .isEqualTo( 35.0 );
+
+                assertWithMessage( "Transaction bill amount" )
+                        .that( properties.get( "billAmount" ) )
+                        .isEqualTo( 31.29 );
+
+                assertWithMessage( "Transaction bill currency" )
+                        .that( properties.get( "billCurrency" ) )
+                        .isEqualTo( "GBP" );
 
                 assertWithMessage( "Transaction bank account IBAN" )
                         .that( properties.get( "bankAccount.iban" ) )
@@ -145,6 +153,10 @@ public class TransactionPublisherTaskTest
                 assertWithMessage( "Transaction bill invoice Id" )
                         .that( properties.get( "bill.invoice" ) )
                         .isNotNull();
+
+                assertWithMessage( "Transaction merchant name" )
+                        .that( properties.get( "merchant.name" ) )
+                        .isEqualTo( "Pty Ltd" );
 
                 assertWithMessage( "Transaction status" )
                         .that( properties.get( "status" ) )

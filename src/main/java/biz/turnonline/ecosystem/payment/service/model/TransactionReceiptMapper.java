@@ -19,11 +19,14 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
 import biz.turnonline.ecosystem.payment.api.model.Bill;
+import biz.turnonline.ecosystem.payment.api.model.Merchant;
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.metadata.Type;
 
 import javax.inject.Singleton;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * Single direction base mapper from {@link TransactionReceipt} to {@link Transaction}.
@@ -31,7 +34,7 @@ import javax.inject.Singleton;
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 @Singleton
-class TransactionBillMapper
+class TransactionReceiptMapper
         extends TransactionMapper<TransactionReceipt>
 {
     @Override
@@ -47,6 +50,21 @@ class TransactionBillMapper
         if ( source.getReceipt() != null )
         {
             transaction.setBill( bill );
+        }
+
+        String category = source.getCategory();
+        String city = source.getCity();
+        String name = source.getMerchantName();
+
+        // checking whether there is at least one non null property
+        if ( !isNullOrEmpty( category )
+                || !isNullOrEmpty( city )
+                || !isNullOrEmpty( name ) )
+        {
+            transaction.setMerchant( new Merchant()
+                    .category( category )
+                    .city( city )
+                    .name( name ) );
         }
 
         return transaction;

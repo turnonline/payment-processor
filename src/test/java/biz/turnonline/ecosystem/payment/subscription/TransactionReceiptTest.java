@@ -27,12 +27,12 @@ import javax.annotation.Nonnull;
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-class TransactionBillTest
+class TransactionReceiptTest
         extends TransactionReceipt
 {
     private static final long serialVersionUID = 1L;
 
-    TransactionBillTest( @Nonnull String extId, Long transactionId )
+    TransactionReceiptTest( @Nonnull String extId, Long transactionId )
     {
         super( extId );
         super.setId( transactionId );

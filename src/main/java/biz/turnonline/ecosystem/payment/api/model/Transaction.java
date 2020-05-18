@@ -39,6 +39,12 @@ public class Transaction
     @JsonProperty( "bill" )
     private Bill bill;
 
+    @JsonProperty( "billAmount" )
+    private Double billAmount;
+
+    @JsonProperty( "billCurrency" )
+    private String billCurrency;
+
     @JsonProperty( "completedAt" )
     private Date completedAt;
 
@@ -50,6 +56,9 @@ public class Transaction
 
     @JsonProperty( "key" )
     private String key;
+
+    @JsonProperty( "merchant" )
+    private Merchant merchant;
 
     @JsonProperty( "reference" )
     private String reference;
@@ -145,6 +154,46 @@ public class Transaction
         this.bill = bill;
     }
 
+    public Transaction billAmount( Double billAmount )
+    {
+        this.billAmount = billAmount;
+        return this;
+    }
+
+    /**
+     * The billing amount for cross-currency payments, otherwise will be missing.
+     **/
+    @JsonProperty( "billAmount" )
+    public Double getBillAmount()
+    {
+        return billAmount;
+    }
+
+    public void setBillAmount( Double billAmount )
+    {
+        this.billAmount = billAmount;
+    }
+
+    public Transaction billCurrency( String billCurrency )
+    {
+        this.billCurrency = billCurrency;
+        return this;
+    }
+
+    /**
+     * The billing currency for cross-currency payments, otherwise will be missing.
+     **/
+    @JsonProperty( "billCurrency" )
+    public String getBillCurrency()
+    {
+        return billCurrency;
+    }
+
+    public void setBillCurrency( String billCurrency )
+    {
+        this.billCurrency = billCurrency;
+    }
+
     public Transaction completedAt( Date completedAt )
     {
         this.completedAt = completedAt;
@@ -223,6 +272,26 @@ public class Transaction
     public void setKey( String key )
     {
         this.key = key;
+    }
+
+    public Transaction merchant( Merchant merchant )
+    {
+        this.merchant = merchant;
+        return this;
+    }
+
+    /**
+     * The merchant details, available only for card payments.
+     **/
+    @JsonProperty( "merchant" )
+    public Merchant getMerchant()
+    {
+        return merchant;
+    }
+
+    public void setMerchant( Merchant merchant )
+    {
+        this.merchant = merchant;
     }
 
     public Transaction reference( String reference )
@@ -334,6 +403,8 @@ public class Transaction
                 "    balance: " + toIndentedString( balance ) + "\n" +
                 "    bankAccount: " + toIndentedString( bankAccount ) + "\n" +
                 "    bill: " + toIndentedString( bill ) + "\n" +
+                "    billAmount: " + toIndentedString( billAmount ) + "\n" +
+                "    billCurrency: " + toIndentedString( billCurrency ) + "\n" +
                 "    completedAt: " + toIndentedString( completedAt ) + "\n" +
                 "    credit: " + toIndentedString( credit ) + "\n" +
                 "    currency: " + toIndentedString( currency ) + "\n" +

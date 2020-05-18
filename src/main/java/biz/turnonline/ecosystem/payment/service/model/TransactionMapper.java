@@ -47,6 +47,8 @@ abstract class TransactionMapper<T extends CommonTransaction>
         transaction.setCurrency( source.getCurrency() );
         transaction.setReference( source.getReference() );
         transaction.setKey( source.getKey() );
+        transaction.setBillAmount( source.getBillAmount() );
+        transaction.setBillCurrency( source.getBillCurrency() );
 
         CommonTransaction.State status = source.getStatus();
         transaction.setStatus( status == null ? null : status.name() );

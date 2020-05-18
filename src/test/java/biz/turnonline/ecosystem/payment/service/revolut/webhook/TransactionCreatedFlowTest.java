@@ -36,12 +36,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mocked;
 import mockit.Tested;
 import org.ctoolkit.agent.service.impl.ImportTask;
 import org.ctoolkit.restapi.client.ClientErrorException;
 import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.ctoolkit.restapi.client.UnauthorizedException;
+import org.ctoolkit.services.task.Task;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -75,6 +77,8 @@ public class TransactionCreatedFlowTest
 {
     public static final String TRANSACTION_EXT_ID = "0dfaec58-6043-11ea-bc55-0242ac130003";
 
+    public static final String TRANSACTION_CURRENCY = "EUR";
+
     static final String BANK_ACCOUNT_EXT_ID = "bdab1c20-8d8c-430d-b967-87ac01af060c";
 
     static ObjectMapper mapper = new ObjectMapper()
@@ -95,6 +99,9 @@ public class TransactionCreatedFlowTest
 
     @Injectable
     private RestFacade facade;
+
+    @Mocked
+    private Task<?> task;
 
     static String toJson( String fileName )
     {
@@ -152,6 +159,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 2.0 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isNull();
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isNull();
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -159,6 +174,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isNull();
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction pending" )
                 .that( transaction.getCompletedAt() )
@@ -179,6 +198,22 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction failure" )
                 .that( transaction.isFailure() )
                 .isFalse();
+
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
+
+        assertWithMessage( "Transaction merchant name" )
+                .that( ( ( TransactionReceipt ) transaction ).getMerchantName() )
+                .isEqualTo( "Best, Ltd." );
+
+        assertWithMessage( "Transaction merchant category" )
+                .that( ( ( TransactionReceipt ) transaction ).getCategory() )
+                .isEqualTo( "7523" );
+
+        assertWithMessage( "Transaction merchant city" )
+                .that( ( ( TransactionReceipt ) transaction ).getCity() )
+                .isEqualTo( "Bratislava" );
 
         Date modificationDate = transaction.getModificationDate();
 
@@ -285,6 +320,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 0.9 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isEqualTo( 1.0 );
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isEqualTo( "USD" );
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -292,6 +335,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isNull();
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction pending" )
                 .that( transaction.getCompletedAt() )
@@ -312,6 +359,22 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction failure" )
                 .that( transaction.isFailure() )
                 .isFalse();
+
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
+
+        assertWithMessage( "Transaction merchant name" )
+                .that( ( ( TransactionReceipt ) transaction ).getMerchantName() )
+                .isEqualTo( "Pty Ltd" );
+
+        assertWithMessage( "Transaction merchant category" )
+                .that( ( ( TransactionReceipt ) transaction ).getCategory() )
+                .isEqualTo( "7399" );
+
+        assertWithMessage( "Transaction merchant city" )
+                .that( ( ( TransactionReceipt ) transaction ).getCity() )
+                .isEqualTo( "Killara" );
     }
 
     /**
@@ -356,6 +419,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 123.11 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isNull();
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isNull();
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -363,6 +434,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isEqualTo( 0.0 );
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction completed at" )
                 .that( transaction.getCompletedAt() )
@@ -383,6 +458,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction failure" )
                 .that( transaction.isFailure() )
                 .isFalse();
+
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
 
         Date modificationDate = transaction.getModificationDate();
 
@@ -451,6 +530,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 0.0 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isNull();
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isNull();
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -458,6 +545,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isEqualTo( 100 );
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction completed at" )
                 .that( transaction.getCompletedAt() )
@@ -478,6 +569,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction failure" )
                 .that( transaction.isFailure() )
                 .isFalse();
+
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
 
         Date modificationDate = transaction.getModificationDate();
 
@@ -546,6 +641,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 123.11 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isEqualTo( 108.51 );
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isEqualTo( "GBP" );
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -553,6 +656,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isEqualTo( 22.5 );
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction completed at" )
                 .that( transaction.getCompletedAt() )
@@ -573,6 +680,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction failure" )
                 .that( transaction.isFailure() )
                 .isFalse();
+
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
 
         Date modificationDate = transaction.getModificationDate();
 
@@ -657,9 +768,21 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 119.19 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isNull();
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isNull();
+
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isEqualTo( 10.0 );
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction pending" )
                 .that( transaction.getCompletedAt() )
@@ -680,6 +803,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction failure" )
                 .that( transaction.isFailure() )
                 .isFalse();
+
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
 
         Date modificationDate = transaction.getModificationDate();
 
@@ -749,6 +876,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 99.22 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isNull();
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isNull();
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -756,6 +891,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isNull();
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction pending" )
                 .that( transaction.getCompletedAt() )
@@ -776,6 +915,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction failure" )
                 .that( transaction.isFailure() )
                 .isTrue();
+
+        assertWithMessage( "Transaction type (Receipt)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
 
         Date modificationDate = transaction.getModificationDate();
 
@@ -845,6 +988,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getAmount() )
                 .isEqualTo( 15.00 );
 
+        assertWithMessage( "Transaction bill amount" )
+                .that( transaction.getBillAmount() )
+                .isNull();
+
+        assertWithMessage( "Transaction bill currency" )
+                .that( transaction.getBillCurrency() )
+                .isNull();
+
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
                 .isNull();
@@ -852,6 +1003,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Balance after transaction" )
                 .that( transaction.getBalance() )
                 .isEqualTo( 30.00 );
+
+        assertWithMessage( "Transaction currency" )
+                .that( transaction.getCurrency() )
+                .isEqualTo( TRANSACTION_CURRENCY );
 
         assertWithMessage( "Transaction completed at" )
                 .that( transaction.getCompletedAt() )
@@ -902,6 +1057,8 @@ public class TransactionCreatedFlowTest
     public void unsuccessful_TransactionNotFound()
     {
         created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() ) );
+        // adding next task to test whether will be cleared
+        created.addNext( task );
         created.setConfig( config );
         created.setFacade( facade );
 
@@ -920,12 +1077,19 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 0 );
+
+        assertWithMessage( "Remaining number of tasks after failure" )
+                .that( created.countTasks() )
+                // 1 is the current one
+                .isEqualTo( 1 );
     }
 
     @Test
     public void unsuccessful_RevolutClientError()
     {
         created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() ) );
+        // adding next task to test whether will be cleared
+        created.addNext( task );
         created.setConfig( config );
         created.setFacade( facade );
 
@@ -944,12 +1108,19 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 0 );
+
+        assertWithMessage( "Remaining number of tasks after failure" )
+                .that( created.countTasks() )
+                // 1 is the current one
+                .isEqualTo( 1 );
     }
 
     @Test
     public void unsuccessful_RevolutUnauthorized()
     {
         created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() ) );
+        // adding next task to test whether will be cleared
+        created.addNext( task );
         created.setConfig( config );
         created.setFacade( facade );
 
@@ -968,6 +1139,11 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 0 );
+
+        assertWithMessage( "Remaining number of tasks after failure" )
+                .that( created.countTasks() )
+                // 1 is the current one
+                .isEqualTo( 1 );
     }
 
     @Test
@@ -975,6 +1151,8 @@ public class TransactionCreatedFlowTest
     {
         String json = toJsonCreated( "missing-legs" );
         created = new TransactionCreatedTask( json );
+        // adding next task to test whether will be cleared
+        created.addNext( task );
         created.setConfig( config );
         created.setFacade( facade );
 
@@ -999,6 +1177,11 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Final number of transactions" )
                 .that( count )
                 .isEqualTo( 0 );
+
+        assertWithMessage( "Remaining number of tasks after failure" )
+                .that( created.countTasks() )
+                // 1 is the current one
+                .isEqualTo( 1 );
     }
 
     /**

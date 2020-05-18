@@ -41,7 +41,7 @@ public class PaymentBeanMapperConfig
 
     private final BankAccountFactory bankAccountFactory;
 
-    private final TransactionBillMapper transactionBillMapper;
+    private final TransactionReceiptMapper transactionBillMapper;
 
     private final TransactionInvoiceMapper transactionInvoiceMapper;
 
@@ -49,7 +49,7 @@ public class PaymentBeanMapperConfig
     public PaymentBeanMapperConfig( BankCodeMapper bankCodeMapper,
                                     BankAccountMapper bankAccountMapper,
                                     BankAccountFactory bankAccountFactory,
-                                    TransactionBillMapper transactionBillMapper,
+                                    TransactionReceiptMapper transactionBillMapper,
                                     TransactionInvoiceMapper transactionInvoiceMapper )
     {
         this.bankCodeMapper = bankCodeMapper;
