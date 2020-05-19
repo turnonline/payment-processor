@@ -101,6 +101,7 @@ class TransactionPublisherTask
         pbt.setReference( api.getReference() );
         pbt.setKey( api.getKey() );
         pbt.setStatus( api.getStatus() );
+        pbt.setTransactionId( api.getTransactionId() );
         pbt.setType( api.getType() );
         pbt.setBillAmount( api.getBillAmount() );
         pbt.setBillCurrency( api.getBillCurrency() );

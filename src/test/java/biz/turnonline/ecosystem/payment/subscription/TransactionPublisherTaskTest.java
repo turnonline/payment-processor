@@ -132,7 +132,7 @@ public class TransactionPublisherTaskTest
 
                 Map<String, Object> map = mapOf( message );
                 Map<String, Object> properties = new Helper().flatMap( map, null );
-                assertThat( properties ).hasSize( 20 );
+                assertThat( properties ).hasSize( 21 );
 
                 assertWithMessage( "Transaction amount" )
                         .that( properties.get( "amount" ) )
@@ -169,6 +169,10 @@ public class TransactionPublisherTaskTest
                 assertWithMessage( "Transaction type" )
                         .that( properties.get( "bankAccount.code" ) )
                         .isEqualTo( "REVO" );
+
+                assertWithMessage( "Transaction ID" )
+                        .that( properties.get( "transactionId" ) )
+                        .isEqualTo( 645568 );
             }
         };
     }
