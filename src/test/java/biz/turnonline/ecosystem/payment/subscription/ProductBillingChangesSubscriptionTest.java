@@ -18,8 +18,8 @@
 
 package biz.turnonline.ecosystem.payment.subscription;
 
+import biz.turnonline.ecosystem.billing.model.BillPayment;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
-import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.billing.model.PurchaseOrder;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
@@ -365,7 +365,7 @@ public class ProductBillingChangesSubscriptionTest
         new Expectations()
         {
             {
-                config.getDebtorBankAccount( ( InvoicePayment ) any );
+                config.getDebtorBankAccount( ( BillPayment ) any );
                 result = null;
             }
         };

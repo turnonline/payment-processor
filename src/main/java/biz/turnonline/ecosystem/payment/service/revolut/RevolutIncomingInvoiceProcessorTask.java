@@ -18,8 +18,8 @@
 
 package biz.turnonline.ecosystem.payment.service.revolut;
 
+import biz.turnonline.ecosystem.billing.model.BillPayment;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
-import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
@@ -57,7 +57,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  * <strong>Preconditions:</strong>
  * <ul>
  *     <li>Debtor's bank account is ready to be debited {@link CompanyBankAccount#isDebtorReady()}</li>
- *     <li>{@link InvoicePayment} has all mandatory properties to make a payment</li>
+ *     <li>{@link BillPayment} has all mandatory properties to make a payment</li>
  *     <li>Beneficiary bank account is already synced with Revolut, see {@link RevolutBeneficiarySyncTask}</li>
  *     <li>There is transaction record already prepared to be populated from invoice payments
  *     if payment sync is successful</li>
@@ -105,7 +105,7 @@ public class RevolutIncomingInvoiceProcessorTask
     @Override
     protected void execute( @Nonnull LocalAccount debtor, @Nonnull IncomingInvoice invoice )
     {
-        InvoicePayment payment = invoice.getPayment();
+        BillPayment payment = invoice.getPayment();
         if ( payment == null )
         {
             LOGGER.warn( "Incoming invoice identified by '" + uniqueKey( invoice ) + "' missing payment." );
@@ -182,7 +182,7 @@ public class RevolutIncomingInvoiceProcessorTask
     private void schedulePaymentDraft( @Nonnull LocalAccount debtor,
                                        @Nonnull CompanyBankAccount debtorBank,
                                        @Nonnull String beneficiaryId,
-                                       @Nonnull InvoicePayment payment,
+                                       @Nonnull BillPayment payment,
                                        @Nonnull CommonTransaction transaction )
     {
         String debtorExtId = debtorBank.getExternalId();
