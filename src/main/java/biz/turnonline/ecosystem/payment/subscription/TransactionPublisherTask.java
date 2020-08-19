@@ -147,7 +147,7 @@ class TransactionPublisherTask
         }
 
 
-        // transaction from product-billing service to be pushed
+        // Transaction type taken from product-billing service to be pushed
         facade.insert( pbt )
                 .onBehalfOf( lAccount )
                 .finish();

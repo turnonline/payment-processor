@@ -134,7 +134,8 @@ public class RevolutWebhookSubscription
             case "TransactionStateChanged":
             {
                 TransactionStateChangedTask task = new TransactionStateChangedTask( jsonObject.toString() );
-                task.addNext( new TransactionPublisherTask( transaction.entityKey() ) );
+                // TECO-238 ignore publishing of the transaction if it's incomplete yet (race condition issue)
+                task.addNext( new TransactionPublisherTask( transaction.entityKey() ), CommonTransaction::isIncomplete );
                 executor.schedule( task );
                 LOGGER.info( event + " task scheduled" );
                 break;
