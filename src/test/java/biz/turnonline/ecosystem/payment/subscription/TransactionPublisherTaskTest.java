@@ -150,6 +150,10 @@ public class TransactionPublisherTaskTest
                         .that( properties.get( "bankAccount.iban" ) )
                         .isNotNull();
 
+                assertWithMessage( "Transaction bill order Id" )
+                        .that( properties.get( "bill.order" ) )
+                        .isNotNull();
+
                 assertWithMessage( "Transaction bill invoice Id" )
                         .that( properties.get( "bill.invoice" ) )
                         .isNotNull();
@@ -166,7 +170,7 @@ public class TransactionPublisherTaskTest
                         .that( properties.get( "type" ) )
                         .isEqualTo( "TRANSFER" );
 
-                assertWithMessage( "Transaction type" )
+                assertWithMessage( "Transaction bank account code" )
                         .that( properties.get( "bankAccount.code" ) )
                         .isEqualTo( "REVO" );
 

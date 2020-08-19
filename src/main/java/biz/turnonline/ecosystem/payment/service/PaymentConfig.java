@@ -18,8 +18,8 @@
 
 package biz.turnonline.ecosystem.payment.service;
 
+import biz.turnonline.ecosystem.billing.model.BillPayment;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
-import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
@@ -141,7 +141,7 @@ public interface PaymentConfig
      * @param payment the payment instruction for the debtor, taken from the incoming invoice
      * @return the debtor bank account or {@code null} if none specified
      */
-    CompanyBankAccount getDebtorBankAccount( @Nonnull InvoicePayment payment );
+    CompanyBankAccount getDebtorBankAccount( @Nonnull BillPayment payment );
 
     /**
      * Returns the list of all alternative bank accounts except the primary one.

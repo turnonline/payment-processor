@@ -18,8 +18,8 @@
 
 package biz.turnonline.ecosystem.payment.subscription;
 
+import biz.turnonline.ecosystem.billing.model.BillPayment;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
-import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.billing.model.PurchaseOrder;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
@@ -66,8 +66,8 @@ import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ENTITY_ID;
  * Payment (bank transfer) will be scheduled only if one of the condition is being matched:
  * <ul>
  *     <li>Pub/Sub account matches the local account associated with this service (single tenant concept)</li>
- *     <li>{@link InvoicePayment#getType()} ()} is TRANSFER</li>
- *     <li>{@link InvoicePayment#getType()} is {@code null}, meaning not configured at all,
+ *     <li>{@link BillPayment#getType()} ()} is TRANSFER</li>
+ *     <li>{@link BillPayment#getType()} is {@code null}, meaning not configured at all,
  *     but rest of the payment properties are valid for bank transfer</li>
  * </ul>
  *
@@ -156,7 +156,7 @@ class ProductBillingChangesSubscription
                     return;
                 }
 
-                InvoicePayment payment = invoice.getPayment();
+                BillPayment payment = invoice.getPayment();
                 CompanyBankAccount debtorBank;
                 if ( payment != null )
                 {

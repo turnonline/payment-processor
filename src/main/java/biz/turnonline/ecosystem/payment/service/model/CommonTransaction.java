@@ -19,6 +19,7 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Index;
@@ -107,6 +108,18 @@ public abstract class CommonTransaction
     public Key<CompanyBankAccount> getBankAccountKey()
     {
         return accountKey;
+    }
+
+    /**
+     * Returns the boolean indication whether this transaction is incomplete or not.
+     * It's considered incomplete if amount and currency is not set yet, has a {@code null} value.
+     */
+    public boolean isIncomplete()
+    {
+        return amount == null
+                && Strings.isNullOrEmpty( currency )
+                && billAmount == null
+                && Strings.isNullOrEmpty( billCurrency );
     }
 
     /**

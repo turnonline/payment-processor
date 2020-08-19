@@ -19,9 +19,9 @@
 package biz.turnonline.ecosystem.payment.service.revolut;
 
 import biz.turnonline.ecosystem.billing.model.BankAccount;
+import biz.turnonline.ecosystem.billing.model.BillPayment;
 import biz.turnonline.ecosystem.billing.model.Creditor;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
-import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
@@ -88,7 +88,7 @@ public class RevolutBeneficiarySyncTask
             return;
         }
 
-        InvoicePayment payment = invoice.getPayment();
+        BillPayment payment = invoice.getPayment();
         if ( payment == null )
         {
             LOGGER.warn( "Incoming invoice identified by '" + key( invoice ) + "' is missing payment" );

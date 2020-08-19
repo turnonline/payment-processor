@@ -18,8 +18,8 @@
 
 package biz.turnonline.ecosystem.payment.service;
 
+import biz.turnonline.ecosystem.billing.model.BillPayment;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
-import biz.turnonline.ecosystem.billing.model.InvoicePayment;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.oauth.RevolutCertMetadata;
@@ -302,7 +302,7 @@ class PaymentConfigBean
     }
 
     @Override
-    public CompanyBankAccount getDebtorBankAccount( @Nonnull InvoicePayment payment )
+    public CompanyBankAccount getDebtorBankAccount( @Nonnull BillPayment payment )
     {
         return getInternalPrimaryBankAccount( null );
     }
