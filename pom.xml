@@ -150,7 +150,7 @@
             <dependency>
                 <groupId>org.ctoolkit.maven</groupId>
                 <artifactId>ctoolkit-microservice-bom</artifactId>
-                <version>1.9.79</version>
+                <version>1.9.80</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -173,7 +173,7 @@
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-product-billing-client</artifactId>
-            <version>0.26</version>
+            <version>0.27</version>
         </dependency>
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
