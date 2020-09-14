@@ -57,6 +57,7 @@ import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BAN
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static com.googlecode.objectify.ObjectifyService.ofy;
+import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_ID;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_UNIQUE_ID;
 
@@ -163,6 +164,7 @@ public class PaymentConfigBeanDbTest
 
         // trying to get non default account
         attributes.put( ACCOUNT_UNIQUE_ID, String.valueOf( lAccount.getId() + 1 ) );
+        attributes.put( ACCOUNT_EMAIL, "blink.account@turnonline.biz" );
         checked = lap.check( new PubsubCommand( attributes, null, null, null ) );
         assertWithMessage( "Local account with non default ID" )
                 .that( checked )

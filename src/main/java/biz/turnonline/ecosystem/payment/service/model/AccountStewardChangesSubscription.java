@@ -19,9 +19,12 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
+import biz.turnonline.ecosystem.steward.facade.Domicile;
 import biz.turnonline.ecosystem.steward.model.Account;
+import biz.turnonline.ecosystem.steward.model.DeputyAccount;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.LocaleUtils;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
@@ -44,6 +47,7 @@ import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_IDENTITY_
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_UNIQUE_ID;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.DATA_TYPE;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ENCODED_UNIQUE_KEY;
+import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.fromString;
 
 /**
  * The 'account.changes' subscription listener implementation.
@@ -51,7 +55,16 @@ import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ENCODED_UNIQUE_KE
  * has changed comparing to {@link LocalAccount}.
  * <ul>
  *     <li>{@link LocalAccount#setEmail(String)}</li>
+ *     <li>{@link LocalAccount#setZoneId(String)}</li>
  *     <li>{@link LocalAccount#setLocale(String)}</li>
+ *     <li>{@link LocalAccount#setDomicile(String)}</li>
+ * </ul>
+ * Updates following property values from {@link DeputyAccount} if any of those values
+ * has changed comparing to {@link LocalDeputyAccount}.
+ * If matching entry not found a new {@link LocalDeputyAccount} will be created.
+ * <ul>
+ *     <li>{@link LocalDeputyAccount#setRole(String)}</li>
+ *     <li>{@link LocalDeputyAccount#setLocale(String)}</li>
  * </ul>
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
@@ -95,12 +108,6 @@ public class AccountStewardChangesSubscription
         }
 
         String dataType = command.getDataType();
-        if ( !Account.class.getSimpleName().equals( dataType ) )
-        {
-            LOGGER.info( "Uninterested data type '" + dataType + "'" );
-            return;
-        }
-
         boolean delete = command.isDelete();
         List<String> uniqueKey = command.getUniqueKey();
         String data = message.getData();
@@ -112,34 +119,57 @@ public class AccountStewardChangesSubscription
 
         Account account = command.fromData( Account.class );
         LocalAccount associatedAccount = lap.check( command );
-        LocalAccount localAccount;
-
-        if ( associatedAccount != null && Objects.equals( associatedAccount.getId(), account.getId() ) )
+        if ( associatedAccount == null )
         {
-            localAccount = associatedAccount;
-        }
-        else
-        {
-            LOGGER.info( "Uninterested account identified by ID '" + account.getId() + "'" );
-            LOGGER.info( "Associated account ID '" + ( associatedAccount == null ? null : associatedAccount.getId() ) + "'" );
             return;
         }
-
 
         DateTime publishDateTime = command.getPublishDateTime();
         DateTime last = delete && publishDateTime != null
                 ? publishDateTime : account.getModificationDate();
 
-        Timestamp timestamp = Timestamp.of( dataType, uniqueKey, localAccount, last );
-        if ( timestamp.isObsolete() )
-        {
-            LOGGER.info( "Incoming account changes are obsolete, nothing to do " + timestamp.getName() );
-            return;
-        }
-
         if ( Account.class.getSimpleName().equals( dataType ) )
         {
-            process( localAccount, account, timestamp );
+            if ( !Objects.equals( associatedAccount.getId(), account.getId() ) )
+            {
+                LOGGER.info( "Uninterested account identified by ID '" + account.getId() + "'" );
+                LOGGER.info( "Associated account ID '" + associatedAccount.getId() + "'" );
+                return;
+            }
+
+            Timestamp timestamp = Timestamp.of( dataType, uniqueKey, associatedAccount, last );
+            if ( timestamp.isObsolete() )
+            {
+                LOGGER.info( "Incoming account changes are obsolete, nothing to do " + timestamp.getName() );
+                return;
+            }
+
+            process( associatedAccount, account, timestamp );
+        }
+        else if ( DeputyAccount.class.getSimpleName().equals( dataType ) )
+        {
+            DeputyAccount sub = fromString( data, DeputyAccount.class );
+            if ( Strings.isNullOrEmpty( sub.getEmail() ) )
+            {
+                LOGGER.warn( "Deputy account is missing email, nothing to do " + sub );
+                return;
+            }
+
+            Timestamp timestamp = Timestamp.of( dataType, uniqueKey, associatedAccount, publishDateTime );
+            if ( timestamp.isObsolete() )
+            {
+                LOGGER.info( "Incoming deputy account changes are obsolete, nothing to do " + timestamp.getName() );
+                return;
+            }
+
+            LocalDeputyAccount deputy = lap.get( sub.getEmail() );
+            if ( deputy == null )
+            {
+                deputy = new LocalDeputyAccount( sub.getEmail() );
+                deputy.setOwner( associatedAccount );
+            }
+
+            process( deputy, sub, timestamp );
         }
     }
 
@@ -178,12 +208,91 @@ public class AccountStewardChangesSubscription
             updateAccount = true;
         }
 
+        // Current, the most up to date domicile, taken from the remote account
+        String remoteDomicile = account.getBusiness() == null ? null : account.getBusiness().getDomicile();
+        Domicile domicile = null;
+
+        if ( !Strings.isNullOrEmpty( remoteDomicile ) )
+        {
+            try
+            {
+                domicile = Domicile.valueOf( remoteDomicile );
+            }
+            catch ( IllegalArgumentException e )
+            {
+                LOGGER.warn( "Unsupported incoming domicile '"
+                        + remoteDomicile
+                        + "' of the business account, ignored." );
+            }
+        }
+
+        if ( domicile != null && ( la.isDomicileNull() || !domicile.equals( la.getDomicile() ) ) )
+        {
+            LOGGER.info( "Account domicile has changed from '"
+                    + la.getDomicile()
+                    + "' to '"
+                    + domicile
+                    + "'" );
+
+            // set only supported domicile
+            la.setDomicile( domicile.name() );
+            updateAccount = true;
+        }
+
         if ( updateAccount )
         {
             updateAccount( la, timestamp );
         }
     }
 
+    private void process( @Nonnull LocalDeputyAccount deputy,
+                          @Nonnull DeputyAccount remote,
+                          @Nonnull Timestamp timestamp )
+    {
+        boolean updateAccount = false;
+
+        Locale remoteLocale = remote.getLocale() == null ? null : LocaleUtils.toLocale( remote.getLocale() );
+        if ( remoteLocale != null && !remoteLocale.equals( deputy.getLocale() ) )
+        {
+            LOGGER.info( "Deputy account locale has changed from '"
+                    + deputy.getLocale()
+                    + "' to '"
+                    + remoteLocale
+                    + "'" );
+
+            deputy.setLocale( remote.getLocale() );
+            updateAccount = true;
+        }
+
+        String remoteRole = remote.getRole();
+        if ( remoteRole != null && !remoteRole.equals( deputy.getRole() ) )
+        {
+            LOGGER.info( "Deputy role has changed from '"
+                    + deputy.getRole()
+                    + "' to '"
+                    + remoteRole
+                    + "'" );
+
+            deputy.setRole( remoteRole );
+            updateAccount = true;
+        }
+
+        if ( updateAccount )
+        {
+            updateDeputy( deputy, timestamp );
+        }
+    }
+
+    @VisibleForTesting
+    void updateDeputy( LocalDeputyAccount deputy, Timestamp timestamp )
+    {
+        ofy().transact( () -> {
+            deputy.save();
+            timestamp.done();
+        } );
+    }
+
+    @VisibleForTesting
     void updateAccount( LocalAccount la, Timestamp timestamp )
     {
         ofy().transact( () -> {

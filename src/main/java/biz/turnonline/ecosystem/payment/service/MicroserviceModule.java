@@ -31,6 +31,7 @@ import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccountProviderImpl;
+import biz.turnonline.ecosystem.payment.service.model.LocalDeputyAccount;
 import biz.turnonline.ecosystem.payment.service.model.PaymentBeanMapperConfig;
 import biz.turnonline.ecosystem.payment.service.model.PaymentLocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
@@ -182,6 +183,7 @@ public class MicroserviceModule
             factory.register( CodeBookItem.class );
             factory.register( BankCode.class );
             factory.register( LocalAccount.class );
+            factory.register( LocalDeputyAccount.class );
             factory.register( PaymentLocalAccount.class );
             factory.register( BankAccount.class );
             factory.register( CompanyBankAccount.class );

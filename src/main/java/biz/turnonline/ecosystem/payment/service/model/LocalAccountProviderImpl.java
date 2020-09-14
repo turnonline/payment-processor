@@ -88,6 +88,14 @@ public class LocalAccountProviderImpl
         if ( localAccount == null
                 || !Objects.equals( localAccount.getIdentityId(), command.getAccountIdentityId() ) )
         {
+            LocalDeputyAccount deputyAccount = get( command.getAccountEmail() );
+            if ( ( localAccount != null
+                    && deputyAccount != null
+                    && deputyAccount.checkOwner( localAccount ) ) )
+            {
+                return localAccount;
+            }
+
             logger.warn( "Account '" + command.getAccountIdentityId() + "' is not associated with this service" );
             return null;
         }
@@ -101,5 +109,11 @@ public class LocalAccountProviderImpl
         String projectId = ServiceOptions.getDefaultProjectId();
         PaymentLocalAccount pla = ofy().load().type( PaymentLocalAccount.class ).id( projectId ).now();
         return pla == null ? null : pla.get();
+    }
+
+    @Override
+    public LocalDeputyAccount get( @Nonnull String email )
+    {
+        return ofy().load().type( LocalDeputyAccount.class ).id( email ).now();
     }
 }

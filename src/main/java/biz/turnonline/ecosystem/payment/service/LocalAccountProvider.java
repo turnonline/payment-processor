@@ -19,6 +19,7 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.payment.service.model.LocalDeputyAccount;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 
 import javax.annotation.Nonnull;
@@ -38,6 +39,14 @@ public interface LocalAccountProvider
      * @return the account associated with the service
      */
     LocalAccount get();
+
+    /**
+     * Returns the associated deputy account entity instance or {@code null} if not found
+     *
+     * @param email the email address of the deputy account
+     * @return the local deputy account
+     */
+    LocalDeputyAccount get( @Nonnull String email );
 
     /**
      * Returns the account associated with this service if matches the account coming via Pub/Sub.

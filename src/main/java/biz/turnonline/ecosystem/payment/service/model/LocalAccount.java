@@ -55,15 +55,15 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class LocalAccount
         extends EntityLongIdentity
 {
-    public static final Locale DEFAULT_LOCALE = new Locale( "en" );
+    public static final Locale DEFAULT_LOCALE = Domicile.getDefault().getLocale();
 
     public static final String DEFAULT_DOMICILE = Domicile.getDefault().name();
 
     static final String DEFAULT_ZONE = "Europe/Paris";
 
-    private static final long serialVersionUID = -1785572009338391098L;
-
     private static final Logger LOGGER = LoggerFactory.getLogger( LocalAccount.class );
+
+    private static final long serialVersionUID = -4533490646083552054L;
 
     @Ignore
     private transient RestFacade facade;
@@ -279,6 +279,11 @@ public class LocalAccount
     public Locale getLocale( @Nullable Locale locale )
     {
         return locale != null ? locale : convertJavaLocale( this.locale, DEFAULT_LOCALE );
+    }
+
+    boolean isDomicileNull()
+    {
+        return domicile == null;
     }
 
     /**

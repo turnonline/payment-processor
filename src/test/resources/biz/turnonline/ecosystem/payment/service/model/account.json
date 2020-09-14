@@ -4,5 +4,16 @@
     "identityId": "34ghW4jL9",
     "contactEmail": "my.contact@turnonline.biz",
     "locale": "en",
-    "zoneId": "Europe/Paris"
+    "zoneId": "Europe/Paris",
+    "business": {
+        "businessName": "My Central business, s.r.o.",
+        "street": "Metodova 6",
+        "city": "Bratislava",
+        "domicile": "SK",
+        "postcode": "82108",
+        "companyId": "35356654",
+        "taxId": "2022356654",
+        "vatPayer": true,
+        "vatId": "SK2022356654"
+    }
 }
