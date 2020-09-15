@@ -20,6 +20,7 @@ package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalDeputyAccount;
+import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 
 import javax.annotation.Nonnull;
@@ -56,6 +57,7 @@ public interface LocalAccountProvider
      * It's a design concept. It's a single account (tenant) associated with the payment service.
      *
      * @return the account associated with the service
+     * @throws NotFoundException if remote account has not been found for given Identity ID
      */
     LocalAccount check( @Nonnull PubsubCommand command );
 }

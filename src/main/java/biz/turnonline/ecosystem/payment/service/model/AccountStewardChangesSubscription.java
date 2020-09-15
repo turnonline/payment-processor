@@ -27,6 +27,8 @@ import com.google.api.services.pubsub.model.PubsubMessage;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
 import org.apache.commons.lang3.LocaleUtils;
+import org.ctoolkit.restapi.client.ClientErrorException;
+import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.ctoolkit.restapi.client.pubsub.PubsubMessageListener;
 import org.slf4j.Logger;
@@ -118,7 +120,18 @@ public class AccountStewardChangesSubscription
                 + data.length() + " and unique key: '" + uniqueKey + "'" + ( delete ? " to be deleted" : "" ) );
 
         Account account = command.fromData( Account.class );
-        LocalAccount associatedAccount = lap.check( command );
+        LocalAccount associatedAccount;
+
+        try
+        {
+            associatedAccount = lap.check( command );
+        }
+        catch ( NotFoundException | ClientErrorException e )
+        {
+            LOGGER.warn( "Processing of the message has been retired for: " + message.getAttributes(), e );
+            return;
+        }
+
         if ( associatedAccount == null )
         {
             return;

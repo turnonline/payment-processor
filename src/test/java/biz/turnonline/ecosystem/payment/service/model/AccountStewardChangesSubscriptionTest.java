@@ -32,6 +32,8 @@ import mockit.MockUp;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
+import org.ctoolkit.restapi.client.ClientErrorException;
+import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.ctoolkit.restapi.client.pubsub.TopicMessage;
 import org.testng.annotations.Test;
@@ -344,6 +346,48 @@ public class AccountStewardChangesSubscriptionTest
 
                 timestamp.isObsolete();
                 result = true;
+            }
+        };
+
+        PubsubMessage message = validAccountPubsubMessage();
+        tested.onMessage( message, "account.changes" );
+    }
+
+    @Test
+    public void validPubsubMessage_Account_NotFound() throws Exception
+    {
+        new Expectations( tested )
+        {
+            {
+                lap.check( ( PubsubCommand ) any );
+                result = new NotFoundException( "Account not found" );
+
+                tested.updateAccount( ( LocalAccount ) any, ( Timestamp ) any );
+                times = 0;
+
+                tested.updateDeputy( ( LocalDeputyAccount ) any, ( Timestamp ) any );
+                times = 0;
+            }
+        };
+
+        PubsubMessage message = validAccountPubsubMessage();
+        tested.onMessage( message, "account.changes" );
+    }
+
+    @Test
+    public void validPubsubMessage_Account_ClientError() throws Exception
+    {
+        new Expectations( tested )
+        {
+            {
+                lap.check( ( PubsubCommand ) any );
+                result = new ClientErrorException( "Client error" );
+
+                tested.updateAccount( ( LocalAccount ) any, ( Timestamp ) any );
+                times = 0;
+
+                tested.updateDeputy( ( LocalDeputyAccount ) any, ( Timestamp ) any );
+                times = 0;
             }
         };
 
