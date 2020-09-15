@@ -36,6 +36,8 @@ import mockit.Injectable;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
+import org.ctoolkit.restapi.client.ClientErrorException;
+import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.ctoolkit.restapi.client.pubsub.TopicMessage;
 import org.ctoolkit.services.task.Task;
@@ -94,7 +96,7 @@ public class ProductBillingChangesSubscriptionTest
     private CompanyBankAccount debtorBank;
 
     @Test
-    public void onMessage_AccountNotFound() throws Exception
+    public void onMessage_Account_NoneAssociated() throws Exception
     {
         PubsubMessage message = invoicePubsubMessage( false );
         new Expectations()
@@ -102,6 +104,58 @@ public class ProductBillingChangesSubscriptionTest
             {
                 lap.check( ( PubsubCommand ) any );
                 result = null;
+            }
+        };
+
+        tested.onMessage( message, "billing.changes" );
+
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task ) any );
+                times = 0;
+
+                timestamp.done();
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void onMessage_Account_NotFound() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( false );
+        new Expectations()
+        {
+            {
+                lap.check( ( PubsubCommand ) any );
+                result = new NotFoundException( "Account not found" );
+            }
+        };
+
+        tested.onMessage( message, "billing.changes" );
+
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task ) any );
+                times = 0;
+
+                timestamp.done();
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void onMessage_Account_ClientError() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( false );
+        new Expectations()
+        {
+            {
+                lap.check( ( PubsubCommand ) any );
+                result = new ClientErrorException( "Client error" );
             }
         };
 

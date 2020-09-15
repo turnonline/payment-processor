@@ -33,6 +33,8 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
 import com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
+import org.ctoolkit.restapi.client.ClientErrorException;
+import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.pubsub.PubsubCommand;
 import org.ctoolkit.restapi.client.pubsub.PubsubMessageListener;
 import org.ctoolkit.services.task.Task;
@@ -131,14 +133,19 @@ class ProductBillingChangesSubscription
                 + " with length: "
                 + data.length() + " and unique key: '" + uniqueKey + "'" + ( delete ? " to be deleted" : "" ) );
 
-        LocalAccount debtor = lap.check( command );
+        LocalAccount debtor;
+        try
+        {
+            debtor = lap.check( command );
+        }
+        catch ( NotFoundException | ClientErrorException e )
+        {
+            LOGGER.warn( "Processing of the message ignored: " + message.getAttributes(), e );
+            return;
+        }
+
         if ( debtor == null )
         {
-            String identityId = command.getAccountIdentityId();
-            LOGGER.warn( "Processing of the message '"
-                    + data
-                    + "' has been retired for account identified by: "
-                    + identityId );
             return;
         }
 
