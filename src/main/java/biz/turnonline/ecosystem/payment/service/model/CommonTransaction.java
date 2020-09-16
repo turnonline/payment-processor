@@ -111,15 +111,13 @@ public abstract class CommonTransaction
     }
 
     /**
-     * Returns the boolean indication whether this transaction is incomplete or not.
+     * Returns the boolean indication whether this transaction has amount defined or not.
      * It's considered incomplete if amount and currency is not set yet, has a {@code null} value.
      */
-    public boolean isIncomplete()
+    public boolean isAmount()
     {
-        return amount == null
-                && Strings.isNullOrEmpty( currency )
-                && billAmount == null
-                && Strings.isNullOrEmpty( billCurrency );
+        return ( amount != null && !Strings.isNullOrEmpty( currency ) )
+                || ( billAmount != null && !Strings.isNullOrEmpty( billCurrency ) );
     }
 
     /**
