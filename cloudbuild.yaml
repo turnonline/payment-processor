@@ -6,7 +6,7 @@ steps:
     args: ['package','-DskipTests']
     env:
       - 'ENDPOINTS_SERVICE_NAME=${_ENDPOINTS_SERVICE_DOMAIN}'
-      - 'GCP_ID=${PROJECT_ID}'
+      - 'GCP_ID=${_FIREBASE_AUDIENCE_ALIAS}'
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: /bin/bash
     args: ['-c','cat target/generated-sources/java-templates/biz/turnonline/ecosystem/payment/api/EndpointsApiProfile.java']

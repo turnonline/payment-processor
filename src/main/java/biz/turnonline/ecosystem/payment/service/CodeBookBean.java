@@ -64,9 +64,9 @@ class CodeBookBean
     public Map<String, BankCode> getBankCodes( @Nullable Locale locale, @Nullable String country )
     {
         locale = getLocale( locale );
-        country = getDomicile( country );
+        String domicile = getDomicile( country );
 
-        String key = cacheKey( locale, country, null );
+        String key = cacheKey( locale, domicile, null );
         if ( cache.containsKey( key ) )
         {
             //noinspection unchecked
@@ -75,24 +75,27 @@ class CodeBookBean
 
         String language = locale.getLanguage();
 
-        Query<BankCode> query = ofy().transactionless().load().type( BankCode.class )
-                .filter( "locale", language.toLowerCase() )
-                .filter( "country", country )
-                .order( "code" );
+        return ofy().transactionless( () -> {
+            Query<BankCode> query = ofy().load()
+                    .type( BankCode.class )
+                    .filter( "locale", language.toLowerCase() )
+                    .filter( "country", domicile )
+                    .order( "code" );
 
-        Map<String, BankCode> result = new TreeMap<>();
+            Map<String, BankCode> result = new TreeMap<>();
 
-        for ( BankCode item : query.list() )
-        {
-            result.put( item.getCode(), item );
-        }
+            for ( BankCode item : query.list() )
+            {
+                result.put( item.getCode(), item );
+            }
 
-        if ( !result.isEmpty() )
-        {
-            cache.put( key, result );
-        }
+            if ( !result.isEmpty() )
+            {
+                cache.put( key, result );
+            }
 
-        return result;
+            return result;
+        } );
     }
 
     @Override
@@ -101,16 +104,17 @@ class CodeBookBean
         checkNotNull( code );
 
         locale = getLocale( locale );
+        String domicile;
         if ( country == null && REVOLUT_BANK_CODE.equals( code ) )
         {
-            country = "GB";
+            domicile = "GB";
         }
         else
         {
-            country = getDomicile( country );
+            domicile = getDomicile( country );
         }
 
-        String key = cacheKey( locale, country, code );
+        String key = cacheKey( locale, domicile, code );
 
         if ( cache.containsKey( key ) )
         {
@@ -119,17 +123,20 @@ class CodeBookBean
 
         String language = locale.getLanguage();
 
-        Query<BankCode> query = ofy().transactionless().load().type( BankCode.class )
-                .filter( "code", code )
-                .filter( "locale", language.toLowerCase() )
-                .filter( "country", country );
+        return ofy().transactionless( () -> {
+            Query<BankCode> query = ofy().load()
+                    .type( BankCode.class )
+                    .filter( "code", code )
+                    .filter( "locale", language.toLowerCase() )
+                    .filter( "country", domicile );
 
-        BankCode bankCode = query.first().now();
-        if ( bankCode != null )
-        {
-            cache.put( key, bankCode );
-        }
-        return bankCode;
+            BankCode bankCode = query.first().now();
+            if ( bankCode != null )
+            {
+                cache.put( key, bankCode );
+            }
+            return bankCode;
+        } );
     }
 
     private String cacheKey( @Nonnull Locale locale,
