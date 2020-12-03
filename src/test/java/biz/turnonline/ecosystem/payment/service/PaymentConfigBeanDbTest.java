@@ -48,6 +48,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.Date;
@@ -750,14 +751,41 @@ public class PaymentConfigBeanDbTest
         PaymentConfig.Filter filter = new PaymentConfig.Filter();
         List<CommonTransaction> transactions = bean.filterTransactions( filter );
 
-        assertWithMessage( "Transaction list order %s", transactions.get( 0 ).getCreatedDate() ).that( transactions.get( 0 ).getId() ).isEqualTo( 276 );
-        assertWithMessage( "Transaction list order %s", transactions.get( 1 ).getCreatedDate() ).that( transactions.get( 1 ).getId() ).isEqualTo( 275 );
-        assertWithMessage( "Transaction list order %s", transactions.get( 2 ).getCreatedDate() ).that( transactions.get( 2 ).getId() ).isEqualTo( 274 );
-        assertWithMessage( "Transaction list order %s", transactions.get( 3 ).getCreatedDate() ).that( transactions.get( 3 ).getId() ).isEqualTo( 271 );
-        assertWithMessage( "Transaction list order %s", transactions.get( 4 ).getCreatedDate() ).that( transactions.get( 4 ).getId() ).isEqualTo( 680 );
-        assertWithMessage( "Transaction list order %s", transactions.get( 5 ).getCreatedDate() ).that( transactions.get( 5 ).getId() ).isEqualTo( 681 );
-        assertWithMessage( "Transaction list order %s", transactions.get( 6 ).getCreatedDate() ).that( transactions.get( 6 ).getId() ).isEqualTo( 272 );
-        assertWithMessage( "Transaction list order %s", transactions.get( 7 ).getCreatedDate() ).that( transactions.get( 7 ).getId() ).isEqualTo( 273 );
+        assertWithMessage( "Number of invoice ordered" )
+                .that( transactions )
+                .hasSize( 8 );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 0 ).getCreatedDate() )
+                .that( transactions.get( 0 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 4, 12, 10, 0, 10 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 1 ).getCreatedDate() )
+                .that( transactions.get( 1 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 3, 10, 6, 0, 10 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 2 ).getCreatedDate() )
+                .that( transactions.get( 2 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 2, 20, 7, 30, 20 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 3 ).getCreatedDate() )
+                .that( transactions.get( 3 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 2, 16, 7, 25, 10 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 4 ).getCreatedDate() )
+                .that( transactions.get( 4 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 2, 12, 7, 25, 10 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 5 ).getCreatedDate() )
+                .that( transactions.get( 5 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 2, 12, 7, 25, 10 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 6 ).getCreatedDate() )
+                .that( transactions.get( 6 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 2, 10, 17, 30, 20 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 7 ).getCreatedDate() )
+                .that( transactions.get( 7 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2019, 12, 10, 6, 25, 10 ) );
     }
 
     @Test
@@ -1083,5 +1111,10 @@ public class PaymentConfigBeanDbTest
     private int countBeneficiaries()
     {
         return ofy().load().type( BeneficiaryBankAccount.class ).count();
+    }
+
+    private Date localDateTime( int year, int month, int day, int hour, int minute, int second )
+    {
+        return Date.from( LocalDateTime.of( year, month, day, hour, minute, second ).atZone( ZoneId.of( "UTC" ) ).toInstant() );
     }
 }
