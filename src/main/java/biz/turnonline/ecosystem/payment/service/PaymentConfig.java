@@ -31,6 +31,7 @@ import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -247,6 +248,12 @@ public interface PaymentConfig
 
         private String type;
 
+        private String status;
+
+        private Date createdDateFrom;
+
+        private Date createdDateTo;
+
         private Integer offset;
 
         private Integer limit;
@@ -328,6 +335,39 @@ public interface PaymentConfig
         public Filter type( String type )
         {
             this.type = type;
+            return this;
+        }
+
+        public String getStatus()
+        {
+            return status;
+        }
+
+        public Filter status( String status )
+        {
+            this.status = status;
+            return this;
+        }
+
+        public Date getCreatedDateFrom()
+        {
+            return createdDateFrom;
+        }
+
+        public Filter createdDateFrom( Date createdDateFrom )
+        {
+            this.createdDateFrom = createdDateFrom;
+            return this;
+        }
+
+        public Date getCreatedDateTo()
+        {
+            return createdDateTo;
+        }
+
+        public Filter createdDateTo( Date createdDateTo )
+        {
+            this.createdDateTo = createdDateTo;
             return this;
         }
 
