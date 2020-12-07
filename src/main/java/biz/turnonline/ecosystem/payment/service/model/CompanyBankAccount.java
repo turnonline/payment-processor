@@ -19,18 +19,11 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
 import biz.turnonline.ecosystem.payment.service.CodeBook;
-import biz.turnonline.ecosystem.payment.service.SecretKeyConfig;
-import biz.turnonline.ecosystem.payment.service.TwoWayEncryption;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import com.googlecode.objectify.annotation.Ignore;
 import com.googlecode.objectify.annotation.Index;
-import com.googlecode.objectify.annotation.OnLoad;
-import com.googlecode.objectify.annotation.OnSave;
 import com.googlecode.objectify.annotation.Subclass;
 import nl.garvelink.iban.IBAN;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -44,9 +37,7 @@ import javax.inject.Inject;
 public class CompanyBankAccount
         extends BankAccount
 {
-    private static final Logger logger = LoggerFactory.getLogger( CompanyBankAccount.class );
-
-    private static final long serialVersionUID = 4691115098660673401L;
+    private static final long serialVersionUID = 8061125921099231349L;
 
     @Index
     private PaymentGate paymentGate;
@@ -54,16 +45,11 @@ public class CompanyBankAccount
     @Index
     private String merchantId;
 
-    private String secretKey;
-
     private String notificationEmail;
 
     private boolean primary;
 
     private boolean gateEnabled;
-
-    @Ignore
-    private String tSecretKey;
 
     @Inject
     public CompanyBankAccount( CodeBook codeBook )
@@ -110,16 +96,6 @@ public class CompanyBankAccount
     public void setMerchantId( String merchantId )
     {
         this.merchantId = merchantId;
-    }
-
-    public String getSecretKey()
-    {
-        return tSecretKey;
-    }
-
-    public void setSecretKey( String secretKey )
-    {
-        this.tSecretKey = secretKey;
     }
 
     public String getNotificationEmail()
@@ -179,39 +155,6 @@ public class CompanyBankAccount
                 && !Strings.isNullOrEmpty( getBankCode() );
     }
 
-    @OnSave
-    void onSave()
-    {
-        if ( this.tSecretKey != null )
-        {
-            try
-            {
-                this.secretKey = TwoWayEncryption.encrypt( this.tSecretKey, SecretKeyConfig.TWO_WAY_HASH_SECRET_KEY );
-            }
-            catch ( Exception e )
-            {
-                logger.error( "Error has occurred during bank account secret key encryption", e );
-            }
-        }
-    }
-
-    @OnLoad
-    private void onLoad()
-    {
-        // Decrypt secret key on bank account on load.
-        if ( this.secretKey != null )
-        {
-            try
-            {
-                this.tSecretKey = TwoWayEncryption.decrypt( this.secretKey, SecretKeyConfig.TWO_WAY_HASH_SECRET_KEY );
-            }
-            catch ( Exception e )
-            {
-                logger.error( "Error has occurred during bank account secret key decryption", e );
-            }
-        }
-    }
-
     @Override
     protected long getModelVersion()
     {
@@ -222,16 +165,13 @@ public class CompanyBankAccount
     @Override
     public String toString()
     {
-        String sKey = secretKey == null ? "null" : "not null, length: " + secretKey.length();
         return MoreObjects.toStringHelper( this )
                 .addValue( super.toString() )
                 .add( "paymentGate", paymentGate )
                 .add( "merchantId", merchantId )
-                .add( "secretKey", secretKey )
                 .add( "notificationEmail", notificationEmail )
                 .add( "primary", primary )
                 .add( "gateEnabled", gateEnabled )
-                .add( "tSecretKey", sKey )
                 .toString();
     }
 
