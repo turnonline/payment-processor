@@ -5,3 +5,8 @@ indexes:
   - name: country
   - name: locale
   - name: code
+- kind: PP_Transaction
+  properties:
+    - name: createdDate
+    - name: status
+      direction: desc

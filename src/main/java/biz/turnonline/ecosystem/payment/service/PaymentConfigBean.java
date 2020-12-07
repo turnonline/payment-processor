@@ -27,6 +27,7 @@ import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
@@ -512,6 +513,7 @@ class PaymentConfigBean
         }
 
         Criteria<CommonTransaction> criteria = Criteria.of( CommonTransaction.class );
+        criteria.descending( "createdDate" );
 
         try
         {
@@ -531,6 +533,30 @@ class PaymentConfigBean
         {
             String key = "errors.validation.query.operation.invalid";
             throw ApiValidationException.prepare( key, filter.getOperation() );
+        }
+
+        try
+        {
+            State status = Strings.isNullOrEmpty( filter.getStatus() ) ? null :
+                    State.valueOf( filter.getStatus().toUpperCase() );
+            if ( status != null )
+            {
+                criteria.equal( "status", status.name() );
+            }
+        }
+        catch ( IllegalArgumentException e )
+        {
+            String key = "errors.validation.query.status.invalid";
+            throw ApiValidationException.prepare( key, filter.getStatus() );
+        }
+
+        if ( filter.getCreatedDateFrom() != null )
+        {
+            criteria.ge( "createdDate", filter.getCreatedDateFrom() );
+        }
+        if ( filter.getCreatedDateTo() != null )
+        {
+            criteria.le( "createdDate", filter.getCreatedDateTo() );
         }
 
         Long accountId = filter.getAccountId();

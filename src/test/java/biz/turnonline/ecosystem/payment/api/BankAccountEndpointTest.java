@@ -45,7 +45,10 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -881,6 +884,9 @@ public class BankAccountEndpointTest
         Long orderId = 975467243L;
         String type = FormOfPayment.TRANSFER.name();
         String credit = "credit";
+        String status = "COMPLETED";
+        Date createdDateFrom = Date.from( LocalDate.of( 2020, 1, 1 ).atStartOfDay().atZone( ZoneId.systemDefault() ).toInstant() );
+        Date createdDateTo = Date.from( LocalDate.of( 2020, 2, 12 ).atStartOfDay().atZone( ZoneId.systemDefault() ).toInstant() );
 
         List<Transaction> result = endpoint.filterTransactions( offset,
                 limit,
@@ -889,6 +895,9 @@ public class BankAccountEndpointTest
                 invoiceId,
                 orderId,
                 type,
+                status,
+                createdDateFrom,
+                createdDateTo,
                 request,
                 authUser );
 
@@ -932,6 +941,19 @@ public class BankAccountEndpointTest
                 assertWithMessage( "Transaction filter type" )
                         .that( filter.getType() )
                         .isEqualTo( type );
+
+                assertWithMessage( "Transaction filter status" )
+                        .that( filter.getStatus() )
+                        .isEqualTo( status );
+
+                assertWithMessage( "Transaction filter createdDateFrom" )
+                        .that( filter.getCreatedDateFrom() )
+                        .isEqualTo( createdDateFrom );
+
+                assertWithMessage( "Transaction filter createdDateTo" )
+                        .that( filter.getCreatedDateTo() )
+                        .isEqualTo( createdDateTo );
+
             }
         };
     }
@@ -952,6 +974,9 @@ public class BankAccountEndpointTest
 
         endpoint.filterTransactions( 0,
                 5,
+                null,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -982,6 +1007,9 @@ public class BankAccountEndpointTest
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
                 request,
                 authUser );
     }
@@ -1002,6 +1030,9 @@ public class BankAccountEndpointTest
 
         endpoint.filterTransactions( 0,
                 5,
+                null,
+                null,
+                null,
                 null,
                 null,
                 null,

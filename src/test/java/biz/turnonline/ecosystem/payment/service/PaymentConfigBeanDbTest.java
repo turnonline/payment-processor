@@ -47,6 +47,11 @@ import org.testng.annotations.Test;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -738,6 +743,68 @@ public class PaymentConfigBeanDbTest
     }
 
     @Test
+    public void filterTransactions_Ordering()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        PaymentConfig.Filter filter = new PaymentConfig.Filter();
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        assertWithMessage( "Number of invoice ordered" )
+                .that( transactions )
+                .hasSize( 8 );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 0 ).getCreatedDate() )
+                .that( transactions.get( 0 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 4, 12, 10, 0, 10 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 1 ).getCreatedDate() )
+                .that( transactions.get( 1 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 3, 10, 6, 0, 10 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 2 ).getCreatedDate() )
+                .that( transactions.get( 2 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 2, 20, 7, 30, 20 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 3 ).getCreatedDate() )
+                .that( transactions.get( 3 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 2, 16, 7, 25, 10 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 4 ).getCreatedDate() )
+                .that( transactions.get( 4 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 2, 12, 7, 25, 10 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 5 ).getCreatedDate() )
+                .that( transactions.get( 5 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 2, 12, 7, 25, 10 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 6 ).getCreatedDate() )
+                .that( transactions.get( 6 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2020, 2, 10, 17, 30, 20 ) );
+
+        assertWithMessage( "Transaction list order %s", transactions.get( 7 ).getCreatedDate() )
+                .that( transactions.get( 7 ).getCreatedDate() )
+                .isEqualTo( localDateTime( 2019, 12, 10, 6, 25, 10 ) );
+    }
+
+    @Test
+    public void filterTransactions_ByCreatedDateRange()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        PaymentConfig.Filter filter = new PaymentConfig.Filter()
+                .createdDateFrom( Date.from( LocalDate.of( 2020, 1, 1 ).atStartOfDay().atZone( ZoneId.systemDefault() ).toInstant() ) )
+                .createdDateTo( Date.from( LocalDate.of( 2020, 2, 12 ).atTime( LocalTime.MAX ).atZone( ZoneId.systemDefault() ).toInstant() ) );
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        assertWithMessage( "Number of invoice by created date range" )
+                .that( transactions )
+                .hasSize( 3 );
+    }
+
+    @Test
     public void filterTransactions_ByInvoice()
     {
         ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
@@ -965,6 +1032,21 @@ public class PaymentConfigBeanDbTest
     }
 
     @Test
+    public void filterTransactions_ByStatus()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        // COMPLETED filter
+        PaymentConfig.Filter filter = new PaymentConfig.Filter().status( "COMPLETED" );
+        List<CommonTransaction> transactions = bean.filterTransactions( filter );
+
+        assertWithMessage( "Number of COMPLETED transactions" )
+                .that( transactions )
+                .hasSize( 7 );
+    }
+
+    @Test
     public void filterTransactions_AllFilterCriteria()
     {
         ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
@@ -978,6 +1060,7 @@ public class PaymentConfigBeanDbTest
                 .orderId( orderId )
                 .invoiceId( invoiceId )
                 .type( FormOfPayment.TRANSFER.name() )
+                .status( CommonTransaction.State.COMPLETED.name() )
                 .limit( 2 );
 
         List<CommonTransaction> transactions = bean.filterTransactions( filter );
@@ -1019,8 +1102,19 @@ public class PaymentConfigBeanDbTest
         bean.filterTransactions( new PaymentConfig.Filter().type( "INVALID_TRANSFER" ) );
     }
 
+    @Test( expectedExceptions = ApiValidationException.class )
+    public void filterTransactions_InvalidStatus()
+    {
+        bean.filterTransactions( new PaymentConfig.Filter().status( "INVALID_STATUS" ) );
+    }
+
     private int countBeneficiaries()
     {
         return ofy().load().type( BeneficiaryBankAccount.class ).count();
+    }
+
+    private Date localDateTime( int year, int month, int day, int hour, int minute, int second )
+    {
+        return Date.from( LocalDateTime.of( year, month, day, hour, minute, second ).atZone( ZoneId.of( "UTC" ) ).toInstant() );
     }
 }

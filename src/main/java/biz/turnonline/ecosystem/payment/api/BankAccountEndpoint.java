@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -470,6 +471,9 @@ public class BankAccountEndpoint
                                                  @Nullable @Named( "invoiceId" ) Long invoiceId,
                                                  @Nullable @Named( "orderId" ) Long orderId,
                                                  @Nullable @Named( "type" ) String type,
+                                                 @Nullable @Named( "status" ) String status,
+                                                 @Nullable @Named( "from" ) Date createdDateFrom,
+                                                 @Nullable @Named( "to" ) Date createdDateTo,
                                                  HttpServletRequest request,
                                                  User authUser )
             throws Exception
@@ -486,7 +490,10 @@ public class BankAccountEndpoint
                     .operation( operation )
                     .invoiceId( invoiceId )
                     .orderId( orderId )
-                    .type( type );
+                    .type( type )
+                    .status( status )
+                    .createdDateFrom( createdDateFrom )
+                    .createdDateTo( createdDateTo );
 
             List<CommonTransaction> transactions;
             transactions = config.filterTransactions( filter );

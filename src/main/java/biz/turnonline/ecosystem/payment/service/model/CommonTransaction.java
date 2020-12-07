@@ -24,6 +24,7 @@ import com.googlecode.objectify.Key;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Index;
 import org.ctoolkit.services.datastore.objectify.EntityLongIdentity;
+import org.ctoolkit.services.datastore.objectify.IndexCreatedDate;
 import org.ctoolkit.services.datastore.objectify.IndexModificationDate;
 
 import javax.annotation.Nonnull;
@@ -44,7 +45,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 @Entity( name = "PP_Transaction" )
 public abstract class CommonTransaction
         extends EntityLongIdentity
-        implements IndexModificationDate
+        implements IndexModificationDate, IndexCreatedDate
 {
     private static final long serialVersionUID = -2914968866257548L;
 
