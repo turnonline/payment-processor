@@ -472,8 +472,8 @@ public class BankAccountEndpoint
                                                  @Nullable @Named( "orderId" ) Long orderId,
                                                  @Nullable @Named( "type" ) String type,
                                                  @Nullable @Named( "status" ) String status,
-                                                 @Nullable @Named( "createdDateFrom" ) Date createdDateFrom,
-                                                 @Nullable @Named( "createdDateTo" ) Date createdDateTo,
+                                                 @Nullable @Named( "from" ) Date createdDateFrom,
+                                                 @Nullable @Named( "to" ) Date createdDateTo,
                                                  HttpServletRequest request,
                                                  User authUser )
             throws Exception
