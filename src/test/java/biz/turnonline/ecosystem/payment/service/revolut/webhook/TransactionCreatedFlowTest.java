@@ -19,12 +19,14 @@
 package biz.turnonline.ecosystem.payment.service.revolut.webhook;
 
 import biz.turnonline.ecosystem.payment.service.BackendServiceTestCase;
+import biz.turnonline.ecosystem.payment.service.CategoryService;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 import biz.turnonline.ecosystem.payment.subscription.MockedInputStream;
+import biz.turnonline.ecosystem.revolut.business.account.model.AccountBankDetailsItem;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionState;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType;
@@ -40,6 +42,7 @@ import mockit.Mocked;
 import mockit.Tested;
 import org.ctoolkit.agent.service.impl.ImportTask;
 import org.ctoolkit.restapi.client.ClientErrorException;
+import org.ctoolkit.restapi.client.Identifier;
 import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.ctoolkit.restapi.client.UnauthorizedException;
@@ -51,6 +54,7 @@ import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -100,6 +104,10 @@ public class TransactionCreatedFlowTest
     @Injectable
     private RestFacade facade;
 
+    @Injectable
+    @Inject
+    private CategoryService categoryService;
+
     @Mocked
     private Task<?> task;
 
@@ -130,6 +138,7 @@ public class TransactionCreatedFlowTest
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         // mocking of the transaction from remote bank system
         Transaction t = mapper.readValue( json, Transaction.class );
@@ -258,6 +267,7 @@ public class TransactionCreatedFlowTest
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         // mocking of the transaction from remote bank system
         Transaction t = mapper.readValue( toJsonCreated( CARD_PAYMENT.getValue() ), Transaction.class );
@@ -294,6 +304,7 @@ public class TransactionCreatedFlowTest
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         // mocking of the transaction from remote bank system
         Transaction t = mapper.readValue( json, Transaction.class );
@@ -390,11 +401,16 @@ public class TransactionCreatedFlowTest
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         // mocking of the transaction from remote bank system
         Transaction t = mapper.readValue( json, Transaction.class );
         Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
         afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        AccountBankDetailsItem accountBankDetailsItem = new AccountBankDetailsItem();
+        accountBankDetailsItem.setIban( "SK1234567890" );
+        accountBankDetailsItem.setBic( "SLSPSK" );
 
         new Expectations()
         {
@@ -402,6 +418,9 @@ public class TransactionCreatedFlowTest
                 facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
                 result = t;
                 result = afterStateChanged;
+
+                facade.list(AccountBankDetailsItem.class, new Identifier( "544a8a74-1412-408e-b7db-51c6acac6e98" )).finish();
+                result = Collections.singletonList( accountBankDetailsItem );
             }
         };
 
@@ -463,6 +482,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction )
                 .isInstanceOf( TransactionReceipt.class );
 
+        assertWithMessage( "Transaction counterparty (IBAN)" )
+                .that( transaction.getCounterparty().getIban() )
+                .isEqualTo( "SK1234567890" );
+
+        assertWithMessage( "Transaction counterparty (BIC)" )
+                .that( transaction.getCounterparty().getBic() )
+                .isEqualTo( "SLSPSK" );
+
         Date modificationDate = transaction.getModificationDate();
 
         stateChanged.execute();
@@ -501,11 +528,16 @@ public class TransactionCreatedFlowTest
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         // mocking of the transaction from remote bank system
         Transaction t = mapper.readValue( json, Transaction.class );
         Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
         afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        AccountBankDetailsItem accountBankDetailsItem = new AccountBankDetailsItem();
+        accountBankDetailsItem.setIban( "SK1234567890" );
+        accountBankDetailsItem.setBic( "SLSPSK" );
 
         new Expectations()
         {
@@ -513,6 +545,9 @@ public class TransactionCreatedFlowTest
                 facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
                 result = t;
                 result = afterStateChanged;
+
+                facade.list(AccountBankDetailsItem.class, new Identifier( "bdab1c20-8d8c-430d-b967-87ac01af060c" )).finish();
+                result = Collections.singletonList( accountBankDetailsItem );
             }
         };
 
@@ -574,6 +609,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction )
                 .isInstanceOf( TransactionReceipt.class );
 
+        assertWithMessage( "Transaction counterparty (IBAN)" )
+                .that( transaction.getCounterparty().getIban() )
+                .isEqualTo( "SK1234567890" );
+
+        assertWithMessage( "Transaction counterparty (BIC)" )
+                .that( transaction.getCounterparty().getBic() )
+                .isEqualTo( "SLSPSK" );
+
         Date modificationDate = transaction.getModificationDate();
 
         stateChanged.execute();
@@ -612,11 +655,16 @@ public class TransactionCreatedFlowTest
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         // mocking of the transaction from remote bank system
         Transaction t = mapper.readValue( json, Transaction.class );
         Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
         afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        AccountBankDetailsItem accountBankDetailsItem = new AccountBankDetailsItem();
+        accountBankDetailsItem.setIban( "SK1234567890" );
+        accountBankDetailsItem.setBic( "SLSPSK" );
 
         new Expectations()
         {
@@ -624,6 +672,9 @@ public class TransactionCreatedFlowTest
                 facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
                 result = t;
                 result = afterStateChanged;
+
+                facade.list(AccountBankDetailsItem.class, new Identifier( "8057d02f-cd46-49b6-be8c-4ee045c24591" )).finish();
+                result = Collections.singletonList( accountBankDetailsItem );
             }
         };
 
@@ -685,6 +736,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction )
                 .isInstanceOf( TransactionReceipt.class );
 
+        assertWithMessage( "Transaction counterparty (IBAN)" )
+                .that( transaction.getCounterparty().getIban() )
+                .isEqualTo( "SK1234567890" );
+
+        assertWithMessage( "Transaction counterparty (BIC)" )
+                .that( transaction.getCounterparty().getBic() )
+                .isEqualTo( "SLSPSK" );
+
         Date modificationDate = transaction.getModificationDate();
 
         stateChanged.execute();
@@ -735,11 +794,16 @@ public class TransactionCreatedFlowTest
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         // mocking of the transaction from remote bank system
         Transaction t = mapper.readValue( json, Transaction.class );
         Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
         afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        AccountBankDetailsItem accountBankDetailsItem = new AccountBankDetailsItem();
+        accountBankDetailsItem.setIban( "SK1234567890" );
+        accountBankDetailsItem.setBic( "SLSPSK" );
 
         new Expectations()
         {
@@ -747,6 +811,9 @@ public class TransactionCreatedFlowTest
                 facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
                 result = t;
                 result = afterStateChanged;
+
+                facade.list(AccountBankDetailsItem.class, new Identifier( "8057d02f-cd46-49b6-be8c-4ee045c24591" )).finish();
+                result = Collections.singletonList( accountBankDetailsItem );
             }
         };
 
@@ -808,6 +875,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction )
                 .isInstanceOf( TransactionReceipt.class );
 
+        assertWithMessage( "Transaction counterparty (IBAN)" )
+                .that( transaction.getCounterparty().getIban() )
+                .isEqualTo( "SK1234567890" );
+
+        assertWithMessage( "Transaction counterparty (BIC)" )
+                .that( transaction.getCounterparty().getBic() )
+                .isEqualTo( "SLSPSK" );
+
         Date modificationDate = transaction.getModificationDate();
 
         stateChanged.execute();
@@ -847,11 +922,16 @@ public class TransactionCreatedFlowTest
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         // mocking of the transaction from remote bank system
         Transaction t = mapper.readValue( json, Transaction.class );
         Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
         afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
+
+        AccountBankDetailsItem accountBankDetailsItem = new AccountBankDetailsItem();
+        accountBankDetailsItem.setIban( "SK1234567890" );
+        accountBankDetailsItem.setBic( "SLSPSK" );
 
         new Expectations()
         {
@@ -859,6 +939,9 @@ public class TransactionCreatedFlowTest
                 facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
                 result = t;
                 result = afterStateChanged;
+
+                facade.list(AccountBankDetailsItem.class, new Identifier( "bdab1c20-8d8c-430d-b967-87ac01af060c" )).finish();
+                result = Collections.singletonList( accountBankDetailsItem );
             }
         };
 
@@ -920,6 +1003,14 @@ public class TransactionCreatedFlowTest
                 .that( transaction )
                 .isInstanceOf( TransactionReceipt.class );
 
+        assertWithMessage( "Transaction counterparty (IBAN)" )
+                .that( transaction.getCounterparty().getIban() )
+                .isEqualTo( "SK1234567890" );
+
+        assertWithMessage( "Transaction counterparty (BIC)" )
+                .that( transaction.getCounterparty().getBic() )
+                .isEqualTo( "SLSPSK" );
+
         Date modificationDate = transaction.getModificationDate();
 
         stateChanged.execute();
@@ -959,6 +1050,7 @@ public class TransactionCreatedFlowTest
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         // mocking of the transaction from remote bank system
         Transaction t = mapper.readValue( json, Transaction.class );
@@ -1061,6 +1153,7 @@ public class TransactionCreatedFlowTest
         created.addNext( task );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         new Expectations()
         {
@@ -1092,6 +1185,7 @@ public class TransactionCreatedFlowTest
         created.addNext( task );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         new Expectations()
         {
@@ -1123,6 +1217,7 @@ public class TransactionCreatedFlowTest
         created.addNext( task );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         new Expectations()
         {
@@ -1155,6 +1250,7 @@ public class TransactionCreatedFlowTest
         created.addNext( task );
         created.setConfig( config );
         created.setFacade( facade );
+        created.setCategoryService( categoryService );
 
         // mocking of the transaction from remote bank system
         Transaction t = mapper.readValue( json, Transaction.class );

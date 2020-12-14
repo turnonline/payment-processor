@@ -86,8 +86,12 @@ public abstract class CommonTransaction
 
     private List<Object> origins = new ArrayList<>();
 
+    private List<TransactionCategory> categories = new ArrayList<>();
+
     @Index
     private String extId;
+
+    private CounterpartyBankAccount counterparty;
 
     public CompanyBankAccount loadBankAccount()
     {
@@ -349,6 +353,26 @@ public abstract class CommonTransaction
         return origins;
     }
 
+    public List<TransactionCategory> getCategories()
+    {
+        return categories;
+    }
+
+    public void setCategories( List<TransactionCategory> categories )
+    {
+        this.categories = categories;
+    }
+
+    public CounterpartyBankAccount getCounterparty()
+    {
+        return counterparty;
+    }
+
+    public void setCounterparty( CounterpartyBankAccount counterparty )
+    {
+        this.counterparty = counterparty;
+    }
+
     public Date toDate( @Nullable OffsetDateTime odt )
     {
         if ( odt == null )
@@ -357,6 +381,15 @@ public abstract class CommonTransaction
         }
 
         return Date.from( odt.toInstant() );
+    }
+
+    public boolean propagate()
+    {
+        return getCategories().stream()
+                .filter( category -> !category.isPropagate() )
+                .map( TransactionCategory::isPropagate )
+                .findAny()
+                .orElse( true );
     }
 
     @Override
@@ -414,6 +447,7 @@ public abstract class CommonTransaction
                 .add( "status", status )
                 .add( "extId", extId )
                 .add( "origins", origins )
+                .add( "counterparty", counterparty )
                 .toString();
     }
 

@@ -26,6 +26,7 @@ import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
 import biz.turnonline.ecosystem.payment.service.model.BankAccount;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.Category;
 import biz.turnonline.ecosystem.payment.service.model.CodeBookItem;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
@@ -110,6 +111,7 @@ public class MicroserviceModule
         install( new ProductBillingClientModule() );
 
         bind( PaymentConfig.class ).to( PaymentConfigBean.class );
+        bind( CategoryService.class ).to( CategoryServiceBean.class );
         bind( CodeBook.class ).to( CodeBookBean.class );
         bind( LocalAccountProvider.class ).to( LocalAccountProviderImpl.class );
         bind( Cache.class ).toProvider( JCacheProvider.class ).in( Singleton.class );
@@ -193,6 +195,7 @@ public class MicroserviceModule
             factory.register( CommonTransaction.class );
             factory.register( TransactionInvoice.class );
             factory.register( TransactionReceipt.class );
+            factory.register( Category.class );
         }
     }
 

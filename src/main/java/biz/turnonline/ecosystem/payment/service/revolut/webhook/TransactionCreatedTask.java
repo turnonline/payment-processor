@@ -18,12 +18,16 @@
 
 package biz.turnonline.ecosystem.payment.service.revolut.webhook;
 
+import biz.turnonline.ecosystem.payment.service.CategoryService;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.CounterpartyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
+import biz.turnonline.ecosystem.payment.service.model.TransactionCategory;
 import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 import biz.turnonline.ecosystem.payment.subscription.JsonTask;
+import biz.turnonline.ecosystem.revolut.business.account.model.AccountBankDetailsItem;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionLeg;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionMerchant;
@@ -31,6 +35,7 @@ import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionSt
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType;
 import com.google.common.base.Strings;
 import org.ctoolkit.restapi.client.ClientErrorException;
+import org.ctoolkit.restapi.client.Identifier;
 import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.ctoolkit.restapi.client.UnauthorizedException;
@@ -66,6 +71,8 @@ public class TransactionCreatedTask
     transient private PaymentConfig config;
 
     transient private RestFacade facade;
+
+    transient private CategoryService categoryService;
 
     /**
      * Constructor.
@@ -114,6 +121,32 @@ public class TransactionCreatedTask
                 .currency( leg.getCurrency() )
                 .balance( leg.getBalance() )
                 .reference( transactionFromBank.getReference() );
+
+        AccountBankDetailsItem counterpartyBankAccount;
+
+        if ( leg.getCounterparty() != null && leg.getCounterparty().getAccountId() != null )
+        {
+            String counterpartyAccountId = leg.getCounterparty().getAccountId().toString();
+
+            try
+            {
+                List<AccountBankDetailsItem> counterpartyBankDetails = facade.list( AccountBankDetailsItem.class, new Identifier( counterpartyAccountId ) ).finish();
+                counterpartyBankAccount = counterpartyBankDetails.get( 0 );
+
+                CounterpartyBankAccount counterparty = new CounterpartyBankAccount();
+                counterparty.setIban( counterpartyBankAccount.getIban() );
+                counterparty.setBic( counterpartyBankAccount.getBic() );
+
+                transaction.setCounterparty( counterparty );
+            }
+            catch ( ClientErrorException | NotFoundException | UnauthorizedException e )
+            {
+                clear();
+                LOGGER.error( "Unknown counterparty bank account identified by account Id: " + counterpartyAccountId, e );
+                LOGGER.warn( "Next task cleared, nothing will be executed." );
+                return;
+            }
+        }
 
         UUID accountId = leg.getAccountId();
         if ( accountId != null )
@@ -169,26 +202,30 @@ public class TransactionCreatedTask
         if ( TransactionType.CARD_PAYMENT.equals( transactionFromBank.getType() ) )
         {
             transaction.type( FormOfPayment.CARD_PAYMENT );
-            populateMerchantFrom( transaction, transactionFromBank );
+            populateMerchant( transaction, transactionFromBank );
         }
         else if ( TransactionType.TRANSFER.equals( transactionFromBank.getType() )
                 || TransactionType.TOPUP.equals( transactionFromBank.getType() )
                 || TransactionType.FEE.equals( transactionFromBank.getType() ) )
         {
             transaction.type( FormOfPayment.TRANSFER );
+            populateMerchant( transaction, leg );
         }
         else if ( TransactionType.CARD_REFUND.equals( transactionFromBank.getType() )
                 || TransactionType.REFUND.equals( transactionFromBank.getType() ) )
         {
             transaction.type( FormOfPayment.REFUND );
-            populateMerchantFrom( transaction, transactionFromBank );
+            populateMerchant( transaction, transactionFromBank );
         }
+
+        List<TransactionCategory> categories = categoryService.resolveCategories( transaction );
+        transaction.setCategories( categories );
 
         transaction.addOrigin( json() );
         transaction.save();
     }
 
-    private void populateMerchantFrom( @Nonnull CommonTransaction transaction, @Nonnull Transaction fromBank )
+    private void populateMerchant( @Nonnull CommonTransaction transaction, @Nonnull Transaction fromBank )
     {
         TransactionMerchant merchant = fromBank.getMerchant();
         if ( merchant != null && transaction instanceof TransactionReceipt )
@@ -197,6 +234,16 @@ public class TransactionCreatedTask
             receipt.setCategory( merchant.getCategoryCode() );
             receipt.setCity( merchant.getCity() );
             receipt.setMerchantName( merchant.getName() );
+        }
+    }
+
+    private void populateMerchant( @Nonnull CommonTransaction transaction, @Nonnull TransactionLeg leg )
+    {
+        String description = leg.getDescription();
+        if ( description != null && transaction instanceof TransactionReceipt )
+        {
+            TransactionReceipt receipt = ( TransactionReceipt ) transaction;
+            receipt.setMerchantName( description );
         }
     }
 
@@ -216,5 +263,11 @@ public class TransactionCreatedTask
     void setFacade( RestFacade facade )
     {
         this.facade = facade;
+    }
+
+    @Inject
+    void setCategoryService( CategoryService categoryService )
+    {
+        this.categoryService = categoryService;
     }
 }
