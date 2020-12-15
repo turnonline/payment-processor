@@ -19,7 +19,9 @@ package biz.turnonline.ecosystem.payment.api.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -71,6 +73,12 @@ public class Transaction
 
     @JsonProperty( "type" )
     private String type;
+
+    @JsonProperty( "counterparty" )
+    private CounterpartyBankAccount counterparty;
+
+    @JsonProperty( "categories" )
+    private List<TransactionCategory> categories = new ArrayList<>();
 
     public Transaction amount( Double amount )
     {
@@ -372,6 +380,34 @@ public class Transaction
     public void setType( String type )
     {
         this.type = type;
+    }
+
+    /**
+     * The counterparty bank account
+     **/
+    @JsonProperty( "counterparty" )
+    public CounterpartyBankAccount getCounterparty()
+    {
+        return counterparty;
+    }
+
+    public void setCounterparty( CounterpartyBankAccount counterparty )
+    {
+        this.counterparty = counterparty;
+    }
+
+    /**
+     * The categories list
+     **/
+    @JsonProperty( "categories" )
+    public List<TransactionCategory> getCategories()
+    {
+        return categories;
+    }
+
+    public void setCategories( List<TransactionCategory> categories )
+    {
+        this.categories = categories;
     }
 
     @Override

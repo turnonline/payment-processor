@@ -2,6 +2,7 @@ package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.payment.service.category.TransactionCategoryPredicate;
 import biz.turnonline.ecosystem.payment.service.category.TransactionCategoryPredicateForAmount;
+import biz.turnonline.ecosystem.payment.service.category.TransactionCategoryPredicateForCounterpartyIban;
 import biz.turnonline.ecosystem.payment.service.category.TransactionCategoryPredicateForCredit;
 import biz.turnonline.ecosystem.payment.service.category.TransactionCategoryPredicateForCurrency;
 import biz.turnonline.ecosystem.payment.service.category.TransactionCategoryPredicateForName;
@@ -47,6 +48,7 @@ public class CategoryServiceBean
         predicates.add( new TransactionCategoryPredicateForAmount() );
         predicates.add( new TransactionCategoryPredicateForCurrency() );
         predicates.add( new TransactionCategoryPredicateForCredit() );
+        predicates.add( new TransactionCategoryPredicateForCounterpartyIban() );
     }
 
     @Override

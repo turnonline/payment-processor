@@ -6,7 +6,7 @@ import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import java.util.regex.Pattern;
 
 /**
- * Transaction category predicate for amount {@link CommonTransaction#getAmount()}
+ * Transaction category predicate for counterparty iban {@link CommonTransaction#getCounterparty()#getIban()}
  *
  * @author <a href="mailto:pohorelec@turnonline.biz">Jozef Pohorelec</a>
  */

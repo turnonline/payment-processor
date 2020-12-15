@@ -490,6 +490,10 @@ public class TransactionCreatedFlowTest
                 .that( transaction.getCounterparty().getBic() )
                 .isEqualTo( "SLSPSK" );
 
+        assertWithMessage( "Transaction name from description" )
+                .that( ((TransactionReceipt) transaction).getMerchantName() )
+                .isEqualTo( "From EUR source" );
+
         Date modificationDate = transaction.getModificationDate();
 
         stateChanged.execute();

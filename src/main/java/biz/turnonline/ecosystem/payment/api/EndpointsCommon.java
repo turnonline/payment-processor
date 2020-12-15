@@ -93,6 +93,12 @@ class EndpointsCommon
         return "Primary bank account has not been found";
     }
 
+    static String categoryNotFoundMessage( Long id )
+    {
+        String message = "Category for id '%s' has not been found";
+        return String.format( message, id );
+    }
+
     /**
      * For unauthorized user throws {@link UnauthorizedException} otherwise does nothing.
      *
