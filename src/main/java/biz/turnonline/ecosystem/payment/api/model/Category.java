@@ -14,6 +14,9 @@ import java.util.Objects;
  */
 public class Category
 {
+    @JsonProperty( "id" )
+    private String id;
+
     @JsonProperty( "color" )
     private String color;
 
@@ -24,6 +27,16 @@ public class Category
     private boolean propagate;
 
     private List<CategoryFilter> filters = new ArrayList<>();
+
+    public String getId()
+    {
+        return id;
+    }
+
+    public void setId( String id )
+    {
+        this.id = id;
+    }
 
     public String getColor()
     {
@@ -72,6 +85,7 @@ public class Category
         if ( !( o instanceof Category ) ) return false;
         Category category = ( Category ) o;
         return isPropagate() == category.isPropagate() &&
+                Objects.equals( getId(), category.getId() ) &&
                 Objects.equals( getColor(), category.getColor() ) &&
                 Objects.equals( getName(), category.getName() ) &&
                 Objects.equals( getFilters(), category.getFilters() );
@@ -80,7 +94,7 @@ public class Category
     @Override
     public int hashCode()
     {
-        return Objects.hash( getColor(), getName(), isPropagate(), getFilters() );
+        return Objects.hash( getId(), getColor(), getName(), isPropagate(), getFilters() );
     }
 
     @Override
@@ -88,6 +102,7 @@ public class Category
     {
         return MoreObjects.toStringHelper( this )
                 .add( "color", color )
+                .add( "id", id )
                 .add( "name", name )
                 .add( "propagate", propagate )
                 .add( "filters", filters )

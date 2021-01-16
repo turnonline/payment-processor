@@ -17,6 +17,8 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class Category
         extends EntityLongIdentity
 {
+    private static final long serialVersionUID = -3441427094809069028L;
+
     private String color;
 
     private String name;

@@ -1,12 +1,17 @@
 package biz.turnonline.ecosystem.payment.service.model;
 
+import java.io.Serializable;
+
 /**
  * Filter used to determine category on transaction
  *
  * @author <a href="mailto:pohorelec@turnonline.biz">Jozef Pohorelec</a>
  */
 public class CategoryFilter
+        implements Serializable
 {
+    private static final long serialVersionUID = 3657688795326050507L;
+
     private String propertyValue;
 
     private PropertyName propertyName;
@@ -52,7 +57,8 @@ public class CategoryFilter
         COUNTERPARTY_IBAN
     }
 
-    public enum Operation {
+    public enum Operation
+    {
         LT,
         LTE,
         GTE,

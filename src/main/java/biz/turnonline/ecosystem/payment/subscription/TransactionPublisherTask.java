@@ -85,7 +85,7 @@ class TransactionPublisherTask
 
         if ( !transaction.propagate() )
         {
-            LOGGER.error( "Transaction will not be propagated to product-billing service '" + key + "'" );
+            LOGGER.info( "Transaction will not be propagated to product-billing service '" + key + "'" );
             return;
         }
 
