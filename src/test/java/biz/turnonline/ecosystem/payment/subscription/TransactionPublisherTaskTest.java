@@ -23,6 +23,7 @@ import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.MicroserviceModule;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
+import biz.turnonline.ecosystem.payment.service.model.TransactionCategory;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.googlecode.objectify.Key;
@@ -41,6 +42,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
 import java.util.Map;
 
 import static biz.turnonline.ecosystem.payment.service.BackendServiceTestCase.getFromFile;
@@ -191,6 +193,34 @@ public class TransactionPublisherTaskTest
             {
                 // not found, returns null
                 return null;
+            }
+        };
+
+        tested.execute();
+
+        new Verifications()
+        {
+            {
+                facade.insert( any );
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void unsuccessful_DoNotPropagate()
+    {
+        new MockUp<Task<?>>()
+        {
+            @Mock
+            public CommonTransaction workWith()
+            {
+                // not found, returns null
+                TransactionCategory category = new TransactionCategory();
+                category.setPropagate( false );
+                transaction.setCategories( Collections.singletonList( category ) );
+
+                return transaction;
             }
         };
 

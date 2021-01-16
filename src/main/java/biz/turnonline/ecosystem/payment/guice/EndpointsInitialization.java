@@ -19,6 +19,7 @@
 package biz.turnonline.ecosystem.payment.guice;
 
 import biz.turnonline.ecosystem.payment.api.BankAccountEndpoint;
+import biz.turnonline.ecosystem.payment.api.CategoryEndpoint;
 import biz.turnonline.ecosystem.payment.api.CodeBookCacheControlFilter;
 import biz.turnonline.ecosystem.payment.api.CodeBookEndpoint;
 import com.google.api.server.spi.ServletInitializationParameters;
@@ -45,6 +46,7 @@ public class EndpointsInitialization
                 // add your endpoint service implementation
                 .addServiceClass( CodeBookEndpoint.class )
                 .addServiceClass( BankAccountEndpoint.class )
+                .addServiceClass( CategoryEndpoint.class )
                 .setClientIdWhitelistEnabled( false ).build();
 
         configureEndpoints( ENDPOINTS_SERVLET_PATH, params );

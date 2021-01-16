@@ -83,6 +83,12 @@ class TransactionPublisherTask
             return;
         }
 
+        if ( !transaction.propagate() )
+        {
+            LOGGER.info( "Transaction will not be propagated to product-billing service '" + key + "'" );
+            return;
+        }
+
         LocalAccount lAccount = lap.get();
         if ( lAccount == null )
         {

@@ -20,6 +20,7 @@ package biz.turnonline.ecosystem.payment.service.model;
 
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
 import biz.turnonline.ecosystem.payment.api.model.TransactionBank;
+import biz.turnonline.ecosystem.payment.api.model.TransactionCategory;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.metadata.Type;
@@ -75,6 +76,11 @@ abstract class TransactionMapper<T extends CommonTransaction>
             }
 
             bank.setCode( bankCode );
+        }
+
+        if ( source.getCategories() != null )
+        {
+            transaction.setCategories( mapperFacade.mapAsList( source.getCategories(), TransactionCategory.class ) );
         }
 
         return transaction;
