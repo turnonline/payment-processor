@@ -21,6 +21,7 @@ package biz.turnonline.ecosystem.payment.service.model;
 import mockit.Tested;
 import org.testng.annotations.Test;
 
+import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 /**
@@ -75,5 +76,73 @@ public class CommonTransactionTest
         assertWithMessage( "Transaction has amount defined" )
                 .that( tested.isAmount() )
                 .isTrue();
+    }
+
+    @Test
+    public void propagate_CategoriesAreEmpty()
+    {
+        assertThat( tested.propagate() ).isTrue();
+    }
+
+    @Test
+    public void propagate_CategoryPropagate()
+    {
+        TransactionCategory category = new TransactionCategory();
+        category.setPropagate( true );
+        tested.getCategories().add( category );
+
+        assertThat( tested.propagate() ).isTrue();
+    }
+
+    @Test
+    public void propagate_CategoryDoNotPropagate()
+    {
+        TransactionCategory category = new TransactionCategory();
+        category.setPropagate( false );
+        tested.getCategories().add( category );
+
+        assertThat( tested.propagate() ).isFalse();
+    }
+
+    @Test
+    public void propagate_MultipleCategoriesOneNotPropagate()
+    {
+        TransactionCategory categoryPropagate = new TransactionCategory();
+        categoryPropagate.setPropagate( true );
+        tested.getCategories().add( categoryPropagate );
+
+        TransactionCategory categoryDoNotPropagate = new TransactionCategory();
+        categoryDoNotPropagate.setPropagate( false );
+        tested.getCategories().add( categoryDoNotPropagate );
+
+        assertThat( tested.propagate() ).isFalse();
+    }
+
+    @Test
+    public void propagate_MultipleCategoriesAllNotPropagate()
+    {
+        TransactionCategory categoryPropagate = new TransactionCategory();
+        categoryPropagate.setPropagate( false );
+        tested.getCategories().add( categoryPropagate );
+
+        TransactionCategory categoryDoNotPropagate = new TransactionCategory();
+        categoryDoNotPropagate.setPropagate( false );
+        tested.getCategories().add( categoryDoNotPropagate );
+
+        assertThat( tested.propagate() ).isFalse();
+    }
+
+    @Test
+    public void propagate_MultipleCategoriesAllPropagate()
+    {
+        TransactionCategory categoryPropagate = new TransactionCategory();
+        categoryPropagate.setPropagate( true );
+        tested.getCategories().add( categoryPropagate );
+
+        TransactionCategory categoryDoNotPropagate = new TransactionCategory();
+        categoryDoNotPropagate.setPropagate( true );
+        tested.getCategories().add( categoryDoNotPropagate );
+
+        assertThat( tested.propagate() ).isTrue();
     }
 }

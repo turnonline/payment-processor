@@ -68,6 +68,7 @@
                         <!--list all your endpoints classes here as cannot be inferred from the web.xml (guice) -->
                         <serviceClass>biz.turnonline.ecosystem.payment.api.CodeBookEndpoint</serviceClass>
                         <serviceClass>biz.turnonline.ecosystem.payment.api.BankAccountEndpoint</serviceClass>
+                        <serviceClass>biz.turnonline.ecosystem.payment.api.CategoryEndpoint</serviceClass>
                     </serviceClasses>
                 </configuration>
             </plugin>
