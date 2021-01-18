@@ -551,10 +551,11 @@ class PaymentConfigBean
 
         try
         {
-            State status = Strings.isNullOrEmpty( filter.getStatus() ) ? null : State.valueOf( filter.getStatus() );
+            State status = Strings.isNullOrEmpty( filter.getStatus() ) ? null :
+                    State.valueOf( filter.getStatus().toUpperCase() );
             if ( status != null )
             {
-                criteria.equal( "status", filter.getStatus() );
+                criteria.equal( "status", status.name() );
             }
         }
         catch ( IllegalArgumentException e )
