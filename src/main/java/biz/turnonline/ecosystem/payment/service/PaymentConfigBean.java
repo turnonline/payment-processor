@@ -472,6 +472,20 @@ class PaymentConfigBean
     }
 
     @Override
+    public CommonTransaction getTransaction( @Nonnull Long id )
+    {
+        checkNotNull( id, TEMPLATE, "Transaction ID" );
+
+        CommonTransaction transaction = ofy().load().type( CommonTransaction.class ).id( id ).now();
+        if ( transaction == null )
+        {
+            throw new TransactionNotFound( id.toString() );
+        }
+
+        return transaction;
+    }
+
+    @Override
     public CommonTransaction searchTransaction( @Nonnull String extId )
     {
         Criteria<CommonTransaction> criteria = Criteria.of( CommonTransaction.class );
