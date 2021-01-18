@@ -15,7 +15,7 @@ import java.util.Objects;
 public class Category
 {
     @JsonProperty( "id" )
-    private String id;
+    private Long id;
 
     @JsonProperty( "color" )
     private String color;
@@ -28,12 +28,12 @@ public class Category
 
     private List<CategoryFilter> filters = new ArrayList<>();
 
-    public String getId()
+    public Long getId()
     {
         return id;
     }
 
-    public void setId( String id )
+    public void setId( Long id )
     {
         this.id = id;
     }

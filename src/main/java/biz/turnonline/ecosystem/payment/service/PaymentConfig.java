@@ -212,6 +212,15 @@ public interface PaymentConfig
     CommonTransaction initGetTransaction( @Nonnull String extId );
 
     /**
+     * Get a transaction for specified Id.
+     *
+     * @param id the identification of the transaction
+     * @return the transaction or {@code null} if not found
+     * @throws TransactionNotFound if transaction not found
+     */
+    CommonTransaction getTransaction( @Nonnull Long id );
+
+    /**
      * Searches a transaction for specified external Id.
      *
      * @param extId the external identification of the transaction

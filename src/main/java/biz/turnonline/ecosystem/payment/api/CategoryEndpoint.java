@@ -20,6 +20,8 @@ package biz.turnonline.ecosystem.payment.api;
 
 import biz.turnonline.ecosystem.payment.api.model.Category;
 import biz.turnonline.ecosystem.payment.service.CategoryService;
+import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import com.google.api.server.spi.auth.common.User;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
@@ -55,14 +57,18 @@ public class CategoryEndpoint
 
     private final CategoryService service;
 
+    private final PaymentConfig config;
+
     @Inject
     CategoryEndpoint( EndpointsCommon common,
                       MapperFacade mapper,
-                      CategoryService service )
+                      CategoryService service,
+                      PaymentConfig config )
     {
         this.common = common;
         this.mapper = mapper;
         this.service = service;
+        this.config = config;
     }
 
     @ApiMethod( name = "category.list", path = "categories", httpMethod = ApiMethod.HttpMethod.GET )
@@ -136,6 +142,33 @@ public class CategoryEndpoint
         biz.turnonline.ecosystem.payment.service.model.Category dbCategory = getByIdOrThrowNotFoundException( id, authUser );
 
         service.delete( dbCategory );
+    }
+
+    @ApiMethod( name = "category.transaction.list", path = "categories/transactions/{transactionId}", httpMethod = ApiMethod.HttpMethod.GET )
+    public List<Category> listCategoriesForTransaction( @Named( "transactionId" ) Long transactionId, User authUser )
+            throws Exception
+    {
+        common.authorize( authUser );
+        List<Category> categories;
+
+        try
+        {
+            CommonTransaction transaction = config.getTransaction( transactionId );
+
+            List<biz.turnonline.ecosystem.payment.service.model.TransactionCategory> dbCategories = service.resolveCategories( transaction);
+            categories = mapper.mapAsList( dbCategories, Category.class );
+        }
+        catch ( Exception e )
+        {
+            logger.error( "Category list retrieval has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "User", authUser.getId() )
+                    .toString(), e );
+
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+
+        return categories;
     }
 
     // -- private helpers
