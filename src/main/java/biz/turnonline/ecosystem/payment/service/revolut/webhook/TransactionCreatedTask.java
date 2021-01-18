@@ -22,7 +22,6 @@ import biz.turnonline.ecosystem.payment.service.CategoryService;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
-import biz.turnonline.ecosystem.payment.service.model.CounterpartyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.TransactionCategory;
 import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
@@ -35,7 +34,6 @@ import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionSt
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType;
 import com.google.common.base.Strings;
 import org.ctoolkit.restapi.client.ClientErrorException;
-import org.ctoolkit.restapi.client.Identifier;
 import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.ctoolkit.restapi.client.UnauthorizedException;
@@ -128,24 +126,25 @@ public class TransactionCreatedTask
         {
             String counterpartyAccountId = leg.getCounterparty().getAccountId().toString();
 
-            try
-            {
-                List<AccountBankDetailsItem> counterpartyBankDetails = facade.list( AccountBankDetailsItem.class, new Identifier( counterpartyAccountId ) ).finish();
-                counterpartyBankAccount = counterpartyBankDetails.get( 0 );
-
-                CounterpartyBankAccount counterparty = new CounterpartyBankAccount();
-                counterparty.setIban( counterpartyBankAccount.getIban() );
-                counterparty.setBic( counterpartyBankAccount.getBic() );
-
-                transaction.setCounterparty( counterparty );
-            }
-            catch ( ClientErrorException | NotFoundException | UnauthorizedException e )
-            {
-                clear();
-                LOGGER.error( "Unknown counterparty bank account identified by account Id: " + counterpartyAccountId, e );
-                LOGGER.warn( "Next task cleared, nothing will be executed." );
-                return;
-            }
+            // FIXME
+//            try
+//            {
+//                List<AccountBankDetailsItem> counterpartyBankDetails = facade.list( AccountBankDetailsItem.class, new Identifier( counterpartyAccountId ) ).finish();
+//                counterpartyBankAccount = counterpartyBankDetails.get( 0 );
+//
+//                CounterpartyBankAccount counterparty = new CounterpartyBankAccount();
+//                counterparty.setIban( counterpartyBankAccount.getIban() );
+//                counterparty.setBic( counterpartyBankAccount.getBic() );
+//
+//                transaction.setCounterparty( counterparty );
+//            }
+//            catch ( ClientErrorException | NotFoundException | UnauthorizedException e )
+//            {
+//                clear();
+//                LOGGER.error( "Unknown counterparty bank account identified by account Id: " + counterpartyAccountId, e );
+//                LOGGER.warn( "Next task cleared, nothing will be executed." );
+//                return;
+//            }
         }
 
         UUID accountId = leg.getAccountId();
