@@ -1108,6 +1108,24 @@ public class PaymentConfigBeanDbTest
         bean.filterTransactions( new PaymentConfig.Filter().status( "INVALID_STATUS" ) );
     }
 
+    @Test(expectedExceptions = TransactionNotFound.class)
+    public void testGetTransaction_ByIdNotFound()
+    {
+        bean.getTransaction( 1L );
+    }
+
+    @Test
+    public void testGetTransaction_ById()
+    {
+        CommonTransaction transaction = bean.initGetTransaction( "12" );
+
+        transaction = bean.getTransaction( transaction.getId() );
+
+        assertWithMessage( "Transaction identified by external Id" )
+                .that( transaction.getExternalId() )
+                .isEqualTo( "12" );
+    }
+
     private int countBeneficiaries()
     {
         return ofy().load().type( BeneficiaryBankAccount.class ).count();
