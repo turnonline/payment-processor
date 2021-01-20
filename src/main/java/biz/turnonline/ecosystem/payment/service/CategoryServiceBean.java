@@ -6,6 +6,7 @@ import biz.turnonline.ecosystem.payment.service.category.TransactionCategoryPred
 import biz.turnonline.ecosystem.payment.service.category.TransactionCategoryPredicateForCredit;
 import biz.turnonline.ecosystem.payment.service.category.TransactionCategoryPredicateForCurrency;
 import biz.turnonline.ecosystem.payment.service.category.TransactionCategoryPredicateForName;
+import biz.turnonline.ecosystem.payment.service.category.TransactionCategoryPredicateForReference;
 import biz.turnonline.ecosystem.payment.service.model.Category;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.TransactionCategory;
@@ -49,6 +50,7 @@ public class CategoryServiceBean
         predicates.add( new TransactionCategoryPredicateForCurrency() );
         predicates.add( new TransactionCategoryPredicateForCredit() );
         predicates.add( new TransactionCategoryPredicateForCounterpartyIban() );
+        predicates.add( new TransactionCategoryPredicateForReference() );
     }
 
     @Override

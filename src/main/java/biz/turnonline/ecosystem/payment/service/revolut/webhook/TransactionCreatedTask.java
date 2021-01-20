@@ -22,21 +22,20 @@ import biz.turnonline.ecosystem.payment.service.CategoryService;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
+import biz.turnonline.ecosystem.payment.service.model.CounterpartyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.TransactionCategory;
 import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 import biz.turnonline.ecosystem.payment.subscription.JsonTask;
-import biz.turnonline.ecosystem.revolut.business.account.model.AccountBankDetailsItem;
+import biz.turnonline.ecosystem.revolut.business.counterparty.model.Counterparty;
+import biz.turnonline.ecosystem.revolut.business.counterparty.model.CounterpartyAccount;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionLeg;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionMerchant;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionState;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType;
 import com.google.common.base.Strings;
-import org.ctoolkit.restapi.client.ClientErrorException;
-import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.RestFacade;
-import org.ctoolkit.restapi.client.UnauthorizedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -88,18 +87,8 @@ public class TransactionCreatedTask
         String id = Strings.isNullOrEmpty( incoming.getId() ) ? "" : incoming.getId();
         Transaction transactionFromBank;
 
-        try
-        {
-            transactionFromBank = facade.get( Transaction.class ).identifiedBy( id ).finish();
-            LOGGER.info( "Incoming transaction (via webhook) found in bank system too" );
-        }
-        catch ( ClientErrorException | NotFoundException | UnauthorizedException e )
-        {
-            clear();
-            LOGGER.error( "Unknown incoming transaction identified by transaction Id: " + id, e );
-            LOGGER.warn( "Next task cleared, nothing will be executed." );
-            return;
-        }
+        transactionFromBank = facade.get( Transaction.class ).identifiedBy( id ).finish();
+        LOGGER.info( "Incoming transaction (via webhook) found in bank system too" );
 
         List<TransactionLeg> legs = transactionFromBank.getLegs();
         if ( legs == null || legs.isEmpty() )
@@ -120,31 +109,18 @@ public class TransactionCreatedTask
                 .balance( leg.getBalance() )
                 .reference( transactionFromBank.getReference() );
 
-        AccountBankDetailsItem counterpartyBankAccount;
-
-        if ( leg.getCounterparty() != null && leg.getCounterparty().getAccountId() != null )
+        if ( leg.getCounterparty() != null && leg.getCounterparty().getId() != null )
         {
-            String counterpartyAccountId = leg.getCounterparty().getAccountId().toString();
+            String counterpartyId = leg.getCounterparty().getId().toString();
 
-            // FIXME
-//            try
-//            {
-//                List<AccountBankDetailsItem> counterpartyBankDetails = facade.list( AccountBankDetailsItem.class, new Identifier( counterpartyAccountId ) ).finish();
-//                counterpartyBankAccount = counterpartyBankDetails.get( 0 );
-//
-//                CounterpartyBankAccount counterparty = new CounterpartyBankAccount();
-//                counterparty.setIban( counterpartyBankAccount.getIban() );
-//                counterparty.setBic( counterpartyBankAccount.getBic() );
-//
-//                transaction.setCounterparty( counterparty );
-//            }
-//            catch ( ClientErrorException | NotFoundException | UnauthorizedException e )
-//            {
-//                clear();
-//                LOGGER.error( "Unknown counterparty bank account identified by account Id: " + counterpartyAccountId, e );
-//                LOGGER.warn( "Next task cleared, nothing will be executed." );
-//                return;
-//            }
+            Counterparty counterparty = facade.get( Counterparty.class ).identifiedBy( counterpartyId ).finish();
+            CounterpartyAccount counterpartyAccount = counterparty.getAccounts().get( 0 );
+
+            CounterpartyBankAccount counterpartyBankAccount = new CounterpartyBankAccount();
+            counterpartyBankAccount.setIban( counterpartyAccount.getIban() );
+            counterpartyBankAccount.setBic( counterpartyAccount.getBic() );
+
+            transaction.setCounterparty( counterpartyBankAccount );
         }
 
         UUID accountId = leg.getAccountId();

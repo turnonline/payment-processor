@@ -54,7 +54,8 @@ public class CategoryFilter
         AMOUNT,
         CURRENCY,
         CREDIT,
-        COUNTERPARTY_IBAN
+        COUNTERPARTY_IBAN,
+        REFERENCE
     }
 
     public enum Operation

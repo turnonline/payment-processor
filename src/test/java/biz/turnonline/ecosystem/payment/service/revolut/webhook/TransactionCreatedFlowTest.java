@@ -27,6 +27,8 @@ import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 import biz.turnonline.ecosystem.payment.subscription.MockedInputStream;
 import biz.turnonline.ecosystem.revolut.business.account.model.AccountBankDetailsItem;
+import biz.turnonline.ecosystem.revolut.business.counterparty.model.Counterparty;
+import biz.turnonline.ecosystem.revolut.business.counterparty.model.CounterpartyAccount;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionState;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType;
@@ -53,6 +55,7 @@ import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -491,7 +494,7 @@ public class TransactionCreatedFlowTest
 //                .isEqualTo( "SLSPSK" );
 
         assertWithMessage( "Transaction name from description" )
-                .that( ((TransactionReceipt) transaction).getMerchantName() )
+                .that( ( ( TransactionReceipt ) transaction ).getMerchantName() )
                 .isEqualTo( "From EUR source" );
 
         Date modificationDate = transaction.getModificationDate();
@@ -539,9 +542,12 @@ public class TransactionCreatedFlowTest
         Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
         afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
 
-        AccountBankDetailsItem accountBankDetailsItem = new AccountBankDetailsItem();
-        accountBankDetailsItem.setIban( "SK1234567890" );
-        accountBankDetailsItem.setBic( "SLSPSK" );
+        Counterparty counterparty = new Counterparty();
+
+        CounterpartyAccount counterpartyAccount = new CounterpartyAccount();
+        counterpartyAccount.setIban( "SK1234567890" );
+        counterpartyAccount.setBic( "SLSPSK" );
+        counterparty.setAccounts( Collections.singletonList( counterpartyAccount ) );
 
         new Expectations()
         {
@@ -550,9 +556,8 @@ public class TransactionCreatedFlowTest
                 result = t;
                 result = afterStateChanged;
 
-                // FIXME
-//                facade.list(AccountBankDetailsItem.class, new Identifier( "bdab1c20-8d8c-430d-b967-87ac01af060c" )).finish();
-//                result = Collections.singletonList( accountBankDetailsItem );
+                facade.get( Counterparty.class ).identifiedBy( "4161edb6-7ba3-4501-951a-5825888307ff" ).finish();
+                result = counterparty;
             }
         };
 
@@ -614,14 +619,13 @@ public class TransactionCreatedFlowTest
                 .that( transaction )
                 .isInstanceOf( TransactionReceipt.class );
 
-        // FIXME
-//        assertWithMessage( "Transaction counterparty (IBAN)" )
-//                .that( transaction.getCounterparty().getIban() )
-//                .isEqualTo( "SK1234567890" );
-//
-//        assertWithMessage( "Transaction counterparty (BIC)" )
-//                .that( transaction.getCounterparty().getBic() )
-//                .isEqualTo( "SLSPSK" );
+        assertWithMessage( "Transaction counterparty (IBAN)" )
+                .that( transaction.getCounterparty().getIban() )
+                .isEqualTo( "SK1234567890" );
+
+        assertWithMessage( "Transaction counterparty (BIC)" )
+                .that( transaction.getCounterparty().getBic() )
+                .isEqualTo( "SLSPSK" );
 
         Date modificationDate = transaction.getModificationDate();
 
@@ -668,9 +672,12 @@ public class TransactionCreatedFlowTest
         Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
         afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
 
-        AccountBankDetailsItem accountBankDetailsItem = new AccountBankDetailsItem();
-        accountBankDetailsItem.setIban( "SK1234567890" );
-        accountBankDetailsItem.setBic( "SLSPSK" );
+        Counterparty counterparty = new Counterparty();
+
+        CounterpartyAccount counterpartyAccount = new CounterpartyAccount();
+        counterpartyAccount.setIban( "SK1234567890" );
+        counterpartyAccount.setBic( "SLSPSK" );
+        counterparty.setAccounts( Collections.singletonList( counterpartyAccount ) );
 
         new Expectations()
         {
@@ -679,9 +686,8 @@ public class TransactionCreatedFlowTest
                 result = t;
                 result = afterStateChanged;
 
-                // FIXME
-//                facade.list(AccountBankDetailsItem.class, new Identifier( "8057d02f-cd46-49b6-be8c-4ee045c24591" )).finish();
-//                result = Collections.singletonList( accountBankDetailsItem );
+                facade.get( Counterparty.class ).identifiedBy( "5e3599aa-bd0d-45d0-9d0b-0686496a2156" ).finish();
+                result = counterparty;
             }
         };
 
@@ -743,14 +749,13 @@ public class TransactionCreatedFlowTest
                 .that( transaction )
                 .isInstanceOf( TransactionReceipt.class );
 
-        // FIXME
-//        assertWithMessage( "Transaction counterparty (IBAN)" )
-//                .that( transaction.getCounterparty().getIban() )
-//                .isEqualTo( "SK1234567890" );
-//
-//        assertWithMessage( "Transaction counterparty (BIC)" )
-//                .that( transaction.getCounterparty().getBic() )
-//                .isEqualTo( "SLSPSK" );
+        assertWithMessage( "Transaction counterparty (IBAN)" )
+                .that( transaction.getCounterparty().getIban() )
+                .isEqualTo( "SK1234567890" );
+
+        assertWithMessage( "Transaction counterparty (BIC)" )
+                .that( transaction.getCounterparty().getBic() )
+                .isEqualTo( "SLSPSK" );
 
         Date modificationDate = transaction.getModificationDate();
 
@@ -809,9 +814,12 @@ public class TransactionCreatedFlowTest
         Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
         afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
 
-        AccountBankDetailsItem accountBankDetailsItem = new AccountBankDetailsItem();
-        accountBankDetailsItem.setIban( "SK1234567890" );
-        accountBankDetailsItem.setBic( "SLSPSK" );
+        Counterparty counterparty = new Counterparty();
+
+        CounterpartyAccount counterpartyAccount = new CounterpartyAccount();
+        counterpartyAccount.setIban( "SK1234567890" );
+        counterpartyAccount.setBic( "SLSPSK" );
+        counterparty.setAccounts( Collections.singletonList( counterpartyAccount ) );
 
         new Expectations()
         {
@@ -820,9 +828,8 @@ public class TransactionCreatedFlowTest
                 result = t;
                 result = afterStateChanged;
 
-                // FIXME
-//                facade.list(AccountBankDetailsItem.class, new Identifier( "8057d02f-cd46-49b6-be8c-4ee045c24591" )).finish();
-//                result = Collections.singletonList( accountBankDetailsItem );
+                facade.get( Counterparty.class ).identifiedBy( "a1dd617f-45b5-400b-8dd9-8970429d0a3c" ).finish();
+                result = counterparty;
             }
         };
 
@@ -884,14 +891,13 @@ public class TransactionCreatedFlowTest
                 .that( transaction )
                 .isInstanceOf( TransactionReceipt.class );
 
-        // FIXME
-//        assertWithMessage( "Transaction counterparty (IBAN)" )
-//                .that( transaction.getCounterparty().getIban() )
-//                .isEqualTo( "SK1234567890" );
-//
-//        assertWithMessage( "Transaction counterparty (BIC)" )
-//                .that( transaction.getCounterparty().getBic() )
-//                .isEqualTo( "SLSPSK" );
+        assertWithMessage( "Transaction counterparty (IBAN)" )
+                .that( transaction.getCounterparty().getIban() )
+                .isEqualTo( "SK1234567890" );
+
+        assertWithMessage( "Transaction counterparty (BIC)" )
+                .that( transaction.getCounterparty().getBic() )
+                .isEqualTo( "SLSPSK" );
 
         Date modificationDate = transaction.getModificationDate();
 
@@ -939,9 +945,12 @@ public class TransactionCreatedFlowTest
         Transaction afterStateChanged = mapper.readValue( json, Transaction.class );
         afterStateChanged.setState( TransactionState.fromValue( stateChanged.workWith().getData().getNewState() ) );
 
-        AccountBankDetailsItem accountBankDetailsItem = new AccountBankDetailsItem();
-        accountBankDetailsItem.setIban( "SK1234567890" );
-        accountBankDetailsItem.setBic( "SLSPSK" );
+        Counterparty counterparty = new Counterparty();
+
+        CounterpartyAccount counterpartyAccount = new CounterpartyAccount();
+        counterpartyAccount.setIban( "SK1234567890" );
+        counterpartyAccount.setBic( "SLSPSK" );
+        counterparty.setAccounts( Collections.singletonList( counterpartyAccount ) );
 
         new Expectations()
         {
@@ -950,9 +959,8 @@ public class TransactionCreatedFlowTest
                 result = t;
                 result = afterStateChanged;
 
-                // FIXME
-//                facade.list(AccountBankDetailsItem.class, new Identifier( "bdab1c20-8d8c-430d-b967-87ac01af060c" )).finish();
-//                result = Collections.singletonList( accountBankDetailsItem );
+                facade.get( Counterparty.class ).identifiedBy( "d197e887-7e8a-49e3-81e8-3a978140dfba" ).finish();
+                result = counterparty;
             }
         };
 
@@ -1014,14 +1022,13 @@ public class TransactionCreatedFlowTest
                 .that( transaction )
                 .isInstanceOf( TransactionReceipt.class );
 
-        // FIXME
-//        assertWithMessage( "Transaction counterparty (IBAN)" )
-//                .that( transaction.getCounterparty().getIban() )
-//                .isEqualTo( "SK1234567890" );
-//
-//        assertWithMessage( "Transaction counterparty (BIC)" )
-//                .that( transaction.getCounterparty().getBic() )
-//                .isEqualTo( "SLSPSK" );
+        assertWithMessage( "Transaction counterparty (IBAN)" )
+                .that( transaction.getCounterparty().getIban() )
+                .isEqualTo( "SK1234567890" );
+
+        assertWithMessage( "Transaction counterparty (BIC)" )
+                .that( transaction.getCounterparty().getBic() )
+                .isEqualTo( "SLSPSK" );
 
         Date modificationDate = transaction.getModificationDate();
 
@@ -1157,7 +1164,7 @@ public class TransactionCreatedFlowTest
                 .isEquivalentAccordingToCompareTo( modificationDate );
     }
 
-    @Test
+    @Test( expectedExceptions = NotFoundException.class )
     public void unsuccessful_TransactionNotFound()
     {
         created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() ) );
@@ -1175,21 +1182,28 @@ public class TransactionCreatedFlowTest
             }
         };
 
-        // test call
-        created.execute();
+        try
+        {
+            // test call
+            created.execute();
+        }
+        catch ( NotFoundException e )
+        {
+            int count = ofy().load().type( TransactionReceipt.class ).count();
+            assertWithMessage( "Final number of transactions" )
+                    .that( count )
+                    .isEqualTo( 0 );
 
-        int count = ofy().load().type( TransactionReceipt.class ).count();
-        assertWithMessage( "Final number of transactions" )
-                .that( count )
-                .isEqualTo( 0 );
+            assertWithMessage( "Remaining number of tasks after failure" )
+                    .that( created.countTasks() )
+                    // 2 is the current one
+                    .isEqualTo( 2 );
 
-        assertWithMessage( "Remaining number of tasks after failure" )
-                .that( created.countTasks() )
-                // 1 is the current one
-                .isEqualTo( 1 );
+            throw e;
+        }
     }
 
-    @Test
+    @Test( expectedExceptions = ClientErrorException.class )
     public void unsuccessful_RevolutClientError()
     {
         created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() ) );
@@ -1207,21 +1221,28 @@ public class TransactionCreatedFlowTest
             }
         };
 
-        // test call
-        created.execute();
+        try
+        {
+            // test call
+            created.execute();
+        }
+        catch ( ClientErrorException e )
+        {
+            int count = ofy().load().type( TransactionReceipt.class ).count();
+            assertWithMessage( "Final number of transactions" )
+                    .that( count )
+                    .isEqualTo( 0 );
 
-        int count = ofy().load().type( TransactionReceipt.class ).count();
-        assertWithMessage( "Final number of transactions" )
-                .that( count )
-                .isEqualTo( 0 );
+            assertWithMessage( "Remaining number of tasks after failure" )
+                    .that( created.countTasks() )
+                    // 2 is the current one
+                    .isEqualTo( 2 );
 
-        assertWithMessage( "Remaining number of tasks after failure" )
-                .that( created.countTasks() )
-                // 1 is the current one
-                .isEqualTo( 1 );
+            throw e;
+        }
     }
 
-    @Test
+    @Test( expectedExceptions = UnauthorizedException.class )
     public void unsuccessful_RevolutUnauthorized()
     {
         created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() ) );
@@ -1239,18 +1260,25 @@ public class TransactionCreatedFlowTest
             }
         };
 
-        // test call
-        created.execute();
+        try
+        {
+            // test call
+            created.execute();
+        }
+        catch ( UnauthorizedException e )
+        {
+            int count = ofy().load().type( TransactionReceipt.class ).count();
+            assertWithMessage( "Final number of transactions" )
+                    .that( count )
+                    .isEqualTo( 0 );
 
-        int count = ofy().load().type( TransactionReceipt.class ).count();
-        assertWithMessage( "Final number of transactions" )
-                .that( count )
-                .isEqualTo( 0 );
+            assertWithMessage( "Remaining number of tasks after failure" )
+                    .that( created.countTasks() )
+                    // 2 is the current one
+                    .isEqualTo( 2 );
 
-        assertWithMessage( "Remaining number of tasks after failure" )
-                .that( created.countTasks() )
-                // 1 is the current one
-                .isEqualTo( 1 );
+            throw e;
+        }
     }
 
     @Test
