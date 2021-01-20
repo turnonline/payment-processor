@@ -23,6 +23,7 @@ public class TransactionCategoryPredicateForAmountTest
         assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.CREDIT ), null ) ).isFalse();
         assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.CURRENCY ), null ) ).isFalse();
         assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.COUNTERPARTY_IBAN ), null ) ).isFalse();
+        assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.REFERENCE ), null ) ).isFalse();
     }
 
     @Test

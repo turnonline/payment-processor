@@ -23,12 +23,14 @@ public class TransactionCategoryPredicateForNameTest
         assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.CREDIT ), mockTransaction() ) ).isFalse();
         assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.CURRENCY ), mockTransaction() ) ).isFalse();
         assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.COUNTERPARTY_IBAN ), mockTransaction() ) ).isFalse();
+        assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.REFERENCE ), mockTransaction() ) ).isFalse();
 
         assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.NAME ), mockTransactionInvoice() ) ).isFalse();
         assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.AMOUNT ), mockTransactionInvoice() ) ).isFalse();
         assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.CREDIT ), mockTransactionInvoice() ) ).isFalse();
         assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.CURRENCY ), mockTransactionInvoice() ) ).isFalse();
         assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.COUNTERPARTY_IBAN ), mockTransactionInvoice() ) ).isFalse();
+        assertThat( predicate.apply( mockFilter( CategoryFilter.PropertyName.REFERENCE ), mockTransactionInvoice() ) ).isFalse();
     }
 
     @Test
