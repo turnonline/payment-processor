@@ -82,6 +82,12 @@ class EndpointsCommon
         return String.format( message, id );
     }
 
+    static String transactionNotFoundMessage( Long id )
+    {
+        String message = "Transaction with ID '%d' has not been found";
+        return String.format( message, id );
+    }
+
     static String primaryBankAccountNotFoundMessage( String country )
     {
         String message = "Primary bank account for country '%s' has not been found";
