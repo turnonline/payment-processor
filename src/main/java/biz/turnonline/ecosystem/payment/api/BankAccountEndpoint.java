@@ -24,6 +24,7 @@ import biz.turnonline.ecosystem.payment.api.model.Transaction;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.BankCodeNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.TransactionNotFound;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
@@ -54,6 +55,7 @@ import java.util.Locale;
 import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.bankAccountNotFoundMessage;
 import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.bankCodeNotFoundMessage;
 import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.primaryBankAccountNotFoundMessage;
+import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.transactionNotFoundMessage;
 import static biz.turnonline.ecosystem.payment.api.EndpointsCommon.tryAgainLaterMessage;
 
 /**
@@ -528,6 +530,46 @@ public class BankAccountEndpoint
                     .add( "type", type )
                     .add( "offset", offset )
                     .add( "limit", limit )
+                    .toString(), e );
+
+            throw new InternalServerErrorException( tryAgainLaterMessage() );
+        }
+
+        return result;
+    }
+
+    @ApiMethod( name = "transactions.get",
+            path = "transactions/{transaction_id}",
+            httpMethod = ApiMethod.HttpMethod.GET )
+    public Transaction getTransaction( @Named( "transaction_id" ) Long transactionId,
+                                       HttpServletRequest request,
+                                       User authUser )
+            throws Exception
+    {
+        LocalAccount account = common.checkAccount( authUser, request );
+        Transaction result;
+
+        try
+        {
+            CommonTransaction transaction = config.getTransaction( transactionId );
+            result = mapper.map( transaction, Transaction.class );
+        }
+        catch ( TransactionNotFound e )
+        {
+            LOGGER.warn( "Transaction not found: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getId() )
+                    .add( "Transaction ID", transactionId )
+                    .toString(), e );
+
+            throw new NotFoundException( transactionNotFoundMessage( transactionId ) );
+        }
+        catch ( Exception e )
+        {
+            LOGGER.error( "Transaction retrieval has failed: "
+                    + MoreObjects.toStringHelper( "Input" )
+                    .add( "Account", account.getId() )
+                    .add( "Transaction ID", transactionId )
                     .toString(), e );
 
             throw new InternalServerErrorException( tryAgainLaterMessage() );

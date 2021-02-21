@@ -24,6 +24,7 @@ import biz.turnonline.ecosystem.payment.api.model.Transaction;
 import biz.turnonline.ecosystem.payment.service.BankAccountNotFound;
 import biz.turnonline.ecosystem.payment.service.BankCodeNotFound;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.TransactionNotFound;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
@@ -1040,5 +1041,79 @@ public class BankAccountEndpointTest
                 null,
                 request,
                 authUser );
+    }
+
+    @Test
+    public void getTransaction() throws Exception
+    {
+        long transactionId = 2991L;
+        Transaction transaction = new Transaction();
+
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+                result = account;
+
+                config.getTransaction( transactionId );
+
+                mapper.map( any, Transaction.class );
+                result = transaction;
+            }
+        };
+
+        assertThat( endpoint.getTransaction( transactionId, request, authUser ) ).isNotNull();
+    }
+
+    @Test( expectedExceptions = NotFoundException.class )
+    public void getTransaction_NotFound() throws Exception
+    {
+        long transactionId = 6675;
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+                result = account;
+
+                config.getTransaction( transactionId );
+                result = new TransactionNotFound( String.valueOf( transactionId ) );
+            }
+        };
+
+        endpoint.getTransaction( transactionId, request, authUser );
+    }
+
+    @Test( expectedExceptions = InternalServerErrorException.class )
+    public void getTransaction_BackendError() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+                result = account;
+
+                config.getTransaction( anyLong );
+                result = new RuntimeException();
+            }
+        };
+
+        endpoint.getTransaction( 67L, request, authUser );
+    }
+
+    @Test( expectedExceptions = InternalServerErrorException.class )
+    public void getTransaction_MappingError() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                common.checkAccount( authUser, request );
+                result = account;
+
+                mapper.map( any, Transaction.class );
+                result = new RuntimeException();
+            }
+        };
+
+        endpoint.getTransaction( 67L, request, authUser );
     }
 }
