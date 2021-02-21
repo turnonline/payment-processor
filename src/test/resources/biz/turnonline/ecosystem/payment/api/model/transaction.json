@@ -22,6 +22,7 @@
     },
     "bill": {
         "invoice": 123,
-        "order": 456
+        "order": 456,
+        "receipt": 876
     }
 }

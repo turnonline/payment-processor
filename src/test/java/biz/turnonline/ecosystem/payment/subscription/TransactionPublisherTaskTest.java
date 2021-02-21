@@ -134,7 +134,7 @@ public class TransactionPublisherTaskTest
 
                 Map<String, Object> map = mapOf( message );
                 Map<String, Object> properties = new Helper().flatMap( map, null );
-                assertThat( properties ).hasSize( 21 );
+                assertThat( properties ).hasSize( 23 );
 
                 assertWithMessage( "Transaction amount" )
                         .that( properties.get( "amount" ) )
@@ -150,6 +150,10 @@ public class TransactionPublisherTaskTest
 
                 assertWithMessage( "Transaction bank account IBAN" )
                         .that( properties.get( "bankAccount.iban" ) )
+                        .isNotNull();
+
+                assertWithMessage( "Transaction bill receipt Id" )
+                        .that( properties.get( "bill.receipt" ) )
                         .isNotNull();
 
                 assertWithMessage( "Transaction bill order Id" )
