@@ -13,6 +13,8 @@ import biz.turnonline.ecosystem.payment.service.model.TransactionCategory;
 import ma.glasnost.orika.MapperFacade;
 import org.ctoolkit.services.storage.EntityExecutor;
 import org.ctoolkit.services.storage.criteria.Criteria;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -33,6 +35,8 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
 public class CategoryServiceBean
         implements CategoryService
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger( CategoryServiceBean.class );
+
     private final MapperFacade mapper;
 
     private final EntityExecutor datastore;
@@ -100,7 +104,17 @@ public class CategoryServiceBean
                 .filter( filter ->
                         predicates.stream()
                                 .filter( predicate -> predicate.apply( filter, transaction ) )
-                                .filter( predicate -> predicate.resolve( filter, transaction ) )
+                                .filter( predicate -> {
+                                    try
+                                    {
+                                        return predicate.resolve( filter, transaction );
+                                    }
+                                    catch ( Exception e )
+                                    {
+                                        LOGGER.warn( "Unable to resolve category predicate", e );
+                                        return false;
+                                    }
+                                } )
                                 .map( predicate -> true )
                                 .findAny()
                                 .orElse( false )

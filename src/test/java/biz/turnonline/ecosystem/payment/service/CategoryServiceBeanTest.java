@@ -57,6 +57,28 @@ public class CategoryServiceBeanTest
     }
 
     @Test
+    public void testResolveCategories_ErrorDuringResolving()
+    {
+        TransactionReceipt transaction = new TransactionReceipt( "1" );
+        transaction.setMerchantName( "Orange" );
+
+        new Expectations()
+        {
+            {
+                datastore.list( withAny( Criteria.of( Category.class ) ) );
+                Category category = mockCategory();
+                category.getFilters().get( 0 ).setOperation( CategoryFilter.Operation.REGEXP );
+                category.getFilters().get( 0 ).setPropertyValue( "*.Orange" );
+                result = Collections.singletonList( category );
+            }
+        };
+
+        List<TransactionCategory> transactionCategories = tested.resolveCategories( transaction );
+
+        assertThat( transactionCategories.size() ).isEqualTo( 0 );
+    }
+
+    @Test
     public void testResolveCategories_FilterMatched()
     {
         TransactionReceipt transaction = new TransactionReceipt( "1" );
