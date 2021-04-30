@@ -42,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static biz.turnonline.ecosystem.payment.service.BackendServiceTestCase.getFromFile;
-import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_EU_CODE;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 /**
@@ -56,6 +56,15 @@ public class RevolutDebtorBankAccountsInitTest
     private static final String IBAN = "GB51 REVO 0099 6908 4603 55";
 
     private static final String BIC = "REVOGB21";
+
+    private final LocalAccount account = new LocalAccount( new biz.turnonline.ecosystem.steward.model.Account()
+            .setId( 18495L )
+            .setEmail( "my.account@turnonline.biz" )
+            .setIdentityId( "87hHtr6uJ" )
+            .setAudience( "b2c" ) );
+
+    @Injectable
+    private final String bankCode = REVOLUT_BANK_EU_CODE;
 
     @Tested
     private RevolutDebtorBankAccountsInit tested;
@@ -74,12 +83,6 @@ public class RevolutDebtorBankAccountsInitTest
 
     @Mocked
     private ListRetrievalRequest<?> authBy;
-
-    private LocalAccount account = new LocalAccount( new biz.turnonline.ecosystem.steward.model.Account()
-            .setId( 18495L )
-            .setEmail( "my.account@turnonline.biz" )
-            .setIdentityId( "87hHtr6uJ" )
-            .setAudience( "b2c" ) );
 
     private List<Account> accounts;
 
@@ -293,7 +296,7 @@ public class RevolutDebtorBankAccountsInitTest
                 tested.workWith();
                 result = account;
 
-                config.getBankAccounts( REVOLUT_BANK_CODE );
+                config.getBankAccounts( REVOLUT_BANK_EU_CODE );
                 result = existing;
 
                 tested.save( ( List<CompanyBankAccount> ) any );

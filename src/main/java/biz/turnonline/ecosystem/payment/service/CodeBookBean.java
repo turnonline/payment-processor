@@ -33,6 +33,7 @@ import java.util.TreeMap;
 
 import static biz.turnonline.ecosystem.payment.service.MicroserviceModule.API_PREFIX;
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_EU_CODE;
 import static biz.turnonline.ecosystem.payment.service.model.LocalAccount.DEFAULT_DOMICILE;
 import static biz.turnonline.ecosystem.payment.service.model.LocalAccount.DEFAULT_LOCALE;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -108,6 +109,10 @@ class CodeBookBean
         if ( country == null && REVOLUT_BANK_CODE.equals( code ) )
         {
             domicile = "GB";
+        }
+        else if ( country == null && REVOLUT_BANK_EU_CODE.equals( code ) )
+        {
+            domicile = "LT";
         }
         else
         {

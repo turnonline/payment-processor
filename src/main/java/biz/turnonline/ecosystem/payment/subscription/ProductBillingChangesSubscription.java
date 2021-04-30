@@ -49,6 +49,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_EU_CODE;
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.TRUST_PAY_BANK_CODE;
 import static biz.turnonline.ecosystem.payment.service.model.FormOfPayment.TRANSFER;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
@@ -210,6 +211,7 @@ class ProductBillingChangesSubscription
                 switch ( debtorBank.getBankCode() )
                 {
                     case REVOLUT_BANK_CODE:
+                    case REVOLUT_BANK_EU_CODE:
                     {
                         // prepares an empty transaction to be completed later (idempotent call)
                         CommonTransaction tDraft = config.initGetTransactionDraft( invoice );

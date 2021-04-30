@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -56,6 +55,11 @@ public class RevolutDebtorBankAccountsInit
 
     private static final Logger LOGGER = LoggerFactory.getLogger( RevolutDebtorBankAccountsInit.class );
 
+    /**
+     * Revolut has more bank codes, here we specify for which one to init/update,
+     */
+    private final String bankCode;
+
     @Inject
     transient private RestFacade facade;
 
@@ -65,10 +69,11 @@ public class RevolutDebtorBankAccountsInit
     @Inject
     transient private CodeBook codeBook;
 
-    public RevolutDebtorBankAccountsInit( @Nonnull Key<LocalAccount> accountKey )
+    public RevolutDebtorBankAccountsInit( @Nonnull Key<LocalAccount> accountKey, @Nonnull String bankCode )
     {
         super( "Init-Revolut-BankAccounts" );
         super.setEntityKey( checkNotNull( accountKey, "LocalAccount key can't be null" ) );
+        this.bankCode = checkNotNull( bankCode, "Bank code is required" );
     }
 
     private static boolean inclActive( Account account )
@@ -97,7 +102,7 @@ public class RevolutDebtorBankAccountsInit
             return;
         }
 
-        List<CompanyBankAccount> existing = config.getBankAccounts( REVOLUT_BANK_CODE );
+        List<CompanyBankAccount> existing = config.getBankAccounts( bankCode );
         List<CompanyBankAccount> bankAccounts = new ArrayList<>();
         CompanyBankAccount bankAccount;
         String currency;

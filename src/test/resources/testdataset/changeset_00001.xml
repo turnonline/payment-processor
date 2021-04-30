@@ -28,7 +28,7 @@
             <property name="branch" type="string" value=""/>
             <property indexed="true" name="iban" type="string" value="SK2711001936954420095443"/>
             <property indexed="true" name="bankCode" type="string" value="1100"/>
-            <property name="primary" type="boolean" value="true"/>
+            <property name="primary" type="boolean" value="false"/>
             <property indexed="true" name="paymentGate" type="string" value="TATRAPAY"/>
             <property indexed="true" name="merchantId" type="string" value="123456789"/>
             <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
@@ -73,7 +73,7 @@
             <property name="branch" type="string" value=""/>
             <property indexed="true" name="iban" type="string" value="SK3702005771190028932408"/>
             <property indexed="true" name="bankCode" type="string" value="0200"/>
-            <property name="primary" type="boolean" value="true"/>
+            <property name="primary" type="boolean" value="false"/>
             <property indexed="true" name="paymentGate" type="string" value="EPLATBY_VUB"/>
             <property indexed="true" name="merchantId" type="string" value="123456789"/>
             <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
@@ -88,7 +88,7 @@
             <property name="branch" type="string" value=""/>
             <property indexed="true" name="iban" type="string" value="SK1999529985863410603550"/>
             <property indexed="true" name="bankCode" type="string" value="9952"/>
-            <property name="primary" type="boolean" value="true"/>
+            <property name="primary" type="boolean" value="false"/>
             <property indexed="true" name="paymentGate" type="string" value="TRUSTPAY"/>
             <property indexed="true" name="merchantId" type="string" value="2107152003"/>
             <property name="notificationEmail" type="string" value="merchant.email@turnonline.biz"/>
@@ -108,6 +108,18 @@
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
+        <entity kind="PP_BankAccount">
+            <property indexed="false" name="^d" type="string" value="Company"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Company"/>
+            <property indexed="true" name="name" type="string" value="Revolut Payments UAB"/>
+            <property indexed="true" name="iban" type="string" value="LT843250052035047933"/>
+            <property indexed="true" name="bankCode" type="string" value="32500"/>
+            <property name="primary" type="boolean" value="true"/>
+            <property name="bic" type="string" value="REVOLT21"/>
+            <property indexed="true" name="country" type="string" value="LT"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
         <!--the bank account with different owner-->
         <entity kind="PP_BankAccount" id="9999">
             <property indexed="false" name="^d" type="string" value="Company"/>
@@ -116,7 +128,7 @@
             <property name="branch" type="string" value=""/>
             <property indexed="true" name="iban" type="string" value="SK0509009774621357177405"/>
             <property indexed="true" name="bankCode" type="string" value="0900"/>
-            <property name="primary" type="boolean" value="true"/>
+            <property name="primary" type="boolean" value="false"/>
             <property indexed="true" name="country" type="string" value="SK"/>
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>

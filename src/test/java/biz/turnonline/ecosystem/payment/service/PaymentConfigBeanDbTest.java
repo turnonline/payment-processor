@@ -59,6 +59,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_EU_CODE;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static com.googlecode.objectify.ObjectifyService.ofy;
@@ -302,6 +303,49 @@ public class PaymentConfigBeanDbTest
                 .isTrue();
     }
 
+    @Test
+    public <T extends TaskExecutor> void enableApiAccess_RevolutEUAccessAuthorised()
+    {
+        lAccount.save();
+        AtomicReference<Task<?>> scheduledTask = new AtomicReference<>();
+
+        // scheduled tasks mocked
+        new MockUp<T>()
+        {
+            @Mock
+            public TaskHandle schedule( Task<?> task )
+            {
+                scheduledTask.set( task );
+                return null;
+            }
+        };
+
+        Certificate certificate = new Certificate();
+        certificate.setClientId( CLIENT_ID );
+
+        // mark manually access Granted to the bank account API
+        revolut.get().accessGranted();
+
+        // test call
+        Certificate result = bean.enableApiAccess( lAccount, REVOLUT_BANK_EU_CODE.toLowerCase(), certificate );
+
+        assertWithMessage( "Updated certificate" )
+                .that( result )
+                .isNotNull();
+
+        assertWithMessage( "Certificate client ID" )
+                .that( result.getClientId() )
+                .isEqualTo( CLIENT_ID );
+
+        assertWithMessage( "Access authorised on" )
+                .that( result.getAuthorisedOn() )
+                .isNotNull();
+
+        assertWithMessage( "Access authorised to Revolut API" )
+                .that( result.isAccessAuthorised() )
+                .isTrue();
+    }
+
     @Test( expectedExceptions = BankCodeNotFound.class )
     public void enableApiAccess_BankCodeNotFound()
     {
@@ -332,7 +376,7 @@ public class PaymentConfigBeanDbTest
     @Test
     public void insertBankAccount()
     {
-        int originSize = 6;
+        int originSize = 7;
 
         List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( 0, 10, null, null );
         assertThat( bankAccounts ).isNotNull();
@@ -354,11 +398,11 @@ public class PaymentConfigBeanDbTest
     {
         List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( 0, 10, null, null );
         assertThat( bankAccounts ).isNotNull();
-        assertThat( bankAccounts ).hasSize( 6 );
+        assertThat( bankAccounts ).hasSize( 7 );
 
         bankAccounts = bean.getBankAccounts( 0, 10, null, null );
         assertThat( bankAccounts ).isNotNull();
-        assertThat( bankAccounts ).hasSize( 6 );
+        assertThat( bankAccounts ).hasSize( 7 );
 
         // paging test
         bankAccounts = bean.getBankAccounts( 0, 3, null, null );
@@ -367,7 +411,7 @@ public class PaymentConfigBeanDbTest
 
         bankAccounts = bean.getBankAccounts( 4, 3, null, null );
         assertThat( bankAccounts ).isNotNull();
-        assertThat( bankAccounts ).hasSize( 2 );
+        assertThat( bankAccounts ).hasSize( 3 );
     }
 
     @Test
@@ -414,7 +458,7 @@ public class PaymentConfigBeanDbTest
     {
         List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( 0, 10, null, null );
         assertThat( bankAccounts ).isNotNull();
-        assertThat( bankAccounts ).hasSize( 6 );
+        assertThat( bankAccounts ).hasSize( 7 );
 
         CompanyBankAccount bankAccount = bankAccounts.get( 1 );
         // test call
@@ -426,7 +470,7 @@ public class PaymentConfigBeanDbTest
         // after deletion number of records check
         bankAccounts = bean.getBankAccounts( null, null, null, null );
         assertThat( bankAccounts ).isNotNull();
-        assertThat( bankAccounts ).hasSize( 5 );
+        assertThat( bankAccounts ).hasSize( 6 );
     }
 
     @Test( expectedExceptions = ApiValidationException.class )
@@ -450,11 +494,11 @@ public class PaymentConfigBeanDbTest
     {
         List<CompanyBankAccount> bankAccounts = bean.getBankAccounts( 0, 10, null, null );
         assertThat( bankAccounts ).isNotNull();
-        assertThat( bankAccounts ).hasSize( 6 );
+        assertThat( bankAccounts ).hasSize( 7 );
 
         long numberOfPrimary = bankAccounts.stream().filter( new PaymentConfigBean.BankAccountPrimary() ).count();
-        // in datastore 4 bank accounts are being marked as a primary account
-        assertThat( numberOfPrimary ).isEqualTo( 4 );
+        // in datastore 1 bank accounts are being marked as a primary account
+        assertThat( numberOfPrimary ).isEqualTo( 1 );
 
         CompanyBankAccount bankAccount = bankAccounts.get( 1 );
 

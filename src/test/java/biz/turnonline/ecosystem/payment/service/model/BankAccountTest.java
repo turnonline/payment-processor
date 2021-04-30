@@ -21,8 +21,11 @@ package biz.turnonline.ecosystem.payment.service.model;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
 import mockit.Injectable;
 import mockit.Tested;
+import org.iban4j.CountryCode;
+import org.iban4j.Iban;
 import org.testng.annotations.Test;
 
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_EU_CODE;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 /**
@@ -102,6 +105,33 @@ public class BankAccountTest
         assertWithMessage( "Formatted IBAN" )
                 .that( tested.getIbanString() )
                 .isEqualTo( "GB35 REVO 0099 6912 3467 54" );
+    }
+
+    @Test
+    public void setIban_LT_Revolut()
+    {
+        Iban iban = new Iban.Builder()
+                .countryCode( CountryCode.LT )
+                .bankCode( REVOLUT_BANK_EU_CODE )
+                .buildRandom();
+
+        tested.setIban( iban.toString() );
+
+        assertWithMessage( "IBAN country" )
+                .that( tested.getCountry() )
+                .isEqualTo( "LT" );
+
+        assertWithMessage( "IBAN bank code" )
+                .that( tested.getBankCode() )
+                .isEqualTo( REVOLUT_BANK_EU_CODE );
+
+        assertWithMessage( "IBAN branch" )
+                .that( tested.getBranch() )
+                .isNull();
+
+        assertWithMessage( "Formatted IBAN" )
+                .that( tested.getIbanString() )
+                .isEqualTo( iban.toFormattedString() );
     }
 
     @Test( expectedExceptions = IllegalArgumentException.class )

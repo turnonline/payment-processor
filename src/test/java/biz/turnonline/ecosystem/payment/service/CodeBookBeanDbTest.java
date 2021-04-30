@@ -145,6 +145,24 @@ public class CodeBookBeanDbTest
     }
 
     @Test
+    public void singleBankCodeRetrieval_Revolut()
+    {
+        BankCode bankCode = tested.getBankCode( "REVO", new Locale( "en" ), null );
+        assertThat( bankCode ).isNotNull();
+        assertThat( bankCode.getLocale() ).isEqualTo( "en" );
+        assertThat( bankCode.getCountry() ).isEqualTo( "GB" );
+    }
+
+    @Test
+    public void singleBankCodeRetrieval_RevolutEU()
+    {
+        BankCode bankCode = tested.getBankCode( "32500", new Locale( "en" ), null );
+        assertThat( bankCode ).isNotNull();
+        assertThat( bankCode.getLocale() ).isEqualTo( "en" );
+        assertThat( bankCode.getCountry() ).isEqualTo( "LT" );
+    }
+
+    @Test
     public void singleBankCodeRetrieval_WithDefaultLocaleDomicile()
     {
         BankCode bankCode = tested.getBankCode( "5600", null, null );

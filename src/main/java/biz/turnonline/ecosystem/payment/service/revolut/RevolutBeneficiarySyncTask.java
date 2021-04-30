@@ -31,6 +31,7 @@ import biz.turnonline.ecosystem.revolut.business.counterparty.model.Counterparty
 import biz.turnonline.ecosystem.revolut.business.counterparty.model.CreateCounterpartyRequest;
 import biz.turnonline.ecosystem.revolut.business.counterparty.model.ProfileType;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.googlecode.objectify.Key;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.slf4j.Logger;
@@ -40,6 +41,7 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_EU_CODE;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -149,8 +151,18 @@ public class RevolutBeneficiarySyncTask
             return;
         }
 
-        String syncBank = REVOLUT_BANK_CODE;
-        String externalId = bankAccount.getExternalId( syncBank );
+        String externalId = null;
+        String syncBank = null;
+        for ( String code : Lists.newArrayList( REVOLUT_BANK_CODE, REVOLUT_BANK_EU_CODE ) )
+        {
+            externalId = bankAccount.getExternalId( code );
+            if ( !Strings.isNullOrEmpty( externalId ) )
+            {
+                syncBank = code;
+                break;
+            }
+        }
+
         if ( !Strings.isNullOrEmpty( externalId ) )
         {
             LOGGER.warn( "Bank account "
@@ -183,7 +195,7 @@ public class RevolutBeneficiarySyncTask
                 .answerBy( Counterparty.class )
                 .finish();
 
-        bankAccount.setExternalId( syncBank, counterparty.getId().toString() );
+        bankAccount.setExternalId( bankAccount.getBankCode(), counterparty.getId().toString() );
         bankAccount.save();
     }
 
