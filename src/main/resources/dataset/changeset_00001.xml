@@ -46,6 +46,33 @@
             <property indexed="true" name="country" type="string" value="GB"/>
             <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
+        <entity kind="PP_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Revolut Payments UAB"/>
+            <property indexed="true" name="code" type="string" value="32500"/>
+            <property indexed="true" name="locale" type="string" value="sk"/>
+            <property indexed="true" name="country" type="string" value="LT"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="PP_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Revolut Payments UAB"/>
+            <property indexed="true" name="code" type="string" value="32500"/>
+            <property indexed="true" name="locale" type="string" value="en"/>
+            <property indexed="true" name="country" type="string" value="LT"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+        <entity kind="PP_CodeBook">
+            <property indexed="false" name="^d" type="string" value="BankCode"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="BankCode"/>
+            <property indexed="false" name="label" type="string" value="Revolut Payments UAB"/>
+            <property indexed="true" name="code" type="string" value="32500"/>
+            <property indexed="true" name="locale" type="string" value="cs"/>
+            <property indexed="true" name="country" type="string" value="LT"/>
+            <property indexed="false" name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
 
         <!--SK country-->
         <entity kind="PP_CodeBook">

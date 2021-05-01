@@ -44,7 +44,7 @@ import javax.inject.Inject;
 import java.util.List;
 import java.util.UUID;
 
-import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_EU_CODE;
 
 /**
  * Async task to process Revolut {@link Transaction}.
@@ -104,7 +104,7 @@ public class TransactionCreatedTask
         // if transaction not found an exception will be thrown in order to handle retry
         // (because of eventual consistency)
         CommonTransaction transaction = config.searchTransaction( id );
-        transaction.bankCode( REVOLUT_BANK_CODE )
+        transaction.bankCode( REVOLUT_BANK_EU_CODE )
                 .currency( leg.getCurrency() )
                 .balance( leg.getBalance() )
                 .reference( transactionFromBank.getReference() );
@@ -130,6 +130,7 @@ public class TransactionCreatedTask
             if ( bankAccount != null )
             {
                 transaction.bankAccountKey( bankAccount.entityKey() );
+                transaction.bankCode( bankAccount.getBankCode() );
             }
             else
             {

@@ -44,6 +44,7 @@ public interface PaymentConfig
 {
     String TRUST_PAY_BANK_CODE = "9952";
     String REVOLUT_BANK_CODE = "REVO";
+    String REVOLUT_BANK_EU_CODE = "32500";
 
     /**
      * Enables API access to bank account.

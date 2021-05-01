@@ -47,7 +47,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.UUID;
 
-import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
@@ -187,6 +186,7 @@ public class RevolutIncomingInvoiceProcessorTask
     {
         String debtorExtId = debtorBank.getExternalId();
         String debtorCurrency = debtorBank.getCurrency();
+        String bankCode = debtorBank.getBankCode();
 
         Double totalAmount = payment.getTotalAmount();
         LocalDate dueDate = scheduleByDueDate( debtor, payment.getDueDate() );
@@ -225,7 +225,7 @@ public class RevolutIncomingInvoiceProcessorTask
                         .currency( debtorCurrency )
                         .key( key )
                         .type( FormOfPayment.TRANSFER )
-                        .bankCode( REVOLUT_BANK_CODE )
+                        .bankCode( bankCode )
                         .reference( reference )
                         .externalId( response.getId().toString() );
 

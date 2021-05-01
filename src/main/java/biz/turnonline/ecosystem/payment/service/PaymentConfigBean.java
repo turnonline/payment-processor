@@ -129,7 +129,7 @@ class PaymentConfigBean
             new PaymentLocalAccount( owner, ServiceOptions.getDefaultProjectId() ).save();
         }
 
-        if ( REVOLUT_BANK_CODE.equals( bankCode.getCode() ) )
+        if ( REVOLUT_BANK_CODE.equals( bankCode.getCode() ) || REVOLUT_BANK_EU_CODE.equals( bankCode.getCode() ) )
         {
             RevolutCertMetadata metadata = revolut.get();
             Optional<String> clientId = Optional.ofNullable( certificate.getClientId() );
@@ -146,7 +146,7 @@ class PaymentConfigBean
             // Init bank accounts only Client ID is present, otherwise initialization will fail
             if ( !Strings.isNullOrEmpty( metadata.getClientId() ) )
             {
-                executor.schedule( new RevolutDebtorBankAccountsInit( owner.entityKey() ) );
+                executor.schedule( new RevolutDebtorBankAccountsInit( owner.entityKey(), bankCode.getCode() ) );
             }
 
             return new Certificate()

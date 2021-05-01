@@ -18,6 +18,7 @@
 
 package biz.turnonline.ecosystem.payment.service.revolut;
 
+import biz.turnonline.ecosystem.billing.model.BankAccount;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.payment.service.CodeBook;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
@@ -30,11 +31,15 @@ import biz.turnonline.ecosystem.steward.model.Account;
 import com.googlecode.objectify.Key;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
 import org.ctoolkit.restapi.client.PayloadRequest;
 import org.ctoolkit.restapi.client.RestFacade;
+import org.iban4j.CountryCode;
+import org.iban4j.Iban;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -42,6 +47,7 @@ import java.util.UUID;
 
 import static biz.turnonline.ecosystem.payment.service.BackendServiceTestCase.genericJsonFromFile;
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_EU_CODE;
 import static com.google.common.truth.Truth.assertWithMessage;
 
 /**
@@ -169,6 +175,93 @@ public class RevolutBeneficiarySyncTaskTest
 
         assertWithMessage( "Beneficiary bank account external ID" )
                 .that( bankAccount.getExternalId( REVOLUT_BANK_CODE ) )
+                .isEqualTo( COUNTERPARTY_ID );
+
+    }
+
+    @Test
+    public void execute_CounterpartyCreated_RevolutEU()
+    {
+        Iban iban = new Iban.Builder()
+                .countryCode( CountryCode.LT )
+                .bankCode( REVOLUT_BANK_EU_CODE )
+                .buildRandom();
+
+        String inputIban = iban.toString();
+        String inputBic = "REVOLT21";
+
+        BeneficiaryBankAccount bankAccount = new BeneficiaryBankAccount( codeBook );
+        bankAccount.setIban( inputIban );
+        bankAccount.setBic( inputBic );
+        bankAccount.setCurrency( CURRENCY );
+
+        new Expectations( bankAccount )
+        {
+            {
+                config.insertBeneficiary( inputIban, inputBic, CURRENCY );
+                result = bankAccount;
+
+                // ExternalId needs to be saved
+                bankAccount.save();
+            }
+        };
+
+        // mock the values coming from the incoming-invoice.pubsub.json
+        new MockUp<BankAccount>()
+        {
+            @Mock
+            public String getIban()
+            {
+                return inputIban;
+            }
+
+            @Mock
+            public String getBic()
+            {
+                return inputBic;
+            }
+        };
+
+        tested.execute( account, invoice );
+
+        new Verifications()
+        {
+            {
+                CreateCounterpartyRequest request;
+                facade.insert( request = withCapture() );
+
+                assertWithMessage( "Counterparty create request" )
+                        .that( request )
+                        .isNotNull();
+
+                assertWithMessage( "Counterparty request: business name" )
+                        .that( request.getCompanyName() )
+                        .isEqualTo( invoice.getCreditor().getBusinessName() );
+
+                assertWithMessage( "Counterparty request: email" )
+                        .that( request.getEmail() )
+                        .isEqualTo( invoice.getCreditor().getContact().getEmail() );
+
+                assertWithMessage( "Counterparty request: bank country" )
+                        .that( request.getBankCountry() )
+                        .isEqualTo( "LT" );
+
+                assertWithMessage( "Counterparty request: currency" )
+                        .that( request.getCurrency() )
+                        .isEqualTo( CURRENCY );
+
+                assertWithMessage( "Counterparty request: BIC" )
+                        .that( request.getBic() )
+                        .isEqualTo( inputBic );
+
+                assertWithMessage( "Counterparty request: IBAN" )
+                        .that( nl.garvelink.iban.IBAN.valueOf( request.getIban() ).toPlainString() )
+                        .isEqualTo( inputIban );
+            }
+        };
+
+        assertWithMessage( "Beneficiary bank account external ID" )
+                .that( bankAccount.getExternalId( REVOLUT_BANK_EU_CODE ) )
                 .isEqualTo( COUNTERPARTY_ID );
 
     }

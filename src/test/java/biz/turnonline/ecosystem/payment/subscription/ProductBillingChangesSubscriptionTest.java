@@ -49,6 +49,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_EU_CODE;
 import static com.google.common.truth.Truth.assertThat;
 import static com.google.common.truth.Truth.assertWithMessage;
 import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ACCOUNT_EMAIL;
@@ -275,6 +276,45 @@ public class ProductBillingChangesSubscriptionTest
 
                 debtorBank.getBankCode();
                 result = REVOLUT_BANK_CODE;
+            }
+        };
+
+        tested.onMessage( message, "billing.changes" );
+
+        new Verifications()
+        {
+            {
+                Task<IncomingInvoice> task;
+                executor.schedule( task = withCapture() );
+                times = 1;
+
+                assertWithMessage( "Number of scheduled tasks" )
+                        .that( task.countTasks() )
+                        .isEqualTo( 2 );
+
+                assertThat( task ).isInstanceOf( RevolutBeneficiarySyncTask.class );
+                assertThat( task.next() ).isInstanceOf( RevolutIncomingInvoiceProcessorTask.class );
+
+                assertWithMessage( "Entity scheduled to be deleted" )
+                        .that( ( ( RevolutIncomingInvoiceProcessorTask ) task.next() ).isDelete() ).isFalse();
+
+                timestamp.done();
+            }
+        };
+    }
+
+    @Test
+    public void onMessage_ProcessIncomingInvoiceByRevolutEU() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( false );
+        new Expectations()
+        {
+            {
+                debtorBank.isDebtorReady();
+                result = true;
+
+                debtorBank.getBankCode();
+                result = REVOLUT_BANK_EU_CODE;
             }
         };
 

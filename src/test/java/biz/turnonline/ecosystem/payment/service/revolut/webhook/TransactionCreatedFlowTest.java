@@ -59,7 +59,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_CODE;
+import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_EU_CODE;
 import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State.COMPLETED;
 import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State.FAILED;
 import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State.PENDING;
@@ -1337,7 +1337,7 @@ public class TransactionCreatedFlowTest
 
         assertWithMessage( "Transaction bank code" )
                 .that( transaction.getBankCode() )
-                .isEqualTo( REVOLUT_BANK_CODE );
+                .isEqualTo( REVOLUT_BANK_EU_CODE );
 
         assertWithMessage( "Transaction currency" )
                 .that( transaction.getCurrency() )
