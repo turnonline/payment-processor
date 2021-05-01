@@ -134,7 +134,7 @@ public class TransactionPublisherTaskTest
 
                 Map<String, Object> map = mapOf( message );
                 Map<String, Object> properties = new Helper().flatMap( map, null );
-                assertThat( properties ).hasSize( 23 );
+                assertThat( properties ).hasSize( 24 );
 
                 assertWithMessage( "Transaction amount" )
                         .that( properties.get( "amount" ) )

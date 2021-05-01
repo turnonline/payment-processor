@@ -169,12 +169,12 @@
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-account-steward-client</artifactId>
-            <version>0.25</version>
+            <version>0.26</version>
         </dependency>
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-product-billing-client</artifactId>
-            <version>0.30</version>
+            <version>0.32</version>
         </dependency>
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
