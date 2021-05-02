@@ -2,6 +2,7 @@ package biz.turnonline.ecosystem.payment.service.model;
 
 import com.google.common.base.MoreObjects;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -10,7 +11,10 @@ import java.util.Objects;
  * @author <a href="mailto:pohorelec@turnonline.biz">Jozef Pohorelec</a>
  */
 public class CounterpartyBankAccount
+        implements Serializable
 {
+    private static final long serialVersionUID = 6772512573595799543L;
+
     private String iban;
 
     private String bic;
