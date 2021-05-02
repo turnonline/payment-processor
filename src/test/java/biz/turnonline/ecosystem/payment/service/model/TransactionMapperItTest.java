@@ -26,6 +26,7 @@ import org.ctoolkit.agent.service.impl.ImportTask;
 import org.testng.annotations.Test;
 
 import javax.inject.Inject;
+import java.util.Date;
 
 import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State.COMPLETED;
 import static biz.turnonline.ecosystem.payment.service.model.FormOfPayment.CARD_PAYMENT;
@@ -97,7 +98,22 @@ public class TransactionMapperItTest
         ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
         task.run();
 
+        double transactionAmount = 0.9;
+        String currency = "EUR";
+        double transactionBillAmount = 1.0;
+        String billCurrency = "USD";
+
+        // exchange rate test date
+        ExchangeRate rate = new ExchangeRate();
+        rate.from( new ExchangeAmount().amount( transactionBillAmount ).currency( billCurrency ) );
+        rate.to( new ExchangeAmount().amount( transactionAmount ).currency( currency ) );
+        rate.fee( new ExchangeAmount().amount( 0.0 ).currency( "EUR" ) );
+        rate.rate( 0.9 );
+        rate.rateDate( new Date() );
+
         TransactionInvoice backend = ofy().load().type( TransactionInvoice.class ).id( 681L ).now();
+        backend.exchangeRate( rate );
+        backend.save();
 
         // test call
         Transaction transaction = mapper.map( backend, Transaction.class );
@@ -118,6 +134,42 @@ public class TransactionMapperItTest
         assertWithMessage( "Transaction type" )
                 .that( transaction.getType() )
                 .isEqualTo( TRANSFER.name() );
+
+        assertWithMessage( "Transaction exchange rate" )
+                .that( transaction.getExchangeRate() )
+                .isNotNull();
+
+        assertWithMessage( "Transaction exchange rate value" )
+                .that( transaction.getExchangeRate().getRate() )
+                .isEqualTo( 0.9 );
+
+        assertWithMessage( "Transaction exchange rate 'from' amount" )
+                .that( transaction.getExchangeRate().getFrom().getAmount() )
+                .isEqualTo( transactionBillAmount );
+
+        assertWithMessage( "Transaction exchange rate 'from' currency" )
+                .that( transaction.getExchangeRate().getFrom().getCurrency() )
+                .isEqualTo( billCurrency );
+
+        assertWithMessage( "Transaction exchange rate 'to' amount" )
+                .that( transaction.getExchangeRate().getTo().getAmount() )
+                .isEqualTo( transactionAmount );
+
+        assertWithMessage( "Transaction exchange rate 'to' currency" )
+                .that( transaction.getExchangeRate().getTo().getCurrency() )
+                .isEqualTo( currency );
+
+        assertWithMessage( "Transaction exchange rate 'fee' amount" )
+                .that( transaction.getExchangeRate().getFee().getAmount() )
+                .isEqualTo( 0.0 );
+
+        assertWithMessage( "Transaction exchange rate 'fee' currency" )
+                .that( transaction.getExchangeRate().getFee().getCurrency() )
+                .isEqualTo( currency );
+
+        assertWithMessage( "Transaction exchange rate date" )
+                .that( transaction.getExchangeRate().getRateDate() )
+                .isNotNull();
     }
 
     private void validateEmpty( Transaction transaction )

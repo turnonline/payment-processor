@@ -56,6 +56,9 @@ public class Transaction
     @JsonProperty( "currency" )
     private String currency;
 
+    @JsonProperty( "exchangeRate" )
+    private ExchangeRate exchangeRate;
+
     @JsonProperty( "key" )
     private String key;
 
@@ -260,6 +263,26 @@ public class Transaction
     public void setCurrency( String currency )
     {
         this.currency = currency;
+    }
+
+    public Transaction exchangeRate( ExchangeRate exchangeRate )
+    {
+        this.exchangeRate = exchangeRate;
+        return this;
+    }
+
+    /**
+     * The transaction amount conversion exchange rate.
+     */
+    @JsonProperty( "exchangeRate" )
+    public ExchangeRate getExchangeRate()
+    {
+        return exchangeRate;
+    }
+
+    public void setExchangeRate( ExchangeRate exchangeRate )
+    {
+        this.exchangeRate = exchangeRate;
     }
 
     public Transaction key( String key )
