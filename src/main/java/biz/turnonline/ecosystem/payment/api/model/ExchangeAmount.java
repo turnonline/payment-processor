@@ -16,11 +16,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-package biz.turnonline.ecosystem.payment.service.model;
+package biz.turnonline.ecosystem.payment.api.model;
 
-import com.google.common.base.MoreObjects;
-
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Exchange amount of the transaction.
@@ -28,10 +26,7 @@ import java.io.Serializable;
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
 public class ExchangeAmount
-        implements Serializable
 {
-    private static final long serialVersionUID = -5812572907379838078L;
-
     private Double amount;
 
     private String currency;
@@ -46,9 +41,15 @@ public class ExchangeAmount
     /**
      * The amount of the transaction.
      **/
+    @JsonProperty( "amount" )
     public Double getAmount()
     {
         return amount;
+    }
+
+    public void setAmount( Double amount )
+    {
+        this.amount = amount;
     }
 
     public ExchangeAmount currency( String currency )
@@ -61,18 +62,37 @@ public class ExchangeAmount
     /**
      * IOS 4217 currency code.
      **/
+    @JsonProperty( "currency" )
     public String getCurrency()
     {
         return currency;
     }
 
+    public void setCurrency( String currency )
+    {
+        this.currency = currency;
+    }
+
     @Override
     public String toString()
     {
-        return MoreObjects.toStringHelper( this )
-                .add( "amount", amount )
-                .add( "currency", currency )
-                .toString();
+        return "class ExchangeAmount {\n" +
+                "    amount: " + toIndentedString( amount ) + "\n" +
+                "    currency: " + toIndentedString( currency ) + "\n" +
+                "}";
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces
+     * (except the first line).
+     */
+    private String toIndentedString( Object o )
+    {
+        if ( o == null )
+        {
+            return "null";
+        }
+        return o.toString().replace( "\n", "\n    " );
     }
 }
 

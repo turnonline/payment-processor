@@ -25,6 +25,8 @@ import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.metadata.Type;
 
+import javax.annotation.Nullable;
+
 /**
  * Single direction base mapper from {@link CommonTransaction} to {@link Transaction}.
  *
@@ -83,6 +85,33 @@ abstract class TransactionMapper<T extends CommonTransaction>
             transaction.setCategories( mapperFacade.mapAsList( source.getCategories(), TransactionCategory.class ) );
         }
 
+        ExchangeRate rate = source.getExchangeRate();
+        if ( rate != null )
+        {
+            biz.turnonline.ecosystem.payment.api.model.ExchangeRate apiRate;
+            apiRate = new biz.turnonline.ecosystem.payment.api.model.ExchangeRate();
+
+            apiRate.from( convert( rate.getFrom() ) )
+                    .to( convert( rate.getTo() ) )
+                    .fee( convert( rate.getFee() ) )
+                    .rate( rate.getRate() )
+                    .rateDate( rate.getRateDate() );
+
+            transaction.setExchangeRate( apiRate );
+        }
+
         return transaction;
+    }
+
+    private biz.turnonline.ecosystem.payment.api.model.ExchangeAmount convert( @Nullable ExchangeAmount amount )
+    {
+        if ( amount == null )
+        {
+            return null;
+        }
+
+        return new biz.turnonline.ecosystem.payment.api.model.ExchangeAmount()
+                .amount( amount.getAmount() )
+                .currency( amount.getCurrency() );
     }
 }
