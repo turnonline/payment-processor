@@ -29,6 +29,8 @@ import biz.turnonline.ecosystem.payment.subscription.MockedInputStream;
 import biz.turnonline.ecosystem.revolut.business.account.model.AccountBankDetailsItem;
 import biz.turnonline.ecosystem.revolut.business.counterparty.model.Counterparty;
 import biz.turnonline.ecosystem.revolut.business.counterparty.model.CounterpartyAccount;
+import biz.turnonline.ecosystem.revolut.business.exchange.model.Amount;
+import biz.turnonline.ecosystem.revolut.business.exchange.model.ExchangeRateResponse;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionState;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType;
@@ -42,6 +44,7 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mocked;
 import mockit.Tested;
+import mockit.Verifications;
 import org.ctoolkit.agent.service.impl.ImportTask;
 import org.ctoolkit.restapi.client.ClientErrorException;
 import org.ctoolkit.restapi.client.NotFoundException;
@@ -55,8 +58,10 @@ import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BANK_EU_CODE;
@@ -77,6 +82,7 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
+@SuppressWarnings( "unchecked" )
 public class TransactionCreatedFlowTest
         extends BackendServiceTestCase
 {
@@ -115,6 +121,7 @@ public class TransactionCreatedFlowTest
     static String toJson( String fileName )
     {
         InputStream stream = MockedInputStream.class.getResourceAsStream( fileName );
+        assert stream != null;
         return new BufferedReader( new InputStreamReader( stream ) )
                 .lines()
                 .collect( Collectors.joining( System.lineSeparator() ) );
@@ -225,6 +232,10 @@ public class TransactionCreatedFlowTest
                 .that( ( ( TransactionReceipt ) transaction ).getCity() )
                 .isEqualTo( "Bratislava" );
 
+        assertWithMessage( "Transaction exchange rate" )
+                .that( transaction.getExchangeRate() )
+                .isNull();
+
         Date modificationDate = transaction.getModificationDate();
 
         stateChanged.execute();
@@ -310,17 +321,36 @@ public class TransactionCreatedFlowTest
         // mocking of the transaction from remote bank system
         Transaction t = mapper.readValue( json, Transaction.class );
 
+        double transactionAmount = 0.9;
+        String currency = TRANSACTION_CURRENCY;
+
+        double transactionBillAmount = 1.0;
+        String billCurrency = "USD";
+
+        ExchangeRateResponse rate = new ExchangeRateResponse();
+        rate.from( new Amount().amount( transactionBillAmount ).currency( billCurrency ) );
+        rate.to( new Amount().amount( transactionAmount ).currency( currency ) );
+        rate.fee( new Amount().amount( 0.0 ).currency( "EUR" ) );
+        rate.rate( 0.9 );
+        rate.rateDate( OffsetDateTime.now() );
+
         new Expectations()
         {
             {
                 facade.get( Transaction.class ).identifiedBy( TRANSACTION_EXT_ID ).finish();
                 result = t;
+
+                facade.get( ExchangeRateResponse.class )
+                        .identifiedBy( anyLong )
+                        .finish( ( Map<String, Object> ) any );
+                result = rate;
             }
         };
 
         // test call
         created.execute();
 
+        ofy().clear();
         CommonTransaction transaction = ofy().load().type( CommonTransaction.class ).first().now();
         verifyTransactionBasics( transaction );
 
@@ -330,15 +360,15 @@ public class TransactionCreatedFlowTest
 
         assertWithMessage( "Transaction amount" )
                 .that( transaction.getAmount() )
-                .isEqualTo( 0.9 );
+                .isEqualTo( transactionAmount );
 
         assertWithMessage( "Transaction bill amount" )
                 .that( transaction.getBillAmount() )
-                .isEqualTo( 1.0 );
+                .isEqualTo( transactionBillAmount );
 
         assertWithMessage( "Transaction bill currency" )
                 .that( transaction.getBillCurrency() )
-                .isEqualTo( "USD" );
+                .isEqualTo( billCurrency );
 
         assertWithMessage( "Transaction related account Id" )
                 .that( transaction.getBankAccountKey() )
@@ -350,7 +380,7 @@ public class TransactionCreatedFlowTest
 
         assertWithMessage( "Transaction currency" )
                 .that( transaction.getCurrency() )
-                .isEqualTo( TRANSACTION_CURRENCY );
+                .isEqualTo( currency );
 
         assertWithMessage( "Transaction pending" )
                 .that( transaction.getCompletedAt() )
@@ -387,6 +417,56 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction merchant city" )
                 .that( ( ( TransactionReceipt ) transaction ).getCity() )
                 .isEqualTo( "Killara" );
+
+        assertWithMessage( "Transaction exchange rate" )
+                .that( transaction.getExchangeRate() )
+                .isNotNull();
+
+        assertWithMessage( "Transaction exchange rate value" )
+                .that( transaction.getExchangeRate().getRate() )
+                .isEqualTo( 0.9 );
+
+        assertWithMessage( "Transaction exchange rate 'from' amount" )
+                .that( transaction.getExchangeRate().getFrom().getAmount() )
+                .isEqualTo( transactionBillAmount );
+
+        assertWithMessage( "Transaction exchange rate 'from' currency" )
+                .that( transaction.getExchangeRate().getFrom().getCurrency() )
+                .isEqualTo( billCurrency );
+
+        assertWithMessage( "Transaction exchange rate 'to' amount" )
+                .that( transaction.getExchangeRate().getTo().getAmount() )
+                .isEqualTo( transactionAmount );
+
+        assertWithMessage( "Transaction exchange rate 'to' currency" )
+                .that( transaction.getExchangeRate().getTo().getCurrency() )
+                .isEqualTo( currency );
+
+        assertWithMessage( "Transaction exchange rate 'fee' amount" )
+                .that( transaction.getExchangeRate().getFee().getAmount() )
+                .isEqualTo( 0.0 );
+
+        assertWithMessage( "Transaction exchange rate 'fee' currency" )
+                .that( transaction.getExchangeRate().getFee().getCurrency() )
+                .isEqualTo( currency );
+
+        assertWithMessage( "Transaction exchange rate date" )
+                .that( transaction.getExchangeRate().getRateDate() )
+                .isNotNull();
+
+        new Verifications()
+        {
+            {
+                Map<String, Object> query;
+                facade.get( ExchangeRateResponse.class )
+                        .identifiedBy( anyLong )
+                        .finish( query = withCapture() );
+
+                assertWithMessage( "Exchange rate query" )
+                        .that( query )
+                        .containsExactly( "from", billCurrency, "to", currency, "amount", transactionBillAmount );
+            }
+        };
     }
 
     /**
@@ -679,6 +759,13 @@ public class TransactionCreatedFlowTest
         counterpartyAccount.setBic( "SLSPSK" );
         counterparty.setAccounts( Collections.singletonList( counterpartyAccount ) );
 
+        ExchangeRateResponse rate = new ExchangeRateResponse();
+        rate.from( new Amount() );
+        rate.to( new Amount() );
+        rate.fee( new Amount() );
+        rate.rate( 1.05 );
+        rate.rateDate( OffsetDateTime.now() );
+
         new Expectations()
         {
             {
@@ -688,6 +775,11 @@ public class TransactionCreatedFlowTest
 
                 facade.get( Counterparty.class ).identifiedBy( "5e3599aa-bd0d-45d0-9d0b-0686496a2156" ).finish();
                 result = counterparty;
+
+                facade.get( ExchangeRateResponse.class )
+                        .identifiedBy( 1L )
+                        .finish( ( Map<String, Object> ) any );
+                result = rate;
             }
         };
 
@@ -756,6 +848,10 @@ public class TransactionCreatedFlowTest
         assertWithMessage( "Transaction counterparty (BIC)" )
                 .that( transaction.getCounterparty().getBic() )
                 .isEqualTo( "SLSPSK" );
+
+        assertWithMessage( "Transaction exchange rate" )
+                .that( transaction.getExchangeRate() )
+                .isNotNull();
 
         Date modificationDate = transaction.getModificationDate();
 

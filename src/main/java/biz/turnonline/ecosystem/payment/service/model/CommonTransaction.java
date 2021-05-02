@@ -47,7 +47,7 @@ public abstract class CommonTransaction
         extends EntityLongIdentity
         implements IndexModificationDate, IndexCreatedDate
 {
-    private static final long serialVersionUID = -2914968866257548L;
+    private static final long serialVersionUID = -6198862865359454423L;
 
     private Key<CompanyBankAccount> accountKey;
 
@@ -62,6 +62,8 @@ public abstract class CommonTransaction
 
     @Index
     private Date completedAt;
+
+    private ExchangeRate exchangeRate;
 
     @Index
     private String key;
@@ -207,6 +209,17 @@ public abstract class CommonTransaction
     public Date getCompletedAt()
     {
         return completedAt;
+    }
+
+    public CommonTransaction exchangeRate( ExchangeRate exchangeRate )
+    {
+        this.exchangeRate = exchangeRate;
+        return this;
+    }
+
+    public ExchangeRate getExchangeRate()
+    {
+        return exchangeRate;
     }
 
     /**
@@ -386,8 +399,8 @@ public abstract class CommonTransaction
     public boolean propagate()
     {
         return getCategories().stream()
-                .filter( category -> !category.isPropagate() )
                 .map( TransactionCategory::isPropagate )
+                .filter( propagate -> !propagate )
                 .findAny()
                 .orElse( true );
     }
@@ -442,6 +455,7 @@ public abstract class CommonTransaction
                 .add( "amount", amount )
                 .add( "currency", currency )
                 .add( "credit", credit )
+                .add( "exchangeRate", exchangeRate )
                 .add( "type", type )
                 .add( "reference", reference )
                 .add( "status", status )
