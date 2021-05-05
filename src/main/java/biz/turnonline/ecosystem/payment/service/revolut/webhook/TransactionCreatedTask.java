@@ -31,8 +31,6 @@ import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 import biz.turnonline.ecosystem.payment.subscription.JsonTask;
 import biz.turnonline.ecosystem.revolut.business.counterparty.model.Counterparty;
 import biz.turnonline.ecosystem.revolut.business.counterparty.model.CounterpartyAccount;
-import biz.turnonline.ecosystem.revolut.business.exchange.model.Amount;
-import biz.turnonline.ecosystem.revolut.business.exchange.model.ExchangeRateResponse;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.Transaction;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionLeg;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionMerchant;
@@ -44,13 +42,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.inject.Inject;
-import java.time.OffsetDateTime;
+import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -209,44 +204,31 @@ public class TransactionCreatedTask
         transaction.addOrigin( json() );
 
         if ( transaction.getBillAmount() != null
+                && transaction.getAmount() != null
                 && !Strings.isNullOrEmpty( transaction.getBillCurrency() )
                 && !Strings.isNullOrEmpty( transaction.getCurrency() )
                 && !Objects.equals( transaction.getBillCurrency(), transaction.getCurrency() ) )
         {
-            Map<String, Object> query = new HashMap<>();
-            query.put( "from", transaction.getBillCurrency() );
-            query.put( "to", transaction.getCurrency() );
-            query.put( "amount", transaction.getBillAmount() );
-
-            // Exchange rate for currency of the bank account for date when transaction has been created
-            ExchangeRateResponse response = facade.get( ExchangeRateResponse.class )
-                    .identifiedBy( 1L )
-                    .finish( query );
+            double fromOriginal = transaction.getBillAmount();
+            double toNew = transaction.getAmount();
 
             ExchangeRate rate = transaction.exchangeRate( new ExchangeRate() ).getExchangeRate();
-            rate.from( convert( response.getFrom() ) );
-            rate.to( convert( response.getTo() ) );
-            rate.fee( convert( response.getFee() ) );
-            rate.rate( response.getRate() );
-            rate.rateDate( convert( response.getRateDate() ) );
+            rate.from( new ExchangeAmount().amount( fromOriginal ).currency( transaction.getBillCurrency() ) );
+            rate.to( new ExchangeAmount().amount( toNew ).currency( transaction.getCurrency() ) );
+            rate.rateDate( new Date() );
+            rate.fee( new ExchangeAmount().amount( 0.0 ).currency( transaction.getCurrency() ) );
+
+            // the concrete exchange rate is being calculated
+            double calcRate = BigDecimal.valueOf( fromOriginal )
+                    // scale set to 9 as it's the same as Revolut /rate endpoint does
+                    .setScale( 9, BigDecimal.ROUND_UP )
+                    .divide( BigDecimal.valueOf( toNew ), BigDecimal.ROUND_UP )
+                    .doubleValue();
+
+            rate.rate( calcRate );
         }
 
         transaction.save();
-    }
-
-    private ExchangeAmount convert( @Nullable Amount amount )
-    {
-        if ( amount == null || ( amount.getAmount() == null && Strings.isNullOrEmpty( amount.getCurrency() ) ) )
-        {
-            return null;
-        }
-
-        return new ExchangeAmount().amount( amount.getAmount() ).currency( amount.getCurrency() );
-    }
-
-    private Date convert( @Nullable OffsetDateTime odt )
-    {
-        return odt == null ? null : Date.from( odt.toInstant() );
     }
 
     private void populateMerchant( @Nonnull CommonTransaction transaction, @Nonnull Transaction fromBank )
