@@ -29,6 +29,7 @@ import org.ctoolkit.restapi.client.pubsub.SubscriptionsListenerModule;
  * <ul>
  * <li>account.changes</li>
  * <li>billing.changes</li>
+ * <li>bill.changes</li>
  * </ul>
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
@@ -45,5 +46,6 @@ public class SubscriptionsModule
         map = MapBinder.newMapBinder( binder(), String.class, PubsubMessageListener.class );
         map.addBinding( "account.changes" ).to( AccountStewardChangesSubscription.class );
         map.addBinding( "billing.changes" ).to( ProductBillingChangesSubscription.class );
+        map.addBinding( "bill.changes" ).to( BillingProcessorChangesSubscription.class );
     }
 }
