@@ -13,11 +13,13 @@ import java.util.Objects;
 public class CounterpartyBankAccount
         implements Serializable
 {
-    private static final long serialVersionUID = 6772512573595799543L;
+    private static final long serialVersionUID = -1562498048029592821L;
 
     private String iban;
 
     private String bic;
+
+    private String name;
 
     public String getIban()
     {
@@ -37,6 +39,19 @@ public class CounterpartyBankAccount
     public void setBic( String bic )
     {
         this.bic = bic;
+    }
+
+    /**
+     * The bank account beneficiary name (business name).
+     **/
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName( String name )
+    {
+        this.name = name;
     }
 
     @Override
@@ -61,6 +76,7 @@ public class CounterpartyBankAccount
         return MoreObjects.toStringHelper( this )
                 .add( "iban", iban )
                 .add( "bic", bic )
+                .add( "name", name )
                 .toString();
     }
 }

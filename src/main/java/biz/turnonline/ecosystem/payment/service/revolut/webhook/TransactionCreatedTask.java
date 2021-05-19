@@ -124,6 +124,7 @@ public class TransactionCreatedTask
             CounterpartyBankAccount counterpartyBankAccount = new CounterpartyBankAccount();
             counterpartyBankAccount.setIban( counterpartyAccount.getIban() );
             counterpartyBankAccount.setBic( counterpartyAccount.getBic() );
+            counterpartyBankAccount.setName( counterpartyAccount.getName() );
 
             transaction.setCounterparty( counterpartyBankAccount );
         }

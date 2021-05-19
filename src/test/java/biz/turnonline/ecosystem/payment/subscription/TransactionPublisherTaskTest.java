@@ -134,7 +134,7 @@ public class TransactionPublisherTaskTest
 
                 Map<String, Object> map = mapOf( message );
                 Map<String, Object> properties = new Helper().flatMap( map, null );
-                assertThat( properties ).hasSize( 24 );
+                assertThat( properties ).hasSize( 37 );
 
                 assertWithMessage( "Transaction amount" )
                         .that( properties.get( "amount" ) )
@@ -183,6 +183,18 @@ public class TransactionPublisherTaskTest
                 assertWithMessage( "Transaction ID" )
                         .that( properties.get( "transactionId" ) )
                         .isEqualTo( 645568 );
+
+                assertWithMessage( "Transaction counterparty IBAN" )
+                        .that( properties.get( "counterparty.iban" ) )
+                        .isEqualTo( "SK31 1200 0000 1987 4263 7541" );
+
+                assertWithMessage( "Transaction counterparty BIC" )
+                        .that( properties.get( "counterparty.bic" ) )
+                        .isEqualTo( "GIBASKBX" );
+
+                assertWithMessage( "Transaction exchange rate" )
+                        .that( properties.get( "exchangeRate.rate" ) )
+                        .isEqualTo( 0.826446281 );
             }
         };
     }
