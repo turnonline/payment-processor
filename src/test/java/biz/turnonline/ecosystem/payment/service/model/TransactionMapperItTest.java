@@ -111,7 +111,17 @@ public class TransactionMapperItTest
         rate.rate( 0.9 );
         rate.rateDate( new Date() );
 
+        String counterpartyIban = "SK2711001936954420095443";
+        String counterpartyBic = "TATRSKBX";
+        String counterpartyName = "One Academy, s.r.o.";
+
+        CounterpartyBankAccount counterparty = new CounterpartyBankAccount();
+        counterparty.setIban( counterpartyIban );
+        counterparty.setBic( counterpartyBic );
+        counterparty.setName( counterpartyName );
+
         TransactionInvoice backend = ofy().load().type( TransactionInvoice.class ).id( 681L ).now();
+        backend.setCounterparty( counterparty );
         backend.exchangeRate( rate );
         backend.save();
 
@@ -170,6 +180,22 @@ public class TransactionMapperItTest
         assertWithMessage( "Transaction exchange rate date" )
                 .that( transaction.getExchangeRate().getRateDate() )
                 .isNotNull();
+
+        assertWithMessage( "Transaction counterparty" )
+                .that( transaction.getCounterparty() )
+                .isNotNull();
+
+        assertWithMessage( "Transaction counterparty IBAN" )
+                .that( transaction.getCounterparty().getIban() )
+                .isEqualTo( counterpartyIban );
+
+        assertWithMessage( "Transaction counterparty BIC" )
+                .that( transaction.getCounterparty().getBic() )
+                .isEqualTo( counterpartyBic );
+
+        assertWithMessage( "Transaction counterparty name" )
+                .that( transaction.getCounterparty().getName() )
+                .isEqualTo( counterpartyName );
     }
 
     private void validateEmpty( Transaction transaction )

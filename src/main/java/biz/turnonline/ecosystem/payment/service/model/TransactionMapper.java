@@ -21,6 +21,7 @@ package biz.turnonline.ecosystem.payment.service.model;
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
 import biz.turnonline.ecosystem.payment.api.model.TransactionBank;
 import biz.turnonline.ecosystem.payment.api.model.TransactionCategory;
+import com.google.common.base.Strings;
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MappingContext;
 import ma.glasnost.orika.metadata.Type;
@@ -83,6 +84,15 @@ abstract class TransactionMapper<T extends CommonTransaction>
         if ( source.getCategories() != null )
         {
             transaction.setCategories( mapperFacade.mapAsList( source.getCategories(), TransactionCategory.class ) );
+        }
+
+        CounterpartyBankAccount counterparty = source.getCounterparty();
+        if ( counterparty != null && !Strings.isNullOrEmpty( counterparty.getIban() ) )
+        {
+            transaction.setCounterparty( new biz.turnonline.ecosystem.payment.api.model.CounterpartyBankAccount() );
+            transaction.getCounterparty().setIban( counterparty.getIban() );
+            transaction.getCounterparty().setBic( counterparty.getBic() );
+            transaction.getCounterparty().setName( counterparty.getName() );
         }
 
         ExchangeRate rate = source.getExchangeRate();

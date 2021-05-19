@@ -18,7 +18,11 @@
 
 package biz.turnonline.ecosystem.payment.subscription;
 
+import biz.turnonline.ecosystem.billing.model.TransactionCounterparty;
 import biz.turnonline.ecosystem.payment.api.model.Bill;
+import biz.turnonline.ecosystem.payment.api.model.CounterpartyBankAccount;
+import biz.turnonline.ecosystem.payment.api.model.ExchangeAmount;
+import biz.turnonline.ecosystem.payment.api.model.ExchangeRate;
 import biz.turnonline.ecosystem.payment.api.model.Merchant;
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
 import biz.turnonline.ecosystem.payment.api.model.TransactionBank;
@@ -27,6 +31,7 @@ import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.api.client.util.DateTime;
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Strings;
 import com.googlecode.objectify.Key;
 import ma.glasnost.orika.MapperFacade;
 import org.ctoolkit.restapi.client.RestFacade;
@@ -35,6 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.Date;
 
@@ -152,6 +158,30 @@ class TransactionPublisherTask
                     .setName( merchant.getName() ) );
         }
 
+        CounterpartyBankAccount counterparty = api.getCounterparty();
+        if ( counterparty != null && !Strings.isNullOrEmpty( counterparty.getIban() ) )
+        {
+            pbt.setCounterparty( new TransactionCounterparty() );
+            pbt.getCounterparty().setIban( counterparty.getIban() );
+            pbt.getCounterparty().setBic( counterparty.getBic() );
+            pbt.getCounterparty().setName( counterparty.getName() );
+        }
+
+        ExchangeRate rate = api.getExchangeRate();
+        if ( rate != null )
+        {
+            biz.turnonline.ecosystem.billing.model.ExchangeRate pbRate;
+            pbRate = new biz.turnonline.ecosystem.billing.model.ExchangeRate();
+
+            Date rateDate = rate.getRateDate();
+            pbRate.setFrom( toPbAmount( rate.getFrom() ) )
+                    .setTo( toPbAmount( rate.getTo() ) )
+                    .setFee( toPbAmount( rate.getFee() ) )
+                    .setRate( rate.getRate() )
+                    .setRateDate( rateDate == null ? null : new DateTime( rateDate ) );
+
+            pbt.setExchangeRate( pbRate );
+        }
 
         // Transaction type taken from product-billing service to be pushed
         facade.insert( pbt )
@@ -164,5 +194,17 @@ class TransactionPublisherTask
                 + getTaskName()
                 + " final duration "
                 + stopwatch );
+    }
+
+    private biz.turnonline.ecosystem.billing.model.ExchangeAmount toPbAmount( @Nullable ExchangeAmount amount )
+    {
+        if ( amount == null )
+        {
+            return null;
+        }
+
+        return new biz.turnonline.ecosystem.billing.model.ExchangeAmount()
+                .setAmount( amount.getAmount() )
+                .setCurrency( amount.getCurrency() );
     }
 }

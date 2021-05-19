@@ -6,6 +6,8 @@ import com.google.common.base.MoreObjects;
 import java.util.Objects;
 
 /**
+ * The counterparty bank account.
+ *
  * @author <a href="mailto:pohorelec@turnonline.biz">Jozef Pohorelec</a>
  */
 public class CounterpartyBankAccount
@@ -15,6 +17,9 @@ public class CounterpartyBankAccount
 
     @JsonProperty( "bic" )
     private String bic;
+
+    @JsonProperty( "name" )
+    private String name;
 
     public String getIban()
     {
@@ -34,6 +39,20 @@ public class CounterpartyBankAccount
     public void setBic( String bic )
     {
         this.bic = bic;
+    }
+
+    /**
+     * The bank account beneficiary name (business name).
+     **/
+    @JsonProperty( "name" )
+    public String getName()
+    {
+        return name;
+    }
+
+    public void setName( String name )
+    {
+        this.name = name;
     }
 
     @Override
@@ -58,6 +77,7 @@ public class CounterpartyBankAccount
         return MoreObjects.toStringHelper( this )
                 .add( "iban", iban )
                 .add( "bic", bic )
+                .add( "name", name )
                 .toString();
     }
 }
