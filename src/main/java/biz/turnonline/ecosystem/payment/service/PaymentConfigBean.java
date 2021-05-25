@@ -19,7 +19,6 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.billing.model.BillPayment;
-import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.oauth.RevolutCertMetadata;
@@ -421,13 +420,8 @@ class PaymentConfigBean
     }
 
     @Override
-    public CommonTransaction initGetTransactionDraft( @Nonnull IncomingInvoice invoice )
+    public CommonTransaction initGetTransactionDraft( long orderId, long invoiceId )
     {
-        checkNotNull( invoice, "Incoming invoice cannot be null" );
-
-        Long orderId = invoice.getOrderId();
-        Long invoiceId = invoice.getId();
-
         Criteria<TransactionInvoice> criteria = Criteria.of( TransactionInvoice.class );
         criteria.equal( "orderId", orderId );
         criteria.equal( "invoiceId", invoiceId );

@@ -1,0 +1,83 @@
+{
+    "createdDate": "2021-04-29T04:13:00.796Z",
+    "currency": "EUR",
+    "customer": {
+        "account": "3530259101886",
+        "businessName": "External Ltd.",
+        "city": "Bratislava",
+        "companyId": "44 000 777",
+        "contactEmail": "frederic.external@ctoolkit.org",
+        "contactPhone": "+421900905905",
+        "country": "SK",
+        "firstName": "Frederic",
+        "lastName": "External",
+        "locale": "en",
+        "logoServingUrl": "https://lh3.googleusercontent.com/i30z2pZJdgwdKLWBGX...kl",
+        "postcode": "81109",
+        "prefix": "Ing.",
+        "street": "Továrenská 9",
+        "taxId": "2022000777",
+        "vatId": "SK2022000777"
+    },
+    "dateOfIssue": "2021-04-29T04:13:00.754Z",
+    "dateOfTaxable": "2021-04-28T22:00:00.000Z",
+    "id": "54489855244444",
+    "invoiceNumber": "VF1-0034/2021",
+    "modificationDate": "2021-05-25T06:00:50.051Z",
+    "orderId": "5131678553331",
+    "payment": {
+        "bankAccount": {
+            "beneficiary": "CtoolkiT s.r.o.",
+            "bic": "REVOGB21",
+            "currency": "EUR",
+            "iban": "GB51 REVO 0099 6908 4603 55"
+        },
+        "dueDate": "2021-04-29T21:59:59.000Z",
+        "key": "100342021",
+        "totalAmount": 238.8,
+        "type": "TRANSFER",
+        "variableSymbol": "100342021"
+    },
+    "pin": "et60N6tNeQW8",
+    "pricing": {
+        "items": [
+            {
+                "amount": 1.0,
+                "checkedIn": true,
+                "currency": "EUR",
+                "discountApplied": false,
+                "discountCodeDefined": false,
+                "discountDefined": false,
+                "finalPrice": 238.8,
+                "finalPriceExclVat": 199.0,
+                "finalValueAddedTax": 20.0,
+                "finalVat": "STANDARD",
+                "finalVatAmount": 39.8,
+                "finalVatBase": 199.0,
+                "id": "4660643412447",
+                "inline": "Take a ride with Julia ",
+                "itemName": "Take a ride with Julia",
+                "itemType": "BillingItem",
+                "itemUrl": "https://ctoolkit.org/p/take-a-ride-with-julia",
+                "parentKey": "Order:5131678553331::Invoice:54489855244444",
+                "priceExclVat": 199.0,
+                "product": {
+                    "id": "5700978032508928"
+                },
+                "snippet": "A unique, unmistakable and luxurious car for you for a full week.",
+                "thumbnailUrl": "https://lh3.googleusercontent.com/rOLohaWLZxXOw...p1EV",
+                "unit": "SERVICE",
+                "valueAddedTax": 20.0,
+                "vat": "STANDARD"
+            }
+        ],
+        "rounding": "HUNDREDTHS",
+        "totalPrice": 238.8,
+        "totalPriceExclVat": 199.0,
+        "totalVatAmount": 39.8,
+        "totalVatBase": 199.0
+    },
+    "servingUrl": "https://lh3.googleusercontent.com/ABvMHmkmlgOig1w..Zs",
+    "status": "SENT",
+    "type": "TAX_DOCUMENT"
+}

@@ -19,7 +19,6 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.billing.model.BillPayment;
-import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
@@ -193,14 +192,15 @@ public interface PaymentConfig
     boolean isBeneficiary( @Nonnull String iban );
 
     /**
-     * Creates a new empty transaction record that is associated with given invoice (order and invoice IDs).
+     * Creates a new empty transaction record that is associated with given (incoming) invoice.
      * <p>
      * Idempotent, if transaction record already exist, new won't be created only the existing one will be returned.
      *
-     * @param invoice the invoice as a source of the transaction identification
+     * @param orderId   order ID of the invoice as a source of the transaction identification
+     * @param invoiceId invoice ID of the invoice as a source of the transaction identification
      * @return the newly created transaction
      */
-    CommonTransaction initGetTransactionDraft( @Nonnull IncomingInvoice invoice );
+    CommonTransaction initGetTransactionDraft( long orderId, long invoiceId );
 
     /**
      * Creates a new record of the {@link TransactionReceipt} for the external Id.

@@ -20,6 +20,7 @@ package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.billing.model.BillPayment;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
+import biz.turnonline.ecosystem.billing.model.Invoice;
 import biz.turnonline.ecosystem.billing.model.PurchaseOrder;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
@@ -29,6 +30,7 @@ import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutBeneficiarySyncTask;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutIncomingInvoiceProcessorTask;
+import biz.turnonline.ecosystem.payment.service.revolut.RevolutInvoiceProcessorTask;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
 import com.google.common.base.Strings;
@@ -64,6 +66,7 @@ import static org.ctoolkit.restapi.client.pubsub.PubsubCommand.ENTITY_ID;
  * Processing following resources:
  * <ul>
  * <li>{@link PurchaseOrder}</li>
+ * <li>{@link Invoice}</li>
  * <li>{@link IncomingInvoice}</li>
  * </ul>
  * Payment (bank transfer) will be scheduled only if one of the condition is being matched:
@@ -152,6 +155,48 @@ class ProductBillingChangesSubscription
 
         switch ( dataType )
         {
+            case "Invoice":
+            {
+                Invoice invoice = command.fromData( Invoice.class );
+                DateTime last = delete && publishTime != null ? publishTime : invoice.getModificationDate();
+
+                Timestamp timestamp = Timestamp.of( dataType, uniqueKey, debtor, last );
+                if ( timestamp.isObsolete() )
+                {
+                    LOGGER.info( "Incoming Invoice changes are obsolete, nothing to do " + timestamp.getName() );
+                    return;
+                }
+
+                if ( !"SENT".equalsIgnoreCase( invoice.getStatus() ) )
+                {
+                    LOGGER.info( "Only SENT Invoice will be processed" );
+                    return;
+                }
+
+                if ( delete )
+                {
+                    // TODO What to do if SENT invoice has been deleted
+                    LOGGER.info( "Invoice has been deleted, TODO what to do?" );
+                    return;
+                }
+
+                Long orderId = invoice.getOrderId();
+                Long invoiceId = invoice.getId();
+                if ( orderId == null || invoiceId == null )
+                {
+                    LOGGER.info( "Invoice has invalid identification" );
+                    LOGGER.info( "Invoice Order ID: " + orderId );
+                    LOGGER.info( "Invoice ID: " + invoiceId );
+                    return;
+                }
+
+                // prepares an empty transaction to be completed later (idempotent call)
+                CommonTransaction tDraft = config.initGetTransactionDraft( orderId, invoiceId );
+
+                executor.schedule( new RevolutInvoiceProcessorTask( debtor.entityKey(), data, tDraft ) );
+                timestamp.done();
+                break;
+            }
             case "IncomingInvoice":
             {
                 IncomingInvoice invoice = command.fromData( IncomingInvoice.class );
@@ -213,8 +258,18 @@ class ProductBillingChangesSubscription
                     case REVOLUT_BANK_CODE:
                     case REVOLUT_BANK_EU_CODE:
                     {
+                        Long orderId = invoice.getOrderId();
+                        Long invoiceId = invoice.getId();
+                        if ( orderId == null || invoiceId == null )
+                        {
+                            LOGGER.info( "Incoming Invoice has invalid identification" );
+                            LOGGER.info( "Incoming Invoice Order ID: " + orderId );
+                            LOGGER.info( "Incoming Invoice ID: " + invoiceId );
+                            return;
+                        }
+
                         // prepares an empty transaction to be completed later (idempotent call)
-                        CommonTransaction tDraft = config.initGetTransactionDraft( invoice );
+                        CommonTransaction tDraft = config.initGetTransactionDraft( orderId, invoiceId );
 
                         // incoming invoice has been successfully de-serialized, schedule processing
                         Key<LocalAccount> debtorKey = debtor.entityKey();

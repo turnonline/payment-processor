@@ -96,7 +96,7 @@ public class RevolutIncomingInvoiceProcessorTask
                                                 @Nonnull Key<CompanyBankAccount> debtorBankKey,
                                                 @Nonnull CommonTransaction t )
     {
-        super( accountKey, json, delete, "Revolut-Invoice-Processing" );
+        super( accountKey, json, delete, "Revolut-IncomingInvoice-Processing" );
         this.debtorBankAccountKey = checkNotNull( debtorBankKey, "Debtor bank account key can't be null" );
         this.transactionKey = checkNotNull( t.entityKey(), "Transaction draft key can't be null" );
     }

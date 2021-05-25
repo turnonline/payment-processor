@@ -697,7 +697,10 @@ public class PaymentConfigBeanDbTest
     @Test
     public void initGetTransactionDraft_Idempotent()
     {
-        CommonTransaction transaction = bean.initGetTransactionDraft( invoice );
+        Long orderId = invoice.getOrderId();
+        Long invoiceId = invoice.getId();
+
+        CommonTransaction transaction = bean.initGetTransactionDraft( orderId, invoiceId );
         assertWithMessage( "Transaction draft for incoming invoice" )
                 .that( transaction )
                 .isNotNull();
@@ -713,7 +716,7 @@ public class PaymentConfigBeanDbTest
 
         ofy().flush();
         // try to create a new record with the same incoming invoice
-        transaction = bean.initGetTransactionDraft( invoice );
+        transaction = bean.initGetTransactionDraft( orderId, invoiceId );
         assertWithMessage( "Transaction draft for incoming invoice" )
                 .that( transaction )
                 .isNotNull();
