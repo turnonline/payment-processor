@@ -1,0 +1,26 @@
+{
+    "createdDate": "2021-04-29T04:13:00.796Z",
+    "currency": "EUR",
+    "dateOfIssue": "2021-04-29T04:13:00.754Z",
+    "dateOfTaxable": "2021-04-28T22:00:00.000Z",
+    "id": "54489855244444",
+    "invoiceNumber": "VF1-0034/2021",
+    "modificationDate": "2021-05-25T06:00:50.051Z",
+    "payment": {
+        "bankAccount": {
+            "beneficiary": "CtoolkiT s.r.o.",
+            "bic": "REVOGB21",
+            "currency": "EUR",
+            "iban": "GB51 REVO 0099 6908 4603 55"
+        },
+        "dueDate": "2021-04-29T21:59:59.000Z",
+        "key": "100342021",
+        "totalAmount": 238.8,
+        "type": "TRANSFER",
+        "variableSymbol": "100342021"
+    },
+    "pin": "et60N6tNeQW8",
+    "servingUrl": "https://lh3.googleusercontent.com/ABvMHmkmlgOig1w..Zs",
+    "status": "SENT",
+    "type": "TAX_DOCUMENT"
+}

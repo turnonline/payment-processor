@@ -44,15 +44,15 @@ public class RevolutInvoiceProcessorTask
     /**
      * Constructor.
      *
-     * @param accountKey the key of a local account as an owner of the payload
-     * @param json       the JSON payload
-     * @param t          the transaction draft
+     * @param creditor the key of a local account as a creditor of the invoice
+     * @param json     the invoice JSON payload
+     * @param t        the transaction draft
      */
-    public RevolutInvoiceProcessorTask( @Nonnull Key<LocalAccount> accountKey,
+    public RevolutInvoiceProcessorTask( @Nonnull Key<LocalAccount> creditor,
                                         @Nonnull String json,
                                         @Nonnull CommonTransaction t )
     {
-        super( accountKey, json, false, "Revolut-Invoice-Processing" );
+        super( creditor, json, false, "Revolut-Invoice-Processing" );
         this.transactionKey = checkNotNull( t.entityKey(), "Transaction draft's key can't be null" );
     }
 

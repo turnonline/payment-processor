@@ -24,6 +24,7 @@ import biz.turnonline.ecosystem.billing.model.Invoice;
 import biz.turnonline.ecosystem.billing.model.PurchaseOrder;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.TransactionInvoiceDeletionTask;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
@@ -114,16 +115,7 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
@@ -140,16 +132,7 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
@@ -166,16 +149,7 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
@@ -256,16 +230,7 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
@@ -352,16 +317,7 @@ public class ProductBillingChangesSubscriptionTest
         PubsubMessage message = iiPubsubMessage( "ii-payment-missing.pubsub.json", false );
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
@@ -383,16 +339,7 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
@@ -413,16 +360,7 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
@@ -444,16 +382,7 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
@@ -470,16 +399,7 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
@@ -496,16 +416,7 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
@@ -525,16 +436,7 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
@@ -596,20 +498,11 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
-    public void onMessage_ProcessInvoice() throws Exception
+    public void onMessage_ProcessInvoice_SENT() throws Exception
     {
         PubsubMessage message = invoicePubsubMessage();
         tested.onMessage( message, "billing.changes" );
@@ -631,6 +524,82 @@ public class ProductBillingChangesSubscriptionTest
                         .that( ( ( RevolutInvoiceProcessorTask ) task ).isDelete() ).isFalse();
 
                 timestamp.done();
+            }
+        };
+    }
+
+    @Test
+    public void onMessage_ProcessInvoice_Deletion() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( "invoice-sent-pubsub.json", true );
+        tested.onMessage( message, "billing.changes" );
+
+        new Verifications()
+        {
+            {
+                Task<?> task;
+                executor.schedule( task = withCapture() );
+                times = 1;
+
+                assertWithMessage( "Number of scheduled tasks" )
+                        .that( task.countTasks() )
+                        .isEqualTo( 1 );
+
+                assertThat( task ).isInstanceOf( TransactionInvoiceDeletionTask.class );
+
+                timestamp.done();
+            }
+        };
+    }
+
+    @Test
+    public void onMessage_ProcessInvoice_PAID() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( "invoice-paid-pubsub.json", false );
+        tested.onMessage( message, "billing.changes" );
+
+        noInteractionVerifications();
+    }
+
+    @Test
+    public void onMessage_ProcessInvoice_ObsoleteChanges() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                timestamp.isObsolete();
+                result = true;
+            }
+        };
+
+        PubsubMessage message = invoicePubsubMessage();
+        tested.onMessage( message, "billing.changes" );
+
+        noInteractionVerifications();
+    }
+
+    @Test
+    public void onMessage_ProcessInvoice_Incomplete() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( "invoice-incomplete-pubsub.json", false );
+        tested.onMessage( message, "billing.changes" );
+
+        noInteractionVerifications();
+    }
+
+    private void noInteractionVerifications()
+    {
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task<?> ) any );
+                times = 0;
+
+                config.initGetTransactionDraft( anyLong, anyLong );
+                times = 0;
+
+                timestamp.done();
+                times = 0;
             }
         };
     }

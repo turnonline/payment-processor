@@ -203,6 +203,15 @@ public interface PaymentConfig
     CommonTransaction initGetTransactionDraft( long orderId, long invoiceId );
 
     /**
+     * Returns number of transactions for specified invoice identification.
+     *
+     * @param orderId   invoice's parent order identification
+     * @param invoiceId invoice identification
+     * @return number of transactions found
+     */
+    int countTransactionInvoice( long orderId, long invoiceId );
+
+    /**
      * Creates a new record of the {@link TransactionReceipt} for the external Id.
      * To be idempotent, first searches for transaction with specified identification, if found it will be returned.
      *

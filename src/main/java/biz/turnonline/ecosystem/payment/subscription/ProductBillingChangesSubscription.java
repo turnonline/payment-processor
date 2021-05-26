@@ -24,6 +24,7 @@ import biz.turnonline.ecosystem.billing.model.Invoice;
 import biz.turnonline.ecosystem.billing.model.PurchaseOrder;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
+import biz.turnonline.ecosystem.payment.service.TransactionInvoiceDeletionTask;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
@@ -137,10 +138,10 @@ class ProductBillingChangesSubscription
                 + " with length: "
                 + data.length() + " and unique key: '" + uniqueKey + "'" + ( delete ? " to be deleted" : "" ) );
 
-        LocalAccount debtor;
+        LocalAccount account;
         try
         {
-            debtor = lap.check( command );
+            account = lap.check( command );
         }
         catch ( NotFoundException | ClientErrorException e )
         {
@@ -148,7 +149,7 @@ class ProductBillingChangesSubscription
             return;
         }
 
-        if ( debtor == null )
+        if ( account == null )
         {
             return;
         }
@@ -160,7 +161,8 @@ class ProductBillingChangesSubscription
                 Invoice invoice = command.fromData( Invoice.class );
                 DateTime last = delete && publishTime != null ? publishTime : invoice.getModificationDate();
 
-                Timestamp timestamp = Timestamp.of( dataType, uniqueKey, debtor, last );
+                // account here is a creditor
+                Timestamp timestamp = Timestamp.of( dataType, uniqueKey, account, last );
                 if ( timestamp.isObsolete() )
                 {
                     LOGGER.info( "Incoming Invoice changes are obsolete, nothing to do " + timestamp.getName() );
@@ -170,13 +172,6 @@ class ProductBillingChangesSubscription
                 if ( !"SENT".equalsIgnoreCase( invoice.getStatus() ) )
                 {
                     LOGGER.info( "Only SENT Invoice will be processed" );
-                    return;
-                }
-
-                if ( delete )
-                {
-                    // TODO What to do if SENT invoice has been deleted
-                    LOGGER.info( "Invoice has been deleted, TODO what to do?" );
                     return;
                 }
 
@@ -190,10 +185,16 @@ class ProductBillingChangesSubscription
                     return;
                 }
 
-                // prepares an empty transaction to be completed later (idempotent call)
-                CommonTransaction tDraft = config.initGetTransactionDraft( orderId, invoiceId );
-
-                executor.schedule( new RevolutInvoiceProcessorTask( debtor.entityKey(), data, tDraft ) );
+                if ( delete )
+                {
+                    executor.schedule( new TransactionInvoiceDeletionTask( account.entityKey(), orderId, invoiceId ) );
+                }
+                else
+                {
+                    // prepares an empty transaction to be completed later (idempotent call)
+                    CommonTransaction tDraft = config.initGetTransactionDraft( orderId, invoiceId );
+                    executor.schedule( new RevolutInvoiceProcessorTask( account.entityKey(), data, tDraft ) );
+                }
                 timestamp.done();
                 break;
             }
@@ -202,7 +203,8 @@ class ProductBillingChangesSubscription
                 IncomingInvoice invoice = command.fromData( IncomingInvoice.class );
                 DateTime last = delete && publishTime != null ? publishTime : invoice.getModificationDate();
 
-                Timestamp timestamp = Timestamp.of( dataType, uniqueKey, debtor, last );
+                // account here is a debtor
+                Timestamp timestamp = Timestamp.of( dataType, uniqueKey, account, last );
                 if ( timestamp.isObsolete() )
                 {
                     LOGGER.info( "Incoming Invoice changes are obsolete, nothing to do " + timestamp.getName() );
@@ -216,7 +218,7 @@ class ProductBillingChangesSubscription
                     debtorBank = config.getDebtorBankAccount( payment );
                     if ( debtorBank == null || !debtorBank.isDebtorReady() )
                     {
-                        LOGGER.warn( "Debtor '" + debtor.getId() + "' bank account is not ready yet to be debited" );
+                        LOGGER.warn( "Debtor '" + account.getId() + "' bank account is not ready yet to be debited" );
                         return;
                     }
                 }
@@ -272,7 +274,7 @@ class ProductBillingChangesSubscription
                         CommonTransaction tDraft = config.initGetTransactionDraft( orderId, invoiceId );
 
                         // incoming invoice has been successfully de-serialized, schedule processing
-                        Key<LocalAccount> debtorKey = debtor.entityKey();
+                        Key<LocalAccount> debtorKey = account.entityKey();
                         Key<CompanyBankAccount> debtorBankKey = debtorBank.entityKey();
 
                         Task<IncomingInvoice> tasks = new RevolutBeneficiarySyncTask( debtorKey, data, debtorBankKey );
@@ -296,7 +298,7 @@ class ProductBillingChangesSubscription
                 PurchaseOrder order = command.fromData( PurchaseOrder.class );
                 DateTime last = delete && publishTime != null ? publishTime : order.getModificationDate();
 
-                Timestamp timestamp = Timestamp.of( dataType, uniqueKey, debtor, last );
+                Timestamp timestamp = Timestamp.of( dataType, uniqueKey, account, last );
                 if ( timestamp.isObsolete() )
                 {
                     LOGGER.info( "Incoming Order changes are obsolete, nothing to do " + timestamp.getName() );
@@ -304,7 +306,7 @@ class ProductBillingChangesSubscription
                 }
 
                 // purchase order has been successfully de-serialized, schedule processing
-                executor.schedule( new PurchaseOrderProcessorTask( debtor.entityKey(), data, delete ) );
+                executor.schedule( new PurchaseOrderProcessorTask( account.entityKey(), data, delete ) );
                 timestamp.done();
                 break;
             }

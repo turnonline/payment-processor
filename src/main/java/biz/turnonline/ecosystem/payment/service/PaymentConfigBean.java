@@ -422,11 +422,7 @@ class PaymentConfigBean
     @Override
     public CommonTransaction initGetTransactionDraft( long orderId, long invoiceId )
     {
-        Criteria<TransactionInvoice> criteria = Criteria.of( TransactionInvoice.class );
-        criteria.equal( "orderId", orderId );
-        criteria.equal( "invoiceId", invoiceId );
-
-        List<TransactionInvoice> list = datastore.list( criteria );
+        List<TransactionInvoice> list = datastore.list( transactionInvoiceCriteria( orderId, invoiceId ) );
         TransactionInvoice transaction;
 
         if ( list.isEmpty() )
@@ -444,6 +440,20 @@ class PaymentConfigBean
         }
 
         return transaction;
+    }
+
+    @Override
+    public int countTransactionInvoice( long orderId, long invoiceId )
+    {
+        return datastore.count( transactionInvoiceCriteria( orderId, invoiceId ) );
+    }
+
+    private Criteria<TransactionInvoice> transactionInvoiceCriteria( long orderId, long invoiceId )
+    {
+        Criteria<TransactionInvoice> criteria = Criteria.of( TransactionInvoice.class );
+        criteria.equal( "orderId", orderId );
+        criteria.equal( "invoiceId", invoiceId );
+        return criteria;
     }
 
     @Override

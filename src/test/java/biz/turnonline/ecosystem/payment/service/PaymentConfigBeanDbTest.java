@@ -763,6 +763,17 @@ public class PaymentConfigBeanDbTest
     }
 
     @Test
+    public void countTransactionInvoice()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        assertWithMessage( "Number of Transaction record in datastore" )
+                .that( bean.countTransactionInvoice( 476807L, 366806 ) )
+                .isEqualTo( 1 );
+    }
+
+    @Test
     public void filterTransactions_All()
     {
         ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
@@ -1155,7 +1166,7 @@ public class PaymentConfigBeanDbTest
         bean.filterTransactions( new PaymentConfig.Filter().status( "INVALID_STATUS" ) );
     }
 
-    @Test(expectedExceptions = TransactionNotFound.class)
+    @Test( expectedExceptions = TransactionNotFound.class )
     public void testGetTransaction_ByIdNotFound()
     {
         bean.getTransaction( 1L );
