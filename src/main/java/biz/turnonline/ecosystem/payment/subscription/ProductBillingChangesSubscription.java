@@ -22,16 +22,16 @@ import biz.turnonline.ecosystem.billing.model.BillPayment;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.billing.model.Invoice;
 import biz.turnonline.ecosystem.billing.model.PurchaseOrder;
+import biz.turnonline.ecosystem.payment.service.InvoiceTransactionDeletionTask;
+import biz.turnonline.ecosystem.payment.service.InvoiceTransactionProcessorTask;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
-import biz.turnonline.ecosystem.payment.service.TransactionInvoiceDeletionTask;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutBeneficiarySyncTask;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutIncomingInvoiceProcessorTask;
-import biz.turnonline.ecosystem.payment.service.revolut.RevolutInvoiceProcessorTask;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
 import com.google.common.base.Strings;
@@ -187,13 +187,11 @@ class ProductBillingChangesSubscription
 
                 if ( delete )
                 {
-                    executor.schedule( new TransactionInvoiceDeletionTask( account.entityKey(), orderId, invoiceId ) );
+                    executor.schedule( new InvoiceTransactionDeletionTask( account, orderId, invoiceId ) );
                 }
                 else
                 {
-                    // prepares an empty transaction to be completed later (idempotent call)
-                    CommonTransaction tDraft = config.initGetTransactionDraft( orderId, invoiceId );
-                    executor.schedule( new RevolutInvoiceProcessorTask( account.entityKey(), data, tDraft ) );
+                    executor.schedule( new InvoiceTransactionProcessorTask( account, data, orderId, invoiceId ) );
                 }
                 timestamp.done();
                 break;

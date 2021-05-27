@@ -22,15 +22,15 @@ import biz.turnonline.ecosystem.billing.model.BillPayment;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.billing.model.Invoice;
 import biz.turnonline.ecosystem.billing.model.PurchaseOrder;
+import biz.turnonline.ecosystem.payment.service.InvoiceTransactionDeletionTask;
+import biz.turnonline.ecosystem.payment.service.InvoiceTransactionProcessorTask;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
-import biz.turnonline.ecosystem.payment.service.TransactionInvoiceDeletionTask;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutBeneficiarySyncTask;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutIncomingInvoiceProcessorTask;
-import biz.turnonline.ecosystem.payment.service.revolut.RevolutInvoiceProcessorTask;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
 import com.google.common.io.ByteStreams;
@@ -518,10 +518,10 @@ public class ProductBillingChangesSubscriptionTest
                         .that( task.countTasks() )
                         .isEqualTo( 1 );
 
-                assertThat( task ).isInstanceOf( RevolutInvoiceProcessorTask.class );
+                assertThat( task ).isInstanceOf( InvoiceTransactionProcessorTask.class );
 
                 assertWithMessage( "Entity scheduled to be deleted" )
-                        .that( ( ( RevolutInvoiceProcessorTask ) task ).isDelete() ).isFalse();
+                        .that( ( ( InvoiceTransactionProcessorTask ) task ).isDelete() ).isFalse();
 
                 timestamp.done();
             }
@@ -545,7 +545,7 @@ public class ProductBillingChangesSubscriptionTest
                         .that( task.countTasks() )
                         .isEqualTo( 1 );
 
-                assertThat( task ).isInstanceOf( TransactionInvoiceDeletionTask.class );
+                assertThat( task ).isInstanceOf( InvoiceTransactionDeletionTask.class );
 
                 timestamp.done();
             }

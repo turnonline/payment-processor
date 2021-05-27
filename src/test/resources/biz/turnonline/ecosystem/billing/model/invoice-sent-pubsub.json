@@ -33,7 +33,7 @@
             "iban": "GB51 REVO 0099 6908 4603 55"
         },
         "dueDate": "2021-04-29T21:59:59.000Z",
-        "key": "100342021",
+        "key": "key-100342021",
         "totalAmount": 238.8,
         "type": "TRANSFER",
         "variableSymbol": "100342021"

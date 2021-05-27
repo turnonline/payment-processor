@@ -21,7 +21,6 @@ package biz.turnonline.ecosystem.payment.service;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.TransactionInvoice;
-import com.googlecode.objectify.Key;
 import org.ctoolkit.services.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,24 +29,23 @@ import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import static biz.turnonline.ecosystem.payment.service.model.CommonTransaction.State;
-import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Async deletion of an unfinished {@link TransactionInvoice} if exist.
  * At least one condition must meet the criteria:
  * <ul>
- *     <li>Transaction cannot be {@link State#COMPLETED}</li>
+ *     <li>Transaction is not {@link State#COMPLETED}</li>
  *     <li>{@link TransactionInvoice#getCompletedAt()} returns {@code null}</li>
  * </ul>
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-public class TransactionInvoiceDeletionTask
+public class InvoiceTransactionDeletionTask
         extends Task<LocalAccount>
 {
-    private static final long serialVersionUID = 8997518182085550497L;
+    private static final long serialVersionUID = 6506707575391770728L;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger( TransactionInvoiceDeletionTask.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( InvoiceTransactionDeletionTask.class );
 
     private final long orderId;
 
@@ -59,16 +57,18 @@ public class TransactionInvoiceDeletionTask
     /**
      * Constructor.
      *
-     * @param creditor the key of a local account as a creditor of the invoice
+     * @param creditor  the key of a local account as a creditor of the invoice
+     * @param orderId   the invoice's parent order identification
+     * @param invoiceId the invoice identification
      */
-    public TransactionInvoiceDeletionTask( @Nonnull Key<LocalAccount> creditor,
-                                           @Nonnull Long orderId,
-                                           @Nonnull Long invoiceId )
+    public InvoiceTransactionDeletionTask( @Nonnull LocalAccount creditor,
+                                           long orderId,
+                                           long invoiceId )
     {
-        super( "Revolut-Invoice-Processing" );
-        setEntityKey( creditor );
-        this.orderId = checkNotNull( orderId, "Order ID can't be null" );
-        this.invoiceId = checkNotNull( invoiceId, "Invoice ID can't be null" );
+        super( "Invoice-Transaction-Deletion" );
+        setEntityKey( creditor.entityKey() );
+        this.orderId = orderId;
+        this.invoiceId = invoiceId;
     }
 
     @Override
@@ -77,15 +77,13 @@ public class TransactionInvoiceDeletionTask
         int numberOf = config.countTransactionInvoice( orderId, invoiceId );
         if ( numberOf == 0 )
         {
-            LOGGER.info( "No transaction found for Order ID: " + orderId + ", Invoice ID: " + invoiceId );
+            LOGGER.info( "No transaction found for " + invoiceId( orderId, invoiceId ) );
             return;
         }
         else
         {
-            LOGGER.info( "Number of transaction records for Order ID: "
-                    + orderId
-                    + ", Invoice ID: "
-                    + invoiceId
+            LOGGER.info( "Number of transaction records for "
+                    + invoiceId( orderId, invoiceId )
                     + ", is "
                     + numberOf );
         }
@@ -99,10 +97,13 @@ public class TransactionInvoiceDeletionTask
         }
 
         transaction.delete();
-        LOGGER.info( "Transaction identified by Order ID: "
-                + orderId
-                + ", Invoice ID: "
-                + invoiceId
+        LOGGER.info( "Placeholder transaction identified by "
+                + invoiceId( orderId, invoiceId )
                 + " has been deleted" );
+    }
+
+    private String invoiceId( long orderId, long invoiceId )
+    {
+        return "Order:" + orderId + "::Invoice:" + invoiceId;
     }
 }
