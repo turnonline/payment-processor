@@ -37,6 +37,7 @@ import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionMe
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionState;
 import biz.turnonline.ecosystem.revolut.business.transaction.model.TransactionType;
 import com.google.common.base.Strings;
+import org.ctoolkit.restapi.client.NotFoundException;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,8 +59,7 @@ import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BAN
  * <p>
  * <strong>Note</strong>
  * </p>
- * In case of the Transaction retrieval failure (not found, client error or unauthorized)
- * or if the content is invalid, next task will be cleared and nothing will be executed.
+ * In case declared transaction is not found in Revolut bank, next task will be cleared and nothing will be executed.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
@@ -92,8 +92,18 @@ public class TransactionCreatedTask
         String id = Strings.isNullOrEmpty( incoming.getId() ) ? "" : incoming.getId();
         Transaction transactionFromBank;
 
-        transactionFromBank = facade.get( Transaction.class ).identifiedBy( id ).finish();
-        LOGGER.info( "Incoming transaction (via webhook) found in bank system too" );
+        try
+        {
+            transactionFromBank = facade.get( Transaction.class ).identifiedBy( id ).finish();
+            LOGGER.info( "Incoming transaction (via webhook) found in bank system too" );
+        }
+        catch ( NotFoundException e )
+        {
+            clear();
+            LOGGER.error( "Unknown incoming transaction identified by transaction Id: " + id, e );
+            LOGGER.warn( "Next task cleared, nothing will be executed." );
+            return;
+        }
 
         List<TransactionLeg> legs = transactionFromBank.getLegs();
         if ( legs == null || legs.isEmpty() )
@@ -106,9 +116,7 @@ public class TransactionCreatedTask
 
         TransactionLeg leg = legs.get( 0 );
 
-        // if transaction not found an exception will be thrown in order to handle retry
-        // (because of eventual consistency)
-        CommonTransaction transaction = config.searchTransaction( id );
+        CommonTransaction transaction = config.searchInitTransaction( id, transactionFromBank.getReference() );
         transaction.bankCode( REVOLUT_BANK_EU_CODE )
                 .currency( leg.getCurrency() )
                 .balance( leg.getBalance() )
@@ -178,7 +186,7 @@ public class TransactionCreatedTask
 
         if ( TransactionState.COMPLETED.equals( state ) )
         {
-            transaction.completedAt( transactionFromBank.getUpdatedAt() );
+            transaction.completedAt( transactionFromBank.getCompletedAt() );
         }
 
         if ( TransactionType.CARD_PAYMENT.equals( transactionFromBank.getType() ) )
@@ -230,6 +238,7 @@ public class TransactionCreatedTask
         }
 
         transaction.save();
+        LOGGER.info( "Revolut Transaction [" + transaction.getId() + "] has been processed." );
     }
 
     private void populateMerchant( @Nonnull CommonTransaction transaction, @Nonnull Transaction fromBank )

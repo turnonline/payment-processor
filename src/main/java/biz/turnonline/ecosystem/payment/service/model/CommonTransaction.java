@@ -84,6 +84,7 @@ public abstract class CommonTransaction
     @Index
     private FormOfPayment type;
 
+    @Index
     private String reference;
 
     private List<Object> origins = new ArrayList<>();

@@ -27,6 +27,7 @@ import biz.turnonline.ecosystem.payment.api.model.Merchant;
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
 import biz.turnonline.ecosystem.payment.api.model.TransactionBank;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
+import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.google.api.client.util.DateTime;
@@ -56,9 +57,11 @@ import static com.google.common.base.Strings.isNullOrEmpty;
 class TransactionPublisherTask
         extends Task<CommonTransaction>
 {
-    private static final long serialVersionUID = 5105482532174825094L;
+    private static final long serialVersionUID = 3738143068915946947L;
 
     private static final Logger LOGGER = LoggerFactory.getLogger( TransactionPublisherTask.class );
+
+    private final String extId;
 
     @Inject
     private transient RestFacade facade;
@@ -69,29 +72,26 @@ class TransactionPublisherTask
     @Inject
     private transient LocalAccountProvider lap;
 
-    TransactionPublisherTask( @Nonnull Key<CommonTransaction> entityKey )
+    @Inject
+    private transient PaymentConfig config;
+
+    TransactionPublisherTask( @Nonnull String extId )
     {
         super( "Push" );
-        setEntityKey( checkNotNull( entityKey, "The transaction key can't be null" ) );
+        this.extId = checkNotNull( extId, "Transaction Ext ID can't be null" );
     }
 
     @Override
     public final void execute()
     {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        Key<CommonTransaction> key = getEntityKey();
-
+        // At this point transaction must exist. If not found, this task will be rescheduled as exception is thrown.
         CommonTransaction transaction = workWith();
-
-        if ( transaction == null )
-        {
-            LOGGER.error( "Transaction has not found for specified key '" + key + "'" );
-            return;
-        }
-
         if ( !transaction.propagate() )
         {
+            Key<CommonTransaction> key = transaction.entityKey();
             LOGGER.info( "Transaction will not be propagated to product-billing service '" + key + "'" );
+            LOGGER.info( "Execution took " + stopwatch.stop() );
             return;
         }
 
@@ -99,6 +99,7 @@ class TransactionPublisherTask
         if ( lAccount == null )
         {
             LOGGER.error( "Local account has not been configured yet." );
+            LOGGER.info( "Execution took " + stopwatch.stop() );
             return;
         }
 
@@ -194,6 +195,13 @@ class TransactionPublisherTask
                 + getTaskName()
                 + " final duration "
                 + stopwatch );
+    }
+
+    @Override
+    public CommonTransaction workWith()
+    {
+        // Throws TransactionNotFound if not found yet (eventual consistency of the query)
+        return config.searchTransaction( extId );
     }
 
     private biz.turnonline.ecosystem.billing.model.ExchangeAmount toPbAmount( @Nullable ExchangeAmount amount )

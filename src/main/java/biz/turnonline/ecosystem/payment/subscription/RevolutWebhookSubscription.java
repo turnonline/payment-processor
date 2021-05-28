@@ -18,7 +18,6 @@
 
 package biz.turnonline.ecosystem.payment.subscription;
 
-import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionCreatedTask;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChanged;
@@ -62,13 +61,10 @@ public class RevolutWebhookSubscription
 
     private final TaskExecutor executor;
 
-    private final PaymentConfig config;
-
     @Inject
-    public RevolutWebhookSubscription( TaskExecutor executor, PaymentConfig config )
+    public RevolutWebhookSubscription( TaskExecutor executor )
     {
         this.executor = executor;
-        this.config = config;
     }
 
     @Override
@@ -119,14 +115,12 @@ public class RevolutWebhookSubscription
             return;
         }
 
-        CommonTransaction transaction = config.initGetTransaction( id );
-
         switch ( event )
         {
             case "TransactionCreated":
             {
                 TransactionCreatedTask task = new TransactionCreatedTask( dataElement.toString() );
-                task.addNext( new TransactionPublisherTask( transaction.entityKey() ) );
+                task.addNext( new TransactionPublisherTask( id ) );
                 executor.schedule( task );
                 LOGGER.info( event + " task scheduled" );
                 break;
@@ -135,7 +129,7 @@ public class RevolutWebhookSubscription
             {
                 TransactionStateChangedTask task = new TransactionStateChangedTask( jsonObject.toString() );
                 // TECO-238 ignore publishing of the transaction if it's incomplete yet (race condition issue)
-                task.addNext( new TransactionPublisherTask( transaction.entityKey() ), CommonTransaction::isAmount );
+                task.addNext( new TransactionPublisherTask( id ), CommonTransaction::isAmount );
                 executor.schedule( task );
                 LOGGER.info( event + " task scheduled" );
                 break;

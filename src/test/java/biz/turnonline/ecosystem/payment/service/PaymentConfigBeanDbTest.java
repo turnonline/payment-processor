@@ -728,10 +728,10 @@ public class PaymentConfigBeanDbTest
     }
 
     @Test
-    public void initGetTransaction_Idempotent()
+    public void searchInitTransaction_Idempotent()
     {
         String extId = "91b160cf-d524-43ee-a2ee-687b8b91a3fa";
-        CommonTransaction transaction = bean.initGetTransaction( extId );
+        CommonTransaction transaction = bean.searchInitTransaction( extId, null );
 
         assertWithMessage( "Transaction for external expense" )
                 .that( transaction )
@@ -751,7 +751,7 @@ public class PaymentConfigBeanDbTest
         ofy().clear();
 
         // try to create a new record with the same external Id
-        transaction = bean.initGetTransaction( extId );
+        transaction = bean.searchInitTransaction( extId, null );
         assertWithMessage( "Transaction for external expense" )
                 .that( transaction )
                 .isNotNull();
@@ -760,6 +760,37 @@ public class PaymentConfigBeanDbTest
         assertWithMessage( "Number of Transaction record in datastore" )
                 .that( count )
                 .isEqualTo( 1 );
+    }
+
+    @Test
+    public void searchInitTransaction_SearchByKey()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        CommonTransaction transaction = bean.searchInitTransaction( "none", "Gdhf6h6BV" );
+        assertWithMessage( "Transaction ID for payment key" )
+                .that( transaction.getId() )
+                .isEqualTo( 681L );
+
+    }
+
+    @Test
+    public void searchInitTransaction_SearchByReference()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        CommonTransaction transaction = bean.searchInitTransaction( "none", "INV-20056" );
+
+        assertWithMessage( "Transaction type" )
+                .that( transaction )
+                .isInstanceOf( TransactionInvoice.class );
+
+        assertWithMessage( "Invoice ID associated with Transaction" )
+                .that( ( ( TransactionInvoice ) transaction ).getInvoiceId() )
+                .isEqualTo( 114354656899L );
+
     }
 
     @Test
@@ -1175,7 +1206,7 @@ public class PaymentConfigBeanDbTest
     @Test
     public void testGetTransaction_ById()
     {
-        CommonTransaction transaction = bean.initGetTransaction( "12" );
+        CommonTransaction transaction = bean.searchInitTransaction( "12", null );
 
         transaction = bean.getTransaction( transaction.getId() );
 

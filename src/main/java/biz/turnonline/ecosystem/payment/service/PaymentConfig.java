@@ -212,14 +212,15 @@ public interface PaymentConfig
     int countTransactionInvoice( long orderId, long invoiceId );
 
     /**
-     * Creates a new record of the {@link TransactionReceipt} for the external Id.
-     * To be idempotent, first searches for transaction with specified identification, if found it will be returned.
+     * Searches for transaction with specified identification. First extId, and if there is no match then paymentKey.
+     * If search does not return any transaction it creates a new record of type {@link TransactionReceipt}
+     * for specified the external Id.
      *
-     * @param extId the external identification of the transaction
+     * @param extId      the external identification of the transaction within bank
+     * @param paymentKey the externally provided key of the payment to find an associated transaction
      * @return the transaction
-     * @see #searchTransaction(String)
      */
-    CommonTransaction initGetTransaction( @Nonnull String extId );
+    CommonTransaction searchInitTransaction( @Nonnull String extId, @Nullable String paymentKey );
 
     /**
      * Get a transaction for specified Id.

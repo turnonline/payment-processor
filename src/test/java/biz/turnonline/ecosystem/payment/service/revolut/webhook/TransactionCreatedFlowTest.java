@@ -133,9 +133,6 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_CARD_PAYMENT() throws JsonProcessingException
     {
-        // in the real use case transaction is being created by subscription webhook
-        config.initGetTransaction( TRANSACTION_EXT_ID );
-
         String json = toJsonCreated( CARD_PAYMENT.getValue() );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -266,9 +263,6 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_CARD_PAYMENT_OverTRANSFER() throws JsonProcessingException
     {
-        // in the real use case transaction is being created by subscription webhook
-        config.initGetTransaction( TRANSACTION_EXT_ID );
-
         String json = toJsonCreated( TRANSFER.getValue() );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -303,9 +297,6 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_CARD_PAYMENT_CrossCurrency() throws JsonProcessingException
     {
-        // in the real use case transaction is being created by subscription webhook
-        config.initGetTransaction( TRANSACTION_EXT_ID );
-
         String json = toJsonCreated( CARD_PAYMENT.getValue() + "-cross-currency" );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -443,9 +434,6 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_TRANSFER_Internal() throws JsonProcessingException
     {
-        // in the real use case transaction is being created by subscription webhook
-        config.initGetTransaction( TRANSACTION_EXT_ID );
-
         String json = toJsonCreated( TRANSFER.getValue() + "-internal" );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -576,9 +564,6 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_TRANSFER_External() throws JsonProcessingException
     {
-        // in the real use case transaction is being created by subscription webhook
-        config.initGetTransaction( TRANSACTION_EXT_ID );
-
         String json = toJsonCreated( TRANSFER.getValue() );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -706,9 +691,6 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_TRANSFER_ExternalCrossCurrency() throws JsonProcessingException
     {
-        // in the real use case transaction is being created by subscription webhook
-        config.initGetTransaction( TRANSACTION_EXT_ID );
-
         String json = toJsonCreated( TRANSFER.getValue() + "-cross-currency" );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -852,9 +834,6 @@ public class TransactionCreatedFlowTest
         primaryBankAccount.setExternalId( BANK_ACCOUNT_EXT_ID );
         primaryBankAccount.save();
 
-        // in the real use case transaction is being created by subscription webhook
-        config.initGetTransaction( TRANSACTION_EXT_ID );
-
         String json = toJsonCreated( TRANSFER.getValue() + "-non-revolut" );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -983,9 +962,6 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_TRANSFER_Failed() throws JsonProcessingException
     {
-        // in the real use case transaction is being created by subscription webhook
-        config.initGetTransaction( TRANSACTION_EXT_ID );
-
         String json = toJsonCreated( TRANSFER.getValue() + "-failed" );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -1114,9 +1090,6 @@ public class TransactionCreatedFlowTest
     @Test
     public void successful_REFUND() throws JsonProcessingException
     {
-        // in the real use case transaction is being created by subscription webhook
-        config.initGetTransaction( TRANSACTION_EXT_ID );
-
         String json = toJsonCreated( REFUND.getValue() );
         created = new TransactionCreatedTask( json );
         created.setConfig( config );
@@ -1216,7 +1189,7 @@ public class TransactionCreatedFlowTest
                 .isEquivalentAccordingToCompareTo( modificationDate );
     }
 
-    @Test( expectedExceptions = NotFoundException.class )
+    @Test
     public void unsuccessful_TransactionNotFound()
     {
         created = new TransactionCreatedTask( toJsonCreated( TRANSFER.getValue() ) );
@@ -1234,25 +1207,18 @@ public class TransactionCreatedFlowTest
             }
         };
 
-        try
-        {
-            // test call
-            created.execute();
-        }
-        catch ( NotFoundException e )
-        {
-            int count = ofy().load().type( TransactionReceipt.class ).count();
-            assertWithMessage( "Final number of transactions" )
-                    .that( count )
-                    .isEqualTo( 0 );
+        // test call
+        created.execute();
+        int count = ofy().load().type( TransactionReceipt.class ).count();
+        assertWithMessage( "Final number of transactions" )
+                .that( count )
+                .isEqualTo( 0 );
 
-            assertWithMessage( "Remaining number of tasks after failure" )
-                    .that( created.countTasks() )
-                    // 2 is the current one
-                    .isEqualTo( 2 );
+        assertWithMessage( "Remaining number of tasks after failure" )
+                .that( created.countTasks() )
+                // 1 is the current one
+                .isEqualTo( 1 );
 
-            throw e;
-        }
     }
 
     @Test( expectedExceptions = ClientErrorException.class )

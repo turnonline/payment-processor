@@ -21,6 +21,7 @@ package biz.turnonline.ecosystem.payment.subscription;
 import biz.turnonline.ecosystem.payment.api.model.Transaction;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.MicroserviceModule;
+import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.TransactionCategory;
@@ -32,12 +33,12 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.Mock;
 import mockit.MockUp;
+import mockit.Mocked;
 import mockit.Tested;
 import mockit.Verifications;
 import org.ctoolkit.restapi.client.RestFacade;
 import org.ctoolkit.services.storage.PropertiesHashCode;
 import org.ctoolkit.services.storage.PropertiesHasher;
-import org.ctoolkit.services.task.Task;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -65,11 +66,14 @@ public class TransactionPublisherTaskTest
 
     private static final String ACCOUNT_EMAIL = "my.account@turnonline.biz";
 
+    @Injectable
+    private final String extId = "1";
+
     @Tested
     private TransactionPublisherTask tested;
 
     @Injectable
-    private Key<CommonTransaction> entityKey;
+    private PaymentConfig config;
 
     @Injectable
     private RestFacade facade;
@@ -89,6 +93,9 @@ public class TransactionPublisherTaskTest
     private Transaction api;
 
     private CommonTransaction transaction;
+
+    @Mocked
+    private Key<CommonTransaction> transactionKey;
 
     @BeforeMethod
     public void before()
@@ -200,33 +207,9 @@ public class TransactionPublisherTaskTest
     }
 
     @Test
-    public void unsuccessful_TransactionNotFound()
-    {
-        new MockUp<Task<?>>()
-        {
-            @Mock
-            public CommonTransaction workWith()
-            {
-                // not found, returns null
-                return null;
-            }
-        };
-
-        tested.execute();
-
-        new Verifications()
-        {
-            {
-                facade.insert( any );
-                times = 0;
-            }
-        };
-    }
-
-    @Test
     public void unsuccessful_DoNotPropagate()
     {
-        new MockUp<Task<?>>()
+        new MockUp<TransactionPublisherTask>()
         {
             @Mock
             public CommonTransaction workWith()
@@ -299,7 +282,7 @@ public class TransactionPublisherTaskTest
 
     private void expectationsTransaction()
     {
-        new MockUp<Task<?>>()
+        new MockUp<TransactionPublisherTask>()
         {
             @Mock
             public CommonTransaction workWith()
