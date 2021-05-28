@@ -19,7 +19,6 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.billing.model.BillPayment;
-import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.service.model.BeneficiaryBankAccount;
@@ -193,24 +192,35 @@ public interface PaymentConfig
     boolean isBeneficiary( @Nonnull String iban );
 
     /**
-     * Creates a new empty transaction record that is associated with given invoice (order and invoice IDs).
+     * Creates a new empty transaction record that is associated with given (incoming) invoice.
      * <p>
      * Idempotent, if transaction record already exist, new won't be created only the existing one will be returned.
      *
-     * @param invoice the invoice as a source of the transaction identification
+     * @param orderId   order ID of the invoice as a source of the transaction identification
+     * @param invoiceId invoice ID of the invoice as a source of the transaction identification
      * @return the newly created transaction
      */
-    CommonTransaction initGetTransactionDraft( @Nonnull IncomingInvoice invoice );
+    CommonTransaction initGetTransactionDraft( long orderId, long invoiceId );
 
     /**
-     * Creates a new record of the {@link TransactionReceipt} for the external Id.
-     * To be idempotent, first searches for transaction with specified identification, if found it will be returned.
+     * Returns number of transactions for specified invoice identification.
      *
-     * @param extId the external identification of the transaction
-     * @return the transaction
-     * @see #searchTransaction(String)
+     * @param orderId   invoice's parent order identification
+     * @param invoiceId invoice identification
+     * @return number of transactions found
      */
-    CommonTransaction initGetTransaction( @Nonnull String extId );
+    int countTransactionInvoice( long orderId, long invoiceId );
+
+    /**
+     * Searches for transaction with specified identification. First extId, and if there is no match then paymentKey.
+     * If search does not return any transaction it creates a new record of type {@link TransactionReceipt}
+     * for specified the external Id.
+     *
+     * @param extId      the external identification of the transaction within bank
+     * @param paymentKey the externally provided key of the payment to find an associated transaction
+     * @return the transaction
+     */
+    CommonTransaction searchInitTransaction( @Nonnull String extId, @Nullable String paymentKey );
 
     /**
      * Get a transaction for specified Id.

@@ -178,6 +178,11 @@
         </dependency>
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
+            <artifactId>turnonline-billing-processor-client</artifactId>
+            <version>0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-revolut-business-client</artifactId>
             <version>1.0.1</version>
         </dependency>

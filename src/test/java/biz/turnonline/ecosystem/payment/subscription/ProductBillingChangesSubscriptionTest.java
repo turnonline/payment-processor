@@ -20,7 +20,10 @@ package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.billing.model.BillPayment;
 import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
+import biz.turnonline.ecosystem.billing.model.Invoice;
 import biz.turnonline.ecosystem.billing.model.PurchaseOrder;
+import biz.turnonline.ecosystem.payment.service.InvoiceTransactionDeletionTask;
+import biz.turnonline.ecosystem.payment.service.InvoiceTransactionProcessorTask;
 import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
@@ -76,6 +79,8 @@ public class ProductBillingChangesSubscriptionTest
 
     private static final long PURCHASE_ORDER_ID = 565941286574L;
 
+    private static final long INVOICE_ID = 54489855244444L;
+
     private static final long INCOMING_INVOICE_ID = 571714185671L;
 
     @Tested
@@ -99,7 +104,7 @@ public class ProductBillingChangesSubscriptionTest
     @Test
     public void onMessage_Account_NoneAssociated() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( false );
+        PubsubMessage message = iiPubsubMessage( false );
         new Expectations()
         {
             {
@@ -110,22 +115,13 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
     public void onMessage_Account_NotFound() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( false );
+        PubsubMessage message = iiPubsubMessage( false );
         new Expectations()
         {
             {
@@ -136,22 +132,13 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
     public void onMessage_Account_ClientError() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( false );
+        PubsubMessage message = iiPubsubMessage( false );
         new Expectations()
         {
             {
@@ -162,16 +149,7 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
@@ -252,22 +230,13 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
     public void onMessage_ProcessIncomingInvoiceByRevolut() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( false );
+        PubsubMessage message = iiPubsubMessage( false );
         new Expectations()
         {
             {
@@ -306,7 +275,7 @@ public class ProductBillingChangesSubscriptionTest
     @Test
     public void onMessage_ProcessIncomingInvoiceByRevolutEU() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( false );
+        PubsubMessage message = iiPubsubMessage( false );
         new Expectations()
         {
             {
@@ -345,25 +314,16 @@ public class ProductBillingChangesSubscriptionTest
     @Test
     public void onMessage_ProcessIncomingInvoice_PaymentMissing() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( "ii-payment-missing.pubsub.json", false );
+        PubsubMessage message = iiPubsubMessage( "ii-payment-missing.pubsub.json", false );
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
     public void onMessage_ProcessIncomingInvoice_PaymentTotalAmountMissing() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( "ii-total-amount-missing.pubsub.json", false );
+        PubsubMessage message = iiPubsubMessage( "ii-total-amount-missing.pubsub.json", false );
         new Expectations()
         {
             {
@@ -379,22 +339,13 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
     public void onMessage_ProcessIncomingInvoice_AlreadyPaid() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( "incoming-invoice-paid.pubsub.json", false );
+        PubsubMessage message = iiPubsubMessage( "incoming-invoice-paid.pubsub.json", false );
         new Expectations()
         {
             {
@@ -409,22 +360,13 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
     public void onMessage_ProcessIncomingInvoice_PaymentMethodCASH() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( "ii-cash-payment.pubsub.json", false );
+        PubsubMessage message = iiPubsubMessage( "ii-cash-payment.pubsub.json", false );
         new Expectations()
         {
             {
@@ -440,22 +382,13 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
     public void onMessage_ProcessIncomingInvoice_DebtorBankAccountNotFound() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( false );
+        PubsubMessage message = iiPubsubMessage( false );
         new Expectations()
         {
             {
@@ -466,22 +399,13 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
     public void onMessage_ProcessIncomingInvoice_DebtorBankAccountIsNotReady() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( false );
+        PubsubMessage message = iiPubsubMessage( false );
         new Expectations()
         {
             {
@@ -492,22 +416,13 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
     public void onMessage_ProcessIncomingInvoice_UnsupportedBank() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( false );
+        PubsubMessage message = iiPubsubMessage( false );
         new Expectations()
         {
             {
@@ -521,22 +436,13 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
-        new Verifications()
-        {
-            {
-                executor.schedule( ( Task ) any );
-                times = 0;
-
-                timestamp.done();
-                times = 0;
-            }
-        };
+        noInteractionVerifications();
     }
 
     @Test
     public void onMessage_ProcessIncomingInvoiceDeletionByRevolut() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( true );
+        PubsubMessage message = iiPubsubMessage( true );
         String publishTime = "2019-03-25T16:00:00.999Z";
         message.setPublishTime( publishTime );
 
@@ -581,7 +487,7 @@ public class ProductBillingChangesSubscriptionTest
     @Test
     public void onMessage_ProcessIncomingInvoiceIgnoreObsoleteChanges() throws Exception
     {
-        PubsubMessage message = invoicePubsubMessage( false );
+        PubsubMessage message = iiPubsubMessage( false );
         new Expectations()
         {
             {
@@ -592,10 +498,104 @@ public class ProductBillingChangesSubscriptionTest
 
         tested.onMessage( message, "billing.changes" );
 
+        noInteractionVerifications();
+    }
+
+    @Test
+    public void onMessage_ProcessInvoice_SENT() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage();
+        tested.onMessage( message, "billing.changes" );
+
         new Verifications()
         {
             {
-                executor.schedule( ( Task ) any );
+                Task<Invoice> task;
+                executor.schedule( task = withCapture() );
+                times = 1;
+
+                assertWithMessage( "Number of scheduled tasks" )
+                        .that( task.countTasks() )
+                        .isEqualTo( 1 );
+
+                assertThat( task ).isInstanceOf( InvoiceTransactionProcessorTask.class );
+
+                assertWithMessage( "Entity scheduled to be deleted" )
+                        .that( ( ( InvoiceTransactionProcessorTask ) task ).isDelete() ).isFalse();
+
+                timestamp.done();
+            }
+        };
+    }
+
+    @Test
+    public void onMessage_ProcessInvoice_Deletion() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( "invoice-sent-pubsub.json", true );
+        tested.onMessage( message, "billing.changes" );
+
+        new Verifications()
+        {
+            {
+                Task<?> task;
+                executor.schedule( task = withCapture() );
+                times = 1;
+
+                assertWithMessage( "Number of scheduled tasks" )
+                        .that( task.countTasks() )
+                        .isEqualTo( 1 );
+
+                assertThat( task ).isInstanceOf( InvoiceTransactionDeletionTask.class );
+
+                timestamp.done();
+            }
+        };
+    }
+
+    @Test
+    public void onMessage_ProcessInvoice_PAID() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( "invoice-paid-pubsub.json", false );
+        tested.onMessage( message, "billing.changes" );
+
+        noInteractionVerifications();
+    }
+
+    @Test
+    public void onMessage_ProcessInvoice_ObsoleteChanges() throws Exception
+    {
+        new Expectations()
+        {
+            {
+                timestamp.isObsolete();
+                result = true;
+            }
+        };
+
+        PubsubMessage message = invoicePubsubMessage();
+        tested.onMessage( message, "billing.changes" );
+
+        noInteractionVerifications();
+    }
+
+    @Test
+    public void onMessage_ProcessInvoice_Incomplete() throws Exception
+    {
+        PubsubMessage message = invoicePubsubMessage( "invoice-incomplete-pubsub.json", false );
+        tested.onMessage( message, "billing.changes" );
+
+        noInteractionVerifications();
+    }
+
+    private void noInteractionVerifications()
+    {
+        new Verifications()
+        {
+            {
+                executor.schedule( ( Task<?> ) any );
+                times = 0;
+
+                config.initGetTransactionDraft( anyLong, anyLong );
                 times = 0;
 
                 timestamp.done();
@@ -616,13 +616,31 @@ public class ProductBillingChangesSubscriptionTest
         return builder.build().getMessages().get( 0 );
     }
 
-    private PubsubMessage invoicePubsubMessage( boolean deletion )
+    private PubsubMessage invoicePubsubMessage()
             throws IOException
     {
-        return invoicePubsubMessage( "incoming-invoice.pubsub.json", deletion );
+        return invoicePubsubMessage( "invoice-sent-pubsub.json", false );
+    }
+
+    private PubsubMessage iiPubsubMessage( boolean deletion )
+            throws IOException
+    {
+        return iiPubsubMessage( "incoming-invoice.pubsub.json", deletion );
     }
 
     private PubsubMessage invoicePubsubMessage( String fileName, boolean deletion )
+            throws IOException
+    {
+        TopicMessage.Builder builder = validPubsubMessage( fileName,
+                Invoice.class,
+                INVOICE_ID,
+                deletion );
+
+        builder.addAttribute( ENCODED_UNIQUE_KEY, "/" + 5131678553331L + "/" + INVOICE_ID );
+        return builder.build().getMessages().get( 0 );
+    }
+
+    private PubsubMessage iiPubsubMessage( String fileName, boolean deletion )
             throws IOException
     {
         TopicMessage.Builder builder = validPubsubMessage( fileName,

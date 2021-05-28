@@ -18,7 +18,6 @@
 
 package biz.turnonline.ecosystem.payment.subscription;
 
-import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionCreatedTask;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChanged;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChangedTask;
@@ -54,9 +53,6 @@ public class RevolutWebhookSubscriptionTest
 
     @Injectable
     private TaskExecutor executor;
-
-    @Injectable
-    private PaymentConfig config;
 
     @Mocked
     private HttpServletRequest request;

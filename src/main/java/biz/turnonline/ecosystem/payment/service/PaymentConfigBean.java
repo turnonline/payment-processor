@@ -19,7 +19,6 @@
 package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.billing.model.BillPayment;
-import biz.turnonline.ecosystem.billing.model.IncomingInvoice;
 import biz.turnonline.ecosystem.payment.api.ApiValidationException;
 import biz.turnonline.ecosystem.payment.api.model.Certificate;
 import biz.turnonline.ecosystem.payment.oauth.RevolutCertMetadata;
@@ -421,18 +420,9 @@ class PaymentConfigBean
     }
 
     @Override
-    public CommonTransaction initGetTransactionDraft( @Nonnull IncomingInvoice invoice )
+    public CommonTransaction initGetTransactionDraft( long orderId, long invoiceId )
     {
-        checkNotNull( invoice, "Incoming invoice cannot be null" );
-
-        Long orderId = invoice.getOrderId();
-        Long invoiceId = invoice.getId();
-
-        Criteria<TransactionInvoice> criteria = Criteria.of( TransactionInvoice.class );
-        criteria.equal( "orderId", orderId );
-        criteria.equal( "invoiceId", invoiceId );
-
-        List<TransactionInvoice> list = datastore.list( criteria );
+        List<TransactionInvoice> list = datastore.list( transactionInvoiceCriteria( orderId, invoiceId ) );
         TransactionInvoice transaction;
 
         if ( list.isEmpty() )
@@ -453,19 +443,55 @@ class PaymentConfigBean
     }
 
     @Override
-    public CommonTransaction initGetTransaction( @Nonnull String extId )
+    public int countTransactionInvoice( long orderId, long invoiceId )
     {
-        CommonTransaction transaction;
+        return datastore.count( transactionInvoiceCriteria( orderId, invoiceId ) );
+    }
+
+    private Criteria<TransactionInvoice> transactionInvoiceCriteria( long orderId, long invoiceId )
+    {
+        Criteria<TransactionInvoice> criteria = Criteria.of( TransactionInvoice.class );
+        criteria.equal( "orderId", orderId );
+        criteria.equal( "invoiceId", invoiceId );
+        return criteria;
+    }
+
+    @Override
+    public CommonTransaction searchInitTransaction( @Nonnull String extId, @Nullable String paymentKey )
+    {
+        CommonTransaction transaction = null;
         try
         {
             transaction = searchTransaction( extId );
         }
         catch ( TransactionNotFound e )
         {
+            if ( paymentKey != null )
+            {
+                Criteria<CommonTransaction> criteria = Criteria.of( CommonTransaction.class );
+                criteria.equal( "key", paymentKey );
+                List<CommonTransaction> transactions = datastore.list( criteria );
+
+                if ( transactions.isEmpty() )
+                {
+                    criteria = Criteria.of( CommonTransaction.class );
+                    criteria.equal( "reference", paymentKey );
+                    transactions = datastore.list( criteria );
+                }
+
+                if ( !transactions.isEmpty() )
+                {
+                    transaction = transactions.get( 0 );
+                }
+            }
+
             // If the transaction record not found, the invoice hasn't been issued
             // and the incoming transaction represents an expenses paid outside of the service.
-            transaction = new TransactionReceipt( extId );
-            transaction.save();
+            if ( transaction == null )
+            {
+                transaction = new TransactionReceipt( extId );
+                transaction.save();
+            }
         }
 
         return transaction;

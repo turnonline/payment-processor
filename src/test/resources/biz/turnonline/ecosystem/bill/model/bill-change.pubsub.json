@@ -1,0 +1,47 @@
+{
+  "approved": true,
+  "billNumber": "2021200087",
+  "currency": "EUR",
+  "description": "Mzdy 1Q + konzultácie",
+  "id": "5168421444517888",
+  "items": [
+    {
+      "finalPrice": 116.64,
+      "finalVatAmount": 19.44,
+      "id": "5103820371656704",
+      "itemName": "Spracovanie miezd 1Q + konzultácie",
+      "priceExclVat": 97.2,
+      "vat": "STANDARD"
+    }
+  ],
+  "scans": [
+    {
+      "order": 1,
+      "servingUrl": "https://lh3.googleusercontent.com/kX__-CMUuIt5XkWsCW9v_xUMXHHxH8ngfUraP6a7S_MdUJpmYXWz07UUigm-kwkO0n7UhVXZqUFJfncnuzH1n5JbFdYng3hZ4TSSkUI",
+      "storageName": "bill.turnon.cloud/5648067843850240/bills/5168421444517888/TurnOnlinebiz_mzdy_2021_Q_1_faktura-1620900045049.pdf.png"
+    }
+  ],
+  "supplier": {
+    "businessName": "TENOR, s.r.o.",
+    "city": "Bratislava",
+    "companyId": "35785047",
+    "country": "SK",
+    "postcode": "84103",
+    "street": "Na barine 7",
+    "taxId": "2020213492",
+    "vatId": "SK2020213492"
+  },
+  "totalPrice": 116.64,
+  "totalVat": 0.0,
+  "totalVatBase": 97.2,
+  "transactionId": "4831426297987072",
+  "type": "INVOICE",
+  "vatRows": [
+    {
+      "priceInclVat": 116.64,
+      "vat": 19.44,
+      "vatBase": 97.2,
+      "vatRate": 20.0
+    }
+  ]
+}

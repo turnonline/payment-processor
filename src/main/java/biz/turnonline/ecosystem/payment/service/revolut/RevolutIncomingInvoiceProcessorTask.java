@@ -69,7 +69,7 @@ public class RevolutIncomingInvoiceProcessorTask
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( RevolutIncomingInvoiceProcessorTask.class );
 
-    private static final long serialVersionUID = 3094407700729325038L;
+    private static final long serialVersionUID = 7872912584770551546L;
 
     private final Key<CompanyBankAccount> debtorBankAccountKey;
 
@@ -84,20 +84,20 @@ public class RevolutIncomingInvoiceProcessorTask
     /**
      * Constructor.
      *
-     * @param accountKey    the key of a local account as an owner of the payload
-     * @param json          the incoming invoice as JSON payload
-     * @param delete        {@code true} to be incoming invoice processed as deleted
-     * @param debtorBankKey the debtor bank account key, the bank account to be debited
-     * @param t             the transaction draft to be populated if payment sync is successful
+     * @param debtor     the key of a local account as a debtor of the incoming invoice
+     * @param json       the incoming invoice JSON payload
+     * @param delete     {@code true} to be incoming invoice processed as deleted
+     * @param debtorBank the debtor bank account key, the bank account to be debited
+     * @param t          the transaction draft to be populated if payment sync is successful
      */
-    public RevolutIncomingInvoiceProcessorTask( @Nonnull Key<LocalAccount> accountKey,
+    public RevolutIncomingInvoiceProcessorTask( @Nonnull Key<LocalAccount> debtor,
                                                 @Nonnull String json,
                                                 boolean delete,
-                                                @Nonnull Key<CompanyBankAccount> debtorBankKey,
+                                                @Nonnull Key<CompanyBankAccount> debtorBank,
                                                 @Nonnull CommonTransaction t )
     {
-        super( accountKey, json, delete, "Revolut-Invoice-Processing" );
-        this.debtorBankAccountKey = checkNotNull( debtorBankKey, "Debtor bank account key can't be null" );
+        super( debtor, json, delete, "Revolut-IncomingInvoice-Processing" );
+        this.debtorBankAccountKey = checkNotNull( debtorBank, "Debtor bank account key can't be null" );
         this.transactionKey = checkNotNull( t.entityKey(), "Transaction draft key can't be null" );
     }
 
