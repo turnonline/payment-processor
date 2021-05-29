@@ -31,7 +31,7 @@ import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutBeneficiarySyncTask;
-import biz.turnonline.ecosystem.payment.service.revolut.RevolutIncomingInvoiceProcessorTask;
+import biz.turnonline.ecosystem.payment.service.revolut.RevolutPaymentDraftProcessorTask;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
 import com.google.common.base.Strings;
@@ -276,7 +276,7 @@ class ProductBillingChangesSubscription
                         Key<CompanyBankAccount> debtorBankKey = debtorBank.entityKey();
 
                         Task<IncomingInvoice> tasks = new RevolutBeneficiarySyncTask( debtorKey, data, debtorBankKey );
-                        tasks.addNext( new RevolutIncomingInvoiceProcessorTask( debtorKey, data, delete, debtorBankKey, tDraft ) );
+                        tasks.addNext( new RevolutPaymentDraftProcessorTask( debtorKey, data, delete, debtorBankKey, tDraft ) );
 
                         executor.schedule( tasks );
                         timestamp.done();

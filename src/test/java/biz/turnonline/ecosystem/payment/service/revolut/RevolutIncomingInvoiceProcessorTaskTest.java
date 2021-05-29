@@ -54,7 +54,7 @@ import static biz.turnonline.ecosystem.payment.service.PaymentConfig.REVOLUT_BAN
 import static com.google.common.truth.Truth.assertWithMessage;
 
 /**
- * {@link RevolutIncomingInvoiceProcessorTask} unit testing.
+ * {@link RevolutPaymentDraftProcessorTask} unit testing.
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
@@ -77,7 +77,7 @@ public class RevolutIncomingInvoiceProcessorTaskTest
     private static final long FEB_08_2020 = 1581134400000L;
 
     @Tested
-    private RevolutIncomingInvoiceProcessorTask tested;
+    private RevolutPaymentDraftProcessorTask tested;
 
     @Injectable
     private Key<LocalAccount> accountKey;

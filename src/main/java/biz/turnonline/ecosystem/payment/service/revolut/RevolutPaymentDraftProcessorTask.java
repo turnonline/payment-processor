@@ -51,7 +51,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
- * The asynchronous task to process incoming invoice and setup payment (bank transfer) via Revolut Business API.
+ * The asynchronous task processing incoming invoice and setups payment (bank transfer) via Revolut Business API.
  * <p>
  * <strong>Preconditions:</strong>
  * <ul>
@@ -64,12 +64,12 @@ import static com.googlecode.objectify.ObjectifyService.ofy;
  *
  * @author <a href="mailto:medvegy@turnonline.biz">Aurel Medvegy</a>
  */
-public class RevolutIncomingInvoiceProcessorTask
+public class RevolutPaymentDraftProcessorTask
         extends JsonAccountTask<IncomingInvoice>
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger( RevolutIncomingInvoiceProcessorTask.class );
+    private static final Logger LOGGER = LoggerFactory.getLogger( RevolutPaymentDraftProcessorTask.class );
 
-    private static final long serialVersionUID = 7872912584770551546L;
+    private static final long serialVersionUID = -3427511158651465774L;
 
     private final Key<CompanyBankAccount> debtorBankAccountKey;
 
@@ -90,11 +90,11 @@ public class RevolutIncomingInvoiceProcessorTask
      * @param debtorBank the debtor bank account key, the bank account to be debited
      * @param t          the transaction draft to be populated if payment sync is successful
      */
-    public RevolutIncomingInvoiceProcessorTask( @Nonnull Key<LocalAccount> debtor,
-                                                @Nonnull String json,
-                                                boolean delete,
-                                                @Nonnull Key<CompanyBankAccount> debtorBank,
-                                                @Nonnull CommonTransaction t )
+    public RevolutPaymentDraftProcessorTask( @Nonnull Key<LocalAccount> debtor,
+                                             @Nonnull String json,
+                                             boolean delete,
+                                             @Nonnull Key<CompanyBankAccount> debtorBank,
+                                             @Nonnull CommonTransaction t )
     {
         super( debtor, json, delete, "Revolut-IncomingInvoice-Processing" );
         this.debtorBankAccountKey = checkNotNull( debtorBank, "Debtor bank account key can't be null" );
