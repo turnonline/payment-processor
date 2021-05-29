@@ -1,6 +1,7 @@
 package biz.turnonline.ecosystem.payment.subscription;
 
 import biz.turnonline.ecosystem.bill.model.Bill;
+import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.TransactionNotFound;
 import biz.turnonline.ecosystem.payment.service.model.TransactionInvoice;
@@ -36,6 +37,9 @@ public class BillingProcessorChangesSubscriptionTest
 
     @Injectable
     private PaymentConfig config;
+
+    @Injectable
+    private LocalAccountProvider lap;
 
     @Mocked
     private TransactionReceipt transactionReceipt;

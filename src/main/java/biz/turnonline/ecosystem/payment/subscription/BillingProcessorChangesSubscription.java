@@ -18,6 +18,7 @@
 
 package biz.turnonline.ecosystem.payment.subscription;
 
+import biz.turnonline.ecosystem.payment.service.LocalAccountProvider;
 import biz.turnonline.ecosystem.payment.service.PaymentConfig;
 import biz.turnonline.ecosystem.payment.service.TransactionNotFound;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
@@ -49,17 +50,22 @@ class BillingProcessorChangesSubscription
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( BillingProcessorChangesSubscription.class );
 
-    private static final long serialVersionUID = 5590828228043735446L;
+    private static final long serialVersionUID = -7771404164280970616L;
 
     private final RestFacade facade;
 
     private final PaymentConfig paymentConfig;
 
+    private final LocalAccountProvider lap;
+
     @Inject
-    BillingProcessorChangesSubscription( RestFacade facade, PaymentConfig paymentConfig )
+    BillingProcessorChangesSubscription( RestFacade facade,
+                                         PaymentConfig paymentConfig,
+                                         LocalAccountProvider lap )
     {
         this.facade = facade;
         this.paymentConfig = paymentConfig;
+        this.lap = lap;
     }
 
     @Override
@@ -107,6 +113,7 @@ class BillingProcessorChangesSubscription
             return Optional.ofNullable(
                     facade.get( biz.turnonline.ecosystem.billing.model.Transaction.class )
                             .identifiedBy( productBillingTransactionId )
+                            .onBehalfOf( lap.get() )
                             .finish()
             );
         }
