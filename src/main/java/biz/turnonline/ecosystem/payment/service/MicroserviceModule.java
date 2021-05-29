@@ -20,6 +20,7 @@ package biz.turnonline.ecosystem.payment.service;
 
 import biz.turnonline.ecosystem.billing.facade.ProductBillingClientModule;
 import biz.turnonline.ecosystem.billing.facade.adaptee.TransactionAdaptee;
+import biz.turnonline.ecosystem.billing.facade.adaptee.TransactionGetAdaptee;
 import biz.turnonline.ecosystem.billing.model.Transaction;
 import biz.turnonline.ecosystem.payment.oauth.RevolutCertMetadata;
 import biz.turnonline.ecosystem.payment.oauth.RevolutCredentialAdministration;
@@ -61,6 +62,7 @@ import com.google.inject.name.Names;
 import net.sf.jsr107cache.Cache;
 import org.ctoolkit.restapi.client.ApiCredential;
 import org.ctoolkit.restapi.client.PubSub;
+import org.ctoolkit.restapi.client.adaptee.GetExecutorAdaptee;
 import org.ctoolkit.restapi.client.adaptee.InsertExecutorAdaptee;
 import org.ctoolkit.restapi.client.adapter.BeanMapperConfig;
 import org.ctoolkit.restapi.client.appengine.CtoolkitRestFacadeAppEngineModule;
@@ -133,6 +135,10 @@ public class MicroserviceModule
         bind( new TypeLiteral<InsertExecutorAdaptee<Transaction>>()
         {
         } ).to( TransactionAdaptee.class );
+
+        bind( new TypeLiteral<GetExecutorAdaptee<Transaction>>()
+        {
+        } ).to( TransactionGetAdaptee.class );
 
         // single declaration to request static injection for all Task related injection
         requestStaticInjection( Task.class );
