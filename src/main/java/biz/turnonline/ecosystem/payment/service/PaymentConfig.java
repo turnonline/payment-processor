@@ -214,7 +214,7 @@ public interface PaymentConfig
     /**
      * Searches for transaction with specified identification. First extId, and if there is no match then paymentKey.
      * If search does not return any transaction it creates a new record of type {@link TransactionReceipt}
-     * for specified the external Id.
+     * for the specified external Id.
      *
      * @param extId      the external identification of the transaction within bank
      * @param paymentKey the externally provided key of the payment to find an associated transaction

@@ -30,7 +30,7 @@ import biz.turnonline.ecosystem.payment.service.model.CompanyBankAccount;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.Timestamp;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutBeneficiarySyncTask;
-import biz.turnonline.ecosystem.payment.service.revolut.RevolutIncomingInvoiceProcessorTask;
+import biz.turnonline.ecosystem.payment.service.revolut.RevolutPaymentDraftProcessorTask;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.pubsub.model.PubsubMessage;
 import com.google.common.io.ByteStreams;
@@ -262,10 +262,10 @@ public class ProductBillingChangesSubscriptionTest
                         .isEqualTo( 2 );
 
                 assertThat( task ).isInstanceOf( RevolutBeneficiarySyncTask.class );
-                assertThat( task.next() ).isInstanceOf( RevolutIncomingInvoiceProcessorTask.class );
+                assertThat( task.next() ).isInstanceOf( RevolutPaymentDraftProcessorTask.class );
 
                 assertWithMessage( "Entity scheduled to be deleted" )
-                        .that( ( ( RevolutIncomingInvoiceProcessorTask ) task.next() ).isDelete() ).isFalse();
+                        .that( ( ( RevolutPaymentDraftProcessorTask ) task.next() ).isDelete() ).isFalse();
 
                 timestamp.done();
             }
@@ -301,10 +301,10 @@ public class ProductBillingChangesSubscriptionTest
                         .isEqualTo( 2 );
 
                 assertThat( task ).isInstanceOf( RevolutBeneficiarySyncTask.class );
-                assertThat( task.next() ).isInstanceOf( RevolutIncomingInvoiceProcessorTask.class );
+                assertThat( task.next() ).isInstanceOf( RevolutPaymentDraftProcessorTask.class );
 
                 assertWithMessage( "Entity scheduled to be deleted" )
-                        .that( ( ( RevolutIncomingInvoiceProcessorTask ) task.next() ).isDelete() ).isFalse();
+                        .that( ( ( RevolutPaymentDraftProcessorTask ) task.next() ).isDelete() ).isFalse();
 
                 timestamp.done();
             }
@@ -474,10 +474,10 @@ public class ProductBillingChangesSubscriptionTest
                         .isEqualTo( 2 );
 
                 assertThat( task ).isInstanceOf( RevolutBeneficiarySyncTask.class );
-                assertThat( task.next() ).isInstanceOf( RevolutIncomingInvoiceProcessorTask.class );
+                assertThat( task.next() ).isInstanceOf( RevolutPaymentDraftProcessorTask.class );
 
                 assertWithMessage( "Entity scheduled to be deleted" )
-                        .that( ( ( RevolutIncomingInvoiceProcessorTask ) task.next() ).isDelete() ).isTrue();
+                        .that( ( ( RevolutPaymentDraftProcessorTask ) task.next() ).isDelete() ).isTrue();
 
                 timestamp.done();
             }
