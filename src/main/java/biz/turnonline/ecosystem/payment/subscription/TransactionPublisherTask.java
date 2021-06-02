@@ -95,6 +95,14 @@ class TransactionPublisherTask
             return;
         }
 
+        // TECO-238 ignore publishing of the transaction if it's incomplete yet (race condition issue)
+        if ( !transaction.isAmount() )
+        {
+            Key<CommonTransaction> key = transaction.entityKey();
+            LOGGER.warn( "Transaction is considered incomplete as amount and currency is not set yet " + key );
+            return;
+        }
+
         LocalAccount lAccount = lap.get();
         if ( lAccount == null )
         {

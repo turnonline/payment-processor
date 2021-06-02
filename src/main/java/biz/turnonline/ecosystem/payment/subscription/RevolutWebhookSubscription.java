@@ -18,7 +18,6 @@
 
 package biz.turnonline.ecosystem.payment.subscription;
 
-import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionCreatedTask;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChanged;
 import biz.turnonline.ecosystem.payment.service.revolut.webhook.TransactionStateChangedTask;
@@ -128,8 +127,7 @@ public class RevolutWebhookSubscription
             case "TransactionStateChanged":
             {
                 TransactionStateChangedTask task = new TransactionStateChangedTask( jsonObject.toString() );
-                // TECO-238 ignore publishing of the transaction if it's incomplete yet (race condition issue)
-                task.addNext( new TransactionPublisherTask( id ), CommonTransaction::isAmount );
+                task.addNext( new TransactionPublisherTask( id ) );
                 executor.schedule( task );
                 LOGGER.info( event + " task scheduled" );
                 break;
