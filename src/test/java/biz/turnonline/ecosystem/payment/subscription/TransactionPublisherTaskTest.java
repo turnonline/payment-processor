@@ -110,6 +110,8 @@ public class TransactionPublisherTaskTest
                 .setIdentityId( ACCOUNT_IDENTITY_ID ) );
 
         transaction = new TransactionReceiptTest( "7fa8816a-1fe5-4fc7-9e86-fd659b753167", TRANSACTION_ID );
+        transaction.amount( 1D );
+        transaction.currency( "EUR" );
     }
 
     @Test
@@ -220,6 +222,30 @@ public class TransactionPublisherTaskTest
                 transaction.setCategories( Collections.singletonList( category ) );
 
                 return transaction;
+            }
+        };
+
+        tested.execute();
+
+        new Verifications()
+        {
+            {
+                facade.insert( any );
+                times = 0;
+            }
+        };
+    }
+
+    @Test
+    public void unsuccessful_Incomplete()
+    {
+        expectationsTransaction();
+
+        new Expectations( transaction )
+        {
+            {
+                transaction.isAmount();
+                result = false;
             }
         };
 
