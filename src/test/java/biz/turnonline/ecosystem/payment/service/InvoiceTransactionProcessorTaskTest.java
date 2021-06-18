@@ -93,7 +93,7 @@ public class InvoiceTransactionProcessorTaskTest
 
         assertWithMessage( "Transaction reference (invoice number)" )
                 .that( transaction.getReference() )
-                .isEqualTo( "VF1-0034/2021" );
+                .isNull();
 
         assertWithMessage( "Transaction counterparty" )
                 .that( transaction.getCounterparty() )
@@ -163,37 +163,53 @@ public class InvoiceTransactionProcessorTaskTest
     }
 
     @Test
-    public void ignored_MissingPayment()
+    public void processed_MissingPayment_KeyAsInvoiceNumber()
     {
         Invoice invoice = genericJsonFromFile( "invoice-sent-pubsub.json", Invoice.class );
         invoice.setPayment( null );
 
-        tested.execute( account, invoice );
+        TransactionInvoice transaction = new TransactionInvoice( orderId, invoiceId );
 
-        new Verifications()
+        new Expectations( transaction )
         {
             {
-                config.initGetTransactionDraft( anyLong, anyLong );
-                times = 0;
+                config.initGetTransactionDraft( orderId, invoiceId );
+                result = transaction;
+
+                transaction.save();
             }
         };
+
+        tested.execute( account, invoice );
+
+        assertWithMessage( "Transaction key" )
+                .that( transaction.getKey() )
+                .isEqualTo( "VF1-0034/2021" );
     }
 
     @Test
-    public void ignored_MissingPaymentKey()
+    public void processed_MissingPaymentKey_KeyAsInvoiceNumber()
     {
         Invoice invoice = genericJsonFromFile( "invoice-sent-pubsub.json", Invoice.class );
         invoice.getPayment().setVariableSymbol( null );
         invoice.getPayment().setKey( null );
 
-        tested.execute( account, invoice );
+        TransactionInvoice transaction = new TransactionInvoice( orderId, invoiceId );
 
-        new Verifications()
+        new Expectations( transaction )
         {
             {
-                config.initGetTransactionDraft( anyLong, anyLong );
-                times = 0;
+                config.initGetTransactionDraft( orderId, invoiceId );
+                result = transaction;
+
+                transaction.save();
             }
         };
+
+        tested.execute( account, invoice );
+
+        assertWithMessage( "Transaction key" )
+                .that( transaction.getKey() )
+                .isEqualTo( "VF1-0034/2021" );
     }
 }

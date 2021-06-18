@@ -29,6 +29,7 @@ import biz.turnonline.ecosystem.payment.service.model.FormOfPayment;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import biz.turnonline.ecosystem.payment.service.model.PaymentGate;
 import biz.turnonline.ecosystem.payment.service.model.TransactionInvoice;
+import biz.turnonline.ecosystem.payment.service.model.TransactionReceipt;
 import biz.turnonline.ecosystem.payment.service.revolut.RevolutDebtorBankAccountsInit;
 import biz.turnonline.ecosystem.steward.model.Account;
 import com.google.appengine.api.taskqueue.TaskHandle;
@@ -776,21 +777,16 @@ public class PaymentConfigBeanDbTest
     }
 
     @Test
-    public void searchInitTransaction_SearchByReference()
+    public void searchInitTransaction_SearchByReference_NotFound()
     {
         ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
         task.run();
 
         CommonTransaction transaction = bean.searchInitTransaction( "none", "INV-20056" );
 
-        assertWithMessage( "Transaction type" )
+        assertWithMessage( "Transaction type (newly created)" )
                 .that( transaction )
-                .isInstanceOf( TransactionInvoice.class );
-
-        assertWithMessage( "Invoice ID associated with Transaction" )
-                .that( ( ( TransactionInvoice ) transaction ).getInvoiceId() )
-                .isEqualTo( 114354656899L );
-
+                .isInstanceOf( TransactionReceipt.class );
     }
 
     @Test
