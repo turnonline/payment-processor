@@ -114,6 +114,11 @@ public class InvoiceTransactionProcessorTask
 
         if ( Strings.isNullOrEmpty( paymentKey ) )
         {
+            paymentKey = invoice.getInvoiceNumber();
+        }
+
+        if ( Strings.isNullOrEmpty( paymentKey ) )
+        {
             LOGGER.warn( "Invoice identified by "
                     + invoiceId( orderId, invoiceId )
                     + " is missing payment key or variable symbol. It's mandatory in order to match with payment." );
@@ -131,7 +136,6 @@ public class InvoiceTransactionProcessorTask
 
         transaction.failure( false )
                 .key( paymentKey )
-                .reference( invoice.getInvoiceNumber() )
                 .status( CommonTransaction.State.CREATED );
 
         transaction.save();

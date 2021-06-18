@@ -472,13 +472,6 @@ class PaymentConfigBean
                 criteria.equal( "key", paymentKey );
                 List<CommonTransaction> transactions = datastore.list( criteria );
 
-                if ( transactions.isEmpty() )
-                {
-                    criteria = Criteria.of( CommonTransaction.class );
-                    criteria.equal( "reference", paymentKey );
-                    transactions = datastore.list( criteria );
-                }
-
                 if ( !transactions.isEmpty() )
                 {
                     transaction = transactions.get( 0 );
