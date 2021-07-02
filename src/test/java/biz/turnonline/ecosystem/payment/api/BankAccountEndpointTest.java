@@ -49,7 +49,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -951,11 +950,11 @@ public class BankAccountEndpointTest
 
                 assertWithMessage( "Transaction filter createdDateFrom" )
                         .that( filter.getCreatedDateFrom() )
-                        .isEqualTo( Date.from( LocalDateTime.of( 2020, 1, 1, 0, 0, 0 ).atZone( ZoneId.systemDefault() ).toInstant() ) );
+                        .isEqualTo( Date.from( LocalDateTime.of( 2020, 1, 1, 0, 0, 0 ).atZone( account.getZoneId() ).toInstant() ) );
 
                 assertWithMessage( "Transaction filter createdDateTo" )
                         .that( filter.getCreatedDateTo() )
-                        .isEqualTo( Date.from( LocalDate.of( 2020, 2, 12 ).atTime( LocalTime.MAX ).atZone( ZoneId.systemDefault() ).toInstant() ) );
+                        .isEqualTo( Date.from( LocalDate.of( 2020, 2, 12 ).atTime( LocalTime.MAX ).atZone( account.getZoneId() ).toInstant() ) );
 
             }
         };
