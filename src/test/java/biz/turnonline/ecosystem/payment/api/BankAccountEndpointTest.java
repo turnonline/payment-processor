@@ -888,8 +888,8 @@ public class BankAccountEndpointTest
         String type = FormOfPayment.TRANSFER.name();
         String credit = "credit";
         String status = "COMPLETED";
-        Date createdDateFrom = Date.from( LocalDateTime.of( 2020, 1, 1, 2, 0, 0 ).atZone( ZoneId.systemDefault() ).toInstant() );
-        Date createdDateTo = Date.from( LocalDateTime.of( 2020, 2, 12, 6, 0, 0 ).atZone( ZoneId.systemDefault() ).toInstant() );
+        Date createdDateFrom = Date.from( LocalDateTime.of( 2020, 1, 1, 2, 0, 0 ).atZone( account.getZoneId() ).toInstant() );
+        Date createdDateTo = Date.from( LocalDateTime.of( 2020, 2, 12, 6, 0, 0 ).atZone( account.getZoneId() ).toInstant() );
 
         List<Transaction> result = endpoint.filterTransactions( offset,
                 limit,

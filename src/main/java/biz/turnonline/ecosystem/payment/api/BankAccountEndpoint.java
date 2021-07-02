@@ -49,7 +49,6 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -489,14 +488,14 @@ public class BankAccountEndpoint
         // fix 'create date from' time to 00:00:00
         if ( createdDateFrom != null )
         {
-            LocalDateTime startOfDay = createdDateFrom.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate().atStartOfDay();
-            createdDateFrom = Date.from( startOfDay.atZone( ZoneId.systemDefault() ).toInstant() );
+            LocalDateTime startOfDay = createdDateFrom.toInstant().atZone( account.getZoneId() ).toLocalDate().atStartOfDay();
+            createdDateFrom = Date.from( startOfDay.atZone( account.getZoneId() ).toInstant() );
         }
         // fix 'create date to' time to 23:59:59
         if ( createdDateTo != null )
         {
-            LocalDateTime endOfDay = createdDateTo.toInstant().atZone( ZoneId.systemDefault() ).toLocalDate().atTime( LocalTime.MAX );
-            createdDateTo = Date.from( endOfDay.atZone( ZoneId.systemDefault() ).toInstant() );
+            LocalDateTime endOfDay = createdDateTo.toInstant().atZone( account.getZoneId() ).toLocalDate().atTime( LocalTime.MAX );
+            createdDateTo = Date.from( endOfDay.atZone( account.getZoneId() ).toInstant() );
         }
 
         try
