@@ -47,7 +47,8 @@ import org.testng.annotations.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -886,8 +887,8 @@ public class BankAccountEndpointTest
         String type = FormOfPayment.TRANSFER.name();
         String credit = "credit";
         String status = "COMPLETED";
-        Date createdDateFrom = Date.from( LocalDate.of( 2020, 1, 1 ).atStartOfDay().atZone( ZoneId.systemDefault() ).toInstant() );
-        Date createdDateTo = Date.from( LocalDate.of( 2020, 2, 12 ).atStartOfDay().atZone( ZoneId.systemDefault() ).toInstant() );
+        Date createdDateFrom = Date.from( LocalDateTime.of( 2020, 1, 1, 2, 0, 0 ).atZone( account.getZoneId() ).toInstant() );
+        Date createdDateTo = Date.from( LocalDateTime.of( 2020, 2, 12, 6, 0, 0 ).atZone( account.getZoneId() ).toInstant() );
 
         List<Transaction> result = endpoint.filterTransactions( offset,
                 limit,
@@ -949,11 +950,11 @@ public class BankAccountEndpointTest
 
                 assertWithMessage( "Transaction filter createdDateFrom" )
                         .that( filter.getCreatedDateFrom() )
-                        .isEqualTo( createdDateFrom );
+                        .isEqualTo( Date.from( LocalDateTime.of( 2020, 1, 1, 0, 0, 0 ).atZone( account.getZoneId() ).toInstant() ) );
 
                 assertWithMessage( "Transaction filter createdDateTo" )
                         .that( filter.getCreatedDateTo() )
-                        .isEqualTo( createdDateTo );
+                        .isEqualTo( Date.from( LocalDate.of( 2020, 2, 12 ).atTime( LocalTime.MAX ).atZone( account.getZoneId() ).toInstant() ) );
 
             }
         };
