@@ -76,6 +76,8 @@ public class TransactionCreatedTask
 
     transient private CategoryService categoryService;
 
+    transient private final ReferenceResolver referenceResolver = new ReferenceResolver();
+
     /**
      * Constructor.
      *
@@ -116,7 +118,8 @@ public class TransactionCreatedTask
 
         TransactionLeg leg = legs.get( 0 );
 
-        CommonTransaction transaction = config.searchInitTransaction( id, transactionFromBank.getReference() );
+        String reference = referenceResolver.resolve( transactionFromBank.getReference() );
+        CommonTransaction transaction = config.searchInitTransaction( id, reference );
         transaction.bankCode( REVOLUT_BANK_EU_CODE )
                 .currency( leg.getCurrency() )
                 .balance( leg.getBalance() )
