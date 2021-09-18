@@ -474,7 +474,15 @@ class PaymentConfigBean
 
                 if ( !transactions.isEmpty() )
                 {
-                    transaction = transactions.get( 0 );
+                    CommonTransaction transactionInvoiceDraft = transactions.get( 0 );
+
+                    // check if transaction invoice draft is still in state CREATED. If not new TransactionReceipt
+                    // will be created instead. For CREATED draft pair with external id and save transaction.
+                    if (transactionInvoiceDraft.getStatus() == State.CREATED) {
+                        transaction = transactionInvoiceDraft;
+                        transaction.externalId( extId );
+                        transaction.save();
+                    }
                 }
             }
 

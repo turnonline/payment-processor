@@ -764,15 +764,31 @@ public class PaymentConfigBeanDbTest
     }
 
     @Test
-    public void searchInitTransaction_SearchByKey()
+    public void searchInitTransaction_SearchByKey_NotYetCompleted_ExternalIdPairingSuccessful()
     {
         ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
         task.run();
 
-        CommonTransaction transaction = bean.searchInitTransaction( "none", "Gdhf6h6BV" );
+        CommonTransaction transaction = bean.searchInitTransaction( "1234-5678-9012", "BGdhf6h6Y" );
         assertWithMessage( "Transaction ID for payment key" )
                 .that( transaction.getId() )
-                .isEqualTo( 681L );
+                .isEqualTo( 782L );
+        assertWithMessage( "Transaction external ID for payment key" )
+                .that( transaction.getExternalId() )
+                .isEqualTo( "1234-5678-9012" );
+
+    }
+
+    @Test
+    public void searchInitTransaction_SearchByKey_AlreadyCompleted()
+    {
+        ImportTask task = new ImportTask( "/testdataset/changeset_transactions.xml" );
+        task.run();
+
+        CommonTransaction transaction = bean.searchInitTransaction( "1234-5678-9012", "Gdhf6h6BV" );
+        assertWithMessage( "Transaction type (newly created)" )
+                .that( transaction )
+                .isInstanceOf( TransactionReceipt.class );
 
     }
 

@@ -63,6 +63,16 @@
             <property name="dbModelVersion" type="date" value="1508565600000"/>
         </entity>
 
+        <entity kind="PP_Transaction" id="782">
+            <property indexed="false" name="^d" type="string" value="Invoice"/>
+            <property indexed="true" name="^i" multiplicity="list" type="string" value="Invoice"/>
+            <property indexed="true" name="invoiceId" type="long" value="366809"/>
+            <property indexed="true" name="orderId" type="long" value="476809"/>
+            <property indexed="true" name="key" type="string" value="BGdhf6h6Y"/>
+            <property indexed="true" name="status" type="string" value="CREATED"/>
+            <property name="dbModelVersion" type="date" value="1508565600000"/>
+        </entity>
+
         <entity kind="PP_Transaction">
             <property indexed="false" name="^d" type="string" value="Invoice"/>
             <property indexed="true" name="^i" multiplicity="list" type="string" value="Invoice"/>
