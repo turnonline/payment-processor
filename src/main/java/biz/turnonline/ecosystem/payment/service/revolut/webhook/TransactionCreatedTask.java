@@ -68,15 +68,15 @@ public class TransactionCreatedTask
 {
     private static final Logger LOGGER = LoggerFactory.getLogger( TransactionCreatedTask.class );
 
-    private static final long serialVersionUID = 8438319760944126297L;
+    private static final long serialVersionUID = 382312044209828756L;
+
+    private static final ReferenceResolver referenceResolver = new ReferenceResolver();
 
     transient private PaymentConfig config;
 
     transient private RestFacade facade;
 
     transient private CategoryService categoryService;
-
-    transient private final ReferenceResolver referenceResolver = new ReferenceResolver();
 
     /**
      * Constructor.
