@@ -169,12 +169,12 @@
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-account-steward-client</artifactId>
-            <version>0.27</version>
+            <version>0.28</version>
         </dependency>
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
             <artifactId>turnonline-product-billing-client</artifactId>
-            <version>0.34</version>
+            <version>0.43</version>
         </dependency>
         <dependency>
             <groupId>biz.turnonline.ecosystem</groupId>
@@ -189,7 +189,7 @@
         <dependency>
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-secretmanager</artifactId>
-            <version>1.0.1</version>
+            <version>2.2.0</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -199,7 +199,7 @@
         <dependency>
             <groupId>nl.garvelink.oss</groupId>
             <artifactId>iban</artifactId>
-            <version>1.9.0</version>
+            <version>1.12.0</version>
         </dependency>
         <!-- Java Servlet API -->
         <dependency>
