@@ -91,10 +91,10 @@ public class Defaults<T, D>
 
     /**
      * If an input value is present, invoke the specified consumer with the value.
-     * Use this method only if <T> and <D> are same type.
+     * Use this method only if <code>T</code> and <code>D</code> are same type.
      *
      * @param consumer the consumer of the input value, block to be executed if an input value is present
-     * @throws ClassCastException if <T> and <D> are of different type
+     * @throws ClassCastException if <code>T</code> and <code>D</code> are of different type
      */
     @SuppressWarnings( "unchecked" )
     public void ifPresentOrDefault( Consumer<? super D> consumer )

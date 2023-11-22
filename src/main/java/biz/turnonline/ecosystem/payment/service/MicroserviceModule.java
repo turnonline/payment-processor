@@ -59,7 +59,6 @@ import com.google.inject.Provides;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import com.google.inject.name.Names;
-import net.sf.jsr107cache.Cache;
 import org.ctoolkit.restapi.client.ApiCredential;
 import org.ctoolkit.restapi.client.PubSub;
 import org.ctoolkit.restapi.client.adaptee.GetExecutorAdaptee;
@@ -80,6 +79,7 @@ import org.ctoolkit.services.storage.guice.GuicefiedOfyFactory;
 import org.ctoolkit.services.task.CtoolkitServicesTaskModule;
 import org.ctoolkit.services.task.Task;
 
+import javax.cache.Cache;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
