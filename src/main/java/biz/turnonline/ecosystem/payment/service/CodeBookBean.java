@@ -21,10 +21,10 @@ package biz.turnonline.ecosystem.payment.service;
 import biz.turnonline.ecosystem.payment.service.model.BankCode;
 import biz.turnonline.ecosystem.payment.service.model.LocalAccount;
 import com.googlecode.objectify.cmd.Query;
-import net.sf.jsr107cache.Cache;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.cache.Cache;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Locale;

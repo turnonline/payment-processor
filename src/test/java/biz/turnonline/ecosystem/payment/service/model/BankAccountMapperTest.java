@@ -122,7 +122,7 @@ public class BankAccountMapperTest
 
     /**
      * The IBAN is already stored in backend, it's valid to be not provided by API
-     * -> no validation exception will be thrown.
+     * -&gt; no validation exception will be thrown.
      */
     @Test
     public void mapApiToBackend_IbanAlreadyInBackend()

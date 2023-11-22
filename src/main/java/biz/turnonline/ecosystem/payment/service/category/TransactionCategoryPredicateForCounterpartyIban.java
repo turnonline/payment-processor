@@ -2,11 +2,12 @@ package biz.turnonline.ecosystem.payment.service.category;
 
 import biz.turnonline.ecosystem.payment.service.model.CategoryFilter;
 import biz.turnonline.ecosystem.payment.service.model.CommonTransaction;
+import biz.turnonline.ecosystem.payment.service.model.CounterpartyBankAccount;
 
 import java.util.regex.Pattern;
 
 /**
- * Transaction category predicate for counterparty iban {@link CommonTransaction#getCounterparty()#getIban()}
+ * Transaction category predicate for counterparty iban {@link CounterpartyBankAccount#getIban()}
  *
  * @author <a href="mailto:pohorelec@turnonline.biz">Jozef Pohorelec</a>
  */
