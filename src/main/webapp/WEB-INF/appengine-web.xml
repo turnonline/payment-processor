@@ -37,5 +37,6 @@
     </system-properties>
     <env-variables>
         <env-var name="ENDPOINTS_SERVICE_NAME" value="${env.ENDPOINTS_SERVICE_NAME}"/>
+        <env-var name="javax.net.ssl.trustStore" value="WEB-INF/classes/b2b.revolut.com.cer" />
     </env-variables>
 </appengine-web-app>
