@@ -34,7 +34,8 @@
     <instance-class>F1</instance-class>
     <system-properties>
         <property name="java.util.logging.config.file" value="WEB-INF/classes/logging.properties"/>
-        <property name="javax.net.ssl.trustStore" value="WEB-INF/classes/digicert_global_root_g2.pem"/>
+        <property name="javax.net.ssl.trustStore" value="WEB-INF/classes/keystore.jks"/>
+        <property name="javax.net.ssl.trustStorePassword" value=""/>
     </system-properties>
     <env-variables>
         <env-var name="ENDPOINTS_SERVICE_NAME" value="${env.ENDPOINTS_SERVICE_NAME}"/>
